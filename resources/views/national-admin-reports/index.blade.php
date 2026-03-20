@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reports - National Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
+    --black: #000000; --gray-light: #dadada; --gray-dark: #2a2e32;
+    --offwhite: #fffbf7; --bg: white;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'Montserrat', sans-serif !important; color: #545454 !important; background-color: white !important; }
+body { display: flex; }
+
+.sidebar { width: 240px; background-color: white; border-right: 1px solid #eaeaea; display: flex; flex-direction: column; padding-top: 140px; }
+.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 900 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
+.sidebar-list { list-style: none; padding: 0 0 0 22px; }
+.sidebar-link { display: block; width: 92%; font-size: 15px !important; font-weight: 900 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; padding: 11px 18px; margin-bottom: 17px; border-radius: 8px; text-decoration: none; transition: all 0.25s ease; }
+.sidebar-link:hover, .sidebar-link.active { background: var(--theme-gradient); color: #000; }
+button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 900 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+button:hover, button:focus { background-color: #c7da30 !important; color: white !important; border-color: #38b6ff !important; outline: none; }
+button:hover, .sidebar-link:hover, .sidebar-link.active { color: #fff !important; background: linear-gradient(to right, #38b6ff, #38b6ff) !important; }
+.main-panel { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+.topbar { width: 100%; background: white; border-bottom: 1px solid white; display: flex; align-items: center; justify-content: flex-end; padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 10; }
+.profile { display: flex; align-items: center; gap: 0.8rem; }
+.profile-avatar { width: 42px; height: 42px; border-radius: 50%; background: #ececec; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 6px rgba(51,51,63,0.08); }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile .meta { text-align: right; }
+.profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
+.profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
+.profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
+main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; }
+h1 { margin: 0 0 1.5rem; font-weight: 900 !important; font-size: 32px !important; font-family: 'Montserrat', sans-serif !important; letter-spacing: 0.03em; text-transform: uppercase !important; color: #545454 !important; text-align: center; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: var(--gray-light); color: var(--black); font-family: 'Montserrat', sans-serif; table-layout: fixed; border: 3px solid #c7da30; border-radius: 0.375rem; overflow: hidden; }
+thead { background: #bbc93dff; color: black; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
+th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--lime); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+tbody tr:hover { background: rgba(199,218,48,0.15); cursor: pointer; transition: background-color 0.3s ease; }
+tbody tr:last-child td { border-bottom: none; }
+.pagination { display: flex; justify-content: center; margin-top: 1rem; }
+.page-link { border: 1px solid #cddc39; color: black; border-radius: 50%; width: 35px; height: 35px; text-align: center; line-height: 32px; margin: 0 4px; transition: all 0.3s ease; display: inline-block; text-decoration: none; }
+.page-link:hover { background: #cddc39; color: white; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,12,12,0.42); display: none; align-items: center; justify-content: center; z-index: 50; }
+.modal-card { background: #fff; border: 2.5px solid #d7e47a; border-radius: 16px; width: 900px; max-width: 95vw; box-shadow: 0 6px 40px rgba(46,56,64,0.18), 0 1.5px 3px rgba(140,160,145,0.05); padding: 0; position: relative; font-family: 'Montserrat', sans-serif; color: #333; }
+/* Close Button */
+.modal-close {
+     display: flex !important;
+     justify-content: center !important;   /* center text horizontally */
+     align-items: center !important;       /* center text vertically */
+
+     position: absolute !important;
+     right: 28px !important;
+     bottom: 24px !important;
+
+     width: 80px !important;
+     height: 38px !important;
+
+     background: white !important;
+     border: 3px solid #cddc39 !important;
+     color: #38b6ff !important;
+
+     font-size: 14px !important;
+     font-weight: 400 !important;
+
+     border-radius: 16px !important;
+
+     transition: background 0.2s, color 0.2s, border 0.2s !important;
+     cursor: pointer !important;
+     outline: none !important;
+     z-index: 2 !important;
+}
+.modal-close:hover, .modal-close:focus { background: linear-gradient(to right, #74b9ff, #74b9ff) !important; color: white !important; border-color: #74b9ff !important; }
+.modal-content { padding: 2.2rem 2.2rem 1.7rem 2.2rem; border-radius: 12px; border: none; }
+.modal-content h3, #modalTitle { font-size: 1.4rem; font-weight: 700; margin-top: 0.4rem; margin-bottom: 2rem; color: #232b0b; text-align: left; letter-spacing: 0.018em; border-bottom: 2px solid #e6eea1; padding-bottom: 0.8rem; }
+.modal-content p { margin-bottom: 0.55rem; font-size: 1.01rem; display: flex; align-items: baseline; }
+.modal-content strong { width: 138px; display: inline-block; color: #222 !important; font-weight: 600; }
+#modalReason { color: #865c0b; font-size: 0.98rem; font-style: italic; }
+#modalDescription { background: #fff; min-height: 1.85em; border-radius: 6px; padding: 0.55rem 0.75rem; color: #636c0b; font-size: 1.06rem; margin-bottom: 1rem; border: 3px solid #cddc39; }
+#modalAttachments img, #modalAttachments video { border: 2px solid #c7da30; border-radius: 7px; width: 80px !important; height: 80px !important; object-fit: cover; margin-right: 8px; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--lime); border-radius: 10px; }
+::-webkit-scrollbar-track { background: #f2f2f2; }
+@media (max-width: 900px) {
+    body { flex-direction: column; }
+    .sidebar { flex-direction: row; width: 100%; height: auto; border-right: none; border-bottom: 3px solid var(--lime); justify-content: space-around; padding: 0.5rem 0; }
+    .sidebar-link { margin-bottom: 0; padding: 0.5rem 1rem; font-size: 0.9rem; }
+    .main-panel { height: auto; }
+    main { padding: 1.5rem; }
+    .filter-grid { grid-template-columns: 1fr 1fr !important; }
+}
+@media (max-width: 540px) { .filter-grid { grid-template-columns: 1fr !important; } }
+
+/* ── Filter Panel ──────────────────────────────────────────────── */
+.filter-panel { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; }
+.filter-label { font-family: 'Montserrat', sans-serif; font-size: 11px !important; font-weight: 700 !important; color: #6b7280 !important; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; display: block; }
+.filter-input { width: 100%; border: 2px solid #e5e7eb !important; border-radius: 8px; padding: 7px 10px !important; font-size: 13px !important; font-family: 'Montserrat', sans-serif !important; color: #111 !important; background: white !important; transition: border-color 0.2s; outline: none; box-sizing: border-box; font-weight: 400 !important; margin: 0 !important; display: block; }
+.filter-input:focus { border-color: #c7da30 !important; box-shadow: 0 0 0 3px rgba(199,218,48,0.15); }
+.search-wrap { position: relative; margin-bottom: 18px; }
+.search-wrap input { width: 100%; border: 2px solid #c7da30 !important; border-radius: 30px; padding: 10px 20px 10px 44px !important; font-size: 14px !important; font-family: 'Montserrat', sans-serif !important; color: #111 !important; background: white !important; outline: none; transition: box-shadow 0.2s; box-sizing: border-box; font-weight: 400 !important; margin: 0 !important; }
+.search-wrap input:focus { box-shadow: 0 0 0 3px rgba(199,218,48,0.2); }
+.search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #aaa; pointer-events: none; font-size: 15px; }
+.filter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; align-items: end; }
+.filter-btn { width: 100%; border-radius: 8px !important; padding: 8px 14px !important; font-size: 12px !important; font-family: 'Montserrat', sans-serif !important; font-weight: 700 !important; cursor: pointer; transition: all 0.2s; height: 36px; margin: 0 !important; display: block; }
+.filter-btn-apply { background: #38b6ff !important; color: white !important; border: none !important; }
+.filter-btn-clear { background: white !important; border: 2px solid #e5e7eb !important; color: #6b7280 !important; }
+.filter-btn-apply:hover { background: #1a9fe0 !important; color: white !important; border: none !important; }
+.filter-btn-clear:hover { border-color: #c7da30 !important; color: #000 !important; background: #f7fcd4 !important; }
+.active-filter-badge { display: inline-flex; align-items: center; background: #f0f9d4; border: 1px solid #c7da30; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #4a5e00; margin-right: 6px; margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div style="position: fixed; top: 40px; left: 40px; width: 100px; height: auto;">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 150px; height: auto;">
+    </div>
+    <ul class="sidebar-list">
+        <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+        <a href="{{ url('/national-admin/reports') }}"   class="sidebar-link {{ request()->is('national-admin/reports')   ? 'active' : '' }}">Reports</a>
+        <a href="{{ url('/national-admin/settings') }}"  class="sidebar-link {{ request()->is('national-admin/settings')  ? 'active' : '' }}">My Profile</a>
+        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
+        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
+    </ul>
+</aside>
+
+<div class="main-panel">
+    <div class="topbar">
+        <div class="profile">
+            <div class="meta">
+                <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                <span class="role">Administrator</span>
+            </div>
+            <div class="profile-avatar">
+                @php $currentUser = auth()->user()->fresh(); @endphp
+                @if($currentUser && $currentUser->profile_picture)
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <h1>Reports</h1>
+
+        {{-- ════════════════════════════════════════════════════════════ --}}
+        {{--  SEARCH BAR + FILTER PANEL                                  --}}
+        {{-- ════════════════════════════════════════════════════════════ --}}
+        <form id="filterForm" method="GET" action="{{ url('/national-admin/reports') }}">
+        <div class="filter-panel">
+
+            {{-- Search Bar --}}
+            <div class="search-wrap">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search by name, email, case number, school, description…"
+                    autocomplete="off"
+                />
+            </div>
+
+            {{-- Filter Grid --}}
+            <div class="filter-grid">
+
+                <div>
+                    <label class="filter-label">Name / Surname</label>
+                    <input type="text" name="full_name" class="filter-input"
+                           value="{{ request('full_name') }}"
+                           placeholder="e.g. John Smith" />
+                </div>
+
+                <div>
+                    <label class="filter-label">Province</label>
+                    <select name="province_id" class="filter-input">
+                        <option value="">All Provinces</option>
+                        @foreach($provinceOptions as $province)
+                            <option value="{{ $province->id }}" {{ request('province_id') == $province->id ? 'selected' : '' }}>
+                                {{ $province->province_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="filter-label">School</label>
+                    <input type="text" name="school_name" class="filter-input"
+                           list="schoolList"
+                           value="{{ request('school_name') }}"
+                           placeholder="Type to search school…" autocomplete="off" />
+                    <datalist id="schoolList">
+                        @foreach($schoolOptions as $school)
+                            <option value="{{ $school->school_name }}">
+                        @endforeach
+                    </datalist>
+                </div>
+
+                <div>
+                    <label class="filter-label">Grade</label>
+                    <select name="grade" class="filter-input">
+                        <option value="">All Grades</option>
+                        @foreach($gradeOptions as $grade)
+                            <option value="{{ $grade }}" {{ request('grade') == $grade ? 'selected' : '' }}>
+                                {{ $grade }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="filter-label">Date From</label>
+                    <input type="date" name="date_from" class="filter-input"
+                           value="{{ request('date_from') }}" />
+                </div>
+
+                <div>
+                    <label class="filter-label">Date To</label>
+                    <input type="date" name="date_to" class="filter-input"
+                           value="{{ request('date_to') }}" />
+                </div>
+
+                <div>
+                    <label class="filter-label">Report Type</label>
+                    <select name="type_id" class="filter-input">
+                        <option value="">All Types</option>
+                        @foreach($typeOptions as $type)
+                            <option value="{{ $type->id }}" {{ request('type_id') == $type->id ? 'selected' : '' }}>
+                                {{ $type->type_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="filter-label">Subtype</label>
+                    <select name="subtype_id" class="filter-input">
+                        <option value="">All Subtypes</option>
+                        @foreach($subtypeOptions as $sub)
+                            <option value="{{ $sub->id }}" {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
+                                {{ $sub->sub_type_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="filter-label">Status</label>
+                    <select name="status" class="filter-input">
+                        <option value="">All Statuses</option>
+                        <option value="awaiting-resolution" {{ request('status') == 'awaiting-resolution' ? 'selected' : '' }}>Awaiting Resolution</option>
+                        <option value="under-review"        {{ request('status') == 'under-review'        ? 'selected' : '' }}>Under Review</option>
+                        <option value="forwarded"           {{ request('status') == 'forwarded'           ? 'selected' : '' }}>Forwarded</option>
+                        <option value="closed"              {{ request('status') == 'closed'              ? 'selected' : '' }}>Closed</option>
+                        <option value="unresolved"          {{ request('status') == 'unresolved'          ? 'selected' : '' }}>Unresolved</option>
+                        <option value="false-report"        {{ request('status') == 'false-report'        ? 'selected' : '' }}>False Report</option>
+                    </select>
+                </div>
+
+                {{-- Apply + Clear --}}
+                <div style="display:flex; gap:6px; align-items:flex-end;">
+                    <button type="submit" class="filter-btn filter-btn-apply" style="flex:1;">
+                        <i class="fas fa-filter" style="margin-right:4px;"></i> Apply
+                    </button>
+                    <button type="button" class="filter-btn filter-btn-clear" style="flex:1;" onclick="clearFilters()">
+                        <i class="fas fa-times" style="margin-right:4px;"></i> Clear
+                    </button>
+                </div>
+
+            </div>{{-- end .filter-grid --}}
+
+            {{-- Active filter badges --}}
+            @php
+                $activeFilters = array_filter([
+                    'Search'   => request('search'),
+                    'Name'     => request('full_name'),
+                    'Province' => request('province_id') ? ($provinceOptions->firstWhere('id', request('province_id'))?->province_name ?? request('province_id')) : null,
+                    'School'   => request('school_id')   ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name     ?? request('school_id'))   : request('school_name'),
+                    'Grade'    => request('grade'),
+                    'From'     => request('date_from'),
+                    'To'       => request('date_to'),
+                    'Type'     => request('type_id')    ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name          ?? request('type_id'))    : null,
+                    'Subtype'  => request('subtype_id') ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id')) : null,
+                    'Status'   => request('status'),
+                ]);
+            @endphp
+            @if(count($activeFilters))
+                <div style="margin-top:12px; display:flex; flex-wrap:wrap; align-items:center;">
+                    @foreach($activeFilters as $label => $val)
+                        <span class="active-filter-badge">
+                            <i class="fas fa-filter" style="font-size:9px; margin-right:4px;"></i>
+                            {{ $label }}: {{ $val }}
+                        </span>
+                    @endforeach
+                    <span style="font-size:11px; color:#9ca3af; margin-left:4px;">
+                        — {{ $reports->total() }} result(s)
+                    </span>
+                </div>
+            @endif
+
+        </div>{{-- end .filter-panel --}}
+        </form>
+        {{-- ══════════════════════════ END FILTER PANEL ════════════════ --}}
+
+        <table aria-label="List of filtered reports">
+            <thead>
+                <tr>
+                    <th>Case Number</th>
+                    <th>Full Name</th>
+                    <th>Province</th>
+                    <th>District</th>
+                    <th>School</th>
+                    <th>Grade</th>
+                    <th>Report Type</th>
+                    <th>Status</th>
+                    <th>Anonymous</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($reports as $report)
+                    <tr onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">
+                        <td>{{ $report->case_number ?? 'N/A' }}</td>
+                        <td>{{ $report->full_name ?? 'Anonymous' }}</td>
+                        <td>{{ $report->province->province_name ?? 'N/A' }}</td>
+                        <td>{{ $report->district->district_name ?? 'N/A' }}</td>
+                        <td>{{ $report->school->school_name ?? $report->school_name ?? 'N/A' }}</td>
+                        <td>{{ $report->grade ?? 'N/A' }}</td>
+                        <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
+                        <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
+                        <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
+                        <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="10" style="text-align:center; padding:1rem;">
+                            No reports found for this filter.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        {{-- Pagination — preserve all active filters across pages --}}
+        <div class="pagination">
+            @if ($reports->onFirstPage())
+                <span class="page-link" aria-disabled="true">←</span>
+            @else
+                <a href="{{ $reports->previousPageUrl() }}&{{ http_build_query(request()->except('page')) }}" class="page-link" rel="prev">←</a>
+            @endif
+
+            @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
+                @if ($page == $reports->currentPage())
+                    <span class="page-link" style="background:#cddc39; font-weight:bold;">{{ $page }}</span>
+                @else
+                    <a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}" class="page-link">{{ $page }}</a>
+                @endif
+            @endforeach
+
+            @if ($reports->hasMorePages())
+                <a href="{{ $reports->nextPageUrl() }}&{{ http_build_query(request()->except('page')) }}" class="page-link" rel="next">→</a>
+            @else
+                <span class="page-link" aria-disabled="true">→</span>
+            @endif
+        </div>
+
+    </main>
+</div>
+
+{{-- Report Details Modal --}}
+<div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+        <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">&times;</button>
+        <div class="modal-content">
+            <h3 id="modalTitle" style="margin-bottom:1rem;">Report Details: <span id="modalCaseNumber"></span></h3>
+            <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+            <p><strong>Email:</strong>     <span id="modalEmail"></span></p>
+            <p><strong>Phone:</strong>     <span id="modalPhone"></span></p>
+            <p><strong>Type:</strong>      <span id="modalType"></span></p>
+            <p><strong>Subtype:</strong>   <span id="modalSubtype"></span></p>
+            <p><strong>School:</strong>    <span id="modalSchool"></span></p>
+            <p><strong>Grade:</strong>     <span id="modalGrade"></span></p>
+            <p><strong>Status:</strong>    <span id="modalStatus"></span></p>
+            <p><strong>Latest Reason:</strong> <span id="modalReason"></span></p>
+            <p><strong>Description:</strong></p>
+            <div id="modalDescription" style="margin-bottom:1rem;"></div>
+            <p><strong>Attachments:</strong> <span id="modalAttachments"></span></p>
+            <br>
+            <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function clearFilters() {
+    window.location.href = '{{ url('/national-admin/reports') }}';
+}
+
+function openReportModal(reportId) {
+    fetch(`/reports/${reportId}`, { headers: { 'Accept': 'application/json' } })
+    .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
+    .then(report => {
+        document.getElementById('modalCaseNumber').textContent = report.case_number || 'N/A';
+        document.getElementById('modalFullName').textContent   = report.full_name || 'Anonymous';
+        document.getElementById('modalEmail').textContent      = report.reporter_email || 'Anonymous';
+        document.getElementById('modalPhone').textContent      = report.phone_number || 'N/A';
+        document.getElementById('modalType').textContent       = report.abuseType || 'N/A';
+        document.getElementById('modalSubtype').textContent    = report.subtype || 'N/A';
+        document.getElementById('modalSchool').textContent     = report.school || 'N/A';
+        document.getElementById('modalGrade').textContent      = report.grade || 'N/A';
+        document.getElementById('modalStatus').textContent     = report.status ? report.status.replace(/-/g, ' ') : 'N/A';
+        document.getElementById('modalReason').textContent     = report.latest_status_reason || 'No status history recorded.';
+        document.getElementById('modalDescription').textContent = report.description || '';
+
+        const attachmentSpan = document.getElementById('modalAttachments');
+        attachmentSpan.innerHTML = '';
+        if (report.attachments && report.attachments.length > 0) {
+            report.attachments.forEach(filePath => {
+                const ext = filePath.split('.').pop().toLowerCase();
+                const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
+                let elem;
+                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
+                    elem = document.createElement('img');
+                    elem.src = publicUrl; elem.alt = 'Attachment';
+                    Object.assign(elem.style, { width:'80px', height:'80px', marginRight:'10px', border:'2px solid #c7da30', borderRadius:'8px', objectFit:'cover' });
+                } else if (['mp4','mov','avi','wmv'].includes(ext)) {
+                    elem = document.createElement('video');
+                    elem.controls = true;
+                    Object.assign(elem.style, { width:'120px', height:'80px', marginRight:'10px' });
+                    const src = document.createElement('source');
+                    src.src = publicUrl; src.type = 'video/' + ext;
+                    elem.appendChild(src);
+                } else {
+                    elem = document.createElement('a');
+                    elem.href = publicUrl; elem.target = '_blank';
+                    elem.textContent = filePath.split('/').pop();
+                    Object.assign(elem.style, { color:'#4c8eda', textDecoration:'underline', marginRight:'10px', display:'inline-block' });
+                }
+                attachmentSpan.appendChild(elem);
+            });
+        } else {
+            attachmentSpan.textContent = 'N/A';
+        }
+        const modal = document.getElementById('reportModal');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+    })
+    .catch(() => alert('Failed to load report details.'));
+}
+
+function closeReportModal() {
+    const modal = document.getElementById('reportModal');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportModal(); });
+</script>
+
+<script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+function exportPDF() {
+    const element = document.getElementById('main-content');
+    if (!element) { alert("Main content not found!"); return; }
+    html2pdf().from(element).set({
+        margin: 10, filename: 'national-admin-reports.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+    }).save();
+}
+
+const subtypesByType = {
+    @foreach($typeOptions as $type)
+        {{ $type->id }}: [
+            @foreach($subtypeOptions->where('abuse_type_id', $type->id) as $sub)
+                { id: {{ $sub->id }}, name: "{{ addslashes($sub->sub_type_name) }}" },
+            @endforeach
+        ],
+    @endforeach
+};
+
+function filterSubtypes() {
+    const typeId   = document.querySelector('[name="type_id"]').value;
+    const select   = document.querySelector('[name="subtype_id"]');
+    const current  = "{{ request('subtype_id') }}";
+
+    select.innerHTML = '<option value="">All Subtypes</option>';
+
+    if (!typeId || !subtypesByType[typeId]) return;
+
+    subtypesByType[typeId].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub.id;
+        opt.textContent = sub.name;
+        if (String(sub.id) === current) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+// Run on page load (in case filters are already active)
+document.addEventListener('DOMContentLoaded', filterSubtypes);
+
+// Run when type changes
+document.querySelector('[name="type_id"]').addEventListener('change', filterSubtypes);
+
+</script>
+</body>
+</html>

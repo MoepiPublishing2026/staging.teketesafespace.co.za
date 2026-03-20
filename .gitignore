@@ -1,0 +1,39 @@
+# Laravel standard exclusions
+/vendor/
+/node_modules/
+/storage/
+/database/database.sqlite
+/.env
+/.env.*
+/public/storage/
+/bootstrap/cache/
+composer.lock
+npm-debug.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Ignore test coverage and logs
+coverage/
+*.log
+
+# Ignore OS generated files
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Ignore other common files
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Allow storage and database folders, but not their contents
+!storage/app/
+!storage/framework/
+!storage/logs/
+!database/factories/
+!database/migrations/
+!database/seeders/
