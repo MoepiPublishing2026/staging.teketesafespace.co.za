@@ -1,0 +1,13 @@
+[12-Feb-2026 09:00:43 UTC] PHP Warning:  require(/home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/composer/../symfony/deprecation-contracts/function.php): Failed to open stream: No such file or directory in /home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/composer/autoload_real.php on line 41
+[12-Feb-2026 09:00:43 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/composer/../symfony/deprecation-contracts/function.php' (include_path='.:/opt/cpanel/ea-php84/root/usr/share/pear') in /home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/composer/autoload_real.php:41
+Stack trace:
+#0 /home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/composer/autoload_real.php(45): {closure:ComposerAutoloaderInit0ba314a16852665a64ac8f794d7d4fac::getLoader():37}('6e3fae29631ef28...', '/home/teketeq9v...')
+#1 /home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/autoload.php(22): ComposerAutoloaderInit0ba314a16852665a64ac8f794d7d4fac::getLoader()
+#2 /home/teketeq9v8o0/staging.teketesafespace.co.za/public/index.php(14): require('/home/teketeq9v...')
+#3 {main}
+  thrown in /home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/composer/autoload_real.php on line 41
+[12-Feb-2026 09:00:44 UTC] PHP Warning:  require(/home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/autoload.php): Failed to open stream: No such file or directory in /home/teketeq9v8o0/staging.teketesafespace.co.za/public/index.php on line 14
+[12-Feb-2026 09:00:44 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/teketeq9v8o0/staging.teketesafespace.co.za/public/vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php84/root/usr/share/pear') in /home/teketeq9v8o0/staging.teketesafespace.co.za/public/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/teketeq9v8o0/staging.teketesafespace.co.za/public/index.php on line 14

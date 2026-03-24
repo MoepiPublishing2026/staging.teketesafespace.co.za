@@ -180,24 +180,34 @@ class AdminReports extends Component
                 }
             }
 
-            $msg = 'Status updated successfully. Reporter notified.';
-            if ($this->newStatus === 'false-report') {
-                $msg = $report->suspended_until
-                    ? 'Reporter has been suspended for 90 days.'
-                    : 'Report marked as false.';
-            }
+            $this->showReasonModal = false;
+        $this->statusChangeReason = '';
 
-            session()->flash('success_message', $msg);
+        // Determine the success message
+        $msg = 'Status updated successfully. Reporter notified.';
 
-            // Refresh selected report if its modal is open
-            if ($this->selectedReport && $this->selectedReport->id === $report->id) {
-                $this->selectedReport = Report::with(['abuseType', 'subtype', 'user'])->find($report->id);
+        if ($this->newStatus === 'false-report') {
+            if ($report->suspended_until) {
+                // If the year is 2037 or later, it's a permanent block
+                $isPermanent = $report->suspended_until->year >= 2037;
+                
+                $msg = $isPermanent 
+                    ? 'Reporter is permanently blocked (linked identifiers found).' 
+                    : 'Reporter has been suspended for 90 days.';
+            } else {
+                $msg = 'Report marked as false.';
             }
         }
 
-        $this->showReasonModal    = false;
-        $this->statusChangeReason = '';
+        session()->flash('success_message', $msg);
+
+        // Refresh selected report if its detail view is open
+        if ($this->selectedReport && $this->selectedReport->id === $report->id) {
+            $this->selectedReport = Report::with(['abuseType', 'subtype', 'user'])->find($report->id);
+        }
+    } // End of finalizeStatusUpdate
     }
+
 
     // Show report detail modal
     public function showReport($reportId)

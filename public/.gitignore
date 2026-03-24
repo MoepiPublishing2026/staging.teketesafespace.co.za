@@ -1,0 +1,46 @@
+# Laravel standard ignores
+/storage/app/private/livewire-tmp/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/testing/
+/storage/framework/views/
+/storage/logs/
+/database/database.sqlite
+
+# IDE and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Node and build
+/node_modules
+/public/build
+/public/hot
+/public/storage
+
+# Composer and PHP
+/vendor
+.phpunit.result.cache
+.phpactor.json
+/.phpunit.cache
+
+# Env files
+.env
+.env.backup
+.env.production
+
+# IDE configs
+/.idea
+/.vscode
+/.fleet
+/.nova
+/.zed
+/auth.json
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# Custom
+/storage/*.key
+/storage/pail
