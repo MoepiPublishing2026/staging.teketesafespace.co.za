@@ -42,6 +42,7 @@ class Report extends Model
 
 protected $casts = [
     'suspended_until' => 'datetime',
+    'updated_at' => 'datetime',
 ];
     /**
      * Get the abuse type associated with the report.
