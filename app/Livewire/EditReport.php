@@ -220,7 +220,9 @@ class EditReport extends Component
         return [
             'fullName.regex' => 'The full name may only contain letters and spaces.',
             'schoolName.regex' => 'The school name may only contain letters and spaces.',
-            'otherSubtypeText.required_if' => 'Please describe the "Other" subtype.',
+            'otherSubtypeText.required' => 'Please specify the "Other" subtype.',
+            'description.required' => 'Additional details are required when "Other" is selected.',
+            'description.max' => 'Additional details may not be greater than 500 characters.',
         ];
     }
 
@@ -240,6 +242,7 @@ class EditReport extends Component
             'abuseTypeID' => 'required|numeric|exists:abuse_types,id',
             'subtypeID' => 'required|numeric|exists:subtypes,id',
             'otherSubtypeText' => $isOther ? 'required|string|max:255' : 'nullable',
+            'description' => $isOther ? 'required|string|max:500' : 'nullable|string|max:500',
             'location' => 'required|string|max:100|min:5',
             'grade' => 'required|string|max:255',
             'email' => 'nullable|email:rfc,dns|max:255',
@@ -274,7 +277,9 @@ class EditReport extends Component
         $this->report->image_path = json_encode(array_merge($this->existingAttachments, $newPaths));
         
         if ($isOther && $this->otherSubtypeText) {
-            $this->report->description = '[Other: ' . $this->otherSubtypeText . '] ' . ($this->description ?? '');
+            $otherSubtypeText = trim((string) $this->otherSubtypeText);
+            $details = trim((string) ($this->description ?? ''));
+            $this->report->description = '[Other: ' . $otherSubtypeText . '] ' . $details;
         } else {
             $this->report->description = $this->description;
         }

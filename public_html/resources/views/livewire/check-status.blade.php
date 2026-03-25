@@ -187,6 +187,9 @@
                             {{ \Carbon\Carbon::parse($reportData['created_at'])->format('Y/m/d') }}</p>
                         <p class="text-gray-700"><strong>Abuse Type:</strong> {{ $reportData['abuse_type'] ?? '' }}</p>
                         <p class="text-gray-700"><strong>Subtype:</strong> {{ $reportData['subtype'] ?? '' }}</p>
+                        @if (!empty($reportData['other_subtype_text']))
+                            <p class="text-gray-700"><strong>Please specify:</strong> {{ $reportData['other_subtype_text'] }}</p>
+                        @endif
                         <p class="text-gray-700"><strong>Email:</strong> {{ $reportData['reporter_email'] ?? '' }}</p>
                         <p class="text-gray-700"><strong>Phone Number:</strong> {{ $reportData['phone_number'] ?? '' }}</p>
                         <p class="text-gray-700"><strong>Address:</strong> {{ $reportData['location'] ?? '' }}</p>
@@ -204,7 +207,7 @@
                         @endif
 
                         <p class="text-gray-700 pt-2"><strong>Description:</strong>
-                            {{ $reportData['description'] }}</p>
+                            {{ !empty($reportData['description']) ? $reportData['description'] : 'N/A' }}</p>
 
                         <!-- Attachments -->
                         @php

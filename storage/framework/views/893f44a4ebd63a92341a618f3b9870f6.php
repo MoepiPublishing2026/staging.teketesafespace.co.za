@@ -5,15 +5,15 @@
     <!-- ================= HEADER ================= -->
     <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
         <div class="flex justify-between items-center px-4 sm:px-8 py-2 max-w-7xl mx-auto">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[110px] h-auto">
+            <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo" class="w-[110px] h-auto">
 
             <div class="flex items-center gap-4">
                 <!-- Desktop Nav -->
                 <div class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
                     <a href="javascript:void(0);" onclick="window.history.back();" class="hover:text-[#c7da30] transition-colors">Back</a>
-                    <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
-                    <a href="{{ route('about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
-                    <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
+                    <a href="<?php echo e(route('landing-page')); ?>" class="hover:text-[#c7da30] transition-colors">Home</a>
+                    <a href="<?php echo e(route('about-us')); ?>" class="hover:text-[#c7da30] transition-colors">About Us</a>
+                    <a href="<?php echo e(route('contact-us')); ?>" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
                 </div>
 
                 <!-- Mobile Button -->
@@ -36,7 +36,7 @@
 
         <div class="absolute top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300">
             <div class="flex justify-between items-center p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" class="h-8">
+                <img src="<?php echo e(asset('images/logo.png')); ?>" class="h-8">
                 <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -48,11 +48,11 @@
             <nav class="mt-6 px-4 space-y-4 text-[17px] font-[Montserrat]">
                 <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
                     class="block text-black hover:text-[#c7da30] transition-colors">Back</a>
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
+                <a href="<?php echo e(route('landing-page')); ?>" onclick="toggleMobileMenu()"
                     class="block text-black hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('landing-page') }}#about" onclick="toggleMobileMenu()"
+                <a href="<?php echo e(route('landing-page')); ?>#about" onclick="toggleMobileMenu()"
                     class="block text-black hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="{{ route('landing-page') }}#section" onclick="toggleMobileMenu()"
+                <a href="<?php echo e(route('landing-page')); ?>#section" onclick="toggleMobileMenu()"
                     class="block text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
             </nav>
         </div>
@@ -119,18 +119,25 @@
                             style="font-family: 'Montserrat', sans-serif; font-size: 14px;"
                             required>
 
-                        @error('caseNumber')
+                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['caseNumber'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                         <div x-data="{ open: true }" x-show="open"
                             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
                             <div class="w-[90vw] sm:w-[90%] md:w-[95%] max-w-[635px] h-[250px] sm:h-[300px] md:h-[342px] border-2 border-[#c6d933] rounded-[10px] bg-white flex flex-col items-center justify-center p-4 text-center shadow-lg relative font-[Montserrat]">
-                                <p class="text-sm sm:text-[18px] md:text-[19px] text-black mb-4">{{ $message }}</p>
+                                <p class="text-sm sm:text-[18px] md:text-[19px] text-black mb-4"><?php echo e($message); ?></p>
                                 <button @click="open = false"
                                     class="w-[160px] sm:w-[190px] h-[48px] sm:h-[56px] md:h-[64px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] text-sm sm:text-[15px] font-normal transition duration-200 hover:opacity-80 shadow-md flex items-center justify-center">
                                     Close
                                 </button>
                             </div>
                         </div>
-                        @enderror
+                        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
 
                     <button type="submit"
@@ -144,125 +151,129 @@
 
                 <div class="border-4 border-[#c7da30] rounded-xl p-4 sm:p-6 min-h-[200px] relative font-[Montserrat]">
 
-                    @if (!empty($message))
+                    <!--[if BLOCK]><![endif]--><?php if(!empty($message)): ?>
                         <div class="text-red-500 font-medium text-center mb-4">
-                            {{ $message }}
-                        </div>
-                    @endif
+                            <?php echo e($message); ?>
 
-                    @if (!empty($reportData))
+                        </div>
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
+                    <!--[if BLOCK]><![endif]--><?php if(!empty($reportData)): ?>
                     <!-- Case Information -->
                     <div class="text-left space-y-3 text-sm sm:text-base break-words">
 
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                             <p class="text-gray-700 font-medium"><strong>Case Number:</strong>
-                                {{ $reportData['case_number'] }}</p>
+                                <?php echo e($reportData['case_number']); ?></p>
                             <div class="flex items-center gap-2">
                                 <span class="font-semibold text-black text-[14px]">Status:</span>
                                 <span class="px-4 py-2 rounded-full text-sm font-bold text-black
-                                    @switch($reportData['status'])
-                                        @case('awaiting-resolution') bg-red-500 @break
-                                        @case('forwarded') bg-yellow-500 @break
-                                        @case('under-review') bg-blue-500 @break
-                                        @case('closed') bg-green-500 @break
-                                        @case('unresolved') bg-orange-500 @break
-                                        @case('false-report') bg-gray-400 @break
-                                        @default bg-gray-200
-                                    @endswitch">
-                                    {{ ucfirst(str_replace('-', ' ', $reportData['status'])) }}
+                                    <?php switch($reportData['status']):
+                                        case ('awaiting-resolution'): ?> bg-red-500 <?php break; ?>
+                                        <?php case ('forwarded'): ?> bg-yellow-500 <?php break; ?>
+                                        <?php case ('under-review'): ?> bg-blue-500 <?php break; ?>
+                                        <?php case ('closed'): ?> bg-green-500 <?php break; ?>
+                                        <?php case ('unresolved'): ?> bg-orange-500 <?php break; ?>
+                                        <?php case ('false-report'): ?> bg-gray-400 <?php break; ?>
+                                        <?php default: ?> bg-gray-200
+                                    <?php endswitch; ?>">
+                                    <?php echo e(ucfirst(str_replace('-', ' ', $reportData['status']))); ?>
+
                                 </span>
                             </div>
                         </div>
 
-                        @if ($reportData['is_anonymous'])
+                        <!--[if BLOCK]><![endif]--><?php if($reportData['is_anonymous']): ?>
                             <p class="text-gray-700"><strong>Report Type:</strong> Anonymous</p>
-                        @else
+                        <?php else: ?>
                             <p class="text-gray-700"><strong>Report Type:</strong> With Details</p>
-                            @if (!empty($reportData['full_name']))
-                                <p class="text-gray-700"><strong>Full Name:</strong> {{ $reportData['full_name'] }}</p>
-                            @endif
-                        @endif
+                            <!--[if BLOCK]><![endif]--><?php if(!empty($reportData['full_name'])): ?>
+                                <p class="text-gray-700"><strong>Full Name:</strong> <?php echo e($reportData['full_name']); ?></p>
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                         <p class="text-gray-700"><strong>Submitted on:</strong>
-                            {{ \Carbon\Carbon::parse($reportData['created_at'])->format('Y/m/d') }}</p>
-                        <p class="text-gray-700"><strong>Abuse Type:</strong> {{ $reportData['abuse_type'] ?? '' }}</p>
-                        <p class="text-gray-700"><strong>Subtype:</strong> {{ $reportData['subtype'] ?? '' }}</p>
-                        @if (!empty($reportData['other_subtype_text']))
-                            <p class="text-gray-700"><strong>Please specify:</strong> {{ $reportData['other_subtype_text'] }}</p>
-                        @endif
-                        <p class="text-gray-700"><strong>Email:</strong> {{ $reportData['reporter_email'] ?? '' }}</p>
-                        <p class="text-gray-700"><strong>Phone Number:</strong> {{ $reportData['phone_number'] ?? '' }}</p>
-                        <p class="text-gray-700"><strong>Address:</strong> {{ $reportData['location'] ?? '' }}</p>
-                        <p class="text-gray-700"><strong>Grade:</strong> {{ $reportData['grade'] ?? '' }}</p>
-                        <p class="text-gray-700"><strong>School Name:</strong> {{ $reportData['school_name'] ?? '' }}</p>
-                        <p class="text-gray-700"><strong>Age:</strong> {{ $reportData['age'] ?? '' }}</p>
+                            <?php echo e(\Carbon\Carbon::parse($reportData['created_at'])->format('Y/m/d')); ?></p>
+                        <p class="text-gray-700"><strong>Abuse Type:</strong> <?php echo e($reportData['abuse_type'] ?? ''); ?></p>
+                        <p class="text-gray-700"><strong>Subtype:</strong> <?php echo e($reportData['subtype'] ?? ''); ?></p>
+                        <!--[if BLOCK]><![endif]--><?php if(!empty($reportData['other_subtype_text'])): ?>
+                            <p class="text-gray-700"><strong>Please specify:</strong> <?php echo e($reportData['other_subtype_text']); ?></p>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                        <p class="text-gray-700"><strong>Email:</strong> <?php echo e($reportData['reporter_email'] ?? ''); ?></p>
+                        <p class="text-gray-700"><strong>Phone Number:</strong> <?php echo e($reportData['phone_number'] ?? ''); ?></p>
+                        <p class="text-gray-700"><strong>Address:</strong> <?php echo e($reportData['location'] ?? ''); ?></p>
+                        <p class="text-gray-700"><strong>Grade:</strong> <?php echo e($reportData['grade'] ?? ''); ?></p>
+                        <p class="text-gray-700"><strong>School Name:</strong> <?php echo e($reportData['school_name'] ?? ''); ?></p>
+                        <p class="text-gray-700"><strong>Age:</strong> <?php echo e($reportData['age'] ?? ''); ?></p>
 
-                        @if ($reportData['latest_status_reason'])
+                        <!--[if BLOCK]><![endif]--><?php if($reportData['latest_status_reason']): ?>
                             <div class="bg-[#f0f9e3] border-l-4 border-[#c7da30] p-4 rounded-md">
                                 <p class="font-bold text-[#c7da30] mb-1">Latest Update Reason:</p>
                                 <p class="text-[#c7da30] font-semibold italic">
-                                    {{ $reportData['latest_status_reason'] }}
+                                    <?php echo e($reportData['latest_status_reason']); ?>
+
                                 </p>
                             </div>
-                        @endif
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                         <p class="text-gray-700 pt-2"><strong>Description:</strong>
-                            {{ !empty($reportData['description']) ? $reportData['description'] : 'N/A' }}</p>
+                            <?php echo e(!empty($reportData['description']) ? $reportData['description'] : 'N/A'); ?></p>
 
                         <!-- Attachments -->
-                        @php
+                        <?php
                         $attachments = $reportData['image_path']
                         ? json_decode($reportData['image_path'], true)
                         : [];
-                        @endphp
+                        ?>
 
                      <!-- Replace the attachments section with this fixed version -->
-@if (!empty($attachments))
+<!--[if BLOCK]><![endif]--><?php if(!empty($attachments)): ?>
 <div class="mt-6">
     <p class="font-semibold text-black mb-2 font-[Montserrat]">Attachments:</p>
     <div class="flex flex-wrap gap-4 mt-2 overflow-hidden">
-        @foreach ($attachments as $filePath)
-        @php
+        <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $attachments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $filePath): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php
         $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
         $publicUrl = Storage::url($filePath);
         $isImage = in_array($ext,['jpg','jpeg','png','gif','bmp','webp','svg']);
         $isVideo = in_array($ext,['mp4','mov','avi','wmv']);
-        @endphp
+        ?>
 
-        @if ($isImage)
+        <!--[if BLOCK]><![endif]--><?php if($isImage): ?>
         <div class="flex-shrink-0">
-            <img src="{{ $publicUrl }}"
+            <img src="<?php echo e($publicUrl); ?>"
                 class="w-32 h-auto border rounded shadow cursor-pointer hover:opacity-80 transition max-w-full"
-                onclick="window.open('{{ $publicUrl }}','_blank')">
+                onclick="window.open('<?php echo e($publicUrl); ?>','_blank')">
         </div>
-        @elseif ($isVideo)
+        <?php elseif($isVideo): ?>
         <div class="flex-shrink-0">
             <video controls
                 class="w-48 h-auto border rounded shadow cursor-pointer hover:opacity-80 transition max-w-full">
-                <source src="{{ $publicUrl }}" type="video/{{ $ext }}">
+                <source src="<?php echo e($publicUrl); ?>" type="video/<?php echo e($ext); ?>">
                 Your browser does not support the video tag.
             </video>
         </div>
-        @else
+        <?php else: ?>
         <div class="w-full sm:w-auto flex-shrink-0 break-words">
-            <a href="{{ $publicUrl }}" target="_blank"
+            <a href="<?php echo e($publicUrl); ?>" target="_blank"
                 class="text-blue-600 underline inline-block hover:text-blue-800 transition break-all max-w-full block p-2 border rounded bg-gray-50">
-                View {{ basename($filePath) }}
+                View <?php echo e(basename($filePath)); ?>
+
             </a>
         </div>
-        @endif
-        @endforeach
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
     </div>
 </div>
-@else
+<?php else: ?>
 <p class="mt-6 text-gray-700">
     <strong>Attachment:</strong> N/A
 </p>
-@endif
+<?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
 
                         <!-- False Report Appeal Section -->
-                        @if ($reportData['status'] === 'false-report')
+                        <!--[if BLOCK]><![endif]--><?php if($reportData['status'] === 'false-report'): ?>
                         <div class="mt-6 pt-4 border-t-2 border-purple-300 bg-purple-50 rounded-lg p-5">
                             <div class="flex items-center justify-center mb-3">
                                 <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor"
@@ -279,12 +290,12 @@
                                     <div class="mt-8 pt-6 border-t-2 border-[#c7da30]/30">
     <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
         
-        <a href="{{ route('edit-report', ['caseNumber' => $reportData['case_number']]) }}"
+        <a href="<?php echo e(route('edit-report', ['caseNumber' => $reportData['case_number']])); ?>"
            class="w-full sm:w-auto px-8 py-3 text-center border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] font-bold transition hover:scale-105 hover:opacity-90 bg-white shadow-sm font-[Montserrat]">
             EDIT REPORT
         </a>
 
-        <a href="{{ route('report.clarify', ['caseNumber' => $reportData['case_number']]) }}"
+        <a href="<?php echo e(route('report.clarify', ['caseNumber' => $reportData['case_number']])); ?>"
    class="w-full sm:w-auto px-8 py-3 text-center border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] font-bold transition hover:scale-105 hover:opacity-90 bg-white shadow-sm font-[Montserrat]">
     ADD CLARIFICATION
 </a>
@@ -297,14 +308,14 @@
 
                                     </div>
                                 </div>
-                            @endif
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                         <!-- Forwarded Status Actions -->
-                        @if ($reportData['status'] === 'forwarded')
-                            @if (
+                        <!--[if BLOCK]><![endif]--><?php if($reportData['status'] === 'forwarded'): ?>
+                            <!--[if BLOCK]><![endif]--><?php if(
                                 $reportData['latest_status_reason'] !== 'Reporter chose to keep the case Forwarded.' &&
                                 $reportData['latest_status_reason'] !==
-                                    'Reporter chose not to keep the case forwarded, changing the status to Unresolved.')
+                                    'Reporter chose not to keep the case forwarded, changing the status to Unresolved.'): ?>
                                 <div class="mt-6 pt-4 border-t border-gray-200">
                                     <p class="font-semibold text-red-600 mb-2 font-[Montserrat]">
                                         Do you want your case to be forwarded?
@@ -320,21 +331,21 @@
                                         </button>
                                     </div>
                                 </div>
-                            @endif
-                        @endif
+                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                         <!-- Edit Report -->
-                        @if ($reportData['status'] !== 'false-report')
+                        <!--[if BLOCK]><![endif]--><?php if($reportData['status'] !== 'false-report'): ?>
                         <div class="mt-6 border-t pt-4">
-                            <a href="{{ route('edit-report',['caseNumber'=>$reportData['case_number']]) }}"
+                            <a href="<?php echo e(route('edit-report',['caseNumber'=>$reportData['case_number']])); ?>"
                                 class="inline-block w-full sm:w-auto px-6 py-2 border-4 border-[#c7da30] rounded-full text-[#38b6ff] hover:opacity-90 transition font-[Montserrat] text-center block sm:inline-block">
                                 Edit Report
                             </a>
                         </div>
-                        @endif
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                     </div>
-                    @endif
+                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                 </div>
             </div>
@@ -344,26 +355,26 @@
     <!-- ================= FOOTER ================= -->
     <footer class="bg-[#808080] text-white py-6 sm:py-8 mt-8 sm:mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm sm:text-base font-[Montserrat]">
-            <p>&copy; {{ date('Y') }} Tekete Safe Space from Moepi Publishing. All rights reserved.</p>
+            <p>&copy; <?php echo e(date('Y')); ?> Tekete Safe Space from Moepi Publishing. All rights reserved.</p>
 
             <div class="flex items-center gap-3 sm:gap-4 flex-wrap justify-center md:justify-end">
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/youtube.png') }}" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="YouTube">
+                    <img src="<?php echo e(asset('images/youtube.png')); ?>" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="YouTube">
                 </a>
                 <a href="https://x.com/moepipublishing" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/X.png') }}" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="X">
+                    <img src="<?php echo e(asset('images/X.png')); ?>" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="X">
                 </a>
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/linkedIn.png') }}" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="LinkedIn">
+                    <img src="<?php echo e(asset('images/linkedIn.png')); ?>" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="LinkedIn">
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/facebook.png') }}" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Facebook">
+                    <img src="<?php echo e(asset('images/facebook.png')); ?>" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Facebook">
                 </a>
                 <a href="https://www.instagram.com/moepipublishing" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/instagram.png') }}" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Instagram">
+                    <img src="<?php echo e(asset('images/instagram.png')); ?>" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Instagram">
                 </a>
                 <a href="https://www.tiktok.com/@moepipublishing" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/tiktok.png') }}" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="TikTok">
+                    <img src="<?php echo e(asset('images/tiktok.png')); ?>" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="TikTok">
                 </a>
             </div>
         </div>
@@ -389,3 +400,4 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btn) btn.addEventListener('click', toggleMobileMenu);
 });
 </script>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/livewire/check-status.blade.php ENDPATH**/ ?>
