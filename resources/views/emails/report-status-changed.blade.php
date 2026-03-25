@@ -227,6 +227,25 @@
             {{-- ENHANCED APPEAL BOX FOR FALSE REPORTS --}}
            {{-- WARNING & CLARIFICATION BOX FOR REPORTERS --}}
            @if($report->status === 'false-report')
+           {{-- THIS BOX ONLY SHOWS IF SUSPENDED (Strike 2) --}}
+    {{-- THIS BOX ONLY SHOWS IF SUSPENDED (Strike 2) --}}
+@if($report->suspended_until)
+    <div style="background-color: #7f1d1d; color: #ffffff; padding: 25px; border-radius: 12px; margin-bottom: 25px; text-align: center; border: 4px solid #dc2626; font-family: sans-serif; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        
+        <h2 style="margin: 0 0 10px 0; font-size: 22px; color: #ffffff; text-transform: uppercase; letter-spacing: 1px;">
+            🚫 Reporting Privileges Suspended
+        </h2>
+        
+        <p style="font-size: 16px; margin-bottom: 15px; line-height: 1.5; opacity: 0.95;">
+            Our system has detected multiple false reports linked to your identity. Your access to the Safe Space portal has been restricted until <strong>{{ $report->suspended_until->format('F d, Y') }}</strong>.
+        </p>
+        
+        
+        <p style="font-size: 13px; font-style: italic; opacity: 0.85; margin-top: 10px;">
+            *Note: Your access will remain restricted until an administrator reviews your updated submission.
+        </p>
+    </div>
+@endif
     <div class="alert-box" style="background-color: #fef2f2; border-left: 4px solid #dc2626; color: #991b1b; padding: 20px; margin-bottom: 25px; border-radius: 8px;">
         <h3 style="margin-top: 0; color: #b91c1c; font-size: 18px;">⚠️ CRITICAL SYSTEM WARNING</h3>
         <p style="font-size: 14px; margin-bottom: 10px; line-height: 1.5;">
