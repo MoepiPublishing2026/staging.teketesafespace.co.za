@@ -173,18 +173,27 @@ tbody tr:last-child td { border-bottom: none; }
                            value="<?php echo e(request('full_name')); ?>"
                            placeholder="e.g. John Smith" />
                 </div>
+                <div>
+                    <label class="filter-label">Anonymous</label>
+                    <select name="is_anonymous" class="filter-input">
+                        <option value="">All</option>
+                        <option value="1" <?php echo e(request('is_anonymous') === '1' ? 'selected' : ''); ?>>Anonymous</option>
+                        <option value="0" <?php echo e(request('is_anonymous') === '0' ? 'selected' : ''); ?>>Identified</option>
+                    </select>
+                </div>
 
                 <div>
                     <label class="filter-label">Province</label>
-                    <select name="province_id" class="filter-input">
-                        <option value="">All Provinces</option>
-                        <?php $__currentLoopData = $provinceOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option value="<?php echo e($province->id); ?>" <?php echo e(request('province_id') == $province->id ? 'selected' : ''); ?>>
-                                <?php echo e($province->province_name); ?>
+                 <select name="province_id" class="filter-input">
+                    <option value="">All Provinces</option>
+                    <?php $__currentLoopData = $provinceOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($province->province_id); ?>"
+                            <?php echo e(request('province_id') == $province->province_id ? 'selected' : ''); ?>>
+                            <?php echo e($province->province_name); ?>
 
-                            </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
                 </div>
 
                 <div>
@@ -277,18 +286,29 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
 
             
-            <?php
+           <?php
                 $activeFilters = array_filter([
-                    'Search'   => request('search'),
-                    'Name'     => request('full_name'),
-                    'Province' => request('province_id') ? ($provinceOptions->firstWhere('id', request('province_id'))?->province_name ?? request('province_id')) : null,
-                    'School'   => request('school_id')   ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name     ?? request('school_id'))   : request('school_name'),
-                    'Grade'    => request('grade'),
-                    'From'     => request('date_from'),
-                    'To'       => request('date_to'),
-                    'Type'     => request('type_id')    ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name          ?? request('type_id'))    : null,
-                    'Subtype'  => request('subtype_id') ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id')) : null,
-                    'Status'   => request('status'),
+                    'Search'    => request('search'),
+                    'Name'      => request('full_name'),
+                    'Province'  => request('province_id')
+                        ? ($provinceOptions->firstWhere('province_id', request('province_id'))?->province_name ?? request('province_id'))
+                        : null,
+                    'School'    => request('school_id')
+                        ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? request('school_id'))
+                        : request('school_name'),
+                    'Grade'     => request('grade'),
+                    'From'      => request('date_from'),
+                    'To'        => request('date_to'),
+                    'Type'      => request('type_id')
+                        ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name ?? request('type_id'))
+                        : null,
+                    'Subtype'   => request('subtype_id')
+                        ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id'))
+                        : null,
+                    'Status'    => request('status'),
+                    'Anonymous' => request('is_anonymous') !== null && request('is_anonymous') !== ''
+                        ? (request('is_anonymous') === '1' ? 'Yes' : 'No')
+                        : null,
                 ]);
             ?>
             <?php if(count($activeFilters)): ?>
