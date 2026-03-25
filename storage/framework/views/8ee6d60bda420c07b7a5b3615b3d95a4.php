@@ -141,6 +141,11 @@
             </h1>
 
             <div class="bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-12 sm:py-20 rounded-[20px] text-center">
+                <!--[if BLOCK]><![endif]--><?php if(config('app.debug') && $debugOtp): ?>
+                    <div class="mb-6 text-sm text-gray-700">
+                        OTP: <span class="font-semibold"><?php echo e($debugOtp); ?></span>
+                    </div>
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                 <form class="flex flex-col items-center gap-8 sm:gap-10">
                     <input type="hidden" wire:model.live="otp" id="otp">
                     <div class="flex justify-center gap-1 sm:gap-2 w-full otp-container px-2 sm:px-0">

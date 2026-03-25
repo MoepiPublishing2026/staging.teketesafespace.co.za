@@ -173,17 +173,26 @@ tbody tr:last-child td { border-bottom: none; }
                            value="{{ request('full_name') }}"
                            placeholder="e.g. John Smith" />
                 </div>
+                <div>
+                    <label class="filter-label">Anonymous</label>
+                    <select name="is_anonymous" class="filter-input">
+                        <option value="">All</option>
+                        <option value="1" {{ request('is_anonymous') === '1' ? 'selected' : '' }}>Anonymous</option>
+                        <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Identified</option>
+                    </select>
+                </div>
 
                 <div>
                     <label class="filter-label">Province</label>
-                    <select name="province_id" class="filter-input">
-                        <option value="">All Provinces</option>
-                        @foreach($provinceOptions as $province)
-                            <option value="{{ $province->id }}" {{ request('province_id') == $province->id ? 'selected' : '' }}>
-                                {{ $province->province_name }}
-                            </option>
-                        @endforeach
-                    </select>
+                 <select name="province_id" class="filter-input">
+                    <option value="">All Provinces</option>
+                    @foreach($provinceOptions as $province)
+                        <option value="{{ $province->province_id }}"
+                            {{ request('province_id') == $province->province_id ? 'selected' : '' }}>
+                            {{ $province->province_name }}
+                        </option>
+                    @endforeach
+                </select>
                 </div>
 
                 <div>
@@ -273,18 +282,29 @@ tbody tr:last-child td { border-bottom: none; }
             </div>{{-- end .filter-grid --}}
 
             {{-- Active filter badges --}}
-            @php
+           @php
                 $activeFilters = array_filter([
-                    'Search'   => request('search'),
-                    'Name'     => request('full_name'),
-                    'Province' => request('province_id') ? ($provinceOptions->firstWhere('id', request('province_id'))?->province_name ?? request('province_id')) : null,
-                    'School'   => request('school_id')   ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name     ?? request('school_id'))   : request('school_name'),
-                    'Grade'    => request('grade'),
-                    'From'     => request('date_from'),
-                    'To'       => request('date_to'),
-                    'Type'     => request('type_id')    ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name          ?? request('type_id'))    : null,
-                    'Subtype'  => request('subtype_id') ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id')) : null,
-                    'Status'   => request('status'),
+                    'Search'    => request('search'),
+                    'Name'      => request('full_name'),
+                    'Province'  => request('province_id')
+                        ? ($provinceOptions->firstWhere('province_id', request('province_id'))?->province_name ?? request('province_id'))
+                        : null,
+                    'School'    => request('school_id')
+                        ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? request('school_id'))
+                        : request('school_name'),
+                    'Grade'     => request('grade'),
+                    'From'      => request('date_from'),
+                    'To'        => request('date_to'),
+                    'Type'      => request('type_id')
+                        ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name ?? request('type_id'))
+                        : null,
+                    'Subtype'   => request('subtype_id')
+                        ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id'))
+                        : null,
+                    'Status'    => request('status'),
+                    'Anonymous' => request('is_anonymous') !== null && request('is_anonymous') !== ''
+                        ? (request('is_anonymous') === '1' ? 'Yes' : 'No')
+                        : null,
                 ]);
             @endphp
             @if(count($activeFilters))

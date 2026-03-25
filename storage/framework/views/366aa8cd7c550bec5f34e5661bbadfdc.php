@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Reports - Provincial Admin - {{ $province->province_name ?? '' }}</title>
+    <title>Reports - Provincial Admin - <?php echo e($province->province_name ?? ''); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -338,15 +338,15 @@ tbody tr:last-child td { border-bottom: none; }
 
 <aside class="sidebar" id="sidebarPanel">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo">
     </div>
     <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}"   class="sidebar-link {{ request()->is('provincial-admin/reports')   ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial-admin/settings') }}"  class="sidebar-link {{ request()->is('provincial-admin/settings')  ? 'active' : '' }}">My Profile</a>
+        <a href="<?php echo e(url('/provincial-admin/dashboard')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/dashboard') ? 'active' : ''); ?>">Dashboard</a>
+        <a href="<?php echo e(url('/provincial-admin/reports')); ?>"   class="sidebar-link <?php echo e(request()->is('provincial-admin/reports')   ? 'active' : ''); ?>">Reports</a>
+        <a href="<?php echo e(url('/provincial-admin/settings')); ?>"  class="sidebar-link <?php echo e(request()->is('provincial-admin/settings')  ? 'active' : ''); ?>">My Profile</a>
         <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
+        <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
+        <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display:none;"><?php echo csrf_field(); ?></form>
     </ul>
 </aside>
 
@@ -359,58 +359,58 @@ tbody tr:last-child td { border-bottom: none; }
     <main id="main-content">
         <h1>Reports</h1>
 
-        {{-- ════════════════════════════════════════════════════════════ --}}
-        {{--  SEARCH BAR + FILTER PANEL                                  --}}
-        {{-- ════════════════════════════════════════════════════════════ --}}
-        <form id="filterForm" method="GET" action="{{ url('/provincial-admin/reports') }}">
+        
+        
+        
+        <form id="filterForm" method="GET" action="<?php echo e(url('/provincial-admin/reports')); ?>">
         <div class="filter-panel">
 
-            {{-- Search Bar --}}
+            
             <div class="search-wrap">
                 <span class="search-icon"><i class="fas fa-search"></i></span>
                 <input
                     type="text"
                     name="search"
-                    value="{{ request('search') }}"
+                    value="<?php echo e(request('search')); ?>"
                     placeholder="Search by name, email, case number, description…"
                     autocomplete="off"
                 />
             </div>
 
-            {{-- Filter Grid --}}
+            
             <div class="filter-grid">
 
                 <!--<div>-->
                 <!--    <label class="filter-label">School Name</label>-->
                 <!--    <input type="text" name="school_name" class="filter-input"-->
-                <!--           value="{{ request('school_name') }}"-->
+                <!--           value="<?php echo e(request('school_name')); ?>"-->
                 <!--           placeholder="Search school…" />-->
                 <!--</div>-->
                  <div>
                     <label class="filter-label">Anonymous</label>
                     <select name="is_anonymous" class="filter-input">
                         <option value="">All</option>
-                        <option value="1" {{ request('is_anonymous') === '1' ? 'selected' : '' }}>Anonymous</option>
-                        <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Not Anonymous</option>
+                        <option value="1" <?php echo e(request('is_anonymous') === '1' ? 'selected' : ''); ?>>Anonymous</option>
+                        <option value="0" <?php echo e(request('is_anonymous') === '0' ? 'selected' : ''); ?>>Not Anonymous</option>
                     </select>
                 </div>
                <div style="position:relative;" id="schoolDropdownWrap">
                     <label class="filter-label">School</label>
-                    {{-- Hidden real input submitted with the form --}}
-                    <input type="hidden" name="school_id" id="schoolIdInput" value="{{ request('school_id') }}">
-                    <input type="hidden" name="school_name" id="schoolNameInput" value="{{ request('school_name') }}">
-                    {{-- Visible search box --}}
+                    
+                    <input type="hidden" name="school_id" id="schoolIdInput" value="<?php echo e(request('school_id')); ?>">
+                    <input type="hidden" name="school_name" id="schoolNameInput" value="<?php echo e(request('school_name')); ?>">
+                    
                     <input
                         type="text"
                         id="schoolSearch"
                         class="filter-input"
                         autocomplete="off"
                         placeholder="Type to search school…"
-                        value="{{ request('school_id') ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? '') : request('school_name', '') }}"
+                        value="<?php echo e(request('school_id') ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? '') : request('school_name', '')); ?>"
                         onInput="filterSchools(this.value)"
                         onFocus="openSchoolList()"
                     />
-                    {{-- Dropdown list --}}
+                    
                     <div id="schoolListBox" style="
                         display:none;
                         position:absolute;
@@ -427,22 +427,23 @@ tbody tr:last-child td { border-bottom: none; }
                     ">
                         <div class="school-option" data-id="" data-name="" style="padding:8px 12px; cursor:pointer; color:#6b7280; font-style:italic;"
                              onMouseDown="selectSchool('','')">All Schools</div>
-                        @foreach($schoolOptions as $school)
+                        <?php $__currentLoopData = $schoolOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="school-option"
-                                 data-id="{{ $school->id }}"
-                                 data-name="{{ strtolower($school->school_name) }}"
+                                 data-id="<?php echo e($school->id); ?>"
+                                 data-name="<?php echo e(strtolower($school->school_name)); ?>"
                                  style="padding:8px 12px; cursor:pointer;"
-                                 onMouseDown="selectSchool('{{ $school->id }}','{{ addslashes($school->school_name) }}')">
-                                {{ $school->school_name }}
+                                 onMouseDown="selectSchool('<?php echo e($school->id); ?>','<?php echo e(addslashes($school->school_name)); ?>')">
+                                <?php echo e($school->school_name); ?>
+
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
 
                 <div>
                     <label class="filter-label">Name / Surname</label>
                     <input type="text" name="full_name" class="filter-input"
-                           value="{{ request('full_name') }}"
+                           value="<?php echo e(request('full_name')); ?>"
                            placeholder="e.g. John Smith" />
                 </div>
 
@@ -450,35 +451,37 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Grade</label>
                     <select name="grade" class="filter-input">
                         <option value="">All Grades</option>
-                        @foreach($gradeOptions as $grade)
-                            <option value="{{ $grade }}" {{ request('grade') == $grade ? 'selected' : '' }}>
-                                {{ $grade }}
+                        <?php $__currentLoopData = $gradeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($grade); ?>" <?php echo e(request('grade') == $grade ? 'selected' : ''); ?>>
+                                <?php echo e($grade); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 
                 <div>
                     <label class="filter-label">Date From</label>
                     <input type="date" name="date_from" class="filter-input"
-                           value="{{ request('date_from') }}" />
+                           value="<?php echo e(request('date_from')); ?>" />
                 </div>
 
                 <div>
                     <label class="filter-label">Date To</label>
                     <input type="date" name="date_to" class="filter-input"
-                           value="{{ request('date_to') }}" />
+                           value="<?php echo e(request('date_to')); ?>" />
                 </div>
 
                 <div>
                     <label class="filter-label">Report Type</label>
                     <select name="type_id" class="filter-input">
                         <option value="">All Types</option>
-                        @foreach($typeOptions as $type)
-                            <option value="{{ $type->id }}" {{ request('type_id') == $type->id ? 'selected' : '' }}>
-                                {{ $type->type_name }}
+                        <?php $__currentLoopData = $typeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($type->id); ?>" <?php echo e(request('type_id') == $type->id ? 'selected' : ''); ?>>
+                                <?php echo e($type->type_name); ?>
+
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 
@@ -486,13 +489,14 @@ tbody tr:last-child td { border-bottom: none; }
                 <label class="filter-label">Subtype</label>
                 <select name="subtype_id" id="subtypeSelect" class="filter-input">
                     <option value="">All Subtypes</option>
-                    @foreach($subtypeOptions as $sub)
-                        <option value="{{ $sub->id }}"
-                                data-type="{{ $sub->abuse_type_id }}"
-                                {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
-                            {{ $sub->sub_type_name }}
+                    <?php $__currentLoopData = $subtypeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($sub->id); ?>"
+                                data-type="<?php echo e($sub->abuse_type_id); ?>"
+                                <?php echo e(request('subtype_id') == $sub->id ? 'selected' : ''); ?>>
+                            <?php echo e($sub->sub_type_name); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
             </div>
 
@@ -500,16 +504,16 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Status</label>
                     <select name="status" class="filter-input">
                         <option value="">All Statuses</option>
-                        <option value="awaiting-resolution" {{ request('status') == 'awaiting-resolution' ? 'selected' : '' }}>Awaiting Resolution</option>
-                        <option value="under-review"        {{ request('status') == 'under-review'        ? 'selected' : '' }}>Under Review</option>
-                        <option value="forwarded"           {{ request('status') == 'forwarded'           ? 'selected' : '' }}>Forwarded</option>
-                        <option value="closed"              {{ request('status') == 'closed'              ? 'selected' : '' }}>Closed</option>
-                        <option value="unresolved"          {{ request('status') == 'unresolved'          ? 'selected' : '' }}>Unresolved</option>
-                        <option value="false-report"        {{ request('status') == 'false-report'        ? 'selected' : '' }}>False Report</option>
+                        <option value="awaiting-resolution" <?php echo e(request('status') == 'awaiting-resolution' ? 'selected' : ''); ?>>Awaiting Resolution</option>
+                        <option value="under-review"        <?php echo e(request('status') == 'under-review'        ? 'selected' : ''); ?>>Under Review</option>
+                        <option value="forwarded"           <?php echo e(request('status') == 'forwarded'           ? 'selected' : ''); ?>>Forwarded</option>
+                        <option value="closed"              <?php echo e(request('status') == 'closed'              ? 'selected' : ''); ?>>Closed</option>
+                        <option value="unresolved"          <?php echo e(request('status') == 'unresolved'          ? 'selected' : ''); ?>>Unresolved</option>
+                        <option value="false-report"        <?php echo e(request('status') == 'false-report'        ? 'selected' : ''); ?>>False Report</option>
                     </select>
                 </div>
 
-                {{-- Apply + Clear --}}
+                
                 <div style="display:flex; gap:6px; align-items:flex-end;">
                     <button type="submit" class="filter-btn filter-btn-apply" style="flex:1;">
                         <i class="fas fa-filter" style="margin-right:4px;"></i> Apply
@@ -519,10 +523,10 @@ tbody tr:last-child td { border-bottom: none; }
                     </button>
                 </div>
 
-            </div>{{-- end .filter-grid --}}
+            </div>
 
-            {{-- Active filter badges --}}
-            @php
+            
+            <?php
                $activeFilters = array_filter([
                     'Search'    => request('search'),
                     'School'    => request('school_id')
@@ -539,24 +543,25 @@ tbody tr:last-child td { border-bottom: none; }
                                     ? (request('is_anonymous') === '1' ? 'Yes' : 'No')
                                     : null,
                 ]);
-            @endphp
-            @if(count($activeFilters))
+            ?>
+            <?php if(count($activeFilters)): ?>
                 <div style="margin-top:12px; display:flex; flex-wrap:wrap; align-items:center;">
-                    @foreach($activeFilters as $label => $val)
+                    <?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <span class="active-filter-badge">
                             <i class="fas fa-filter" style="font-size:9px; margin-right:4px;"></i>
-                            {{ $label }}: {{ $val }}
+                            <?php echo e($label); ?>: <?php echo e($val); ?>
+
                         </span>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <span style="font-size:11px; color:#9ca3af; margin-left:4px;">
-                        — {{ $reports->total() }} result(s)
+                        — <?php echo e($reports->total()); ?> result(s)
                     </span>
                 </div>
-            @endif
+            <?php endif; ?>
 
-        </div>{{-- end .filter-panel --}}
+        </div>
         </form>
-        {{-- ══════════════════════════ END FILTER PANEL ════════════════ --}}
+        
 
         <div class="table-wrap">
         <table aria-label="List of filtered reports">
@@ -575,57 +580,57 @@ tbody tr:last-child td { border-bottom: none; }
                 </tr>
             </thead>
             <tbody>
-                @forelse ($reports as $report)
-                    <tr onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">
-                        <td>{{ $report->case_number ?? 'N/A' }}</td>
-                        <td>{{ $report->full_name ?? 'Anonymous' }}</td>
-                        <td>{{ $report->province->province_name ?? 'N/A' }}</td>
-                        <td>{{ $report->district->district_name ?? 'N/A' }}</td>
-                        <td>{{ $report->school->school_name ?? 'N/A' }}</td>
-                        <td>{{ $report->grade ?? 'N/A' }}</td>
-                        <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
-                        <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
-                        <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
-                        <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                <?php $__empty_1 = true; $__currentLoopData = $reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <tr onclick="openReportModal(<?php echo e($report->id); ?>)" style="cursor:pointer;">
+                        <td><?php echo e($report->case_number ?? 'N/A'); ?></td>
+                        <td><?php echo e($report->full_name ?? 'Anonymous'); ?></td>
+                        <td><?php echo e($report->province->province_name ?? 'N/A'); ?></td>
+                        <td><?php echo e($report->district->district_name ?? 'N/A'); ?></td>
+                        <td><?php echo e($report->school->school_name ?? 'N/A'); ?></td>
+                        <td><?php echo e($report->grade ?? 'N/A'); ?></td>
+                        <td><?php echo e($report->abuseType->type_name ?? 'N/A'); ?></td>
+                        <td><?php echo e(ucfirst(str_replace('-', ' ', $report->status))); ?></td>
+                        <td><?php echo e($report->is_anonymous ? 'Yes' : 'No'); ?></td>
+                        <td><?php echo e($report->created_at->format('Y-m-d')); ?></td>
                     </tr>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="10" style="text-align:center; padding:1rem;">
                             No reports found for this filter.
                         </td>
                     </tr>
-                @endforelse
+                <?php endif; ?>
             </tbody>
         </table>
         </div>
 
-        {{-- Pagination — preserve all active filters across pages --}}
+        
         <div class="pagination">
-            @if ($reports->onFirstPage())
+            <?php if($reports->onFirstPage()): ?>
                 <span class="page-link" aria-disabled="true">←</span>
-            @else
-                <a href="{{ $reports->previousPageUrl() }}&{{ http_build_query(request()->except('page')) }}" class="page-link" rel="prev">←</a>
-            @endif
+            <?php else: ?>
+                <a href="<?php echo e($reports->previousPageUrl()); ?>&<?php echo e(http_build_query(request()->except('page'))); ?>" class="page-link" rel="prev">←</a>
+            <?php endif; ?>
 
-            @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
-                @if ($page == $reports->currentPage())
-                    <span class="page-link" style="background:#cddc39; font-weight:bold;">{{ $page }}</span>
-                @else
-                    <a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}" class="page-link">{{ $page }}</a>
-                @endif
-            @endforeach
+            <?php $__currentLoopData = $reports->getUrlRange(1, $reports->lastPage()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page => $url): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if($page == $reports->currentPage()): ?>
+                    <span class="page-link" style="background:#cddc39; font-weight:bold;"><?php echo e($page); ?></span>
+                <?php else: ?>
+                    <a href="<?php echo e($url); ?>&<?php echo e(http_build_query(request()->except('page'))); ?>" class="page-link"><?php echo e($page); ?></a>
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-            @if ($reports->hasMorePages())
-                <a href="{{ $reports->nextPageUrl() }}&{{ http_build_query(request()->except('page')) }}" class="page-link" rel="next">→</a>
-            @else
+            <?php if($reports->hasMorePages()): ?>
+                <a href="<?php echo e($reports->nextPageUrl()); ?>&<?php echo e(http_build_query(request()->except('page'))); ?>" class="page-link" rel="next">→</a>
+            <?php else: ?>
                 <span class="page-link" aria-disabled="true">→</span>
-            @endif
+            <?php endif; ?>
         </div>
 
     </main>
-</div>{{-- end .main-panel --}}
+</div>
 
-{{-- Report Details Modal --}}
+
 <div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
         <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">&times;</button>
@@ -673,7 +678,7 @@ function filterSchools(query) {
 
 // ── Clear all filters ────────────────────────────────────────────
 function clearFilters() {
-    window.location.href = '{{ url('/provincial-admin/reports') }}';
+    window.location.href = '<?php echo e(url('/provincial-admin/reports')); ?>';
 }
 
 // ── Report detail modal ──────────────────────────────────────────
@@ -761,7 +766,7 @@ function exportPDF() {
 
 // ── Clear all filters ────────────────────────────────────────────
 function clearFilters() {
-    window.location.href = '{{ url('/provincial-admin/reports') }}';
+    window.location.href = '<?php echo e(url('/provincial-admin/reports')); ?>';
 }
 
 // ── School searchable dropdown ───────────────────────────────────
@@ -973,3 +978,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/provincial-admin-reports/index.blade.php ENDPATH**/ ?>

@@ -43,11 +43,19 @@ class PasswordlessLogin extends Component
         }
 
         // Generate OTP
-        $otp = rand(100000, 999999);
+        $otp = random_int(100000, 999999);
         session(['login_otp' => $otp]);
 
-        // Send email with OTP
-        Mail::to($user->email)->send(new LoginOtpMail($otp));
+        try {
+            Mail::to($user->email)->send(new LoginOtpMail($otp));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send OTP', [
+                'email' => $user->email,
+                'error' => $e->getMessage(),
+            ]);
+            $this->addError('email', 'Unable to send OTP. Please verify your email settings and try again.');
+            return;
+        }
 
         $this->showOtpForm = true;
     }
