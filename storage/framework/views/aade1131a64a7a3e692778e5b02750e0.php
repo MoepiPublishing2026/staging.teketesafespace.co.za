@@ -1801,16 +1801,41 @@ function renderOverviewCharts(dataset) {
             }]
         },
         options: {
-            indexAxis: "y",
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: { padding: { right: 50 } },
-            scales: {
-                x: { display: false, max: 100 },
-                y: { ticks: { color: "#333", font: { size: 13, weight: "600" } } }
-            },
-            plugins: { legend: { display: false }, datalabels: { display: false } }
+    indexAxis: "y",
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { right: 50 } },
+
+    
+    interaction: {
+        mode: 'index',
+        axis: 'y',
+        intersect: false
+    },
+
+    scales: {
+        x: { display: false, max: 100 },
+        y: { 
+            ticks: { color: "#333", font: { size: 13, weight: "600" } } 
         }
+    },
+
+    plugins: {
+        legend: { display: false },
+
+        // ADD TOOLTIP
+        tooltip: {
+            enabled: true,
+            callbacks: {
+                label: function(context) {
+                    return context.label + ": " + context.raw;
+                }
+            }
+        },
+
+        datalabels: { display: false }
+    }
+}
     });
 
     createChart('anonymousChart', {

@@ -115,6 +115,7 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
    
     min-height: 64px;
 }
@@ -762,7 +763,7 @@ canvas {
         </select>
         <select name="age_range" onchange="this.form.submit()">
             <option value="">Any Age</option>
-            <?php $__currentLoopData = ['0-10','11-15','16-20','21-25']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php $__currentLoopData = ['0-10','11-15','16-20','21-23']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <option value="<?php echo e($range); ?>" <?php echo e($ageRange == $range ? 'selected' : ''); ?>>
                     <?php echo e($range); ?>
 
@@ -1543,6 +1544,7 @@ function navigateToTopAbuseTypes() {
 
     </script>
     <?php echo $__env->make('components.school-admin-sidebar-script', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<script src="<?php echo e(asset('js/mobile-select-modal.js')); ?>"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

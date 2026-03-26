@@ -373,8 +373,8 @@ h1 {
 }
 
 .chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; }
-.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 400px; display: flex; flex-direction: column; }
-.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 400px; display: flex; flex-direction: column; }
+.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 370px; display: flex; flex-direction: column; }
+.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 370px; display: flex; flex-direction: column; }
 .chart-schools   { grid-column: 2 / 3; grid-row: 2; display: flex; flex-direction: column; }
 .chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; }
 
