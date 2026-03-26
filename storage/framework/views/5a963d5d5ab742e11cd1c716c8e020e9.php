@@ -373,8 +373,8 @@ h1 {
 }
 
 .chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; }
-.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 400px; display: flex; flex-direction: column; }
-.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 400px; display: flex; flex-direction: column; }
+.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 370px; display: flex; flex-direction: column; }
+.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 370px; display: flex; flex-direction: column; }
 .chart-schools   { grid-column: 2 / 3; grid-row: 2; display: flex; flex-direction: column; }
 .chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; }
 
@@ -1630,6 +1630,7 @@ window.agePyramidData = {
 })();
 </script>
 
+<script src="<?php echo e(asset('js/mobile-select-modal.js')); ?>"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
