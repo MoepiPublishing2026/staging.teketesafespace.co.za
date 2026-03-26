@@ -115,6 +115,7 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
    
     min-height: 64px;
 }
@@ -1538,6 +1539,7 @@ function navigateToTopAbuseTypes() {
 
     </script>
     @include('components.school-admin-sidebar-script')
+<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>

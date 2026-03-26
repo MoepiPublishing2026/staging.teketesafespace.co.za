@@ -13,8 +13,12 @@
 <body class="bg-gray-100">
 
     <main>
-        <?php echo e($slot); ?>
+        <?php if(isset($slot)): ?>
+            <?php echo e($slot); ?>
 
+        <?php else: ?>
+            <?php echo $__env->yieldContent('content'); ?>
+        <?php endif; ?>
     </main>
 
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
@@ -22,4 +26,5 @@
 
     <script src="<?php echo e(asset('js/auto-logout.js')); ?>"></script>
 </body>
-</html><?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/layouts/app.blade.php ENDPATH**/ ?>

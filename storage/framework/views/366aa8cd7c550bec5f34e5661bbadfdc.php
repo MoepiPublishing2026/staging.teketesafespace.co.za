@@ -17,7 +17,14 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { font-family: 'Montserrat', sans-serif !important; color: #545454 !important; }
-body { display: flex; }
+body {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
 
 .sidebar-link, button, select, input, label {
     font-size: 15px !important;
@@ -39,13 +46,14 @@ body { display: flex; }
     z-index: 100;
 }
 .sidebar-logo {
-    position: absolute;
-    top: 18px;
-    left: 22px;
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    width: 100px;
     height: auto;
     z-index: 1;
 }
-.sidebar-logo img { width: 140px; height: auto; }
+.sidebar-logo img { width: 115px; height: auto; display: block; }
 .sidebar-list { list-style: none; padding: 0 0 0 22px; }
 .sidebar-link {
     display: block;
@@ -87,37 +95,72 @@ button:hover, button:focus {
     border-color: #38b6ff !important;
     outline: none;
 }
-.main-panel { flex: 1; display: flex; flex-direction: column; height: 100vh; }
+.main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 
-.sidebar-toggle {
+.menu-icon {
     display: none;
     position: fixed;
-    top: 15px;
-    left: 15px;
+    top: 12px;
+    left: 12px;
     width: 44px;
     height: 44px;
-    background: white;
-    border: 2px solid #c7da30;
+    background: white !important;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
     cursor: pointer;
-    z-index: 1002;
+    z-index: 1001;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     margin: 0 !important;
     padding: 0 !important;
+    font-size: 22px;
+    color: #38b6ff !important;
 }
-.sidebar-toggle .toggle-icon { width: 24px; height: 24px; }
-.sidebar-overlay { display: none; }
-.sidebar.open { width: 220px; min-width: 220px; }
-.sidebar-overlay.active {
-    display: block;
+
+.menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
+
+.sidebar-overlay {
+    display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(0,0,0,0.3);
     z-index: 999;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
-main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; }
+.sidebar-overlay.active { display: block; opacity: 1; }
+@media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
+
+.sidebar.open { width: 240px; min-width: 240px; }
+main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
+
+.topbar {
+    width: 100%;
+    background: white;
+    border-bottom: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem 2.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    min-height: 64px;
+}
+.profile { display: flex; align-items: center; gap: 0.8rem; }
+.profile-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: #ececec; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
+}
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile .meta { text-align: right; }
+.profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
+.profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
+.profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
 h1 {
     margin: 0 0 1.5rem;
     font-weight: 900 !important;
@@ -129,16 +172,26 @@ h1 {
     text-align: center;
 }
 table {
-    width: 100%; border-collapse: collapse; font-size: 0.9rem;
-    background: var(--gray-light); color: var(--black);
-    font-family: 'Montserrat', sans-serif; table-layout: fixed;
-    border: 3px solid #c7da30; border-radius: 0.375rem; overflow: hidden;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    table-layout: fixed;
 }
 
 .table-wrap {
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    border: 3px solid #c7da30;
+    border-radius: 0.375rem;
+    background: var(--gray-light);
 }
+.table-wrap table { width: max-content; min-width: 100%; border: 0; background: transparent; }
 thead { background: #bbc93dff; color: black; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; }
 th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--lime); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 tbody tr:hover { background: rgba(199,218,48,0.15); cursor: pointer; transition: background-color 0.3s ease; }
@@ -222,7 +275,7 @@ tbody tr:last-child td { border-bottom: none; }
 ::-webkit-scrollbar-track { background: #f2f2f2; }
 
 @media (max-width: 900px) {
-    .sidebar-toggle { display: flex; }
+    .menu-icon { display: flex !important; }
     .sidebar {
         position: fixed;
         top: 0;
@@ -234,18 +287,29 @@ tbody tr:last-child td { border-bottom: none; }
         transition: width 0.3s ease, min-width 0.3s ease;
         z-index: 1000;
         box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+        padding-top: 0;
     }
     .sidebar-link { margin-bottom: 17px; padding: 11px 18px; font-size: 15px !important; }
-    .main-panel { height: auto; }
-    main { padding: 1.25rem; padding-top: 5rem; }
+    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
+    .sidebar.open .sidebar-logo { display: flex; }
+    .sidebar-logo img { width: 95px; height: auto; display: block; }
+    .main-panel { margin-left: 0 !important; transition: margin-left 0.3s ease; height: 100vh; }
+    .main-panel.shifted { margin-left: 240px; }
+    main { padding: 1.25rem; }
     .filter-grid { grid-template-columns: 1fr 1fr !important; }
-    table { min-width: 980px; }
     th, td { padding: 0.65rem 0.75rem; }
     h1 { font-size: 26px !important; }
 }
 @media (max-width: 540px) {
     .filter-grid { grid-template-columns: 1fr !important; }
-    main { padding: 1rem; padding-top: 5rem; }
+    main { padding: 1rem; }
+}
+
+@media (max-width: 600px) {
+    .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
+    .sidebar.open { width: 100%; max-width: 280px; min-width: 0; }
+    .main-panel.shifted { margin-left: 0; }
+    .sidebar-logo img { width: 85px; height: auto; }
 }
 
 /* ── Filter Panel ──────────────────────────────────────────────── */
@@ -350,12 +414,24 @@ tbody tr:last-child td { border-bottom: none; }
     </ul>
 </aside>
 
-<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu" type="button">
-    <svg class="toggle-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
+<button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <div class="main-panel">
+    <div class="topbar">
+        <div class="profile">
+            <div class="meta">
+                <span><?php echo e(auth()->user()->name ?? 'Administrator'); ?></span>
+                <span class="role">Administrator</span>
+            </div>
+            <div class="profile-avatar">
+                <?php $currentUser = auth()->user()->fresh(); ?>
+                <?php if($currentUser && $currentUser->profile_picture): ?>
+                    <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="profile-pic">
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
     <main id="main-content">
         <h1>Reports</h1>
 
@@ -888,52 +964,29 @@ document.addEventListener('DOMContentLoaded', function () {
     var toggle = document.getElementById('sidebarToggle');
     var sidebar = document.getElementById('sidebarPanel');
     var overlay = document.getElementById('sidebarOverlay');
-    var scrollEl = document.scrollingElement || document.documentElement;
+    var mainPanel = document.querySelector('.main-panel');
 
-    function isMobile() {
-        return window.innerWidth <= 900;
-    }
-
-    function openSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.add('open');
-        if (overlay) overlay.classList.add('active');
-        if (isMobile()) scrollEl.style.overflow = 'hidden';
-    }
-
-    function closeSidebar() {
-        if (!sidebar) return;
-        sidebar.classList.remove('open');
-        if (overlay) overlay.classList.remove('active');
-        scrollEl.style.overflow = '';
-    }
-
-    if (toggle && sidebar) {
-        toggle.addEventListener('click', function () {
-            if (sidebar.classList.contains('open')) {
-                closeSidebar();
-                return;
-            }
-            openSidebar();
-        });
-    }
-
-    if (overlay) {
-        overlay.addEventListener('click', function () {
-            closeSidebar();
-        });
-    }
-
-    document.addEventListener('click', function (e) {
-        if (isMobile() && sidebar && sidebar.classList.contains('open') &&
-            !sidebar.contains(e.target) && toggle && !toggle.contains(e.target)) {
-            closeSidebar();
+    function toggleSidebar() {
+        if (!sidebar || !mainPanel) return;
+        sidebar.classList.toggle('open');
+        mainPanel.classList.toggle('shifted');
+        if (overlay) {
+            overlay.classList.toggle('active', sidebar.classList.contains('open'));
+            overlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
         }
-    });
+    }
+
+    if (toggle) toggle.addEventListener('click', toggleSidebar);
+    if (overlay) overlay.addEventListener('click', toggleSidebar);
 
     window.addEventListener('resize', function () {
-        if (!isMobile()) {
-            closeSidebar();
+        if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (mainPanel) mainPanel.classList.remove('shifted');
+            if (overlay) {
+                overlay.classList.remove('active');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
         }
     });
 

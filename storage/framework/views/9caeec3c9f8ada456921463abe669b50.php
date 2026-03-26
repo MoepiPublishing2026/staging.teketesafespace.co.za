@@ -459,16 +459,16 @@ button.submit-btn {
 
 <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo">
       </div>
     <ul class="sidebar-list">
-        <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
+        <a href="<?php echo e(url('/national-admin/dashboard')); ?>" class="sidebar-link <?php echo e(request()->is('national-admin/dashboard') ? 'active' : ''); ?>">Dashboard</a>
+        <a href="<?php echo e(url('/national-admin/reports')); ?>" class="sidebar-link <?php echo e(request()->is('national-admin/reports') ? 'active' : ''); ?>">Reports</a>
+        <a href="<?php echo e(url('/national-admin/settings')); ?>" class="sidebar-link <?php echo e(request()->is('national-admin/settings') ? 'active' : ''); ?>">My Profile</a>
 
         <!-- Sign Out as a styled form -->
-        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-            @csrf
+        <form method="POST" action="<?php echo e(route('logout')); ?>" style="margin:0;">
+            <?php echo csrf_field(); ?>
             <button type="submit">
                 Sign Out
             </button>
@@ -483,14 +483,14 @@ button.submit-btn {
         <div class="topbar">
             <div class="profile">
                 <div class="meta">
-                    <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                    <span><?php echo e(auth()->user()->name ?? 'Administrator'); ?></span>
                     <span class="role">Administrator</span>
                 </div>
                 <div class="profile-avatar">
-                    @php $currentUser = auth()->user()->fresh(); @endphp
-                    @if($currentUser && $currentUser->profile_picture)
-                        <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
-                    @endif
+                    <?php $currentUser = auth()->user()->fresh(); ?>
+                    <?php if($currentUser && $currentUser->profile_picture): ?>
+                        <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="profile-pic">
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -498,43 +498,43 @@ button.submit-btn {
     <main>
         <h1>MY PROFILE</h1>
 
-        @if(session('success_message'))
-            <div class="alert-success">{{ session('success_message') }}</div>
-        @endif
+        <?php if(session('success_message')): ?>
+            <div class="alert-success"><?php echo e(session('success_message')); ?></div>
+        <?php endif; ?>
 
-        @if($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert-error">
                 <ul style="margin:0; padding-left:1.25rem;">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
-        @endif
+        <?php endif; ?>
 
         <div class="card">
-            <form method="POST" action="{{ route('national-admin.settings.update') }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+            <form method="POST" action="<?php echo e(route('national-admin.settings.update')); ?>" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
 
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap: wrap; gap: 1rem;">
                             <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap: wrap;">
                                 <div>
                                     <!-- Image preview (shown after upload or if picture exists) -->
                                     <img id="profile-picture-preview" 
-                                         @if($user->profile_picture)
-                                            src="{{ Storage::url($user->profile_picture) }}"
-                                         @else
+                                         <?php if($user->profile_picture): ?>
+                                            src="<?php echo e(Storage::url($user->profile_picture)); ?>"
+                                         <?php else: ?>
                                              src=""
                                              style="display:none;"
-                                         @endif
+                                         <?php endif; ?>
                                          class="profile-pic" 
                                          alt="Profile Picture">
                                     
                                     <!-- Placeholder (shown when no picture exists) -->
                                     <div id="profile-picture-placeholder" 
                                          class="profile-placeholder" 
-                                         @if($user->profile_picture) style="display:none;" @endif>
+                                         <?php if($user->profile_picture): ?> style="display:none;" <?php endif; ?>>
                                         <svg fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                                         </svg>
@@ -548,50 +548,71 @@ button.submit-btn {
                                         <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
                                     </label>
                                     
-                                    @if($user->profile_picture)
+                                    <?php if($user->profile_picture): ?>
                                         <button type="button" onclick="deleteProfilePicture()" 
                                                 style="background: #ef4444; color: white; border: none; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; cursor: pointer; font-weight: 600;">
                                             Delete Picture
                                         </button>
-                                    @endif
+                                    <?php endif; ?>
                                     
-                                    @error('profile_picture')
-                                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                                    @enderror
+                                    <?php $__errorArgs = ['profile_picture'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         
                             <div style="text-align:right; flex: 1; min-width: 150px;">
-                                <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>
+                                <h2 style="font-size:1.5rem; font-weight:900; margin:0;"><?php echo e($user->name); ?></h2>
                                 <p style="color:#4b5563; margin:0;">Administrator</p>
                             </div>
                         </div>    
            
                     <!--<div style="text-align:right; flex: 1; min-width: 150px;">-->
-                    <!--    <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>-->
+                    <!--    <h2 style="font-size:1.5rem; font-weight:900; margin:0;"><?php echo e($user->name); ?></h2>-->
                     <!--    <p style="color:#4b5563; margin:0;">Administrator</p>-->
                     <!--</div>-->
                 </div>
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Enter your full name">
-                    @error('name')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <input id="name" name="name" type="text" value="<?php echo e(old('name', $user->name)); ?>" placeholder="Enter your full name">
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input id="email" name="email" type="email" value="{{ $user->email }}" readonly>
+                    <input id="email" name="email" type="email" value="<?php echo e($user->email); ?>" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input id="phone_number" name="phone_number" type="text" value="{{ old('phone', $user->phone_number ?  $user->phone_number : '') }}" placeholder="0821234567">
-                    @error('phone')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <input id="phone_number" name="phone_number" type="text" value="<?php echo e(old('phone', $user->phone_number ?  $user->phone_number : '')); ?>" placeholder="0821234567">
+                    <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <h3 style="font-size:1.5rem; font-weight:900; text-align:center; margin-bottom:1.5rem;">Update Password</h3>
@@ -599,25 +620,46 @@ button.submit-btn {
                 <div class="form-group">
                     <label for="current_password">Old Password</label>
                     <input id="current_password" name="current_password" type="password">
-                    @error('current_password')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="new_password">New Password</label>
                     <input id="new_password" name="new_password" type="password">
-                    @error('new_password')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['new_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="new_password_confirmation">Confirm Password</label>
                     <input id="new_password_confirmation" name="new_password_confirmation" type="password">
-                    @error('new_password_confirmation')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['new_password_confirmation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div style="display:flex; justify-content:center;">
@@ -770,10 +812,10 @@ button.submit-btn {
     // Delete profile picture function
     function deleteProfilePicture() {
         if (confirm('Are you sure you want to delete your profile picture?')) {
-            fetch('{{ route("national-admin.settings.delete-picture") }}', {
+            fetch('<?php echo e(route("national-admin.settings.delete-picture")); ?>', {
                 method: 'DELETE',
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                     'Accept': 'application/json'
                 }
             })
@@ -796,3 +838,4 @@ button.submit-btn {
 
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/national-admin-settings/index.blade.php ENDPATH**/ ?>

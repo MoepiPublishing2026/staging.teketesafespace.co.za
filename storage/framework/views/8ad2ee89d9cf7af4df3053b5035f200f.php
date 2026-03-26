@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National Admin Settings</title>
+    <title>Provincial Admin Settings</title>
    
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -22,12 +22,12 @@
 
         /* Sidebar */
         .sidebar {
-    width: 240px;
+    width: 235px;
     background-color: white;
     border-right: 1px solid #eaeaea;
     display: flex;
     flex-direction: column;
-    padding-top: 140px;
+    padding-top: 120px;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -35,20 +35,8 @@
     z-index: 100;
     flex-shrink: 0;
 }
-
-        .sidebar-logo {
-            position: fixed;
-            top: 40px;
-            left: 40px;
-            width: 100px;
-            height: auto;
-        }
-
-        .sidebar-logo img {
-            width: 115px;
-            height: auto;
-            display: block;
-        }
+        .sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
+        .sidebar-logo img { width: 115px; height: auto; display: block; }
         .sidebar::before {
             content: '';
             position: absolute;
@@ -59,7 +47,7 @@
             background: #eaeaea;
             z-index: 1;
         }
-        .sidebar-list { list-style: none; padding-left: 22px; }
+        .sidebar-list { list-style: none; padding: 0 0 0 22px; }
         .sidebar-link {
             display: block;
             width: 92%;
@@ -67,36 +55,34 @@
             margin-bottom: 17px;
             font-size: 15px;
             font-weight: 900;
-            color: #222;
+            color: #545454;
             border-radius: 8px;
             transition: all 0.25s ease;
         }
         .sidebar-link:hover,
-.sidebar-link.active {
-    background: var(--theme-gradient);
-    color: white;
-}
-
-        button{
-            margin: 10px;
-            display: block;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            text-decoration: none;
-            color: #222;
-            font-weight: 400;
-            border-radius: 0.5rem;
-            transition: background 0.2s, color 0.2s;
-            border:#c7da30;
-            background: none;
-            font-size: 16px;
-            padding-right: 110px;
+        .sidebar-link.active {
+            background: var(--theme-gradient);
+            color: #000;
+        }
+        button:not(.menu-icon){
+            background-color: white !important;
+            color: #38b6ff !important;
+            border: 2px solid #c7da30 !important;
+            font-weight: 900 !important;
+            font-family: 'Montserrat', sans-serif !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            margin: 0 !important;
         }
 
-        button.active,
-        button:hover {
-            background: white;
-            color: white;
+        button:not(.menu-icon):hover,
+        button:not(.menu-icon):focus {
+            background-color: #c7da30 !important;
+            color: white !important;
+            border-color: #38b6ff !important;
+            outline: none;
         }
 
         /* Hide menu icon on desktop */
@@ -183,16 +169,7 @@
                 width: 240px;
             }
 
-            .sidebar-logo {
-                display: none;
-                position: sticky;
-                top: 0;
-                left: 0;
-                width: 100%;
-                padding: 12px 12px 0;
-                background: white;
-                justify-content: flex-end;
-            }
+            .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
             .sidebar.open .sidebar-logo { display: flex; }
             .sidebar-logo img { width: 95px; height: auto; }
             
@@ -208,7 +185,8 @@
             
             main {
                 padding: 1rem;
-                overflow-x: auto;
+                min-width: 0;
+                min-height: 0;
             }
             
             h1 {
@@ -423,7 +401,7 @@
 button.submit-btn {
     border: 4px solid #c7da30;
     border-radius: 100px;
-    color: #38b6ff;
+    color: #000;
     font-weight: 900;
     padding: 0.75rem 5rem;
     font-size: 1rem;
@@ -435,6 +413,7 @@ button.submit-btn {
     margin-top: 1rem;
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
+
 
         .alert-success {
             background: #d4edda;
@@ -459,20 +438,14 @@ button.submit-btn {
 
 <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo">
       </div>
     <ul class="sidebar-list">
-        <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
-
-        <!-- Sign Out as a styled form -->
-        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-            @csrf
-            <button type="submit">
-                Sign Out
-            </button>
-        </form>
+        <a href="<?php echo e(url('/provincial-admin/dashboard')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/dashboard') ? 'active' : ''); ?>">Dashboard</a>
+        <a href="<?php echo e(url('/provincial-admin/reports')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/reports') ? 'active' : ''); ?>">Reports</a>
+        <a href="<?php echo e(url('/provincial-admin/settings')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/settings') ? 'active' : ''); ?>">My Profile</a>
+        <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
+        <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display:none;"><?php echo csrf_field(); ?></form>
     </ul>
 </aside>
 
@@ -483,14 +456,14 @@ button.submit-btn {
         <div class="topbar">
             <div class="profile">
                 <div class="meta">
-                    <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                    <span><?php echo e(auth()->user()->name ?? 'Administrator'); ?></span>
                     <span class="role">Administrator</span>
                 </div>
                 <div class="profile-avatar">
-                    @php $currentUser = auth()->user()->fresh(); @endphp
-                    @if($currentUser && $currentUser->profile_picture)
-                        <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
-                    @endif
+                    <?php $currentUser = auth()->user()->fresh(); ?>
+                    <?php if($currentUser && $currentUser->profile_picture): ?>
+                        <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="profile-pic">
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -498,100 +471,101 @@ button.submit-btn {
     <main>
         <h1>MY PROFILE</h1>
 
-        @if(session('success_message'))
-            <div class="alert-success">{{ session('success_message') }}</div>
-        @endif
+        <?php if(session('success_message')): ?>
+            <div class="alert-success"><?php echo e(session('success_message')); ?></div>
+        <?php endif; ?>
 
-        @if($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert-error">
                 <ul style="margin:0; padding-left:1.25rem;">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
-        @endif
+        <?php endif; ?>
 
         <div class="card">
-            <form method="POST" action="{{ route('national-admin.settings.update') }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+            <form method="POST" action="<?php echo e(route('provincial-admin.settings.update')); ?>" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
 
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap: wrap; gap: 1rem;">
-                            <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap: wrap;">
-                                <div>
-                                    <!-- Image preview (shown after upload or if picture exists) -->
-                                    <img id="profile-picture-preview" 
-                                         @if($user->profile_picture)
-                                            src="{{ Storage::url($user->profile_picture) }}"
-                                         @else
-                                             src=""
-                                             style="display:none;"
-                                         @endif
-                                         class="profile-pic" 
-                                         alt="Profile Picture">
-                                    
-                                    <!-- Placeholder (shown when no picture exists) -->
-                                    <div id="profile-picture-placeholder" 
-                                         class="profile-placeholder" 
-                                         @if($user->profile_picture) style="display:none;" @endif>
-                                        <svg fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                
-                                <div style="display:flex; flex-direction:column;">
-                                    <p style="margin-bottom:0.75rem; font-weight:900;">Update Profile Picture</p>
-                                    <label class="file-label">
-                                        Choose File
-                                        <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
-                                    </label>
-                                    
-                                    @if($user->profile_picture)
-                                        <button type="button" onclick="deleteProfilePicture()" 
-                                                style="background: #ef4444; color: white; border: none; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; cursor: pointer; font-weight: 600;">
-                                            Delete Picture
-                                        </button>
-                                    @endif
-                                    
-                                    @error('profile_picture')
-                                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap: wrap; gap: 1rem;">
+                    <div style="display:flex; gap:1.5rem; align-items:center; flex-wrap: wrap;">
+                        <div>
+                            <img id="profile-picture-preview" 
+                                 <?php if($user->profile_picture): ?>
+                                     src="<?php echo e($user->profile_picture_url); ?>"
+                                 <?php else: ?>
+                                     src=""
+                                     style="display:none;"
+                                 <?php endif; ?>
+                                 class="profile-pic" 
+                                 alt="Profile Picture">
+                            <div id="profile-picture-placeholder" class="profile-placeholder" <?php if($user->profile_picture): ?> style="display:none;" <?php endif; ?>>
+                                <svg fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                </svg>
                             </div>
-                        
-                            <div style="text-align:right; flex: 1; min-width: 150px;">
-                                <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>
-                                <p style="color:#4b5563; margin:0;">Administrator</p>
-                            </div>
-                        </div>    
-           
-                    <!--<div style="text-align:right; flex: 1; min-width: 150px;">-->
-                    <!--    <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>-->
-                    <!--    <p style="color:#4b5563; margin:0;">Administrator</p>-->
-                    <!--</div>-->
+                        </div>
+                        <div style="display:flex; flex-direction:column;">
+                            <p style="margin-bottom:0.75rem; font-weight:900;">Update Profile Picture</p>
+                            <label class="file-label">
+                                Choose File
+                                <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
+                            </label>
+                            <?php $__errorArgs = ['profile_picture'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+                    </div>
+
+                    <div style="text-align:right; flex: 1; min-width: 150px;">
+                        <h2 style="font-size:1.5rem; font-weight:900; margin:0;"><?php echo e($user->name); ?></h2>
+                        <p style="color:#4b5563; margin:0;">Administrator</p>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Enter your full name">
-                    @error('name')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <input id="name" name="name" type="text" value="<?php echo e(old('name', $user->name)); ?>" placeholder="Enter your full name">
+                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input id="email" name="email" type="email" value="{{ $user->email }}" readonly>
+                    <input id="email" name="email" type="email" value="<?php echo e($user->email); ?>" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input id="phone_number" name="phone_number" type="text" value="{{ old('phone', $user->phone_number ?  $user->phone_number : '') }}" placeholder="0821234567">
-                    @error('phone')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <input id="phone_number" name="phone_number" type="text" value="<?php echo e(old('phone', $user->phone_number ?  $user->phone_number : '')); ?>" placeholder="0821234567">
+                    <?php $__errorArgs = ['phone'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <h3 style="font-size:1.5rem; font-weight:900; text-align:center; margin-bottom:1.5rem;">Update Password</h3>
@@ -599,25 +573,46 @@ button.submit-btn {
                 <div class="form-group">
                     <label for="current_password">Old Password</label>
                     <input id="current_password" name="current_password" type="password">
-                    @error('current_password')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['current_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="new_password">New Password</label>
                     <input id="new_password" name="new_password" type="password">
-                    @error('new_password')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['new_password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="new_password_confirmation">Confirm Password</label>
                     <input id="new_password_confirmation" name="new_password_confirmation" type="password">
-                    @error('new_password_confirmation')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                    @enderror
+                    <?php $__errorArgs = ['new_password_confirmation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p style="color:#dc2626; font-size:0.875rem;"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                 </div>
 
                 <div style="display:flex; justify-content:center;">
@@ -666,7 +661,7 @@ button.submit-btn {
         }
     }
 
-  // Profile picture preview functionality
+   // Profile picture preview functionality
     const profilePictureInput = document.getElementById('profile-picture-input');
     const profilePicturePreview = document.getElementById('profile-picture-preview');
     const profilePicturePlaceholder = document.getElementById('profile-picture-placeholder');
@@ -767,32 +762,9 @@ button.submit-btn {
             }
         });
     }
-    // Delete profile picture function
-    function deleteProfilePicture() {
-        if (confirm('Are you sure you want to delete your profile picture?')) {
-            fetch('{{ route("national-admin.settings.delete-picture") }}', {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Failed to delete profile picture');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while deleting the profile picture');
-            });
-        }
-    }
-</script>
 </script>
 
 </body>
 </html>
+
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/provincial-admin-settings/index.blade.php ENDPATH**/ ?>
