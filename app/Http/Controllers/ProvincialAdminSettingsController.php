@@ -4,15 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Report;
-use App\Models\Province;
-use App\Models\AbuseType;
-use App\Models\Subtype;
-use App\Models\School;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
-class ProvincialAdminReportsController extends Controller
+class ProvincialAdminSettingsController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $user = Auth::user();
 
@@ -20,192 +18,10 @@ class ProvincialAdminReportsController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $province_id = $user->province_id;
-
-        if (!$province_id) {
-            abort(404, 'User does not have a province assigned. Please contact administrator.');
-        }
-
-        $province = Province::find($province_id);
-
-        if (!$province) {
-            abort(404, 'Province not found in database. Please contact administrator.');
-        }
-
-        // Start query with eager loading, filtered by province
-        $query = Report::with(['province', 'district', 'school', 'abuseType', 'subtype'])
-            ->where('province_id', $province_id);
-
-        // ── EXISTING filters ─────────────────────────────────────────
-
-        // Case number search (kept for backward compatibility)
-        if ($request->filled('case_number')) {
-            $query->where('case_number', 'LIKE', '%' . $request->input('case_number') . '%');
-        }
-
-        // Existing filterable fields
-        $filterableFields = [
-            'status'     => 'status',
-            'district'   => 'district_id',
-            'school'     => 'school_id',
-            'abuse_type' => 'abuse_type_id',
-            'is_anonymous' => 'is_anonymous',
-        ];
-
-        foreach ($filterableFields as $input => $column) {
-            if ($request->filled($input)) {
-                if ($input === 'is_anonymous') {
-                    $value = filter_var($request->input($input), FILTER_VALIDATE_BOOLEAN);
-                    $query->where($column, $value);
-                } else {
-                    $query->where($column, $request->input($input));
-                }
-            }
-        }
-
-        // Age range filter
-        if ($request->filled('age_range')) {
-            $ageRange = $request->input('age_range');
-            if ($ageRange === '30+') {
-                $query->where('age', '>=', 30);
-            } elseif (strpos($ageRange, '-') !== false) {
-                [$minAge, $maxAge] = explode('-', $ageRange);
-                if (is_numeric($minAge) && is_numeric($maxAge)) {
-                    $query->whereBetween('age', [(int)$minAge, (int)$maxAge]);
-                }
-            }
-        }
-
-        // ── NEW filters ──────────────────────────────────────────────
-
-        // Global search bar: case number, email, full name, description, school name
-        if ($s = trim($request->input('search', ''))) {
-            $query->where(function ($q) use ($s) {
-                $q->where('case_number',      'like', "%{$s}%")
-                  ->orWhere('reporter_email', 'like', "%{$s}%")
-                  ->orWhere('full_name',      'like', "%{$s}%")
-                  ->orWhere('description',    'like', "%{$s}%")
-                  ->orWhere('school_name',    'like', "%{$s}%");
-            });
-        }
-
-        // Name / surname filter
-        if ($n = trim($request->input('full_name', ''))) {
-            $query->where(function ($q) use ($n) {
-                $q->where('full_name',        'like', "%{$n}%")
-                  ->orWhere('reporter_email', 'like', "%{$n}%");
-            });
-        }
-
-        // Grade filter
-        if ($request->filled('grade')) {
-            $query->where('grade', $request->input('grade'));
-        }
-
-        // School filter — dropdown by school_id OR text search by school_name
-        if ($request->filled('school_id')) {
-            $query->where('school_id', $request->input('school_id'));
-        } elseif ($s = trim($request->input('school_name', ''))) {
-            // Fall back to text search on the denormalized school_name column
-            $query->where(function ($q) use ($s) {
-                $q->where('school_name', 'like', "%{$s}%")
-                  ->orWhereHas('school', fn ($sq) => $sq->where('school_name', 'like', "%{$s}%"));
-            });
-        }
-
-        // Report type filter (via dropdown — uses abuse_type_id)
-        if ($request->filled('type_id')) {
-            $query->where('abuse_type_id', $request->input('type_id'));
-        }
-
-        // Subtype filter
-        if ($request->filled('subtype_id')) {
-            $query->where('subtype_id', $request->input('subtype_id'));
-        }
-
-        // Status dropdown filter (new panel — same column as existing 'status' field)
-        // Only apply if the existing $filterableFields 'status' wasn't already set
-        if (!$request->filled('status') && $request->filled('filter_status')) {
-            $query->where('status', $request->input('filter_status'));
-        }
-        
-        
-        // Anonymous filter — use has() not filled() because '0' is falsy
-        if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
-            $query->where('is_anonymous', (int)$request->input('is_anonymous'));
-        }
-
-
-        // Date range (new field names: date_from / date_to — kept alongside old from_date / to_date)
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->input('date_from'));
-        } elseif ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->input('from_date'));
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->input('date_to'));
-        } elseif ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->input('to_date'));
-        }
-
-        // Paginate and preserve all query strings
-        $reports = $query->latest()->paginate(20)->withQueryString();
-
-        // ── Dropdown options for the filter panel ────────────────────
-        $typeOptions = AbuseType::orderBy('type_name')->get();
-
-        $subtypeOptions = Subtype::orderBy('sub_type_name')
-            ->when($request->filled('type_id'), fn ($q) => $q->where('abuse_type_id', $request->input('type_id')))
-            ->get()
-            ->when(!$request->filled('type_id'), fn ($col) => $col->unique('sub_type_name'));
-
-
-        $gradeOptions = Report::where('province_id', $province_id)
-            ->whereNotNull('grade')
-            ->where('grade', '!=', '')
-            ->distinct()
-            ->pluck('grade')
-            ->sort(function ($a, $b) {
-                $order = [
-                    'Creche'   => 0,
-                    'Grade R'  => 1,
-                    'Grade 1'  => 2,
-                    'Grade 2'  => 3,
-                    'Grade 3'  => 4,
-                    'Grade 4'  => 5,
-                    'Grade 5'  => 6,
-                    'Grade 6'  => 7,
-                    'Grade 7'  => 8,
-                    'Grade 8'  => 9,
-                    'Grade 9'  => 10,
-                    'Grade 10' => 11,
-                    'Grade 11' => 12,
-                    'Grade 12' => 13,
-                ];
-                $posA = $order[$a] ?? 99;
-                $posB = $order[$b] ?? 99;
-                return $posA <=> $posB;
-            })
-            ->values()
-            ->toArray();
-
-        // Schools in this province for the dropdown
-        $schoolOptions = School::where('province_id', $province_id)
-            ->orderBy('school_name')
-            ->get();
-
-        return view('provincial-admin-reports.index', compact(
-            'reports',
-            'province',
-            'typeOptions',
-            'subtypeOptions',
-            'gradeOptions',
-            'schoolOptions'
-        ));
+        return view('provincial-admin-settings.index', compact('user'));
     }
 
-    public function show($id, Request $request)
+    public function update(Request $request)
     {
         $user = Auth::user();
 
@@ -213,33 +29,100 @@ class ProvincialAdminReportsController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $province_id = $user->province_id;
+        $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'phone_number' => [
+                'nullable',
+                'string',
+                'regex:/^(\+27|0)[1-8][0-9]{8}$/',
+            ],
+            'profile_picture' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg,gif,webp',
+                'max:2048',
+            ],
+            'current_password' => 'nullable|required_with:new_password|string',
+            'new_password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'regex:/[!@#$%^&*(),.?":{}|<>]/',
+            ],
+        ], [
+            'phone.regex' => 'Phone number must be a valid South African number (10 digits starting with 0).',
+            'new_password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'profile_picture.image' => 'The file must be an image.',
+            'profile_picture.mimes' => 'The image must be jpeg, png, jpg, gif, or webp.',
+            'profile_picture.max' => 'The image may not be greater than 2MB.',
+        ]);
 
-        $report = Report::with(['province', 'district', 'school', 'abuseType', 'subtype', 'user'])
-                        ->where('province_id', $province_id)
-                        ->findOrFail($id);
+        $updated = false;
 
-        if ($request->ajax() || $request->wantsJson()) {
-            return response()->json([
-                'case_number'          => $report->case_number,
-                'full_name'            => $report->full_name ?? 'Anonymous',
-                'province'             => $report->province->province_name ?? 'N/A',
-                'district'             => $report->district->district_name ?? 'N/A',
-                'school'               => $report->school->school_name ?? 'N/A',
-                'abuseType'            => $report->abuseType->type_name ?? 'N/A',
-                'subtype'              => $report->subtype->sub_type_name ?? 'N/A',
-                'status'               => $report->status,
-                'is_anonymous'         => $report->is_anonymous,
-                'created_at'           => $report->created_at->format('Y-m-d'),
-                'reporter_email'       => $report->reporter_email ?? 'Anonymous',
-                'phone_number'         => $report->phone_number ?? 'N/A',
-                'grade'                => $report->grade ?? 'N/A',
-                'latest_status_reason' => $report->latest_status_reason ?? 'No status history recorded.',
-                'description'          => $report->description,
-                'attachments'          => $report->image_path ? json_decode($report->image_path, true) : [],
-            ]);
+        if ($request->filled('name') && $request->name !== $user->name) {
+            $user->name = $request->name;
+            $updated = true;
         }
 
-        abort(404, 'Not Found');
+        if ($request->phone_number) {
+            $cleanedPhone = preg_replace('/\D/', '', $request->phone_number);
+            if ($cleanedPhone !== $user->phone_number) {
+                $user->phone_number = $cleanedPhone;
+                $updated = true;
+            }
+        }
+
+        if ($request->hasFile('profile_picture')) {
+            try {
+                $file = $request->file('profile_picture');
+                if (!$file->isValid()) {
+                    throw new \Exception('Invalid file upload');
+                }
+
+                if ($user->profile_picture) {
+                    $oldPath = str_replace('public/', '', $user->profile_picture);
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                $filename = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('profile_pictures', $filename, 'public');
+                $user->profile_picture = $path;
+                $updated = true;
+            } catch (\Exception $e) {
+                Log::error('Provincial admin profile picture upload failed', [
+                    'error' => $e->getMessage(),
+                    'user_id' => $user->id,
+                ]);
+                return back()->withErrors(['profile_picture' => 'Failed to upload profile picture. Please try again.'])->withInput();
+            }
+        }
+
+        if ($request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Current password is incorrect.'])->withInput();
+            }
+
+            if (Hash::check($request->new_password, $user->password)) {
+                return back()->withErrors(['new_password' => 'New password must be different from your current password.'])->withInput();
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $updated = true;
+            $user->save();
+            return redirect()->back()->with('success_message', 'Password updated successfully!');
+        }
+
+        if ($updated) {
+            $user->save();
+            return redirect()->back()->with('success_message', 'Settings updated successfully!');
+        }
+
+        return back()->with('success_message', 'No changes detected.');
     }
 }

@@ -44,7 +44,7 @@ body {
     width: 100%;
     min-width: 0;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 .sidebar {
@@ -55,6 +55,9 @@ body {
     flex-direction: column;
     padding-top: 120px;
 }
+
+.sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
+.sidebar-logo img { width: 115px; height: auto; display: block; }
 
 .sidebar-list {
     list-style: none;
@@ -121,6 +124,7 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     min-height: 64px;
 }
 
@@ -613,7 +617,7 @@ canvas {
         overflow-x: hidden;
     }
     .menu-icon {
-        display: flex;
+        display: flex !important;
     }
     .sidebar {
         position: fixed;
@@ -627,10 +631,14 @@ canvas {
         transition: width 0.3s ease;
         z-index: 1000;
         box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+        padding-top: 0;
     }
     .sidebar.open {
         width: 240px;
     }
+    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
+    .sidebar.open .sidebar-logo { display: flex; }
+    .sidebar-logo img { width: 95px; height: auto; }
     .main-panel {
         margin-left: 0 !important;
         width: 100%;
@@ -769,6 +777,10 @@ canvas {
     .panel {
         padding: 0;
     }
+}
+
+@media (max-width: 600px) {
+    .sidebar-logo img { width: 85px; height: auto; }
 }
 
 @media (max-width: 600px) {
@@ -1077,8 +1089,8 @@ canvas {
 <body>
 
 <aside class="sidebar">
-    <div style="position: fixed; top: 40px; left: 40px; width: 100px; height: auto;">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 150px; height: auto;">
+    <div class="sidebar-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -2024,6 +2036,7 @@ if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 })();
 </script>
 
+<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>

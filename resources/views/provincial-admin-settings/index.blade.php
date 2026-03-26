@@ -16,18 +16,18 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Montserrat', sans-serif; color: var(--gray-dark); background: white; display: flex; min-height: 100vh; }
+        body { font-family: 'Montserrat', sans-serif; color: var(--gray-dark); background: white; display: flex; min-height: 100vh; width: 100%; min-width: 0; overflow-x: hidden; overflow-y: hidden; }
         a { text-decoration: none; }
         h2,h3 { font-family: 'Poppins', sans-serif; color: #000; margin-bottom: 1rem; }
 
         /* Sidebar */
         .sidebar {
-    width: 240px;
+    width: 235px;
     background-color: white;
     border-right: 1px solid #eaeaea;
     display: flex;
     flex-direction: column;
-    padding-top: 140px;
+    padding-top: 120px;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -35,6 +35,8 @@
     z-index: 100;
     flex-shrink: 0;
 }
+        .sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
+        .sidebar-logo img { width: 115px; height: auto; display: block; }
         .sidebar::before {
             content: '';
             position: absolute;
@@ -45,7 +47,7 @@
             background: #eaeaea;
             z-index: 1;
         }
-        .sidebar-list { list-style: none; padding-left: 22px; }
+        .sidebar-list { list-style: none; padding: 0 0 0 22px; }
         .sidebar-link {
             display: block;
             width: 92%;
@@ -53,7 +55,7 @@
             margin-bottom: 17px;
             font-size: 15px;
             font-weight: 900;
-            color: #222;
+            color: #545454;
             border-radius: 8px;
             transition: all 0.25s ease;
         }
@@ -62,27 +64,25 @@
             background: var(--theme-gradient);
             color: #000;
         }
-        button{
-            margin: 10px;
-            display: block;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            text-decoration: none;
-            color: #222222;
-            font-weight: 400;
-            border-radius: 0.5rem;
-            transition: background 0.2s, color 0.2s;
-            border:#c7da30;
-            background: none;
-            box-shadow: 0 0 10px rgba(0,0,0,1);
-            font-size: 16px;
-            padding-right: 110px;
+        button:not(.menu-icon){
+            background-color: white !important;
+            color: #38b6ff !important;
+            border: 2px solid #c7da30 !important;
+            font-weight: 900 !important;
+            font-family: 'Montserrat', sans-serif !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            margin: 0 !important;
         }
 
-        button.active,
-        button:hover {
-            background: var(--theme-gradient);
-            color: var(--theme-dark);
+        button:not(.menu-icon):hover,
+        button:not(.menu-icon):focus {
+            background-color: #c7da30 !important;
+            color: white !important;
+            border-color: #38b6ff !important;
+            outline: none;
         }
 
         /* Hide menu icon on desktop */
@@ -90,19 +90,25 @@
             display: none;
         }
 
-        .overlay {
+        .sidebar-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+            background: rgba(0,0,0,0.3);
             z-index: 999;
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
-        .overlay.active {
+        .sidebar-overlay.active {
             display: block;
+            opacity: 1;
+        }
+
+        @media (min-width: 901px) {
+            .sidebar-overlay {
+                display: none !important;
+            }
         }
 
         /* Responsive sidebar and elements */
@@ -124,17 +130,23 @@
             }
             
             .menu-icon {
-                display: block;
+                display: flex !important;
                 position: fixed;
-                top: 15px;
-                left: 15px;
-                font-size: 28px;
+                top: 12px;
+                left: 12px;
+                width: 44px;
+                height: 44px;
+                padding: 0;
+                border: 2px solid #e5e7eb;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
                 cursor: pointer;
                 z-index: 1001;
-                background: rgba(255, 255, 255, 0.9);
-                padding: 8px 12px;
-                border-radius: 4px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+                color: #38b6ff;
             }
             
             .sidebar {
@@ -149,13 +161,17 @@
                 transition: width 0.3s ease;
                 z-index: 1000;
                 box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-                padding-top: 60px;
+                padding-top: 0;
                 border-right: 1px solid #eaeaea;
             }
             
             .sidebar.open {
                 width: 240px;
             }
+
+            .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
+            .sidebar.open .sidebar-logo { display: flex; }
+            .sidebar-logo img { width: 95px; height: auto; }
             
             .main-panel {
                 margin-left: 0 !important;
@@ -164,12 +180,13 @@
             }
             
             .main-panel.shifted {
-                margin-left: 0;
+                margin-left: 240px;
             }
             
             main {
                 padding: 1rem;
-                overflow-x: auto;
+                min-width: 0;
+                min-height: 0;
             }
             
             h1 {
@@ -229,12 +246,21 @@
         /* Small mobile (max-width: 480px) */
         @media (max-width: 480px) {
             .menu-icon {
-                font-size: 24px;
-                padding: 6px 10px;
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
+
+            .sidebar-logo img { width: 85px; height: auto; }
             
             .sidebar.open {
                 width: 220px;
+            }
+
+            .main-panel.shifted {
+                margin-left: 0;
             }
             
             main {
@@ -302,7 +328,7 @@
         }
 
         /* Main Panel */
-        .main-panel { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+        .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-height: 0; min-width: 0; }
         .topbar {
             width: 100%;
             background: #fff;
@@ -314,7 +340,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(199,218,48,0.25);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .profile { display: flex; align-items: center; gap: 0.8rem; }
         .profile-avatar {
@@ -329,7 +355,7 @@
         .profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
 
         /* Main Content */
-        main { flex: 1; padding: 2rem; background: #fff; overflow-y: auto; }
+        main { flex: 1; padding: 2rem; background: #fff; overflow-y: auto; min-height: 0; min-width: 0; }
         h1 { font-size: 28px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 2rem; }
 
         .card {
@@ -408,31 +434,39 @@ button.submit-btn {
     </style>
 </head>
 <body>
-    <div class="menu-icon">&#9776;</div>
-    <div class="overlay"></div>
+    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
 
 <aside class="sidebar">
-      <div style="position: fixed; top: 40px; left: 40px; width: 100px; height: auto;">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 150px; height: auto;"></div>
+      <div class="sidebar-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+      </div>
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/provincial-admin/reports') }}" class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
         <a href="{{ url('/provincial-admin/settings') }}" class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
-
-        <!-- Sign Out as a styled form -->
-        <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-            @csrf
-            <button type="submit">
-                Sign Out
-            </button>
-        </form>
+        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
     </ul>
 </aside>
 
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
-        <!-- Top bar with profile only (sticky) -->
-       
+        <div class="topbar">
+            <div class="profile">
+                <div class="meta">
+                    <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                    <span class="role">Administrator</span>
+                </div>
+                <div class="profile-avatar">
+                    @php $currentUser = auth()->user()->fresh(); @endphp
+                    @if($currentUser && $currentUser->profile_picture)
+                        <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                    @endif
+                </div>
+            </div>
+        </div>
 
     <main>
         <h1>MY PROFILE</h1>
@@ -554,48 +588,33 @@ button.submit-btn {
     const menuIcon = document.querySelector('.menu-icon');
     const sidebar = document.querySelector('.sidebar');
     const mainPanel = document.querySelector('.main-panel');
-    const overlay = document.querySelector('.overlay');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-    if (menuIcon && sidebar && mainPanel && overlay) {
-        function openMenu() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+    function toggleSidebar() {
+        if (!sidebar || !mainPanel) return;
+        sidebar.classList.toggle('open');
+        mainPanel.classList.toggle('shifted');
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
+            sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
         }
-        
-        function closeMenu() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        menuIcon.addEventListener('click', () => {
-            if (sidebar.classList.contains('open')) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
-        });
-        
-        overlay.addEventListener('click', closeMenu);
-        
-        // Close menu when clicking sidebar links on mobile
+    }
+
+    if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+    if (sidebar) {
         const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
         sidebarLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if (window.innerWidth <= 900) {
-                    closeMenu();
-                }
+                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
             });
         });
-        
-        // Close menu when clicking logout button on mobile
+
         const logoutButton = sidebar.querySelector('button[type="submit"]');
         if (logoutButton) {
             logoutButton.addEventListener('click', () => {
-                if (window.innerWidth <= 900) {
-                    closeMenu();
-                }
+                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
             });
         }
     }

@@ -5,52 +5,29 @@ document.addEventListener('DOMContentLoaded', function() {
     var sidebar = document.getElementById('schoolAdminSidebar');
     var overlay = document.getElementById('sidebarOverlay');
     var mainPanel = document.querySelector('.main-panel');
-    var scrollEl = document.scrollingElement || document.documentElement;
-
-    function isMobile() {
-        return window.innerWidth <= 900;
-    }
-
-    function openSidebar() {
-        sidebar.classList.add('open');
-        if (overlay) overlay.classList.add('active');
-        if (isMobile()) scrollEl.style.overflow = 'hidden';
-    }
-
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        if (overlay) overlay.classList.remove('active');
-        if (mainPanel) mainPanel.classList.remove('shifted');
-        scrollEl.style.overflow = '';
-    }
 
     function toggleSidebar() {
-        if (sidebar.classList.contains('open')) {
-            closeSidebar();
-            return;
+        if (!sidebar || !mainPanel) return;
+        sidebar.classList.toggle('open');
+        mainPanel.classList.toggle('shifted');
+        if (overlay) {
+            overlay.classList.toggle('active', sidebar.classList.contains('open'));
+            overlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
         }
-        openSidebar();
     }
 
-    if (toggle && sidebar) {
-        toggle.addEventListener('click', function() {
-            toggleSidebar();
-        });
-        if (overlay) {
-            overlay.addEventListener('click', function() {
-                closeSidebar();
-            });
-        }
-        document.addEventListener('click', function(e) {
-            if (isMobile() && sidebar.classList.contains('open') &&
-                !sidebar.contains(e.target) && !toggle.contains(e.target)) {
-                closeSidebar();
+    if (toggle) toggle.addEventListener('click', toggleSidebar);
+    if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (mainPanel) mainPanel.classList.remove('shifted');
+            if (overlay) {
+                overlay.classList.remove('active');
+                overlay.setAttribute('aria-hidden', 'true');
             }
-        });
-        window.addEventListener('resize', function() {
-            if (!isMobile() && overlay) overlay.classList.remove('active');
-            if (!isMobile()) scrollEl.style.overflow = '';
-        });
-    }
+        }
+    });
 });
 </script>

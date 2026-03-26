@@ -102,6 +102,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     min-height: 64px;
 }
 
