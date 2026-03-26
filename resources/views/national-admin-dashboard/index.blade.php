@@ -35,12 +35,26 @@ html, body {
 }
 
 .sidebar {
-    width: 240px;
+    width: 235px;
     background-color: white;
     border-right: 1px solid #eaeaea;
     display: flex;
     flex-direction: column;
-    padding-top: 140px;
+    padding-top: 120px;
+}
+
+.sidebar-logo {
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    width: 100px;
+    height: auto;
+}
+
+.sidebar-logo img {
+    width: 115px;
+    height: auto;
+    display: block;
 }
 
 .sidebar-link, button, select, input, label {
@@ -124,7 +138,7 @@ body {
     width: 100%;
     min-width: 0;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 .topbar {
@@ -138,6 +152,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     min-height: 64px;
 }
 
@@ -358,8 +373,8 @@ h1 {
 }
 
 .chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; }
-.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 400px; display: flex; flex-direction: column; }
-.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 400px; display: flex; flex-direction: column; }
+.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 370px; display: flex; flex-direction: column; }
+.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 370px; display: flex; flex-direction: column; }
 .chart-schools   { grid-column: 2 / 3; grid-row: 2; display: flex; flex-direction: column; }
 .chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; }
 
@@ -669,7 +684,7 @@ canvas { width: 100% !important; height: 280px !important; }
 }
 
 @media (max-width: 900px) {
-    .menu-icon { display: flex; }
+    .menu-icon { display: flex !important; }
     .sidebar {
         position: fixed; top: 0; left: 0; width: 0; height: 100vh;
         background: white; overflow-x: hidden; overflow-y: auto;
@@ -677,6 +692,19 @@ canvas { width: 100% !important; height: 280px !important; }
         box-shadow: 2px 0 12px rgba(0,0,0,0.15);
     }
     .sidebar.open { width: 240px; }
+    .sidebar { padding-top: 0; }
+    .sidebar-logo {
+        display: none;
+        position: sticky;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 12px 12px 0;
+        background: white;
+        justify-content: flex-end;
+    }
+    .sidebar.open .sidebar-logo { display: flex; }
+    .sidebar-logo img { width: 95px; height: auto; }
     .main-panel { margin-left: 0 !important; transition: margin-left 0.3s ease; }
     .main-panel.shifted { margin-left: 240px; }
     .dashboard-scroll { padding: 1rem; }
@@ -725,6 +753,7 @@ canvas { width: 100% !important; height: 280px !important; }
     .sidebar.open { width: 100%; max-width: 280px; }
     .main-panel.shifted { margin-left: 0; }
     .dashboard-scroll { padding: 0.75rem; }
+    .sidebar-logo img { width: 85px; height: auto; }
     .metrics-row > .metric-card { flex: 1 1 100%; }
     .extras-row > .metric-card { flex: 1 1 100%; }
     .metrics-row > .metric-card .card-value { font-size: 22px !important; }
@@ -745,8 +774,8 @@ canvas { width: 100% !important; height: 280px !important; }
 <body>
 
 <aside class="sidebar">
-    <div style="position: fixed; top: 40px; left: 40px; width: 100px; height: auto;">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 150px; height: auto;">
+    <div class="sidebar-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -1595,6 +1624,7 @@ window.agePyramidData = {
 })();
 </script>
 
+<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>

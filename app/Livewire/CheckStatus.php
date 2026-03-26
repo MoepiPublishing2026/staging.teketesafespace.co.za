@@ -49,6 +49,15 @@ class CheckStatus extends Component
             return;
         }
 
+        $rawDescription = (string) ($report->description ?? '');
+        $otherSubtypeText = null;
+        $cleanDescription = $rawDescription;
+        if ($rawDescription !== '' && preg_match('/^\[Other:\s*(.*?)\]\s*/i', $rawDescription, $matches)) {
+            $otherSubtypeText = trim($matches[1] ?? '');
+            $cleanDescription = preg_replace('/^\[Other:\s*.*?\]\s*/i', '', $rawDescription);
+        }
+        $cleanDescription = trim((string) $cleanDescription);
+
         $this->reportData = [
             'id'                   => $report->id,
             'case_number'          => $report->case_number,
@@ -61,7 +70,8 @@ class CheckStatus extends Component
             'grade'                => $report->grade,
             'school_name'          => $report->school_name,
             'age'                  => $report->age,
-            'description'          => $report->description,
+            'description'          => $cleanDescription,
+            'other_subtype_text'   => $otherSubtypeText,
             'image_path'           => $report->image_path,
             'is_anonymous'         => $report->is_anonymous,
             'latest_status_reason' => $report->latest_status_reason,

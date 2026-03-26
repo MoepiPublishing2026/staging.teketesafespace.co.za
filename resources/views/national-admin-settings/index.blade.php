@@ -16,7 +16,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Montserrat', sans-serif; color: var(--gray-dark); background: white; display: flex; min-height: 100vh; }
+        body { font-family: 'Montserrat', sans-serif; color: var(--gray-dark); background: white; display: flex; min-height: 100vh; width: 100%; min-width: 0; overflow-x: hidden; overflow-y: hidden; }
         a { text-decoration: none; }
         h2,h3 { font-family: 'Poppins', sans-serif; color: #000; margin-bottom: 1rem; }
 
@@ -35,6 +35,20 @@
     z-index: 100;
     flex-shrink: 0;
 }
+
+        .sidebar-logo {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            width: 100px;
+            height: auto;
+        }
+
+        .sidebar-logo img {
+            width: 115px;
+            height: auto;
+            display: block;
+        }
         .sidebar::before {
             content: '';
             position: absolute;
@@ -90,19 +104,25 @@
             display: none;
         }
 
-        .overlay {
+        .sidebar-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
+            inset: 0;
+            background: rgba(0,0,0,0.3);
             z-index: 999;
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
 
-        .overlay.active {
+        .sidebar-overlay.active {
             display: block;
+            opacity: 1;
+        }
+
+        @media (min-width: 901px) {
+            .sidebar-overlay {
+                display: none !important;
+            }
         }
 
         /* Responsive sidebar and elements */
@@ -124,17 +144,23 @@
             }
             
             .menu-icon {
-                display: block;
+                display: flex !important;
                 position: fixed;
-                top: 15px;
-                left: 15px;
-                font-size: 28px;
+                top: 12px;
+                left: 12px;
+                width: 44px;
+                height: 44px;
+                padding: 0;
+                border: 2px solid #e5e7eb;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
                 cursor: pointer;
                 z-index: 1001;
-                background: rgba(255, 255, 255, 0.9);
-                padding: 8px 12px;
-                border-radius: 4px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+                color: #38b6ff;
             }
             
             .sidebar {
@@ -149,13 +175,26 @@
                 transition: width 0.3s ease;
                 z-index: 1000;
                 box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-                padding-top: 60px;
+                padding-top: 0;
                 border-right: 1px solid #eaeaea;
             }
             
             .sidebar.open {
                 width: 240px;
             }
+
+            .sidebar-logo {
+                display: none;
+                position: sticky;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 12px 12px 0;
+                background: white;
+                justify-content: flex-end;
+            }
+            .sidebar.open .sidebar-logo { display: flex; }
+            .sidebar-logo img { width: 95px; height: auto; }
             
             .main-panel {
                 margin-left: 0 !important;
@@ -164,7 +203,7 @@
             }
             
             .main-panel.shifted {
-                margin-left: 0;
+                margin-left: 240px;
             }
             
             main {
@@ -229,12 +268,21 @@
         /* Small mobile (max-width: 480px) */
         @media (max-width: 480px) {
             .menu-icon {
-                font-size: 24px;
-                padding: 6px 10px;
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
             }
+
+            .sidebar-logo img { width: 85px; height: auto; }
             
             .sidebar.open {
                 width: 220px;
+            }
+
+            .main-panel.shifted {
+                margin-left: 0;
             }
             
             main {
@@ -302,7 +350,7 @@
         }
 
         /* Main Panel */
-        .main-panel { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+        .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-height: 0; min-width: 0; }
         .topbar {
             width: 100%;
             background: #fff;
@@ -314,7 +362,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(199,218,48,0.25);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .profile { display: flex; align-items: center; gap: 0.8rem; }
         .profile-avatar {
@@ -329,7 +377,7 @@
         .profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
 
         /* Main Content */
-        main { flex: 1; padding: 2rem; background: #fff; overflow-y: auto; }
+        main { flex: 1; padding: 2rem; background: #fff; overflow-y: auto; min-height: 0; min-width: 0; }
         h1 { font-size: 28px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 2rem; }
 
         .card {
@@ -407,12 +455,12 @@ button.submit-btn {
     </style>
 </head>
 <body>
-    <div class="menu-icon">&#9776;</div>
-    <div class="overlay"></div>
+    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
 
 <aside class="sidebar">
-      <div style="position: fixed; top: 40px; left: 40px; width: 100px; height: auto;">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 150px; height: auto;"></div>
+      <div class="sidebar-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+      </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
@@ -428,10 +476,24 @@ button.submit-btn {
     </ul>
 </aside>
 
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
-        <!-- Top bar with profile only (sticky) -->
-       
+        <div class="topbar">
+            <div class="profile">
+                <div class="meta">
+                    <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                    <span class="role">Administrator</span>
+                </div>
+                <div class="profile-avatar">
+                    @php $currentUser = auth()->user()->fresh(); @endphp
+                    @if($currentUser && $currentUser->profile_picture)
+                        <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                    @endif
+                </div>
+            </div>
+        </div>
 
     <main>
         <h1>MY PROFILE</h1>
@@ -573,48 +635,33 @@ button.submit-btn {
     const menuIcon = document.querySelector('.menu-icon');
     const sidebar = document.querySelector('.sidebar');
     const mainPanel = document.querySelector('.main-panel');
-    const overlay = document.querySelector('.overlay');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-    if (menuIcon && sidebar && mainPanel && overlay) {
-        function openMenu() {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+    function toggleSidebar() {
+        if (!sidebar || !mainPanel) return;
+        sidebar.classList.toggle('open');
+        mainPanel.classList.toggle('shifted');
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
+            sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
         }
-        
-        function closeMenu() {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        menuIcon.addEventListener('click', () => {
-            if (sidebar.classList.contains('open')) {
-                closeMenu();
-            } else {
-                openMenu();
-            }
-        });
-        
-        overlay.addEventListener('click', closeMenu);
-        
-        // Close menu when clicking sidebar links on mobile
+    }
+
+    if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+    if (sidebar) {
         const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
         sidebarLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if (window.innerWidth <= 900) {
-                    closeMenu();
-                }
+                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
             });
         });
-        
-        // Close menu when clicking logout button on mobile
+
         const logoutButton = sidebar.querySelector('button[type="submit"]');
         if (logoutButton) {
             logoutButton.addEventListener('click', () => {
-                if (window.innerWidth <= 900) {
-                    closeMenu();
-                }
+                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
             });
         }
     }

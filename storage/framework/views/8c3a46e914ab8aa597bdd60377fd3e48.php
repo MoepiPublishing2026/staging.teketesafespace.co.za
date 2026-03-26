@@ -1,4 +1,4 @@
-{{-- Sidebar toggle script - include once per page --}}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var toggle = document.getElementById('sidebarToggle');
@@ -31,3 +31,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/components/school-admin-sidebar-script.blade.php ENDPATH**/ ?>

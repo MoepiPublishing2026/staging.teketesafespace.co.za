@@ -12,7 +12,11 @@
 <body class="bg-gray-100">
 
     <main>
-        {{ $slot }}
+        @isset($slot)
+            {{ $slot }}
+        @else
+            @yield('content')
+        @endisset
     </main>
 
     @livewireScripts

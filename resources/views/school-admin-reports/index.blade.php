@@ -27,6 +27,11 @@ html, body {
 /* ========== LAYOUT ========== */
 body {
     display: flex;
+    min-height: 100vh;
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 /* ===== SIDEBAR ===== */
@@ -45,6 +50,9 @@ body {
     flex-direction: column;
     padding-top: 120px;
 }
+
+.sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
+.sidebar-logo img { width: 90px; height: auto; max-width: 100%; display: block; }
 
 .sidebar-list {
     list-style: none;
@@ -104,10 +112,11 @@ button:hover, button:focus {
 
 /* ===== MAIN PANEL ===== */
 .main-panel {
-    flex: 1;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     height: 100vh;
+    min-width: 0;
 }
 
 /* ===== TOPBAR ===== */
@@ -123,6 +132,7 @@ button:hover, button:focus {
     position: sticky;
     top: 0;
     z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
    
 }
 
@@ -179,6 +189,7 @@ main {
     padding: 2.5rem;
     background: #fff;
     overflow-y: auto;
+    min-width: 0;
 }
 
 h1 {
@@ -193,7 +204,19 @@ h1 {
 }
 
 /* ===== TABLE ===== */
-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: var(--gray-light); color: var(--black); font-family: 'Montserrat', sans-serif; table-layout: fixed; border: 3px solid #c7da30; border-radius: 0.375rem; overflow: hidden; }
+.table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    border: 3px solid #c7da30;
+    border-radius: 0.375rem;
+    background: var(--gray-light);
+}
+.table-wrap table { width: max-content; min-width: 100%; border: 0; background: transparent; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; color: var(--black); font-family: 'Montserrat', sans-serif; table-layout: fixed; }
 
 thead {
      background: #bbc93dff;
@@ -403,37 +426,56 @@ tbody tr:last-child td {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
-    body {
-        flex-direction: column;
-    }
+    .menu-icon { display: flex !important; }
     .sidebar {
-        flex-direction: row;
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 3px solid var(--lime);
-        justify-content: space-around;
-        padding: 0.5rem 0;
+        position: fixed; top: 0; left: 0; width: 0; height: 100vh;
+        background: white; overflow-x: hidden; overflow-y: auto;
+        transition: width 0.3s ease; z-index: 1000;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+        padding-top: 0;
     }
-    .sidebar-link {
-        margin-bottom: 0;
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
-    .main-panel {
-        height: auto;
-    }
-    main {
-        padding: 1.5rem;
-    }
+    .sidebar.open { width: 240px; }
+    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
+    .sidebar.open .sidebar-logo { display: flex; }
+    .sidebar-logo img { width: 70px; height: auto; }
+    .main-panel { margin-left: 0 !important; transition: margin-left 0.3s ease; height: 100vh; }
+    .main-panel.shifted { margin-left: 240px; }
+    main { padding: 1.5rem; }
+    #searchForm { flex-direction: column; align-items: stretch !important; }
+    #searchForm input { width: 100% !important; }
+    #searchForm button { width: 100% !important; }
 }
+
+@media (max-width: 600px) {
+    .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
+    .sidebar.open { width: 100%; max-width: 280px; }
+    .main-panel.shifted { margin-left: 0; }
+    .sidebar-logo img { width: 60px; height: auto; }
+}
+
+.menu-icon {
+    display: none; position: fixed; top: 12px; left: 12px;
+    width: 44px; height: 44px; padding: 0;
+    border: 2px solid #e5e7eb; background: white !important;
+    border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    cursor: pointer; z-index: 1001; align-items: center; justify-content: center;
+    font-size: 22px; color: #38b6ff !important;
+}
+.menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
+.sidebar-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.3); z-index: 999; opacity: 0; transition: opacity 0.2s ease;
+}
+.sidebar-overlay.active { display: block; opacity: 1; }
+@media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
 </style>
 
 </head>
 <body>
 <aside class="sidebar">
-     <div style="position: fixed; top: 40px; left: 40px; width: 100px; height: auto;">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 150px; height: auto;"></div>
+     <div class="sidebar-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/admin/dashboard') }}" class="sidebar-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/admin/reports') }}" class="sidebar-link {{ request()->is('admin/reports') ? 'active' : '' }}">Reports</a>
@@ -452,8 +494,11 @@ tbody tr:last-child td {
     </ul>
 </aside>
 
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
+        <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
         <!-- Top bar with profile only (sticky) -->
         <div class="topbar">
             <div class="profile">
@@ -513,32 +558,34 @@ tbody tr:last-child td {
 </form>
 
 
-    <table aria-label="List of filtered reports">
-        <thead>
-            <tr>
-                <th>Case Number</th>
-                <th>Report Type</th>
-                <th>Status</th>
-                <th>Anonymous</th>
-                <th>Created At</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($reports as $report)
-        <tr onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">
-                <td>{{ $report->case_number ?? 'N/A' }}</td>
-                <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
-                <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
-                <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
-                <td>{{ $report->created_at->format('Y-m-d') }}</td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5" style="text-align:center; padding: 1rem;">No reports found for this filter.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+    <div class="table-wrap">
+        <table aria-label="List of filtered reports">
+            <thead>
+                <tr>
+                    <th>Case Number</th>
+                    <th>Report Type</th>
+                    <th>Status</th>
+                    <th>Anonymous</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($reports as $report)
+            <tr onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">
+                    <td>{{ $report->case_number ?? 'N/A' }}</td>
+                    <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
+                    <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
+                    <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
+                    <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" style="text-align:center; padding: 1rem;">No reports found for this filter.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     <!-- Pagination Links -->
    <div class="pagination">
@@ -588,6 +635,26 @@ tbody tr:last-child td {
     </div>
 </div>
 
+
+<script>
+const menuIcon = document.querySelector('.menu-icon');
+const sidebar = document.querySelector('.sidebar');
+const mainPanel = document.querySelector('.main-panel');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function toggleSidebar() {
+    if (!sidebar || !mainPanel) return;
+    sidebar.classList.toggle('open');
+    mainPanel.classList.toggle('shifted');
+    if (sidebarOverlay) {
+        sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
+        sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+    }
+}
+
+if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
+if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+</script>
 
 <script>
 function openReportModal(reportId) {

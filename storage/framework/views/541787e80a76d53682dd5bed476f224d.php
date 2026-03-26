@@ -1,4 +1,4 @@
-{{-- Shared School Admin Styles - Sidebar, Topbar, Responsive --}}
+
 <style>
 :root {
     --school-theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -92,3 +92,4 @@
     }
 }
 </style>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/components/school-admin-styles.blade.php ENDPATH**/ ?>

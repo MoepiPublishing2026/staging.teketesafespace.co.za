@@ -26,7 +26,7 @@ class ReportController extends Controller
         // Existing filterable fields
         $filterableFields = [
             'status'       => 'status',
-            // 'province'     => 'province_id',
+            'province'     => 'province_id',
             'district'     => 'district_id',
             'school'       => 'school_id',
             'abuse_type'   => 'abuse_type_id',
@@ -117,14 +117,6 @@ class ReportController extends Controller
         if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
             $query->where('is_anonymous', (int)$request->input('is_anonymous'));
         }
-        if ($sn = trim($request->input('school_name', ''))) {
-            $query->where(function ($q) use ($sn) {
-                $q->where('school_name', 'like', "%{$sn}%")
-                  ->orWhereHas('school', fn ($sq) => 
-                      $sq->where('school_name', 'like', "%{$sn}%")
-                  );
-            });
-        }
 
 
         // Date range (new field names: date_from/date_to — kept alongside old from_date/to_date)
@@ -146,18 +138,21 @@ class ReportController extends Controller
         $provinceOptions = Province::orderBy('province_name')->get();
 
         // Narrow school list by selected province if provided
-        $schoolOptions = School::select('school_id', 'school_name')
-            ->orderBy('school_name')
+        $schoolOptions = School::orderBy('school_name')
             ->when(
                 $request->filled('province_id'),
                 fn ($q) => $q->where('province_id', $request->input('province_id'))
             )
             ->get();
 
-
         $typeOptions = AbuseType::orderBy('type_name')->get();
 
-       $subtypeOptions = Subtype::orderBy('sub_type_name')->get(); 
+       $subtypeOptions = Subtype::orderBy('sub_type_name')
+            ->get()
+            ->sortBy(function ($sub) {
+                return str_contains(strtolower($sub->sub_type_name), 'other') ? 1 : 0;
+            })
+            ->values();
 
         $gradeOptions = Report::whereNotNull('grade')
             ->where('grade', '!=', '')

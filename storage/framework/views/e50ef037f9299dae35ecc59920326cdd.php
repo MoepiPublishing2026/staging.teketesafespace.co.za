@@ -703,10 +703,10 @@ canvas {
 }
 
     </style>
-    @include('components.school-admin-styles')
+    <?php echo $__env->make('components.school-admin-styles', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 </head>
 <body>
-@include('components.school-admin-sidebar')
+<?php echo $__env->make('components.school-admin-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 
     <!-- Main dashboard (topbar + scrollable dashboard) -->
@@ -716,21 +716,22 @@ canvas {
             <div class="profile">
                 <div class="meta">
                     <span>
-                        {{ auth()->user()->name ?? 'Administrator' }}
+                        <?php echo e(auth()->user()->name ?? 'Administrator'); ?>
+
                     </span>
                     <span class="role">
                         Administrator
                     </span>
                 </div>
                 <div class="profile-avatar">
-                    @php
+                    <?php
                         $currentUser = auth()->user()->fresh();
-                    @endphp
-                    @if($currentUser && $currentUser->profile_picture)
-                       <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
-                    @else
+                    ?>
+                    <?php if($currentUser && $currentUser->profile_picture): ?>
+                       <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="profile-pic">
+                    <?php else: ?>
                         <!-- Default gray circle, nothing inside -->
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -741,7 +742,7 @@ canvas {
         <div class="dashboard-scroll" id="main-content">
            <h1>
  Tekete Safe Space School Admin Dashboard - 
-  <span class="school-name">{{ $school->school_name }}</span>
+  <span class="school-name"><?php echo e($school->school_name); ?></span>
 </h1>
 
             <p class="subtitle">School case intelligence and live report monitoring.</p>
@@ -750,27 +751,29 @@ canvas {
 <section class="panel" aria-label="Filters">
     <h2>Filters</h2>
     <hr class="filter-separator"/>
-    <form method="GET" action="{{ url()->current() }}" class="filters" id="filtersForm">
+    <form method="GET" action="<?php echo e(url()->current()); ?>" class="filters" id="filtersForm">
         <select name="abuse_type" onchange="this.form.submit()">
             <option value="">Any Reports Type</option>
-            @foreach ($abuseTypes as $type)
-                <option value="{{ $type->id }}" {{ $abuseTypeFilter == $type->id ? 'selected' : '' }}>
-                    {{ $type->type_name }}
+            <?php $__currentLoopData = $abuseTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($type->id); ?>" <?php echo e($abuseTypeFilter == $type->id ? 'selected' : ''); ?>>
+                    <?php echo e($type->type_name); ?>
+
                 </option>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </select>
         <select name="age_range" onchange="this.form.submit()">
             <option value="">Any Age</option>
-            @foreach (['0-10','11-15','16-20','21-23'] as $range)
-                <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>
-                    {{ $range }}
+            <?php $__currentLoopData = ['0-10','11-15','16-20','21-23']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($range); ?>" <?php echo e($ageRange == $range ? 'selected' : ''); ?>>
+                    <?php echo e($range); ?>
+
                 </option>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </select>
         <select name="grade" onchange="this.form.submit()">
-            <option value="" {{ empty($gradeFilter) ? 'selected' : '' }}>Any Grade</option>
-            @foreach ($grades as $grade)
-                @php
+            <option value="" <?php echo e(empty($gradeFilter) ? 'selected' : ''); ?>>Any Grade</option>
+            <?php $__currentLoopData = $grades; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     $gradeLower = strtolower(trim($grade));
                     $displayGrade = $grade;
                     
@@ -794,29 +797,30 @@ canvas {
                     else {
                         $displayGrade = ucfirst($grade);
                     }
-                @endphp
-                <option value="{{ $grade }}" {{ !empty($gradeFilter) && $gradeFilter == $grade ? 'selected' : '' }}>
-                    {{ $displayGrade }}
+                ?>
+                <option value="<?php echo e($grade); ?>" <?php echo e(!empty($gradeFilter) && $gradeFilter == $grade ? 'selected' : ''); ?>>
+                    <?php echo e($displayGrade); ?>
+
                 </option>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </select>
         <label>
             From
-            <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()">
+            <input type="date" name="from_date" value="<?php echo e($fromDate); ?>" onchange="this.form.submit()">
         </label>
         <label>
             To
-            <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()">
+            <input type="date" name="to_date" value="<?php echo e($toDate); ?>" onchange="this.form.submit()">
         </label>
         <button type="button" id="refreshBtn">Refresh Table</button>
     </form>
-    @if(!empty($activeFilters))
+    <?php if(!empty($activeFilters)): ?>
         <div class="filter-chips" aria-label="Active filters">
-            @foreach ($activeFilters as $chip)
-                <span>{{ $chip }}</span>
-            @endforeach
+            <?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $chip): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <span><?php echo e($chip); ?></span>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
-    @endif
+    <?php endif; ?>
   
 </section>
             
@@ -824,79 +828,79 @@ canvas {
             <section class="metrics-row" aria-label="Headline metrics">
                 <div class="metric-card status-total" onclick="activateCard(this, 'total')">
                     <span class="card-title">Total Reports</span>
-                    <div class="card-value">{{ number_format($summaryCounts['total'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['total'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card status-awaiting" onclick="activateCard(this, 'awaiting-resolution')">
                     <span class="card-title">Awaiting Resolution</span>
-                    <div class="card-value">{{ number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card status-forwarded" onclick="activateCard(this, 'forwarded')">
                     <span class="card-title">Forwarded</span>
-                    <div class="card-value">{{ number_format($summaryCounts['statuses']['forwarded'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['forwarded'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card status-review" onclick="activateCard(this, 'under-review')">
                     <span class="card-title">Under Review</span>
-                    <div class="card-value">{{ number_format($summaryCounts['statuses']['under-review'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['under-review'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card status-closed" onclick="activateCard(this, 'closed')">
                     <span class="card-title">Closed</span>
-                    <div class="card-value">{{ number_format($summaryCounts['statuses']['closed'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['closed'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card status-unresolved" onclick="activateCard(this, 'unresolved')">
                     <span class="card-title">Unresolved</span>
-                    <div class="card-value">{{ number_format($summaryCounts['statuses']['unresolved'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['unresolved'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card status-false" onclick="activateCard(this, 'false-report')">
                     <span class="card-title">False-Report</span>
-                    <div class="card-value">{{ number_format($summaryCounts['statuses']['false-report'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['false-report'] ?? 0)); ?></div>
                 </div>
             </section>
             <section class="extras-row" aria-label="Extra metrics">
                 <div class="metric-card extras-anonymous" onclick="openExtrasModal('anonymous')">
                     <span class="card-title">Anonymous</span>
-                    <div class="card-value">{{ number_format($anonymousCounts['anonymous'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($anonymousCounts['anonymous'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card extras-identified" onclick="openExtrasModal('identified')">
                     <span class="card-title">Identified</span>
-                    <div class="card-value">{{ number_format($anonymousCounts['identified'] ?? 0) }}</div>
+                    <div class="card-value"><?php echo e(number_format($anonymousCounts['identified'] ?? 0)); ?></div>
                 </div>
                 <div class="metric-card extras-abuse" onclick="openExtrasModal('abuse-types')">
                     <span class="card-title">Types Of Report Tracked</span>
-                    <div class="card-value">{{ count($abuseTypeLabels) }}</div>
+                    <div class="card-value"><?php echo e(count($abuseTypeLabels)); ?></div>
                 </div>
                 <div class="metric-card extras-schools" onclick="openExtrasModal('top-types')">
                     <span class="card-title">Top Report Types</span>
-                    <div class="card-value">{{ count($topAbuseTypes ?? []) }}</div>
+                    <div class="card-value"><?php echo e(count($topAbuseTypes ?? [])); ?></div>
                 </div>
             </section>
 
             <!-- False Reports summary card: identify repeat reporters -->
-            <!--@php $fr = $falseReportSummary ?? ['total' => 0, 'repeat_emails' => 0, 'repeat_names' => 0, 'repeat_phones' => 0]; @endphp-->
-            <!--@if($fr['total'] > 0)-->
+            <!--<?php $fr = $falseReportSummary ?? ['total' => 0, 'repeat_emails' => 0, 'repeat_names' => 0, 'repeat_phones' => 0]; ?>-->
+            <!--<?php if($fr['total'] > 0): ?>-->
             <!--<section class="panel" aria-label="False Reports Summary">-->
             <!--    <h2>False Reports &amp; Repeat Reporters</h2>-->
             <!--    <p class="subtext" style="color: #6b7280; margin-bottom: 1rem;">Identify people who have submitted multiple false reports (by email, name, or phone).</p>-->
             <!--    <div class="stats-grid" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">-->
             <!--        <div class="stat-card" style="min-width: 140px;">-->
-            <!--            <div class="stat-value" style="font-size: 1.75rem;">{{ $fr['total'] }}</div>-->
+            <!--            <div class="stat-value" style="font-size: 1.75rem;"><?php echo e($fr['total']); ?></div>-->
             <!--            <div class="stat-label">Total False Reports</div>-->
             <!--        </div>-->
             <!--        <div class="stat-card" style="min-width: 140px;">-->
-            <!--            <div class="stat-value" style="font-size: 1.75rem;">{{ $fr['repeat_emails'] }}</div>-->
+            <!--            <div class="stat-value" style="font-size: 1.75rem;"><?php echo e($fr['repeat_emails']); ?></div>-->
             <!--            <div class="stat-label">Emails with 2+ false</div>-->
             <!--        </div>-->
             <!--        <div class="stat-card" style="min-width: 140px;">-->
-            <!--            <div class="stat-value" style="font-size: 1.75rem;">{{ $fr['repeat_names'] }}</div>-->
+            <!--            <div class="stat-value" style="font-size: 1.75rem;"><?php echo e($fr['repeat_names']); ?></div>-->
             <!--            <div class="stat-label">Names with 2+ false</div>-->
             <!--        </div>-->
             <!--        <div class="stat-card" style="min-width: 140px;">-->
-            <!--            <div class="stat-value" style="font-size: 1.75rem;">{{ $fr['repeat_phones'] }}</div>-->
+            <!--            <div class="stat-value" style="font-size: 1.75rem;"><?php echo e($fr['repeat_phones']); ?></div>-->
             <!--            <div class="stat-label">Phones with 2+ false</div>-->
             <!--        </div>-->
             <!--    </div>-->
-            <!--    <p style="margin-top: 1rem;"><a href="{{ url('/admin/false-reports') }}" class="sidebar-link" style="display: inline-block; padding: 0.75rem 1.5rem;">View False Reports Analysis &rarr;</a></p>-->
+            <!--    <p style="margin-top: 1rem;"><a href="<?php echo e(url('/admin/false-reports')); ?>" class="sidebar-link" style="display: inline-block; padding: 0.75rem 1.5rem;">View False Reports Analysis &rarr;</a></p>-->
             <!--</section>-->
-            <!--@endif-->
+            <!--<?php endif; ?>-->
 
           <section class="panel" aria-label="Analytics">
     <div class="charts-grid">
@@ -972,7 +976,7 @@ canvas {
 
     <!-- Chart Data -->
     <script id="dashboard-data" type="application/json">
-    {!! json_encode([
+    <?php echo json_encode([
         'months' => $months,
         'monthlyCounts' => $monthlyCounts,
         'abuseLabels' => $abuseTypeLabels,
@@ -985,7 +989,8 @@ canvas {
         'allReports' => $allReportsPayload,
         'anonymousReports' => $anonymousReportsPayload ?? [],
         'identifiedReports' => $identifiedReportsPayload ?? [],
-    ]) !!}
+    ]); ?>
+
     </script>
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -1387,7 +1392,7 @@ document.addEventListener('DOMContentLoaded', function () {
    
    // Navigate preserving all active filters and adding/updating 'status' filter
 function navigateWithFilter(status) {
-    const url = new URL("{{ url('/admin/reports') }}", window.location.origin);
+    const url = new URL("<?php echo e(url('/admin/reports')); ?>", window.location.origin);
     const params = new URLSearchParams(window.location.search);
 
     // Preserve all current filters except 'status'
@@ -1408,7 +1413,7 @@ function navigateWithFilter(status) {
 
 // Navigate preserving all active filters and adding/updating 'is_anonymous' filter
 function navigateWithFilterByAnonymous(isAnonymous) {
-    const url = new URL("{{ url('/admin/reports') }}", window.location.origin);
+    const url = new URL("<?php echo e(url('/admin/reports')); ?>", window.location.origin);
     const params = new URLSearchParams(window.location.search);
 
     // Preserve all current filters except 'is_anonymous'
@@ -1425,7 +1430,7 @@ function navigateWithFilterByAnonymous(isAnonymous) {
 
 // Navigate preserving all active filters, optionally adding abuse_type filter if needed
 function navigateWithFilterByAbuseType(abuseTypeId) {
-    const url = new URL("{{ url('/admin/reports') }}", window.location.origin);
+    const url = new URL("<?php echo e(url('/admin/reports')); ?>", window.location.origin);
     const params = new URLSearchParams(window.location.search);
 
     // Preserve all current filters except 'abuse_type_id' or similar keys
@@ -1446,7 +1451,7 @@ function navigateWithFilterByAbuseType(abuseTypeId) {
 
 // Navigate preserving all active filters, optionally adding school filter if needed
 function navigateWithFilterBySchool(schoolId) {
-    const url = new URL("{{ url('/admin/reports') }}", window.location.origin);
+    const url = new URL("<?php echo e(url('/admin/reports')); ?>", window.location.origin);
     const params = new URLSearchParams(window.location.search);
 
     // Preserve all current filters except 'school_id'
@@ -1467,7 +1472,7 @@ function navigateWithFilterBySchool(schoolId) {
 
 // Navigate to reports page without filters (for exports or general navigation)
 function navigateToReportsUnfiltered() {
-    window.location.href = "{{ url('/admin/reports') }}";
+    window.location.href = "<?php echo e(url('/admin/reports')); ?>";
 }
 
 function openExtrasModal(type) {
@@ -1538,8 +1543,8 @@ function navigateToTopAbuseTypes() {
 }
 
     </script>
-    @include('components.school-admin-sidebar-script')
-<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
+    <?php echo $__env->make('components.school-admin-sidebar-script', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+<script src="<?php echo e(asset('js/mobile-select-modal.js')); ?>"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -1563,3 +1568,4 @@ function navigateToTopAbuseTypes() {
     
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/school-admin-dashboard/index.blade.php ENDPATH**/ ?>

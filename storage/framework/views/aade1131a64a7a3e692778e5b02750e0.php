@@ -1090,16 +1090,16 @@ canvas {
 
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo">
     </div>
     <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}" class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial-admin/settings') }}" class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
+        <a href="<?php echo e(url('/provincial-admin/dashboard')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/dashboard') ? 'active' : ''); ?>">Dashboard</a>
+        <a href="<?php echo e(url('/provincial-admin/reports')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/reports') ? 'active' : ''); ?>">Reports</a>
+        <a href="<?php echo e(url('/provincial-admin/settings')); ?>" class="sidebar-link <?php echo e(request()->is('provincial-admin/settings') ? 'active' : ''); ?>">My Profile</a>
         <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
+        <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
+        <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" style="display: none;">
+            <?php echo csrf_field(); ?>
         </form>
     </ul>
 </aside>
@@ -1112,26 +1112,26 @@ canvas {
     <div class="topbar">
         <div class="profile">
             <div class="meta">
-                @php
+                <?php
                     $currentUser = auth()->user()->fresh();
                     $fullName = $currentUser->name ?? 'Administrator';
                     $nameParts = explode(' ', $fullName, 2);
                     $firstName = $nameParts[0] ?? '';
                     $surname = $nameParts[1] ?? '';
-                @endphp
-                <span>{{ $firstName }} {{ $surname }}</span>
+                ?>
+                <span><?php echo e($firstName); ?> <?php echo e($surname); ?></span>
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
-                @if($currentUser && $currentUser->profile_picture)
-                    <img src="{{ $currentUser->profile_picture_url }}"
+                <?php if($currentUser && $currentUser->profile_picture): ?>
+                    <img src="<?php echo e($currentUser->profile_picture_url); ?>"
                          alt="Profile Picture"
                          onerror="this.style.display='none'; this.parentElement.style.background='#ececec';">
-                @else
+                <?php else: ?>
                     <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color: #999;">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -1139,7 +1139,7 @@ canvas {
     <div class="dashboard-scroll" id="main-content">
         <h1>
             Tekete Safe Space Provincial Dashboard -
-            <span class="province-name">{{ $province->province_name }}</span>
+            <span class="province-name"><?php echo e($province->province_name); ?></span>
         </h1>
 
         <p class="subtitle">Provincial case intelligence and live report monitoring.</p>
@@ -1147,108 +1147,112 @@ canvas {
         <section class="panel" aria-label="Filters">
             <h2>Filters</h2>
             <hr class="filter-separator"/>
-            <form method="GET" action="{{ url()->current() }}" class="filters" id="filtersForm">
-                <input type="hidden" name="tab" value="{{ $activeTab }}">
+            <form method="GET" action="<?php echo e(url()->current()); ?>" class="filters" id="filtersForm">
+                <input type="hidden" name="tab" value="<?php echo e($activeTab); ?>">
                 <select name="district" id="districtSelect" onchange="this.form.submit()">
                     <option value="">All Districts</option>
-                    @foreach ($districts as $district)
-                        <option value="{{ $district->id }}" {{ $districtFilter == $district->id ? 'selected' : '' }}>
-                            {{ $district->name }}
+                    <?php $__currentLoopData = $districts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $district): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($district->id); ?>" <?php echo e($districtFilter == $district->id ? 'selected' : ''); ?>>
+                            <?php echo e($district->name); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
                 <select name="school" id="schoolSelect" onchange="this.form.submit()">
                     <option value="">All Schools</option>
-                    @foreach ($schools as $school)
-                        <option value="{{ $school->school_id }}" {{ $schoolFilter == $school->school_id ? 'selected' : '' }}>
-                            {{ $school->school_name }}
+                    <?php $__currentLoopData = $schools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($school->school_id); ?>" <?php echo e($schoolFilter == $school->school_id ? 'selected' : ''); ?>>
+                            <?php echo e($school->school_name); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
                 <select name="abuse_type" onchange="this.form.submit()">
                     <option value="">Any Report Type</option>
-                    @foreach ($abuseTypes as $type)
-                        <option value="{{ $type->id }}" {{ $abuseTypeFilter == $type->id ? 'selected' : '' }}>
-                            {{ $type->type_name }}
+                    <?php $__currentLoopData = $abuseTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($type->id); ?>" <?php echo e($abuseTypeFilter == $type->id ? 'selected' : ''); ?>>
+                            <?php echo e($type->type_name); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
                 <select name="age_range" onchange="this.form.submit()">
                     <option value="">Any Age</option>
-                    @foreach (['0-10','11-15','16-20','21-25','26-30','30+'] as $range)
-                        <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>
-                            {{ $range }}
+                    <?php $__currentLoopData = ['0-10','11-15','16-20','21-25','26-30','30+']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($range); ?>" <?php echo e($ageRange == $range ? 'selected' : ''); ?>>
+                            <?php echo e($range); ?>
+
                         </option>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
                 <label>
                     From
-                    <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()">
+                    <input type="date" name="from_date" value="<?php echo e($fromDate); ?>" onchange="this.form.submit()">
                 </label>
                 <label>
                     To
-                    <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()">
+                    <input type="date" name="to_date" value="<?php echo e($toDate); ?>" onchange="this.form.submit()">
                 </label>
                 <button type="button" id="refreshBtn">Refresh Table</button>
             </form>
-            @if(!empty($activeFilters))
+            <?php if(!empty($activeFilters)): ?>
                 <div class="filter-chips" aria-label="Active filters">
-                    @foreach ($activeFilters as $chip)
-                        <span>{{ $chip }}</span>
-                    @endforeach
+                    <?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $chip): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <span><?php echo e($chip); ?></span>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @endif
+            <?php endif; ?>
         </section>
 
         <section class="metrics-row" aria-label="Headline metrics">
             <div class="metric-card status-total" onclick="activateCard(this, 'total')">
                 <span class="card-title">Total Reports</span>
-                <div class="card-value">{{ number_format($summaryCounts['total'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['total'] ?? 0)); ?></div>
             </div>
             <div class="metric-card status-awaiting" onclick="activateCard(this, 'awaiting-resolution')">
                 <span class="card-title">Awaiting Resolution</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0)); ?></div>
             </div>
             <div class="metric-card status-forwarded" onclick="activateCard(this, 'forwarded')">
                 <span class="card-title">Forwarded</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['forwarded'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['forwarded'] ?? 0)); ?></div>
             </div>
             <div class="metric-card status-review" onclick="activateCard(this, 'under-review')">
                 <span class="card-title">Under Review</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['under-review'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['under-review'] ?? 0)); ?></div>
             </div>
             <div class="metric-card status-closed" onclick="activateCard(this, 'closed')">
                 <span class="card-title">Closed</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['closed'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['closed'] ?? 0)); ?></div>
             </div>
             <div class="metric-card status-unresolved" onclick="activateCard(this, 'unresolved')">
                 <span class="card-title">Unresolved</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['unresolved'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['unresolved'] ?? 0)); ?></div>
             </div>
             <div class="metric-card status-false" onclick="activateCard(this, 'false-report')">
                 <span class="card-title">False-Report</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['false-report'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($summaryCounts['statuses']['false-report'] ?? 0)); ?></div>
             </div>
         </section>
 
         <section class="extras-row" aria-label="Extra metrics">
             <div class="metric-card extras-anonymous" onclick="openExtrasModal('anonymous')">
                 <span class="card-title">Anonymous</span>
-                <div class="card-value">{{ number_format($anonymousCounts['anonymous'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($anonymousCounts['anonymous'] ?? 0)); ?></div>
                 <span class="card-subtext"></span>
             </div>
             <div class="metric-card extras-identified" onclick="openExtrasModal('identified')">
                 <span class="card-title">Identified</span>
-                <div class="card-value">{{ number_format($anonymousCounts['identified'] ?? 0) }}</div>
+                <div class="card-value"><?php echo e(number_format($anonymousCounts['identified'] ?? 0)); ?></div>
             </div>
             <div class="metric-card extras-abuse" onclick="openExtrasModal('abuse-types')">
                 <span class="card-title">Types Of Report Tracked</span>
-                <div class="card-value">{{ count($abuseTypeLabels) }}</div>
+                <div class="card-value"><?php echo e(count($abuseTypeLabels)); ?></div>
                 <span class="card-subtext"></span>
             </div>
             <div class="metric-card extras-schools" onclick="openExtrasModal('schools')">
                 <span class="card-title">Active Schools</span>
-                <div class="card-value">{{ count($topSchools) }}</div>
+                <div class="card-value"><?php echo e(count($topSchools)); ?></div>
                 <span class="card-subtext"></span>
             </div>
         </section>
@@ -1284,16 +1288,18 @@ canvas {
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($topSchools as $schoolName => $schoolCount)
+                                <?php $__currentLoopData = $topSchools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schoolName => $schoolCount): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td style="padding:0.5rem; border-bottom:1px solid #e5e7eb; word-break:break-word;">
-                                            {{ $schoolName }}
+                                            <?php echo e($schoolName); ?>
+
                                         </td>
                                         <td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb; white-space:nowrap;">
-                                            {{ number_format($schoolCount) }}
+                                            <?php echo e(number_format($schoolCount)); ?>
+
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -1315,19 +1321,19 @@ canvas {
                     <thead>
                         <tr>
                             <th class="heatmap-corner">District</th>
-                            @foreach($heatmapAbuseTypes ?? [] as $atype)
-                                <th class="heatmap-col">{{ $atype }}</th>
-                            @endforeach
+                            <?php $__currentLoopData = $heatmapAbuseTypes ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $atype): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <th class="heatmap-col"><?php echo e($atype); ?></th>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             <th class="heatmap-total-col">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($heatmapMatrix ?? [] as $district => $row)
-                            @php $rowIdx = $loop->index; @endphp
+                        <?php $__empty_1 = true; $__currentLoopData = $heatmapMatrix ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $district => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php $rowIdx = $loop->index; ?>
                             <tr>
-                                <th class="heatmap-row">{{ $district }}</th>
-                                @foreach($row as $colIdx => $count)
-                                    @php
+                                <th class="heatmap-row"><?php echo e($district); ?></th>
+                                <?php $__currentLoopData = $row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colIdx => $count): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $intensity = ($heatmapMax ?? 1) > 0 ? min(1, $count / ($heatmapMax ?? 1)) : 0;
                                         $colors = ['#e0f2fe','#fef9c3','#eab308','#f97316','#ef4444'];
                                         $colorIdx = $intensity >= 0.8 ? 4 : ($intensity >= 0.6 ? 3 : ($intensity >= 0.4 ? 2 : ($intensity >= 0.2 ? 1 : 0)));
@@ -1339,39 +1345,39 @@ canvas {
                                         $districtId = $heatmapDistrictNameToId[$district] ?? null;
                                         $abuseTypeId = $heatmapAbuseTypeNameToId[$atype] ?? null;
                                         $animDelay = ($rowIdx * count($row) + $colIdx) * 0.02;
-                                    @endphp
-                                    <td class="heatmap-cell {{ $isDark ? 'heatmap-cell-dark' : '' }} {{ $isHotspot ? 'heatmap-hotspot' : '' }}"
-                                        style="background-color: {{ $bgColor }}; animation-delay: {{ $animDelay }}s;"
-                                        data-count="{{ $count }}"
-                                        data-percent="{{ $pct }}"
-                                        data-district="{{ $district }}"
-                                        data-abuse-type="{{ $atype }}"
-                                        data-district-id="{{ $districtId }}"
-                                        data-abuse-type-id="{{ $abuseTypeId }}"
+                                    ?>
+                                    <td class="heatmap-cell <?php echo e($isDark ? 'heatmap-cell-dark' : ''); ?> <?php echo e($isHotspot ? 'heatmap-hotspot' : ''); ?>"
+                                        style="background-color: <?php echo e($bgColor); ?>; animation-delay: <?php echo e($animDelay); ?>s;"
+                                        data-count="<?php echo e($count); ?>"
+                                        data-percent="<?php echo e($pct); ?>"
+                                        data-district="<?php echo e($district); ?>"
+                                        data-abuse-type="<?php echo e($atype); ?>"
+                                        data-district-id="<?php echo e($districtId); ?>"
+                                        data-abuse-type-id="<?php echo e($abuseTypeId); ?>"
                                         data-view="count"
                                         role="button"
                                         tabindex="0"
-                                        title="{{ $district }} × {{ $atype }}: {{ $count }} reports ({{ $pct }}% of district) — Click to view reports">
-                                        <span class="heatmap-cell-count">{{ $count }}</span>
-                                        <span class="heatmap-cell-pct" style="display:none;">{{ $pct }}%</span>
+                                        title="<?php echo e($district); ?> × <?php echo e($atype); ?>: <?php echo e($count); ?> reports (<?php echo e($pct); ?>% of district) — Click to view reports">
+                                        <span class="heatmap-cell-count"><?php echo e($count); ?></span>
+                                        <span class="heatmap-cell-pct" style="display:none;"><?php echo e($pct); ?>%</span>
                                     </td>
-                                @endforeach
-                                <td class="heatmap-total-cell">{{ $heatmapRowTotals[$district] ?? 0 }}</td>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <td class="heatmap-total-cell"><?php echo e($heatmapRowTotals[$district] ?? 0); ?></td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
-                                <td colspan="{{ count($heatmapAbuseTypes ?? []) + 2 }}" style="text-align:center; padding:2rem; color:#6b7280;">No report data for the selected filters.</td>
+                                <td colspan="<?php echo e(count($heatmapAbuseTypes ?? []) + 2); ?>" style="text-align:center; padding:2rem; color:#6b7280;">No report data for the selected filters.</td>
                             </tr>
-                        @endforelse
-                        @if(!empty($heatmapMatrix))
+                        <?php endif; ?>
+                        <?php if(!empty($heatmapMatrix)): ?>
                             <tr class="heatmap-total-row">
                                 <th class="heatmap-corner">Total</th>
-                                @foreach($heatmapColumnTotals ?? [] as $colTotal)
-                                    <td class="heatmap-total-col">{{ $colTotal }}</td>
-                                @endforeach
-                                <td class="heatmap-total-cell">{{ $heatmapGrandTotal ?? 0 }}</td>
+                                <?php $__currentLoopData = $heatmapColumnTotals ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colTotal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <td class="heatmap-total-col"><?php echo e($colTotal); ?></td>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <td class="heatmap-total-cell"><?php echo e($heatmapGrandTotal ?? 0); ?></td>
                             </tr>
-                        @endif
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -1447,7 +1453,7 @@ canvas {
 
 <!-- Chart Data -->
 <script id="dashboard-data" type="application/json">
-{!! json_encode([
+<?php echo json_encode([
     'months' => $months,
     'monthlyCounts' => $monthlyCounts,
     'abuseLabels' => $abuseTypeLabels,
@@ -1460,7 +1466,8 @@ canvas {
     'allReports' => $allReportsPayload,
     'anonymousReports' => $anonymousReportsPayload ?? [],
     'identifiedReports' => $identifiedReportsPayload ?? [],
-]) !!}
+]); ?>
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1469,7 +1476,7 @@ canvas {
     Chart.register(ChartDataLabels);
 
 (function() {
-  const reportsUrl = "{{ url('/provincial-admin/reports') }}";
+  const reportsUrl = "<?php echo e(url('/provincial-admin/reports')); ?>";
   const viewBtns = document.querySelectorAll('.heatmap-view-btn');
   const scaleCount = document.getElementById('heatmapScaleCount');
   const scalePct = document.getElementById('heatmapScalePct');
@@ -1888,7 +1895,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function navigateWithFilter(status) {
-    const url = new URL("{{ url('/provincial/reports') }}", window.location.origin);
+    const url = new URL("<?php echo e(url('/provincial/reports')); ?>", window.location.origin);
     const params = new URLSearchParams(window.location.search);
     params.forEach((value, key) => { if (key !== 'status') url.searchParams.append(key, value); });
     if (status && status !== 'total') { url.searchParams.set('status', status); } else { url.searchParams.delete('status'); }
@@ -1950,7 +1957,7 @@ function closeExtrasModal() {
 }
 
 function navigateWithFilterByAnonymous(isAnonymous) {
-    const url = new URL("{{ url('/provincial-admin/reports') }}", window.location.origin);
+    const url = new URL("<?php echo e(url('/provincial-admin/reports')); ?>", window.location.origin);
     const params = new URLSearchParams(window.location.search);
     params.forEach((value, key) => { if (key !== 'is_anonymous') url.searchParams.append(key, value); });
     url.searchParams.set('is_anonymous', isAnonymous ? 1 : 0);
@@ -1981,8 +1988,8 @@ if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
   const mapEl = document.getElementById('sa-map');
   if (!mapEl) return;
 
-  const provinceCounts = @json($mapProvinceCounts ?? []);
-  const userProvinceName = @json($mapUserProvinceName ?? null);
+  const provinceCounts = <?php echo json_encode($mapProvinceCounts ?? [], 15, 512) ?>;
+  const userProvinceName = <?php echo json_encode($mapUserProvinceName ?? null, 15, 512) ?>;
   const geoJsonUrl = 'https://gist.githubusercontent.com/MeganBeckett/9101ba77bd0af06fd003ea5c99d051ab/raw/sa-provinces.json';
 
   function normalizeName(name) {
@@ -2061,7 +2068,7 @@ if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 })();
 </script>
 
-<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
+<script src="<?php echo e(asset('js/mobile-select-modal.js')); ?>"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
@@ -2082,3 +2089,4 @@ if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/provincial-admin-dashboard/index.blade.php ENDPATH**/ ?>

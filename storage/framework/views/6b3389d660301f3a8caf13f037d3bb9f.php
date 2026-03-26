@@ -145,10 +145,9 @@
 
 
            <!--[if BLOCK]><![endif]--><?php if(session()->has('error_message')): ?>
-    <div style="background-color: #fee2e2; border-bottom: 1px solid #ef4444; color: #b91c1c; width: 100%; padding: 10px 0; text-align: center; position: relative; z-index: 50;">
-        
-        <strong style="display: block; margin-bottom: 5px;"><?php echo e(session('error_message')); ?></strong>
-
+   <div style="background-color: #fee2e2; border-bottom: 1px solid #ef4444; color: #b91c1c; width: 100%; padding: 15px 0; text-align: center; margin-bottom: 20px; border-radius: 8px;">
+            <strong style="display: block; margin-bottom: 5px;"><?php echo e(session('error_message')); ?></strong>  
+     
         <?php
             // Fallback: if the property isn't set, try to get it from the session
             $expiry = $latestReport->suspended_until ?? session('expiry_date');
