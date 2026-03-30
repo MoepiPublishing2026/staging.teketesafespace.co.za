@@ -1,7 +1,7 @@
 <div>
     <!-- Subscription Modal Wrapper -->
     <div wire:key="subscription-modal-wrapper">
-        @if($this->showSubscriptionModal ?? false)
+        <!--[if BLOCK]><![endif]--><?php if($this->showSubscriptionModal ?? false): ?>
             <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm px-4">
                 <div class="bg-[#eeeeee] 
                             border-[3px] border-[#c7da30] 
@@ -43,7 +43,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
     </div>
 
     <!-- Header -->
@@ -52,7 +52,7 @@
              style="max-width: 1280px; margin: 0 auto;">
             <!-- Logo -->
             <div>
-                <img src="{{ asset('images/logo.png') }}" 
+                <img src="<?php echo e(asset('images/logo.png')); ?>" 
                      alt="Safe Space Logo" 
                      style="width: 90px; height: auto;">
             </div>
@@ -66,17 +66,17 @@
                    style="color: black; text-decoration: none;">
                    Back
                 </a>
-                <a href="{{ route('landing-page') }}" 
+                <a href="<?php echo e(route('landing-page')); ?>" 
                    class="transition-colors hover:!text-[#c7da30]"
                    style="color: black; text-decoration: none;">
                    Home
                 </a>
-                 <a href="{{ route('about-us') }}#about"
+                 <a href="<?php echo e(route('about-us')); ?>#about"
                        class="transition-colors hover:!text-[#c7da30]"
                        style="color: black; text-decoration: none;">
                        About Us
                     </a>
-                    <a href="{{ route('contact-us') }}#section"
+                    <a href="<?php echo e(route('contact-us')); ?>#section"
                        class="transition-colors hover:!text-[#c7da30]"
                        style="color: black; text-decoration: none;">
                        Contact Us
@@ -100,7 +100,7 @@
         <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
         <div class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
             <div class="flex items-center justify-between p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
+                <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo" class="h-8">
                 <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-black hover:bg-gray-100">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -114,17 +114,17 @@
                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Back
                 </a>
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" 
+                <a href="<?php echo e(route('landing-page')); ?>" onclick="toggleMobileMenu()" 
                    class="block py-3 text-black hover:text-[#c7da30] transition-colors" 
                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Home
                 </a>
-                <a href="{{ route('landing-page') }}#about" onclick="toggleMobileMenu()" 
+                <a href="<?php echo e(route('landing-page')); ?>#about" onclick="toggleMobileMenu()" 
                    class="block py-3 text-black hover:text-[#c7da30] transition-colors" 
                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     About Us
                 </a>
-                <a href="{{ route('landing-page') }}#section" onclick="toggleMobileMenu()" 
+                <a href="<?php echo e(route('landing-page')); ?>#section" onclick="toggleMobileMenu()" 
                    class="block py-3 text-black hover:text-[#c7da30] transition-colors" 
                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Contact Us
@@ -135,26 +135,33 @@
 
     <!-- Main Content -->
     <main class="flex flex-col justify-center items-center flex-1 pt-32 px-4 w-full min-h-screen">
-        @if ($showOtpForm)
+        <!--[if BLOCK]><![endif]--><?php if($showOtpForm): ?>
             <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-12 text-center tracking-wide">
-                {{ ucfirst($role) }} Administrator – Enter OTP
+                <?php echo e(ucfirst($role)); ?> Administrator – Enter OTP
             </h1>
 
             <div class="bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-12 sm:py-20 rounded-[20px] text-center">
                 <form class="flex flex-col items-center gap-8 sm:gap-10">
                     <input type="hidden" wire:model.live="otp" id="otp">
                     <div class="flex justify-center gap-1 sm:gap-2 w-full otp-container px-2 sm:px-0">
-                        @for ($i = 0; $i < 6; $i++)
+                        <!--[if BLOCK]><![endif]--><?php for($i = 0; $i < 6; $i++): ?>
                             <input type="text" maxlength="1"
                                    class="otp-input w-[44px] h-[48px] sm:w-[52px] sm:h-[52px] xs:w-[48px] xs:h-[48px] md:w-[60px] md:h-[60px] lg:w-[70px] lg:h-[70px] text-center text-black border-[3px] border-[#c7da30] rounded-[12px] text-lg sm:text-xl font-semibold outline-none focus:border-[#a8c529] transition-colors flex-shrink-0"
                                    oninput="updateOtp()" 
-                                   onkeydown="moveBack(event, {{ $i }})" 
-                                   id="otp-{{ $i }}">
-                        @endfor
+                                   onkeydown="moveBack(event, <?php echo e($i); ?>)" 
+                                   id="otp-<?php echo e($i); ?>">
+                        <?php endfor; ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
-                    @error('otp') 
-                        <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span> 
-                    @enderror
+                    <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['otp'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> 
+                        <span class="text-red-500 text-sm block -mt-4"><?php echo e($message); ?></span> 
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <button type="button" 
                             wire:click.prevent="login"
@@ -164,9 +171,9 @@
                 </form>
             </div>
 
-        @else
+        <?php else: ?>
             <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-12 text-center tracking-wide">
-                {{ ucfirst($role) }} Administrator Verification
+                <?php echo e(ucfirst($role)); ?> Administrator Verification
             </h1>
 
             <div class="bg-white border-[3px] border-[#c7da30] w-full max-w-[600px] px-6 sm:px-12 py-12 sm:py-16 rounded-[20px] text-center">
@@ -174,9 +181,16 @@
                     <input type="email" id="email" wire:model="email"
                            placeholder="Email Address"
                            class="w-full h-[60px] px-5 text-black border-[3px] border-[#c7da30] rounded-[10px] bg-white text-sm outline-none placeholder-gray-400 focus:border-[#a8c529] placeholder:tracking-wider">
-                    @error('email') 
-                        <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span> 
-                    @enderror
+                    <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> 
+                        <span class="text-red-500 text-sm block -mt-4"><?php echo e($message); ?></span> 
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <button type="submit"
                             class="w-full h-[60px] font-semibold text-[16px]
@@ -187,7 +201,7 @@
                     </button>
                 </form>
             </div>
-        @endif
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
     </main>
 
     <!-- Footer -->
@@ -195,34 +209,34 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
                      style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
                     <div>
-                        <p>&copy; {{ date('Y') }} Safe Space from Moepi Publishing. All rights reserved.</p>
+                        <p>&copy; <?php echo e(date('Y')); ?> Safe Space from Moepi Publishing. All rights reserved.</p>
                     </div>
                     <div class="flex items-center gap-4 order-2">
                  <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">
-                 <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px; left:1024.8; top: 701.8
+                 <img src="<?php echo e(asset('images/youtube.png')); ?>" alt="YouTube Icon" style="width: 30px; height: 30px; left:1024.8; top: 701.8
 ;">   
 </a>
                  <a href="https://www.X.com/moepipublishing" target="_blank">
-               <img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;left:1024.8 ; top:701.8; ">
+               <img src="<?php echo e(asset('images/X.png')); ?>" alt="X Icon" style="width: 30px; height: 30px;left:1024.8 ; top:701.8; ">
                  </a>
                
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" >
-               <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;left: 1128.6
+               <img src="<?php echo e(asset('images/linkedIn.png')); ?>" alt="LinkedIn Icon" style="width: 30px; height: 30px;left: 1128.6
 ; top:701.1;">
                 </a>
                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-               <img src="{{ asset('images/facebook.png') }}" 
+               <img src="<?php echo e(asset('images/facebook.png')); ?>" 
                alt="Facebook Icon" 
                style="width: 35.2px; height: 30px;left: 1179.7;top: 701.1;">
             </a>
                
                <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                <img src="{{ asset('images/instagram.png') }}" 
+                <img src="<?php echo e(asset('images/instagram.png')); ?>" 
                 alt="Instagram Icon" 
                 style="width: 35.2px; height: 30px; left: 1225.7px; top: 701.1px;">
                </a>
                 <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-               <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 35.2px; height: 30px;left:1271.7 ;top:700.1;"></a>
+               <img src="<?php echo e(asset('images/tiktok.png')); ?>" alt="TikTok Icon" style="width: 35.2px; height: 30px;left:1271.7 ;top:700.1;"></a>
             </div>
                     
             </footer>
@@ -278,3 +292,4 @@
     }
     </style>
 </div>
+<?php /**PATH C:\Users\monye\Documents\staging.teketesafespace.co.za\resources\views/livewire/passwordless-login.blade.php ENDPATH**/ ?>
