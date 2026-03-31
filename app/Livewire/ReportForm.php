@@ -68,11 +68,15 @@ protected array $gradeAgeRanges = [
 
     protected $abuseTypePrefixes = [
         'Bullying' => 'BU',
-        'Sexual Abuse' => 'SX',
-        'Substance Abuse' => 'SB',
+        'Suspected Sexual Harassment' => 'SX',
+        'Substance Addiction' => 'SB',
         'Violence' => 'VL',
         'Teenage Pregnancy' => 'TP',
         'Weapons' => 'WP',
+        'Theft' => 'TH',
+        'Suicidal Thoughts' => 'ST',
+        'Learning Issues' => 'LI',
+        'Request Sanitary Pads' => 'RP',
     ];
 
     public function mount($abuseTypeID, $isAnonymous)
