@@ -486,13 +486,13 @@ form.filters button {
 
 canvas {
     width: 100% !important;
-    height: 280px !important;
+    height: 100% !important;
 }
 
 .modal-backdrop {
    position: fixed;
     inset: 0;
-    background: rgba(0, 12, 12, 0.42); /* Subtle dark overlay */
+    background: rgba(0, 12, 12, 0.42); 
     display: none;
     align-items: center;
     justify-content: center;
