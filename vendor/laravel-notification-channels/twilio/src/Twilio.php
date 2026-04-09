@@ -81,6 +81,15 @@ class Twilio
             'maxPrice',
             'provideFeedback',
             'validityPeriod',
+            'attempt',
+            'contentRetention',
+            'addressRetention',
+            'smartEncoded',
+            'persistentAction',
+            'scheduleType',
+            'sendAt',
+            'sendAsMms',
+            'riskCheck',
         ]);
 
         if ($message instanceof TwilioMmsMessage) {

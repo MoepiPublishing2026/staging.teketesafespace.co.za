@@ -761,7 +761,7 @@ canvas {
         </select>
         <select name="age_range" onchange="this.form.submit()">
             <option value="">Any Age</option>
-            @foreach (['0-10','11-15','16-20','21-23'] as $range)
+            @foreach (['0-10','11-15','16-20','21-22'] as $range)
                 <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>
                     {{ $range }}
                 </option>

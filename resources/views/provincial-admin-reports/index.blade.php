@@ -6,6 +6,7 @@
     <title>Reports - Provincial Admin - {{ $province->province_name ?? '' }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <style>
 :root {
     --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -220,28 +221,21 @@ tbody tr:last-child td { border-bottom: none; }
     padding: 0; position: relative;
     font-family: 'Montserrat', sans-serif; color: #333;
 }
-/* Close Button */
 .modal-close {
      display: flex !important;
-     justify-content: center !important;   /* center text horizontally */
-     align-items: center !important;       /* center text vertically */
-
+     justify-content: center !important;
+     align-items: center !important;
      position: absolute !important;
      right: 28px !important;
      bottom: 24px !important;
-
      width: 80px !important;
      height: 38px !important;
-
      background: white !important;
      border: 3px solid #cddc39 !important;
      color: #38b6ff !important;
-
      font-size: 14px !important;
      font-weight: 400 !important;
-
      border-radius: 16px !important;
-
      transition: background 0.2s, color 0.2s, border 0.2s !important;
      cursor: pointer !important;
      outline: none !important;
@@ -278,10 +272,8 @@ tbody tr:last-child td { border-bottom: none; }
     .menu-icon { display: flex !important; }
     .sidebar {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 0;
-        min-width: 0;
+        top: 0; left: 0;
+        width: 0; min-width: 0;
         height: 100vh;
         overflow-x: hidden;
         transition: width 0.3s ease, min-width 0.3s ease;
@@ -304,7 +296,6 @@ tbody tr:last-child td { border-bottom: none; }
     .filter-grid { grid-template-columns: 1fr !important; }
     main { padding: 1rem; }
 }
-
 @media (max-width: 600px) {
     .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
     .sidebar.open { width: 100%; max-width: 280px; min-width: 0; }
@@ -396,6 +387,61 @@ tbody tr:last-child td { border-bottom: none; }
     font-weight: 600; color: #4a5e00;
     margin-right: 6px; margin-bottom: 6px;
 }
+
+/* ── Choices.js overrides ──────────────────────────────────────── */
+.choices {
+    margin: 0 !important;
+}
+.choices__inner {
+    border: 2px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    background: white !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 13px !important;
+    min-height: unset !important;
+    padding: 4px 8px !important;
+    color: #111 !important;
+}
+.choices__inner:focus-within {
+    border-color: #c7da30 !important;
+    box-shadow: 0 0 0 3px rgba(199,218,48,0.15) !important;
+}
+.choices__list--single .choices__item {
+    font-size: 13px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    color: #111 !important;
+    padding: 2px 0 !important;
+}
+.choices__list--dropdown {
+    border: 2px solid #c7da30 !important;
+    border-radius: 8px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 13px !important;
+    z-index: 9999 !important;
+}
+.choices__list--dropdown .choices__item {
+    font-size: 13px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    color: #111 !important;
+    padding: 8px 12px !important;
+}
+.choices__list--dropdown .choices__item--selectable.is-highlighted {
+    background: #f7fcd4 !important;
+    color: #000 !important;
+}
+.choices__input {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 13px !important;
+    color: #111 !important;
+    background: white !important;
+}
+.choices[data-type*="select-one"] .choices__button {
+    display: none;
+}
+.choices__placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
     </style>
 </head>
 <body>
@@ -456,13 +502,7 @@ tbody tr:last-child td { border-bottom: none; }
             {{-- Filter Grid --}}
             <div class="filter-grid">
 
-                <!--<div>-->
-                <!--    <label class="filter-label">School Name</label>-->
-                <!--    <input type="text" name="school_name" class="filter-input"-->
-                <!--           value="{{ request('school_name') }}"-->
-                <!--           placeholder="Search school…" />-->
-                <!--</div>-->
-                 <div>
+                <div>
                     <label class="filter-label">Anonymous</label>
                     <select name="is_anonymous" class="filter-input">
                         <option value="">All</option>
@@ -470,49 +510,24 @@ tbody tr:last-child td { border-bottom: none; }
                         <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Not Anonymous</option>
                     </select>
                 </div>
-               <div style="position:relative;" id="schoolDropdownWrap">
+
+               <div>
                     <label class="filter-label">School</label>
-                    {{-- Hidden real input submitted with the form --}}
-                    <input type="hidden" name="school_id" id="schoolIdInput" value="{{ request('school_id') }}">
-                    <input type="hidden" name="school_name" id="schoolNameInput" value="{{ request('school_name') }}">
-                    {{-- Visible search box --}}
                     <input
                         type="text"
+                        name="school_name"
                         id="schoolSearch"
                         class="filter-input"
+                        list="schoolDatalist"
                         autocomplete="off"
                         placeholder="Type to search school…"
                         value="{{ request('school_id') ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? '') : request('school_name', '') }}"
-                        onInput="filterSchools(this.value)"
-                        onFocus="openSchoolList()"
                     />
-                    {{-- Dropdown list --}}
-                    <div id="schoolListBox" style="
-                        display:none;
-                        position:absolute;
-                        left:0; right:0;
-                        background:#fff;
-                        border:2px solid #c7da30;
-                        border-radius:8px;
-                        max-height:220px;
-                        overflow-y:auto;
-                        z-index:999;
-                        box-shadow:0 4px 16px rgba(0,0,0,0.13);
-                        font-family:'Montserrat',sans-serif;
-                        font-size:13px;
-                    ">
-                        <div class="school-option" data-id="" data-name="" style="padding:8px 12px; cursor:pointer; color:#6b7280; font-style:italic;"
-                             onMouseDown="selectSchool('','')">All Schools</div>
+                    <datalist id="schoolDatalist">
                         @foreach($schoolOptions as $school)
-                            <div class="school-option"
-                                 data-id="{{ $school->id }}"
-                                 data-name="{{ strtolower($school->school_name) }}"
-                                 style="padding:8px 12px; cursor:pointer;"
-                                 onMouseDown="selectSchool('{{ $school->id }}','{{ addslashes($school->school_name) }}')">
-                                {{ $school->school_name }}
-                            </div>
+                            <option value="{{ $school->school_name }}">
                         @endforeach
-                    </div>
+                    </datalist>
                 </div>
 
                 <div>
@@ -558,19 +573,19 @@ tbody tr:last-child td { border-bottom: none; }
                     </select>
                 </div>
 
-             <div>
-                <label class="filter-label">Subtype</label>
-                <select name="subtype_id" id="subtypeSelect" class="filter-input">
-                    <option value="">All Subtypes</option>
-                    @foreach($subtypeOptions as $sub)
-                        <option value="{{ $sub->id }}"
-                                data-type="{{ $sub->abuse_type_id }}"
-                                {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
-                            {{ $sub->sub_type_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+                <div>
+                    <label class="filter-label">Subtype</label>
+                    <select name="subtype_id" id="subtypeSelect" class="filter-input">
+                        <option value="">All Subtypes</option>
+                        @foreach($subtypeOptions as $sub)
+                            <option value="{{ $sub->id }}"
+                                    data-type="{{ $sub->abuse_type_id }}"
+                                    {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
+                                {{ $sub->sub_type_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
                 <div>
                     <label class="filter-label">Status</label>
@@ -603,7 +618,7 @@ tbody tr:last-child td { border-bottom: none; }
                     'Search'    => request('search'),
                     'School'    => request('school_id')
                                     ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? request('school_id'))
-                                    : request('school_name'),
+                                    : null,
                     'Name'      => request('full_name'),
                     'Grade'     => request('grade'),
                     'From'      => request('date_from'),
@@ -724,104 +739,10 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
 </div>
 
-<script>
-function selectSchool(id, name) {
-    document.getElementById('schoolIdInput').value  = id;
-    document.getElementById('schoolNameInput').value = id ? '' : name; // only use name if no ID match
-    document.getElementById('schoolSearch').value   = name;
-    document.getElementById('schoolListBox').style.display = 'none';
-}
-
-function filterSchools(query) {
-    const q = query.toLowerCase().trim();
-
-    // If user is typing freely (no ID selected yet), update the name input
-    document.getElementById('schoolIdInput').value   = '';
-    document.getElementById('schoolNameInput').value = query;
-
-    document.querySelectorAll('#schoolListBox .school-option').forEach(opt => {
-        const name = opt.dataset.name || '';
-        opt.style.display = (!q || name.includes(q) || opt.dataset.id === '') ? '' : 'none';
-    });
-
-    openSchoolList();
-}
-
-// ── Clear all filters ────────────────────────────────────────────
-function clearFilters() {
-    window.location.href = '{{ url('/provincial-admin/reports') }}';
-}
-
-// ── Report detail modal ──────────────────────────────────────────
-function openReportModal(reportId) {
-    fetch(`/provincial-admin/reports/${reportId}`, {
-        headers: { 'Accept': 'application/json' }
-    })
-    .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
-    .then(report => {
-        document.getElementById('modalCaseNumber').textContent = report.case_number || 'N/A';
-        document.getElementById('modalFullName').textContent   = report.full_name || 'Anonymous';
-        document.getElementById('modalEmail').textContent      = report.reporter_email || 'Anonymous';
-        document.getElementById('modalPhone').textContent      = report.phone_number || 'N/A';
-        document.getElementById('modalType').textContent       = report.abuseType || 'N/A';
-        document.getElementById('modalSubtype').textContent    = report.subtype || 'N/A';
-        document.getElementById('modalSchool').textContent     = report.school || 'N/A';
-        document.getElementById('modalGrade').textContent      = report.grade || 'N/A';
-        document.getElementById('modalStatus').textContent     = report.status ? report.status.replace(/-/g, ' ') : 'N/A';
-        document.getElementById('modalReason').textContent     = report.latest_status_reason || 'No status history recorded.';
-        document.getElementById('modalDescription').textContent = report.description || '';
-
-        const attachmentSpan = document.getElementById('modalAttachments');
-        attachmentSpan.innerHTML = '';
-
-        if (report.attachments && report.attachments.length > 0) {
-            report.attachments.forEach(filePath => {
-                const ext       = filePath.split('.').pop().toLowerCase();
-                const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
-                let elem;
-
-                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
-                    elem = document.createElement('img');
-                    elem.src = publicUrl; elem.alt = 'Attachment';
-                    Object.assign(elem.style, { width:'80px', height:'80px', marginRight:'10px', border:'2px solid #c7da30', borderRadius:'8px', objectFit:'cover' });
-                } else if (['mp4','mov','avi','wmv'].includes(ext)) {
-                    elem = document.createElement('video');
-                    elem.controls = true;
-                    Object.assign(elem.style, { width:'120px', height:'80px', marginRight:'10px' });
-                    const src = document.createElement('source');
-                    src.src = publicUrl; src.type = 'video/' + ext;
-                    elem.appendChild(src);
-                } else {
-                    elem = document.createElement('a');
-                    elem.href = publicUrl; elem.target = '_blank';
-                    elem.textContent = filePath.split('/').pop();
-                    Object.assign(elem.style, { color:'#4c8eda', textDecoration:'underline', marginRight:'10px', display:'inline-block' });
-                }
-                attachmentSpan.appendChild(elem);
-            });
-        } else {
-            attachmentSpan.textContent = 'N/A';
-        }
-
-        const modal = document.getElementById('reportModal');
-        modal.style.display = 'flex';
-        modal.setAttribute('aria-hidden', 'false');
-    })
-    .catch(() => alert('Failed to load report details.'));
-}
-
-function closeReportModal() {
-    const modal = document.getElementById('reportModal');
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportModal(); });
-</script>
-
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/dist/choices.min.js"></script>
 <script>
 
 // ── PDF Export ───────────────────────────────────────────────────
@@ -840,51 +761,6 @@ function exportPDF() {
 function clearFilters() {
     window.location.href = '{{ url('/provincial-admin/reports') }}';
 }
-
-// ── School searchable dropdown ───────────────────────────────────
-function openSchoolList() {
-    const box  = document.getElementById('schoolListBox');
-    const wrap = document.getElementById('schoolDropdownWrap');
-    box.style.display = 'block';
-    const rect       = wrap.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    if (spaceBelow < 240) {
-        box.style.bottom = (wrap.offsetHeight + 2) + 'px';
-        box.style.top    = 'auto';
-    } else {
-        box.style.top    = (wrap.offsetHeight + 2) + 'px';
-        box.style.bottom = 'auto';
-    }
-}
-
-function filterSchools(query) {
-    const q = query.toLowerCase().trim();
-    // Clear ID; use free text as school_name fallback
-    document.getElementById('schoolIdInput').value   = '';
-    document.getElementById('schoolNameInput').value = query;
-
-    document.querySelectorAll('#schoolListBox .school-option').forEach(opt => {
-        const name = opt.dataset.name || '';
-        opt.style.display = (!q || name.includes(q) || opt.dataset.id === '') ? '' : 'none';
-    });
-
-    openSchoolList();
-}
-
-function selectSchool(id, name) {
-    document.getElementById('schoolIdInput').value   = id;
-    document.getElementById('schoolNameInput').value = id ? '' : name;
-    document.getElementById('schoolSearch').value    = name;
-    document.getElementById('schoolListBox').style.display = 'none';
-}
-
-// Close school dropdown when clicking outside
-document.addEventListener('click', function (e) {
-    const wrap = document.getElementById('schoolDropdownWrap');
-    if (wrap && !wrap.contains(e.target)) {
-        document.getElementById('schoolListBox').style.display = 'none';
-    }
-});
 
 // ── Report detail modal ──────────────────────────────────────────
 function openReportModal(reportId) {
@@ -929,8 +805,8 @@ function openReportModal(reportId) {
                     elem.appendChild(src);
                 } else {
                     elem = document.createElement('a');
-                    elem.href    = publicUrl;
-                    elem.target  = '_blank';
+                    elem.href        = publicUrl;
+                    elem.target      = '_blank';
                     elem.textContent = filePath.split('/').pop();
                     Object.assign(elem.style, { color:'#4c8eda', textDecoration:'underline', marginRight:'10px', display:'inline-block' });
                 }
@@ -955,11 +831,13 @@ function closeReportModal() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportModal(); });
 
-// ── DOMContentLoaded: hover highlights + subtype filter ─────────
+// ── DOMContentLoaded ─────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
-    var toggle = document.getElementById('sidebarToggle');
-    var sidebar = document.getElementById('sidebarPanel');
-    var overlay = document.getElementById('sidebarOverlay');
+
+    // Sidebar toggle
+    var toggle    = document.getElementById('sidebarToggle');
+    var sidebar   = document.getElementById('sidebarPanel');
+    var overlay   = document.getElementById('sidebarOverlay');
     var mainPanel = document.querySelector('.main-panel');
 
     function toggleSidebar() {
@@ -972,7 +850,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    if (toggle) toggle.addEventListener('click', toggleSidebar);
+    if (toggle)  toggle.addEventListener('click', toggleSidebar);
     if (overlay) overlay.addEventListener('click', toggleSidebar);
 
     window.addEventListener('resize', function () {
@@ -986,13 +864,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-    // School option hover highlight
-    document.querySelectorAll('#schoolListBox .school-option').forEach(opt => {
-        opt.addEventListener('mouseenter', () => opt.style.background = '#f7fcd4');
-        opt.addEventListener('mouseleave', () => opt.style.background = '');
+    // ── Choices.js school searchable dropdown ────────────────────
+    new Choices('#schoolSelect', {
+        searchEnabled: true,
+        searchPlaceholderValue: 'Type to search school...',
+        itemSelectText: '',
+        shouldSort: false,
+        position: 'bottom',
     });
-    // Subtype filtered by report type
+
+    // ── Subtype filtered by report type ──────────────────────────
     const typeSelect    = document.querySelector('select[name="type_id"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
 
@@ -1000,11 +881,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedType   = typeSelect.value;
         const currentSubtype = subtypeSelect.value;
 
-        Array.from(subtypeSelect.options).forEach(opt => {
-            if (opt.value === '') {
-                opt.style.display = '';
-                return;
-            }
+        Array.from(subtypeSelect.options).forEach(function(opt) {
+            if (opt.value === '') { opt.style.display = ''; return; }
             if (!selectedType || opt.dataset.type === selectedType) {
                 opt.style.display = '';
             } else {
@@ -1020,10 +898,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     typeSelect.addEventListener('change', filterSubtypes);
-    filterSubtypes(); // run on page load for pre-filled filters
+    filterSubtypes();
 });
 
-</script>
 </script>
 </body>
 </html>
