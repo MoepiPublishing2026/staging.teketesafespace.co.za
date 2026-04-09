@@ -783,6 +783,9 @@ canvas {
     .sidebar-logo img { width: 85px; height: auto; }
 }
 
+
+
+
 @media (max-width: 600px) {
     .menu-icon {
         top: 10px;
@@ -791,6 +794,13 @@ canvas {
         height: 40px;
         font-size: 20px;
     }
+    .chart-title-left {
+        text-align: left !important;
+        margin-top: 89px !important;
+        padding-left: 0 !important;
+    }
+
+
     .sidebar.open {
         width: 100%;
         max-width: 280px;
