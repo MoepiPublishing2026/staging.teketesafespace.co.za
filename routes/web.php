@@ -1,213 +1,214 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Livewire\LandingPage;
-use App\Livewire\ChooseReportType;
-use App\Livewire\AbuseTypeSelection;
-use App\Livewire\ReportForm;
-use App\Livewire\AdminLoginForm;
-use App\Livewire\DistrictLoginForm;
-use App\Livewire\PasswordlessLogin;
-use App\Livewire\AdminHome;
-use App\Livewire\CheckStatus;
-use App\Livewire\EditReport;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\NationalAdminDashboardController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SettingsController;
-use App\Livewire\DistrictAdminSettings;
-use App\Http\Controllers\ProvincialReportController;
-use App\Http\Controllers\ProvincialDashboardController;
-use App\Http\Controllers\ProvincialAdminDashboardController;
-use App\Http\Controllers\ProvincialAdminSettingsController;
-use App\Http\Controllers\ProvincialAdminReportsController;
-use App\Http\Controllers\SchoolAdminDashboardController;
-use App\Http\Controllers\SchoolAdminReportsController;
-use App\Livewire\ContactUs;
-use App\Http\Controllers\SubscriptionController;
-use App\Livewire\ClarificationModal;
-
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// Main landing page
-Route::get('/', LandingPage::class)->name('landing-page');
+// =========================
+// Public Routes
+// =========================
+Route::get('/', \App\Livewire\LandingPage::class)->name('landing-page');
 
-// Reporting flow routes
-Route::get('/choose-report-type', ChooseReportType::class)->name('choose-report-type');
-Route::get('/select-abuse-type/{isAnonymous}', AbuseTypeSelection::class)->name('select-abuse-type');
-Route::get('/report-form/{abuseTypeID}/{isAnonymous}', ReportForm::class)->name('report-form');
-Route::get('/clarify/{caseNumber}', ClarificationModal::class)->name('report.clarify');
-Route::get('/check-status', CheckStatus::class)->name('check-status'); // Add this line
-Route::get('/edit-report/{caseNumber}', EditReport::class)->name('edit-report');
-Route::get('/contact-us', ContactUs::class)->name('contact-us'); 
+Route::get('/choose-report-type', \App\Livewire\ChooseReportType::class)->name('choose-report-type');
+Route::get('/select-abuse-type/{isAnonymous}', \App\Livewire\AbuseTypeSelection::class)->name('select-abuse-type');
+Route::get('/report-form/{abuseTypeID}/{isAnonymous}', \App\Livewire\ReportForm::class)->name('report-form');
+Route::get('/clarify/{caseNumber}', \App\Livewire\ClarificationModal::class)->name('report.clarify');
+Route::get('/check-status', \App\Livewire\CheckStatus::class)->name('check-status');
+Route::get('/edit-report/{caseNumber}', \App\Livewire\EditReport::class)->name('edit-report');
+Route::get('/contact-us', \App\Livewire\ContactUs::class)->name('contact-us');
 
-// Admin Login Flow
-// Step 1: The initial username and password form
-Route::get('/school-admin', AdminLoginForm::class)->name('school-admin');
-//District log in
-Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-district');
-
-// Step 2: The email and OTP verification form
-Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
-
-// Step 3: School admin dashboard — protected by auth + subscription check
-Route::middleware(['auth', 'subscribed'])->group(function () {
-    Route::get('/admin/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
-    Route::post('/admin/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
-    Route::get('/admin/reports', \App\Livewire\AdminReports::class)->name('admin.reports');
-    Route::get('/admin/reports/{filter?}', \App\Livewire\AdminReports::class)->name('admin.reports.index');
-    Route::get('/admin/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
-});
-
-// District Admin Dashboard
-Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard')->middleware('auth');
-
-//provincial Admin Report Pages
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard')->middleware('auth');
-
-    Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
-    Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)->name('provincial.reports.index');
-
-     Route::get('/provincial/profile', \App\Livewire\ProvincialSettings::class)->name('provincial.settings');
-
-    Route::get('/provincial/export-pdf/{province}', [ProvincialReportController::class, 'exportPDF'])
-    ->name('provincial.export-pdf');
-
-    Route::get('/provincial/dashboard', [ProvincialDashboardController::class, 'index'])
-        ->name('provincial.dashboard');
-
-    // AJAX endpoint for chart updates (fetchData)
-    Route::get('/provincial/dashboard/fetch', [ProvincialDashboardController::class, 'fetchData'])
-        ->name('provincial.dashboard.fetch');
-});
-
-// Provincial Admin Settings and Reports
-Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')->group(function () {
-    Route::get('settings', [ProvincialAdminSettingsController::class, 'index'])->name('settings');
-    Route::put('settings', [ProvincialAdminSettingsController::class, 'update'])->name('settings.update');
-    Route::get('reports', [ProvincialAdminReportsController::class, 'index'])->name('reports');
-    Route::get('reports/{id}', [ProvincialAdminReportsController::class, 'show'])->name('reports.show')->where('id', '[0-9]+');
-});
-
-
-
-// National Admin Dashboard
-
-Route::get('/national-admin/dashboard', [NationalAdminDashboardController::class, 'index'])
-    ->name('national.admin.dashboard')
-    ->middleware('auth');
-Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports');
-Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
-
-
-Route::prefix('national-admin')->name('national-admin.')->group(function () {
-    Route::get('settings', [SettingsController::class, 'index'])->name('settings');
-    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::delete('settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])
-        ->name('settings.delete-picture');
-});
-
-// School Admin Reports Page (Controller-based, matching Provincial Admin)
-// Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-//     Route::get('reports', [SchoolAdminReportsController::class, 'index'])->name('reports');
-//     Route::get('reports/{id}', [SchoolAdminReportsController::class, 'show'])->name('reports.show')->where('id', '[0-9]+');
-// });
-
-// Admin Logout
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/');
-})->name('logout');
-Auth::routes(['verify' => true]);
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-//Routing for filtering data on dashboard
-Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData');
-
-Route::get('/district/profile', \App\Livewire\DistrictAdminSettings::class)
-    ->name('district.profile')
-    ->middleware(['auth']);
-
-
-Route::middleware(['auth', 'role:district'])->group(function () {
-    Route::get('/district/settings', DistrictAdminSettings::class)->name('district.settings');
-    // New Contact Us Route
-});
-
-// ABOUT US PAGE
 Route::view('/about-us', 'about.index')->name('about-us');
-
-
-// Subscription Card Page
-Route::get('/admin/subscribe', [SubscriptionController::class, 'index'])
-    ->name('admin.subscribe')
-    ->middleware('auth');
-
-// Redirection to PayFast
-Route::get('/admin/subscribe/checkout/{plan}', [SubscriptionController::class, 'checkout'])
-    ->name('admin.checkout')
-    ->middleware('auth');
-
-// PayFast Callbacks
-Route::get('/payment/success', function() {
-    
-    $user         = Auth::user();
-    $subscription = $user ? \App\Models\Subscription::where('user_id', $user->id)
-                                ->where('status', 'pending')
-                                ->latest()
-                                ->first() : null;
-
-    if ($subscription) {
-        $months    = match($subscription->plan) {
-            'annual'  => 12,
-            'monthly' => 1,
-            default   => null,
-        };
-
-        $subscription->update([
-            'status'     => 'active',
-            'starts_at'  => \Carbon\Carbon::now(),
-            'expires_at' => $months ? \Carbon\Carbon::now()->addMonths($months) : null,
-        ]);
-
-        $user->update(['is_subscribed' => true]);
-    }
-
-    return redirect()->route('admin.dashboard')->with('success', 'Subscription activated! Welcome aboard.');
-})->name('payment.success')->middleware('auth');
-
-Route::post('/payment/notify', [SubscriptionController::class, 'notify'])->name('payment.notify');
 
 Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
-    
-//Nomination form download
+
+// Download nomination form
 Route::get('/download-nomination', function () {
-
     $path = public_path('Files/Nomination_Form.pdf');
-
     if (!file_exists($path)) {
         abort(404);
     }
-
     return response()->download($path);
-
 })->name('download.nomination');
+
+
+// =========================
+// Authentication
+// =========================
+Route::get('/school-admin', \App\Livewire\AdminLoginForm::class)->name('school-admin');
+Route::get('/school-district', \App\Livewire\DistrictLoginForm::class)->name('school-admin-district');
+
+Route::get('/email-verification', \App\Livewire\PasswordlessLogin::class)
+    ->name('email.verification')
+    ->middleware('auth');
+
+Auth::routes(['verify' => true]);
+
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/');
+})->name('logout');
+
+
+// =========================
+// School Admin Routes
+// =========================
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard', [\App\Http\Controllers\SchoolAdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/false-reports', [\App\Http\Controllers\SchoolAdminDashboardController::class, 'falseReports'])->name('false-reports');
+    Route::post('/flag-report/{reportId}', [\App\Http\Controllers\SchoolAdminDashboardController::class, 'flagReport'])->name('flag-report');
+
+    Route::get('/reports/{filter?}', \App\Livewire\AdminReports::class)->name('reports');
+    Route::get('/settings', \App\Livewire\AdminSettings::class)->name('settings');
+
+    Route::get('/fetch-dashboard-data', [\App\Http\Controllers\AdminDashboardController::class, 'fetchData'])
+        ->name('fetchData');
+});
+
+
+// =========================
+// District Admin
+// =========================
+Route::middleware(['auth'])->prefix('district')->group(function () {
+
+    Route::get('/dashboard', \App\Livewire\DistrictAdminDashboard::class)
+        ->name('district.admin.dashboard');
+
+    Route::get('/profile', \App\Livewire\DistrictAdminSettings::class)
+        ->name('district.profile');
+
+    Route::get('/settings', \App\Livewire\DistrictAdminSettings::class)
+        ->name('district.settings');
+});
+
+
+// =========================
+// Provincial Admin
+// =========================
+Route::prefix('provincial-admin')
+    ->name('provincial.admin.')
+    ->middleware('auth')
+    ->group(function () {
+
+        Route::get('/dashboard', [\App\Http\Controllers\ProvincialAdminDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::get('/settings', [\App\Http\Controllers\ProvincialAdminSettingsController::class, 'index'])
+            ->name('settings');
+
+        Route::put('/settings', [\App\Http\Controllers\ProvincialAdminSettingsController::class, 'update'])
+            ->name('settings.update');
+
+        Route::get('/reports', [\App\Http\Controllers\ProvincialAdminReportsController::class, 'index'])
+            ->name('reports');
+
+        Route::get('/reports/{id}', [\App\Http\Controllers\ProvincialAdminReportsController::class, 'show'])
+            ->name('reports.show')
+            ->whereNumber('id');
+    });
+
+
+// =========================
+// Provincial General
+// =========================
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/provincial/dashboard', [\App\Http\Controllers\ProvincialDashboardController::class, 'index'])
+        ->name('provincial.dashboard');
+
+    Route::get('/provincial/dashboard/fetch', [\App\Http\Controllers\ProvincialDashboardController::class, 'fetchData'])
+        ->name('provincial.dashboard.fetch');
+
+    Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)
+        ->name('provincial.reports');
+
+    Route::get('/provincial/profile', \App\Livewire\ProvincialSettings::class)
+        ->name('provincial.settings');
+
+    Route::get('/provincial/export-pdf/{province}', [\App\Http\Controllers\ProvincialReportController::class, 'exportPDF'])
+        ->name('provincial.export-pdf');
+});
+
+
+// =========================
+// National Admin
+// =========================
+Route::prefix('national-admin')
+    ->name('national.admin.')
+    ->middleware('auth')
+    ->group(function () {
+
+        Route::get('/dashboard', [\App\Http\Controllers\NationalAdminDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])
+            ->name('reports');
+
+        Route::get('/reports/{id}', [\App\Http\Controllers\ReportController::class, 'show'])
+            ->name('reports.show');
+
+        Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])
+            ->name('settings');
+
+        Route::put('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])
+            ->name('settings.update');
+
+        Route::delete('/settings/delete-picture', [\App\Http\Controllers\SettingsController::class, 'deleteProfilePicture'])
+            ->name('settings.delete-picture');
+    });
+
+
+// =========================
+// SUBSCRIPTION (DISABLED)
+// =========================
+
+// Route::get('/admin/subscribe', [SubscriptionController::class, 'index'])
+//     ->name('admin.subscribe')
+//     ->middleware('auth');
+
+// Route::get('/admin/subscribe/checkout/{plan}', [SubscriptionController::class, 'checkout'])
+//     ->name('admin.checkout')
+//     ->middleware('auth');
+
+// Route::get('/payment/success', function() {
+//     $user         = Auth::user();
+//     $subscription = $user ? \App\Models\Subscription::where('user_id', $user->id)
+//                                 ->where('status', 'pending')
+//                                 ->latest()
+//                                 ->first() : null;
+
+//     if ($subscription) {
+//         $months    = match($subscription->plan) {
+//             'annual'  => 12,
+//             'monthly' => 1,
+//             default   => null,
+//         };
+
+//         $subscription->update([
+//             'status'     => 'active',
+//             'starts_at'  => \Carbon\Carbon::now(),
+//             'expires_at' => $months ? \Carbon\Carbon::now()->addMonths($months) : null,
+//         ]);
+
+//         $user->update(['is_subscribed' => true]);
+//     }
+
+//     return redirect()->route('admin.dashboard')
+//         ->with('success', 'Subscription activated! Welcome aboard.');
+// })->name('payment.success')->middleware('auth');
+
+// Route::post('/payment/notify', [SubscriptionController::class, 'notify'])
+//     ->name('payment.notify');
+
+
+// =========================
+// Default Home
+// =========================
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
