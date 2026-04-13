@@ -36,34 +36,27 @@ class ProvincialAdminReportsController extends Controller
         $query = Report::with(['province', 'district', 'school', 'abuseType', 'subtype'])
             ->where('province_id', $province_id);
 
-        // ── EXISTING filters ─────────────────────────────────────────
-
-        // Case number search (kept for backward compatibility)
+        // ── Case number search (backward compatibility) ──────────────
         if ($request->filled('case_number')) {
             $query->where('case_number', 'LIKE', '%' . $request->input('case_number') . '%');
         }
 
-        // Existing filterable fields
+        // ── Simple filterable fields ─────────────────────────────────
         $filterableFields = [
             'status'     => 'status',
             'district'   => 'district_id',
-            'school'     => 'school_id',
             'abuse_type' => 'abuse_type_id',
-            'is_anonymous' => 'is_anonymous',
+            // is_anonymous handled separately below
+            // school_id   handled separately below
         ];
 
         foreach ($filterableFields as $input => $column) {
             if ($request->filled($input)) {
-                if ($input === 'is_anonymous') {
-                    $value = filter_var($request->input($input), FILTER_VALIDATE_BOOLEAN);
-                    $query->where($column, $value);
-                } else {
-                    $query->where($column, $request->input($input));
-                }
+                $query->where($column, $request->input($input));
             }
         }
 
-        // Age range filter
+        // ── Age range filter ─────────────────────────────────────────
         if ($request->filled('age_range')) {
             $ageRange = $request->input('age_range');
             if ($ageRange === '30+') {
@@ -76,20 +69,21 @@ class ProvincialAdminReportsController extends Controller
             }
         }
 
-        // ── NEW filters ──────────────────────────────────────────────
-
-        // Global search bar: case number, email, full name, description, school name
+        // ── Global search bar ────────────────────────────────────────
+        // Searches: case number, email, full name, description, school name (via relationship)
         if ($s = trim($request->input('search', ''))) {
             $query->where(function ($q) use ($s) {
                 $q->where('case_number',      'like', "%{$s}%")
                   ->orWhere('reporter_email', 'like', "%{$s}%")
                   ->orWhere('full_name',      'like', "%{$s}%")
                   ->orWhere('description',    'like', "%{$s}%")
-                  ->orWhere('school_name',    'like', "%{$s}%");
+                  ->orWhereHas('school', fn ($sq) =>
+                      $sq->where('school_name', 'like', "%{$s}%")
+                  );
             });
         }
 
-        // Name / surname filter
+        // ── Name / surname filter ────────────────────────────────────
         if ($n = trim($request->input('full_name', ''))) {
             $query->where(function ($q) use ($n) {
                 $q->where('full_name',        'like', "%{$n}%")
@@ -97,46 +91,42 @@ class ProvincialAdminReportsController extends Controller
             });
         }
 
-        // Grade filter
+        // ── Grade filter ─────────────────────────────────────────────
         if ($request->filled('grade')) {
             $query->where('grade', $request->input('grade'));
         }
 
-        // School filter — dropdown by school_id OR text search by school_name
-        if ($request->filled('school_id')) {
-            $query->where('school_id', $request->input('school_id'));
-        } elseif ($s = trim($request->input('school_name', ''))) {
-            // Fall back to text search on the denormalized school_name column
-            $query->where(function ($q) use ($s) {
-                $q->where('school_name', 'like', "%{$s}%")
-                  ->orWhereHas('school', fn ($sq) => $sq->where('school_name', 'like', "%{$s}%"));
-            });
+        // ── School filter ────────────────────────────────────────────
+        // school_name comes from the datalist text input
+        // Try exact match first (user picked from datalist), then fallback to LIKE
+        if ($s = trim($request->input('school_name', ''))) {
+            $query->whereHas('school', fn ($sq) =>
+                $sq->where('school_name', 'like', "%{$s}%")
+            );
         }
 
-        // Report type filter (via dropdown — uses abuse_type_id)
+        // ── Report type filter ───────────────────────────────────────
         if ($request->filled('type_id')) {
             $query->where('abuse_type_id', $request->input('type_id'));
         }
 
-        // Subtype filter
+        // ── Subtype filter ───────────────────────────────────────────
         if ($request->filled('subtype_id')) {
             $query->where('subtype_id', $request->input('subtype_id'));
         }
 
-        // Status dropdown filter (new panel — same column as existing 'status' field)
-        // Only apply if the existing $filterableFields 'status' wasn't already set
-        if (!$request->filled('status') && $request->filled('filter_status')) {
-            $query->where('status', $request->input('filter_status'));
+        // ── Status filter ────────────────────────────────────────────
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
         }
-        
-        
-        // Anonymous filter — use has() not filled() because '0' is falsy
+
+        // ── Anonymous filter ─────────────────────────────────────────
+        // Use has() check not filled() because '0' is falsy
         if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
-            $query->where('is_anonymous', (int)$request->input('is_anonymous'));
+            $query->where('is_anonymous', (int) $request->input('is_anonymous'));
         }
 
-
-        // Date range (new field names: date_from / date_to — kept alongside old from_date / to_date)
+        // ── Date range filter ────────────────────────────────────────
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->input('date_from'));
         } elseif ($request->filled('from_date')) {
@@ -149,26 +139,14 @@ class ProvincialAdminReportsController extends Controller
             $query->whereDate('created_at', '<=', $request->input('to_date'));
         }
 
-        // Paginate and preserve all query strings
+        // ── Paginate ─────────────────────────────────────────────────
         $reports = $query->latest()->paginate(20)->withQueryString();
 
-        // ── Dropdown options for the filter panel ────────────────────
+        // ── Dropdown options ─────────────────────────────────────────
         $typeOptions = AbuseType::orderBy('type_name')->get();
 
-        $subtypeOptions = Subtype::orderBy('sub_type_name')
-                ->get()
-                ->filter(function ($sub, $index) use (&$otherSeen) {
-                    if (str_contains(strtolower($sub->sub_type_name), 'other')) {
-                        if ($otherSeen) return false;
-                        $otherSeen = true;
-                    }
-                    return true;
-                })
-                ->sortBy(function ($sub) {
-                    return str_contains(strtolower($sub->sub_type_name), 'other') ? 1 : 0;
-                })
-                ->values();
-
+        // Load all subtypes; client-side JS filters them by selected type
+        $subtypeOptions = Subtype::orderBy('sub_type_name')->get();
 
         $gradeOptions = Report::where('province_id', $province_id)
             ->whereNotNull('grade')
@@ -199,7 +177,6 @@ class ProvincialAdminReportsController extends Controller
             ->values()
             ->toArray();
 
-        // Schools in this province for the dropdown
         $schoolOptions = School::where('province_id', $province_id)
             ->orderBy('school_name')
             ->get();

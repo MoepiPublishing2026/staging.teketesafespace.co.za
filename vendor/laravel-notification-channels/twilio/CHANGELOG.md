@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-notification-channels/twilio` will be documented in this file.
 
+## [4.1.3](https://github.com/laravel-notification-channels/twilio/releases/tag/4.1.3) (2026-01-13)
+
+- [Fix] Optional param `contentVariables` only exists in `TwilioContentTemplateMessage` (regression from v4.1.2) #162 #163
+
+## [4.1.2](https://github.com/laravel-notification-channels/twilio/releases/tag/4.1.2) (2025-12-27)
+
+- Added support for more SMS Message optional params #154 by @MarcEspiard
+
 ## [4.1.1](https://github.com/laravel-notification-channels/twilio/releases/tag/4.1.1) (2025-07-07)
 
 - Added support for content templates (i.e. whatsapp) #152 by @alexw23
