@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+  bootstrap="vendor/autoload.php"
+  colors="true"
+  backupGlobals="true"
+  convertDeprecationsToExceptions="true"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  stopOnFailure="false"
+>
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="default">
+      <directory>test</directory>
+    </testsuite>
+    <testsuite name="verify2">
+      <directory>test/Verify2</directory>
+    </testsuite>
+    <testsuite name="proactive_connect">
+      <directory>test/ProactiveConnect</directory>
+    </testsuite>
+    <testsuite name="voice">
+      <directory>test/Voice</directory>
+    </testsuite>
+    <testsuite name="numbers">
+      <directory>test/Numbers</directory>
+    </testsuite>
+    <testsuite name="messages">
+      <directory>test/Messages</directory>
+    </testsuite>
+    <testsuite name="sms">
+      <directory>test/SMS</directory>
+    </testsuite>
+    <testsuite name="subaccount">
+      <directory>test/Subaccount</directory>
+    </testsuite>
+    <testsuite name="meetings">
+      <directory>test/Meetings</directory>
+    </testsuite>
+    <testsuite name="application">
+      <directory>test/Application</directory>
+    </testsuite>
+    <testsuite name="users">
+      <directory>test/Users</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+        <ini name='error_reporting' value='E_ALL' />
+        <ini name='display_errors' value='true' />
+    </php>
+</phpunit>
