@@ -14,6 +14,7 @@ class PasswordlessLogin extends Component
     public $otp;
     public $showOtpForm = false;
     public $role;
+    public $showSubscriptionModal = false;
 
     public function mount()
     {
@@ -27,6 +28,7 @@ class PasswordlessLogin extends Component
 
         $this->showOtpForm = false;
     }
+    
 
     public function sendOtp()
     {
@@ -51,66 +53,75 @@ class PasswordlessLogin extends Component
                 'email' => $user->email,
                 'error' => $e->getMessage(),
             ]);
-
             $this->addError('email', 'Unable to send OTP. Please verify your email settings and try again.');
             return;
         }
 
         $this->showOtpForm = true;
     }
-
     public function login()
-    {
-        $this->validate(['otp' => 'required']);
+{
+    $this->validate(['otp' => 'required']);
 
-        if ($this->otp == session('login_otp')) {
+    if ($this->otp == session('login_otp')) {
 
-            session(['otp_verified' => true]);
+        session(['otp_verified' => true]);
 
-            // Always redirect after OTP verification
-            return $this->handleFinalRedirect();
-
+        // Only show subscription modal for SCHOOL admin
+        if (session('admin_role') === 'school') {
+            $this->showSubscriptionModal = true;
+            $this->showOtpForm = false;
         } else {
-            $this->addError('otp', 'The provided OTP is incorrect.');
+            return $this->handleFinalRedirect();
         }
+
+    } else {
+        $this->addError('otp', 'The provided OTP is incorrect.');
     }
+}
 
-    public function redirectToSubscribe()
-    {
-        session()->put('has_full_access', true);
-        return redirect()->route('admin.subscribe');
+
+// This function is called when they click "Continue with Limited Access" in the modal
+
+
+// This function is called when they click "Upgrade" in the modal
+public function redirectToSubscribe()
+{
+    session()->put('has_full_access', true);
+    return redirect()->route('admin.subscribe'); // Redirects to the new route
+}
+
+// Centralized redirect logic
+public function skipSubscription()
+{
+    // 1. Force the session value to false
+    session(['has_full_access' => false]);
+    
+    // 2. Explicitly save to ensure the redirect doesn't lose it
+    session()->save();
+
+    return $this->handleFinalRedirect();
+}
+
+private function handleFinalRedirect()
+{
+    // Get the role we stored during the initial login step
+    $role = session('admin_role');
+
+    switch ($role) {
+        case 'school':
+            return redirect()->route('admin.dashboard');
+        case 'district':
+            return redirect()->route('district.admin.dashboard');
+        case 'provincial':
+            return redirect()->route('provincial.admin.dashboard');
+        case 'national':
+            return redirect()->route('national.admin.dashboard');
+        default:
+            return redirect()->route('admin.dashboard');
     }
-
-    public function skipSubscription()
-    {
-        session(['has_full_access' => false]);
-        session()->save();
-
-        return $this->handleFinalRedirect();
-    }
-
-    private function handleFinalRedirect()
-    {
-        $role = session('admin_role');
-
-        switch ($role) {
-            case 'school':
-                return redirect()->route('admin.dashboard');
-
-            case 'district':
-                return redirect()->route('district.admin.dashboard');
-
-            case 'provincial':
-                return redirect()->route('provincial.admin.dashboard');
-
-            case 'national':
-                return redirect()->route('national.admin.dashboard');
-
-            default:
-                return redirect()->route('admin.dashboard');
-        }
-    }
-
+}
+   
     public function render()
     {
         return view('livewire.passwordless-login');
