@@ -25,7 +25,7 @@ use App\Http\Controllers\ProvincialAdminReportsController;
 use App\Http\Controllers\SchoolAdminDashboardController;
 use App\Http\Controllers\SchoolAdminReportsController;
 use App\Livewire\ContactUs;
-use App\Http\Controllers\SubscriptionController;
+// use App\Http\Controllers\SubscriptionController;
 use App\Livewire\ClarificationModal;
 
 
@@ -61,8 +61,8 @@ Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-dis
 // Step 2: The email and OTP verification form
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
 
-// Step 3: School admin dashboard — protected by auth + subscription check
-Route::middleware(['auth', 'subscribed'])->group(function () {
+// Step 3: School admin dashboard — protected only by auth
+Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
     Route::post('/admin/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
@@ -155,49 +155,49 @@ Route::middleware(['auth', 'role:district'])->group(function () {
 Route::view('/about-us', 'about.index')->name('about-us');
 
 
-// Subscription Card Page
-Route::get('/admin/subscribe', [SubscriptionController::class, 'index'])
-    ->name('admin.subscribe')
-    ->middleware('auth');
+// // Subscription Card Page
+// Route::get('/admin/subscribe', [SubscriptionController::class, 'index'])
+//     ->name('admin.subscribe')
+//     ->middleware('auth');
 
-// Redirection to PayFast
-Route::get('/admin/subscribe/checkout/{plan}', [SubscriptionController::class, 'checkout'])
-    ->name('admin.checkout')
-    ->middleware('auth');
+// // Redirection to PayFast
+// Route::get('/admin/subscribe/checkout/{plan}', [SubscriptionController::class, 'checkout'])
+//     ->name('admin.checkout')
+//     ->middleware('auth');
 
-// PayFast Callbacks
-Route::get('/payment/success', function() {
+// // PayFast Callbacks
+// Route::get('/payment/success', function() {
     
-    $user         = Auth::user();
-    $subscription = $user ? \App\Models\Subscription::where('user_id', $user->id)
-                                ->where('status', 'pending')
-                                ->latest()
-                                ->first() : null;
+//     $user         = Auth::user();
+//     $subscription = $user ? \App\Models\Subscription::where('user_id', $user->id)
+//                                 ->where('status', 'pending')
+//                                 ->latest()
+//                                 ->first() : null;
 
-    if ($subscription) {
-        $months    = match($subscription->plan) {
-            'annual'  => 12,
-            'monthly' => 1,
-            default   => null,
-        };
+//     if ($subscription) {
+//         $months    = match($subscription->plan) {
+//             'annual'  => 12,
+//             'monthly' => 1,
+//             default   => null,
+//         };
 
-        $subscription->update([
-            'status'     => 'active',
-            'starts_at'  => \Carbon\Carbon::now(),
-            'expires_at' => $months ? \Carbon\Carbon::now()->addMonths($months) : null,
-        ]);
+//         $subscription->update([
+//             'status'     => 'active',
+//             'starts_at'  => \Carbon\Carbon::now(),
+//             'expires_at' => $months ? \Carbon\Carbon::now()->addMonths($months) : null,
+//         ]);
 
-        $user->update(['is_subscribed' => true]);
-    }
+//         $user->update(['is_subscribed' => true]);
+//     }
 
-    return redirect()->route('admin.dashboard')->with('success', 'Subscription activated! Welcome aboard.');
-})->name('payment.success')->middleware('auth');
+//     return redirect()->route('admin.dashboard')->with('success', 'Subscription activated! Welcome aboard.');
+// })->name('payment.success')->middleware('auth');
 
-Route::post('/payment/notify', [SubscriptionController::class, 'notify'])->name('payment.notify');
+// Route::post('/payment/notify', [SubscriptionController::class, 'notify'])->name('payment.notify');
 
-Route::get('/faq', function () {
-    return view('faq');
-})->name('faq');
+// Route::get('/faq', function () {
+//     return view('faq');
+// })->name('faq');
     
 //Nomination form download
 Route::get('/download-nomination', function () {

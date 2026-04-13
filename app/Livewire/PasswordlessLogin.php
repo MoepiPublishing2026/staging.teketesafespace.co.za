@@ -14,7 +14,7 @@ class PasswordlessLogin extends Component
     public $otp;
     public $showOtpForm = false;
     public $role;
-    public $showSubscriptionModal = false;
+    // public $showSubscriptionModal = false;
 
     public function mount()
     {
@@ -68,12 +68,12 @@ class PasswordlessLogin extends Component
         session(['otp_verified' => true]);
 
         // Only show subscription modal for SCHOOL admin
-        if (session('admin_role') === 'school') {
-            $this->showSubscriptionModal = true;
-            $this->showOtpForm = false;
-        } else {
+        // if (session('admin_role') === 'school') {
+        //     $this->showSubscriptionModal = true;
+        //     $this->showOtpForm = false;
+        // } else {
             return $this->handleFinalRedirect();
-        }
+        // }
 
     } else {
         $this->addError('otp', 'The provided OTP is incorrect.');
@@ -85,23 +85,23 @@ class PasswordlessLogin extends Component
 
 
 // This function is called when they click "Upgrade" in the modal
-public function redirectToSubscribe()
-{
-    session()->put('has_full_access', true);
-    return redirect()->route('admin.subscribe'); // Redirects to the new route
-}
+// public function redirectToSubscribe()
+// {
+//     session()->put('has_full_access', true);
+//     return redirect()->route('admin.subscribe'); // Redirects to the new route
+// }
 
 // Centralized redirect logic
-public function skipSubscription()
-{
-    // 1. Force the session value to false
-    session(['has_full_access' => false]);
+// public function skipSubscription()
+// {
+//     // 1. Force the session value to false
+//     session(['has_full_access' => false]);
     
-    // 2. Explicitly save to ensure the redirect doesn't lose it
-    session()->save();
+//     // 2. Explicitly save to ensure the redirect doesn't lose it
+//     session()->save();
 
-    return $this->handleFinalRedirect();
-}
+//     return $this->handleFinalRedirect();
+// }
 
 private function handleFinalRedirect()
 {

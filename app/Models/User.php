@@ -25,7 +25,7 @@ class User extends Authenticatable
         'role',
         'school_name',
         'phone',
-        'is_subscribed',
+        // 'is_subscribed',
         'profile_picture',
     ];
 
@@ -80,31 +80,31 @@ class User extends Authenticatable
     /**
      * Get the subscription record for this user.
      */
-    public function subscription(): HasOne
-    {
-        return $this->hasOne(Subscription::class);
-    }
+    // public function subscription(): HasOne
+    // {
+    //     return $this->hasOne(Subscription::class);
+    // }
 
     /**
      * Check if this user has active subscription.
      */
-    public function hasActiveSubscription(): bool
-    {
-        $sub = $this->subscription;
+    // public function hasActiveSubscription(): bool
+    // {
+    //     $sub = $this->subscription;
 
-        if (!$sub) {
-            return false;
-        }
+    //     if (!$sub) {
+    //         return false;
+    //     }
 
-        return $sub->isActive();
-    }
+    //     return $sub->isActive();
+    // }
 
     /**
      * Get active subscription or null.
      */
-    public function activeSubscription(): ?Subscription
-    {
-        $sub = $this->subscription;
-        return ($sub && $sub->isActive()) ? $sub : null;
-    }
+    // public function activeSubscription(): ?Subscription
+    // {
+    //     $sub = $this->subscription;
+    //     return ($sub && $sub->isActive()) ? $sub : null;
+    // }
 }
