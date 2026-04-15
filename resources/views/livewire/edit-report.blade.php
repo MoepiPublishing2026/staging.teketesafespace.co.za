@@ -114,19 +114,7 @@
                         @error('subtypeID') <p class="text-red-600 text-[12px]">{{ $message }}</p> @enderror
                     </div>
 
-                    @if($this->isOtherSubtypeSelected)
-                    <div>
-                        <label for="otherSubtypeText" class="text-[11px] text-black">
-                            Please specify <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text"
-                            wire:model.live="otherSubtypeText"
-                            id="otherSubtypeText"
-                            placeholder="Describe the type of abuse..."
-                            class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black bg-white">
-                        @error('otherSubtypeText') <p class="text-red-600 text-[12px]">{{ $message }}</p> @enderror
-                    </div>
-                    @endif
+                   
 
                     <!-- Description -->
                     <div>
@@ -144,9 +132,8 @@
 
                         @if(empty($description))
                             @if($this->isOtherSubtypeSelected)
-                                <p class="text-[12px] text-red-500 mt-1">Description is required when "Other" is selected.</p>
-                            @else
-                                <p class="text-[12px] text-amber-600 mt-1">No additional details provided yet.</p>
+                             
+                                
                             @endif
                         @else
                             <p class="text-[12px] text-green-600 mt-1">Additional details added ({{ strlen($description) }} characters)</p>

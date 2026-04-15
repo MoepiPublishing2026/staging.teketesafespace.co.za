@@ -93,13 +93,7 @@ class EditReport extends Component
 
         $this->loadSubtypes();
 
-        if ($this->otherSubtype && $this->subtypeID == $this->otherSubtype->id) {
-            $desc = $this->report->description ?? '';
-            if (preg_match('/^\[Other:\s*(.*?)\]\s*/i', $desc, $matches)) {
-                $this->otherSubtypeText = $matches[1];
-                $this->description = preg_replace('/^\[Other:\s*.*?\]\s*/i', '', $desc);
-            }
-        }
+       
         
         $this->existingAttachments = $this->report->image_path
             ? json_decode($this->report->image_path, true)
@@ -220,7 +214,7 @@ class EditReport extends Component
         return [
             'fullName.regex' => 'The full name may only contain letters and spaces.',
             'schoolName.regex' => 'The school name may only contain letters and spaces.',
-            'otherSubtypeText.required' => 'Please specify the "Other" subtype.',
+            
             'description.required' => 'Additional details are required when "Other" is selected.',
             'description.max' => 'Additional details may not be greater than 500 characters.',
         ];
@@ -241,7 +235,7 @@ class EditReport extends Component
         $this->validate([
             'abuseTypeID' => 'required|numeric|exists:abuse_types,id',
             'subtypeID' => 'required|numeric|exists:subtypes,id',
-            'otherSubtypeText' => $isOther ? 'required|string|max:255' : 'nullable',
+            'otherSubtypeText' => 'nullable',
             'description' => $isOther ? 'required|string|max:500' : 'nullable|string|max:500',
             'location' => 'required|string|max:100|min:5',
             'grade' => 'required|string|max:255',
@@ -276,13 +270,9 @@ class EditReport extends Component
 
         $this->report->image_path = json_encode(array_merge($this->existingAttachments, $newPaths));
         
-        if ($isOther && $this->otherSubtypeText) {
-            $otherSubtypeText = trim((string) $this->otherSubtypeText);
-            $details = trim((string) ($this->description ?? ''));
-            $this->report->description = '[Other: ' . $otherSubtypeText . '] ' . $details;
-        } else {
+        
             $this->report->description = $this->description;
-        }
+        
 
         if ($wasAppeal) {
             $this->report->status = 'pending';
