@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Reports - National Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
@@ -173,10 +173,11 @@ tbody tr:last-child td { border-bottom: none; }
 .filter-btn-clear:hover { border-color: #c7da30 !important; color: #000 !important; background: #f7fcd4 !important; }
 .active-filter-badge { display: inline-flex; align-items: center; background: #f0f9d4; border: 1px solid #c7da30; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #4a5e00; margin-right: 6px; margin-bottom: 6px; }
     </style>
+    <link rel="stylesheet" href="<?php echo e(asset('css/national-admin-mobile.css')); ?>">
 </head>
-<body>
+<body class="na-app">
 
-<aside class="sidebar">
+<aside class="sidebar" id="na-sidebar">
     <div class="sidebar-logo">
         <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo">
     </div>
@@ -193,7 +194,7 @@ tbody tr:last-child td { border-bottom: none; }
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <div class="main-panel">
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
     <div class="topbar">
         <div class="profile">
             <div class="meta">
@@ -202,9 +203,9 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="profile-avatar">
                 <?php $currentUser = auth()->user()->fresh(); ?>
-                <?php if($currentUser && $currentUser->profile_picture): ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentUser && $currentUser->profile_picture): ?>
                     <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="profile-pic">
-                <?php endif; ?>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </div>
     </div>
@@ -252,13 +253,13 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Province</label>
                  <select name="province_id" class="filter-input">
                     <option value="">All Provinces</option>
-                    <?php $__currentLoopData = $provinceOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $provinceOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($province->province_id); ?>"
                             <?php echo e(request('province_id') == $province->province_id ? 'selected' : ''); ?>>
                             <?php echo e($province->province_name); ?>
 
                         </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </select>
                 </div>
 
@@ -269,9 +270,9 @@ tbody tr:last-child td { border-bottom: none; }
                            value="<?php echo e(request('school_name')); ?>"
                            placeholder="Type to search school…" autocomplete="off" />
                     <datalist id="schoolList">
-                        <?php $__currentLoopData = $schoolOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $schoolOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($school->school_name); ?>">
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </datalist>
                 </div>
 
@@ -279,12 +280,12 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Grade</label>
                     <select name="grade" class="filter-input">
                         <option value="">All Grades</option>
-                        <?php $__currentLoopData = $gradeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $gradeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($grade); ?>" <?php echo e(request('grade') == $grade ? 'selected' : ''); ?>>
                                 <?php echo e($grade); ?>
 
                             </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -304,12 +305,12 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Report Type</label>
                     <select name="type_id" class="filter-input">
                         <option value="">All Types</option>
-                        <?php $__currentLoopData = $typeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $typeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($type->id); ?>" <?php echo e(request('type_id') == $type->id ? 'selected' : ''); ?>>
                                 <?php echo e($type->type_name); ?>
 
                             </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -317,12 +318,12 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Subtype</label>
                     <select name="subtype_id" class="filter-input">
                         <option value="">All Subtypes</option>
-                        <?php $__currentLoopData = $subtypeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $subtypeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($sub->id); ?>" <?php echo e(request('subtype_id') == $sub->id ? 'selected' : ''); ?>>
                                 <?php echo e($sub->sub_type_name); ?>
 
                             </option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -377,20 +378,20 @@ tbody tr:last-child td { border-bottom: none; }
                         : null,
                 ]);
             ?>
-            <?php if(count($activeFilters)): ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($activeFilters)): ?>
                 <div style="margin-top:12px; display:flex; flex-wrap:wrap; align-items:center;">
-                    <?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <span class="active-filter-badge">
                             <i class="fas fa-filter" style="font-size:9px; margin-right:4px;"></i>
                             <?php echo e($label); ?>: <?php echo e($val); ?>
 
                         </span>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     <span style="font-size:11px; color:#9ca3af; margin-left:4px;">
                         — <?php echo e($reports->total()); ?> result(s)
                     </span>
                 </div>
-            <?php endif; ?>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         </div>
         </form>
@@ -413,7 +414,7 @@ tbody tr:last-child td { border-bottom: none; }
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $__empty_1 = true; $__currentLoopData = $reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr onclick="openReportModal(<?php echo e($report->id); ?>)" style="cursor:pointer;">
                             <td><?php echo e($report->case_number ?? 'N/A'); ?></td>
                             <td><?php echo e($report->full_name ?? 'Anonymous'); ?></td>
@@ -432,24 +433,24 @@ tbody tr:last-child td { border-bottom: none; }
                                 No reports found for this filter.
                             </td>
                         </tr>
-                    <?php endif; ?>
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         
         <div class="pagination">
-            <?php if($reports->onFirstPage()): ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($reports->onFirstPage()): ?>
                 <span class="page-link" aria-disabled="true">←</span>
             <?php else: ?>
                 <a href="<?php echo e($reports->previousPageUrl()); ?>&<?php echo e(http_build_query(request()->except('page'))); ?>" class="page-link" rel="prev">←</a>
-            <?php endif; ?>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-            <?php if($reports->hasMorePages()): ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($reports->hasMorePages()): ?>
                 <a href="<?php echo e($reports->nextPageUrl()); ?>&<?php echo e(http_build_query(request()->except('page'))); ?>" class="page-link" rel="next">→</a>
             <?php else: ?>
                 <span class="page-link" aria-disabled="true">→</span>
-            <?php endif; ?>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
 
     </main>
@@ -542,9 +543,18 @@ function closeReportModal() {
     modal.setAttribute('aria-hidden', 'true');
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const sb = document.querySelector('.sidebar');
+  if (sb && sb.classList.contains('open')) {
+    if (typeof toggleSidebar === 'function') toggleSidebar();
+    return;
+  }
+  closeReportModal();
+});
 </script>
 
+<script src="<?php echo e(asset('js/mobile-select-modal.js')); ?>"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
@@ -601,9 +611,15 @@ function toggleSidebar() {
   if (!sidebar || !mainPanel) return;
   sidebar.classList.toggle('open');
   mainPanel.classList.toggle('shifted');
+  const isOpen = sidebar.classList.contains('open');
+  document.body.classList.toggle('na-sidebar-open', isOpen);
+  if (menuIcon) {
+    menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  }
   if (sidebarOverlay) {
-    sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-    sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+    sidebarOverlay.classList.toggle('active', isOpen);
+    sidebarOverlay.setAttribute('aria-hidden', !isOpen);
   }
 }
 

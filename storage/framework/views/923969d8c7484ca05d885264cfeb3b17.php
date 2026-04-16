@@ -39,7 +39,7 @@
 
 
 
-<?php if(isset($subcopy)): ?>
+<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(isset($subcopy)): ?>
  <?php $__env->slot('subcopy', null, []); ?> 
 <?php if (isset($component)) { $__componentOriginala95a089fc4dac0df2b807f0c4d49e8b5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala95a089fc4dac0df2b807f0c4d49e8b5 = $attributes; } ?>
@@ -64,7 +64,7 @@
 <?php unset($__componentOriginala95a089fc4dac0df2b807f0c4d49e8b5); ?>
 <?php endif; ?>
  <?php $__env->endSlot(); ?>
-<?php endif; ?>
+<?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
 
  <?php $__env->slot('footer', null, []); ?> 

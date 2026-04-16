@@ -373,13 +373,15 @@ h1 {
 }
 
 .chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; }
-.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 370px; display: flex; flex-direction: column; }
+/* Pie + legend need flexible height so bottom legend rows are not clipped */
+.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: auto; min-height: 370px; display: flex; flex-direction: column; }
+.chart-abuse-pie .chart-canvas-host { position: relative; width: 100%; flex: 1 1 auto; min-height: 280px; }
 .chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 370px; display: flex; flex-direction: column; }
 .chart-schools   { grid-column: 2 / 3; grid-row: 2; display: flex; flex-direction: column; }
 .chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; }
 
 #abuseTypeChart {
-    flex-grow: 1;
+    display: block;
     width: 100% !important;
     height: 100% !important;
 }
@@ -770,10 +772,11 @@ canvas { width: 100% !important; height: 280px !important; }
     section[aria-label="Filters"] { padding: 0.5rem 0.75rem; }
 }
     </style>
+    <link rel="stylesheet" href="<?php echo e(asset('css/national-admin-mobile.css')); ?>">
 </head>
-<body>
+<body class="na-app">
 
-<aside class="sidebar">
+<aside class="sidebar" id="na-sidebar">
     <div class="sidebar-logo">
         <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Safe Space Logo">
     </div>
@@ -792,7 +795,7 @@ canvas { width: 100% !important; height: 280px !important; }
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <div class="main-panel">
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
 
     <div class="topbar">
         <div class="profile">
@@ -802,9 +805,9 @@ canvas { width: 100% !important; height: 280px !important; }
             </div>
             <div class="profile-avatar">
                 <?php $currentUser = auth()->user()->fresh(); ?>
-                <?php if($currentUser && $currentUser->profile_picture): ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentUser && $currentUser->profile_picture): ?>
                     <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="profile-pic">
-                <?php endif; ?>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         </div>
     </div>
@@ -820,48 +823,48 @@ canvas { width: 100% !important; height: 280px !important; }
                 <input type="hidden" name="tab" value="<?php echo e($activeTab); ?>">
                 <select name="province" id="provinceSelect" onchange="this.form.submit()">
                     <option value="">All Provinces</option>
-                    <?php $__currentLoopData = $provinces; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $provinces; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($province->id); ?>" <?php echo e($provinceFilter == $province->id ? 'selected' : ''); ?>>
                             <?php echo e($province->name); ?>
 
                         </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </select>
                 <select name="district" id="districtSelect" onchange="this.form.submit()" <?php echo e($provinceFilter ? '' : 'disabled'); ?>>
                     <option value="">All Districts</option>
-                    <?php $__currentLoopData = $districts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $district): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $districts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $district): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($district->id); ?>" <?php echo e($districtFilter == $district->id ? 'selected' : ''); ?>>
                             <?php echo e($district->name); ?>
 
                         </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </select>
                 <select name="school" id="schoolSelect" onchange="this.form.submit()" <?php echo e(($districtFilter && $provinceFilter) ? '' : 'disabled'); ?>>
                     <option value="">All Schools</option>
-                    <?php $__currentLoopData = $schools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $schools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($school->school_id); ?>" <?php echo e($schoolFilter == $school->school_id ? 'selected' : ''); ?>>
                             <?php echo e($school->school_name); ?>
 
                         </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </select>
                 <select name="abuse_type" onchange="this.form.submit()">
                     <option value="">Any Report Type</option>
-                    <?php $__currentLoopData = $abuseTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $abuseTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($type->id); ?>" <?php echo e($abuseTypeFilter == $type->id ? 'selected' : ''); ?>>
                             <?php echo e($type->type_name); ?>
 
                         </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </select>
                 <select name="age_range" onchange="this.form.submit()">
                     <option value="">Any Age</option>
-                    <?php $__currentLoopData = ['0-10','11-15','16-20','21-25','26-30','30+']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = ['0-10','11-15','16-20','21-22']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($range); ?>" <?php echo e($ageRange == $range ? 'selected' : ''); ?>>
                             <?php echo e($range); ?>
 
                         </option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </select>
                 <label>
                     From
@@ -873,13 +876,13 @@ canvas { width: 100% !important; height: 280px !important; }
                 </label>
                 <button type="button" id="refreshBtn">Refresh Table</button>
             </form>
-            <?php if(!empty($activeFilters)): ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($activeFilters)): ?>
                 <div class="filter-chips" aria-label="Active filters">
-                    <?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $chip): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $chip): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <span><?php echo e($chip); ?></span>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
-            <?php endif; ?>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </section>
 
         <section class="metrics-row" aria-label="Headline metrics">
@@ -943,9 +946,16 @@ canvas { width: 100% !important; height: 280px !important; }
                     <canvas id="monthlyTrendChart"></canvas>
                 </div>
 
+                <?php
+                    $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+                    /* Room for pie + full legend (Chart.js draws legend inside this box) */
+                    $abusePieHostHeight = max(380, min(900, 200 + $abuseTypeCount * 34));
+                ?>
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
-                    <canvas id="abuseTypeChart"></canvas>
+                    <div class="chart-canvas-host" style="height: <?php echo e($abusePieHostHeight); ?>px;">
+                        <canvas id="abuseTypeChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="chart-card chart-anonymous">
@@ -965,7 +975,7 @@ canvas { width: 100% !important; height: 280px !important; }
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $__empty_1 = true; $__currentLoopData = $topSchools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schoolName => $schoolCount): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $topSchools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schoolName => $schoolCount): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <tr>
                                         <td><?php echo e($schoolName); ?></td>
                                         <td><?php echo e(number_format($schoolCount)); ?></td>
@@ -974,7 +984,7 @@ canvas { width: 100% !important; height: 280px !important; }
                                     <tr>
                                         <td colspan="2" style="text-align:center; color:#6b7280; padding:1rem;">No schools with reports.</td>
                                     </tr>
-                                <?php endif; ?>
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -1001,18 +1011,18 @@ canvas { width: 100% !important; height: 280px !important; }
                         <thead>
                             <tr>
                                 <th class="heatmap-corner">Province</th>
-                                <?php $__currentLoopData = $heatmapAbuseTypes ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $atype): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $heatmapAbuseTypes ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $atype): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <th class="heatmap-col"><?php echo e($atype); ?></th>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 <th class="heatmap-total-col">Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $__empty_1 = true; $__currentLoopData = $heatmapMatrix ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $heatmapMatrix ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $province => $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <?php $rowIdx = $loop->index; ?>
                                 <tr>
                                     <th class="heatmap-row"><?php echo e($province); ?></th>
-                                    <?php $__currentLoopData = $row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colIdx => $count): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colIdx => $count): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php
                                             $intensity = ($heatmapMax ?? 1) > 0 ? min(1, $count / ($heatmapMax ?? 1)) : 0;
                                             $colors = ['#e0f2fe','#fef9c3','#eab308','#f97316','#ef4444'];
@@ -1041,23 +1051,23 @@ canvas { width: 100% !important; height: 280px !important; }
                                             <span class="heatmap-cell-count"><?php echo e($count); ?></span>
                                             <span class="heatmap-cell-pct" style="display:none;"><?php echo e($pct); ?>%</span>
                                         </td>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     <td class="heatmap-total-cell"><?php echo e($heatmapRowTotals[$province] ?? 0); ?></td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="<?php echo e(count($heatmapAbuseTypes ?? []) + 2); ?>" style="text-align:center; padding:2rem; color:#6b7280;">No report data for the selected filters.</td>
                                 </tr>
-                            <?php endif; ?>
-                            <?php if(!empty($heatmapMatrix)): ?>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($heatmapMatrix)): ?>
                                 <tr class="heatmap-total-row">
                                     <th class="heatmap-corner">Total</th>
-                                    <?php $__currentLoopData = $heatmapColumnTotals ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colTotal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $heatmapColumnTotals ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $colTotal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <td class="heatmap-total-col"><?php echo e($colTotal); ?></td>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     <td class="heatmap-total-cell"><?php echo e($heatmapGrandTotal ?? 0); ?></td>
                                 </tr>
-                            <?php endif; ?>
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -1317,6 +1327,7 @@ function renderOverviewCharts(dataset) {
   const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
   const abuseColors = ['#004c99','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4','#C0C0C0','#FF0000','#FFFF00'];
 
+  const abuseLegendPosition = abuseLabels.length > 5 ? 'right' : 'bottom';
   createChart('abuseTypeChart', {
     type: 'pie',
     data: {
@@ -1324,17 +1335,30 @@ function renderOverviewCharts(dataset) {
       datasets: [{ data: abuseCounts, backgroundColor: abuseColors.slice(0, Math.max(abuseLabels.length, 1)) }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false, layout: { padding: 10 },
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: abuseLegendPosition === 'right'
+          ? { top: 8, right: 8, bottom: 8, left: 8 }
+          : { top: 4, right: 12, bottom: 4, left: 12 }
+      },
       plugins: {
         legend: {
-          position: 'bottom',
+          position: abuseLegendPosition,
+          align: 'center',
+          fullSize: true,
           labels: {
-            padding: 12, font: { size: 12, family: 'Montserrat' },
+            padding: abuseLegendPosition === 'right' ? 10 : 14,
+            boxWidth: 14,
+            boxHeight: 14,
+            usePointStyle: true,
+            maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
+            font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
             generateLabels: function(chart) {
               const data = chart.data; const ds = data.datasets[0];
               const pcts = percentagesTo100(ds.data);
               return data.labels.map((label, i) => ({
-                text: label + ' (' + pcts[i] + '%)',
+                text: (label || '—') + ' (' + pcts[i] + '%)',
                 fillStyle: ds.backgroundColor[i],
                 strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
                 lineWidth: 1, hidden: false, index: i
@@ -1520,13 +1544,22 @@ function toggleSidebar() {
   if (!sidebar || !mainPanel) return;
   sidebar.classList.toggle('open');
   mainPanel.classList.toggle('shifted');
+  const isOpen = sidebar.classList.contains('open');
+  document.body.classList.toggle('na-sidebar-open', isOpen);
+  if (menuIcon) {
+    menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  }
   if (sidebarOverlay) {
-    sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-    sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+    sidebarOverlay.classList.toggle('active', isOpen);
+    sidebarOverlay.setAttribute('aria-hidden', !isOpen);
   }
 }
 if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
 if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) toggleSidebar();
+});
 </script>
 
 <script>
