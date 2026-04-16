@@ -9,7 +9,7 @@
                     <!-- Dashboard -->
                      <div class="flex justify-center" style="margin-bottom: 70px">
                           <img src="{{ asset('images/logo.png') }}" 
-                               alt="Safe Space Logo" 
+                               alt="Tekete SafeSpace" 
                                style="width: 125px; height: 110px;">
                     </div>
 

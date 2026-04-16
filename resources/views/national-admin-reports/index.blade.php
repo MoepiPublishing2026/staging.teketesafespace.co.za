@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Reports - National Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Reports | Tekete SafeSpace – National Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -173,12 +173,13 @@ tbody tr:last-child td { border-bottom: none; }
 .filter-btn-clear:hover { border-color: #c7da30 !important; color: #000 !important; background: #f7fcd4 !important; }
 .active-filter-badge { display: inline-flex; align-items: center; background: #f0f9d4; border: 1px solid #c7da30; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #4a5e00; margin-right: 6px; margin-bottom: 6px; }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
 </head>
-<body>
+<body class="na-app">
 
-<aside class="sidebar">
+<aside class="sidebar" id="na-sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -193,7 +194,7 @@ tbody tr:last-child td { border-bottom: none; }
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <div class="main-panel">
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
     <div class="topbar">
         <div class="profile">
             <div class="meta">
@@ -537,7 +538,15 @@ function closeReportModal() {
     modal.setAttribute('aria-hidden', 'true');
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const sb = document.querySelector('.sidebar');
+  if (sb && sb.classList.contains('open')) {
+    if (typeof toggleSidebar === 'function') toggleSidebar();
+    return;
+  }
+  closeReportModal();
+});
 </script>
 
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
@@ -597,9 +606,15 @@ function toggleSidebar() {
   if (!sidebar || !mainPanel) return;
   sidebar.classList.toggle('open');
   mainPanel.classList.toggle('shifted');
+  const isOpen = sidebar.classList.contains('open');
+  document.body.classList.toggle('na-sidebar-open', isOpen);
+  if (menuIcon) {
+    menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  }
   if (sidebarOverlay) {
-    sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-    sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+    sidebarOverlay.classList.toggle('active', isOpen);
+    sidebarOverlay.setAttribute('aria-hidden', !isOpen);
   }
 }
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Tekete Safe Space Subscription</title>
+    <title>Subscription | Tekete SafeSpace</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
@@ -271,7 +271,7 @@
         </ul>
 
         <p class="limitations-note">
-            The Free Plan allows schools to test Tekete Safe Space in a controlled,
+            The Free Plan allows schools to test Tekete SafeSpace in a controlled,
             compliant way before upgrading to a full subscription.
         </p>
 
@@ -304,7 +304,7 @@
 <body>
 
     <header class="main-header">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space" height="50">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace" height="50">
 
         <a href="{{ route('faq') }}" class="faq-link">
             FAQ
@@ -345,7 +345,7 @@
 
     <div class="container">
 
-        <h1>Tekete Safe Space Subscription</h1>
+        <h1>Tekete SafeSpace Subscription</h1>
 
         <p class="subtitle">
             Our pricing plans are structured to provide schools with scalable access,
@@ -444,7 +444,7 @@
     </div>
 
     <footer>
-        © 2026 Tekete Safe Space From Moepi Publishing. All rights reserved.
+        © {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
     </footer>
 
 </body>

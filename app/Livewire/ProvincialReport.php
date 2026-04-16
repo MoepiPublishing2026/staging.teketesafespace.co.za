@@ -107,6 +107,6 @@ class ProvincialReport extends Component
         return view('livewire.provincial-report', [
             'reports' => $this->reports,
             'filter' => $this->filter,
-        ]);
+        ])->layout('components.layouts.app', ['title' => 'Reports | Tekete SafeSpace']);
     }
 }

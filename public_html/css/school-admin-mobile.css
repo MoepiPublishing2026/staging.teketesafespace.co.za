@@ -1,0 +1,300 @@
+/**
+ * School Admin — mobile & small-screen polish
+ * Loaded after inline/shared styles; scoped with body.sa-app
+ */
+
+:root {
+  --sa-safe-top: env(safe-area-inset-top, 0px);
+  --sa-safe-right: env(safe-area-inset-right, 0px);
+  --sa-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --sa-safe-left: env(safe-area-inset-left, 0px);
+  --sa-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --sa-shadow-drawer: 12px 0 48px rgba(15, 23, 42, 0.14);
+  --sa-shadow-menu: 0 4px 24px rgba(15, 23, 42, 0.12);
+}
+
+body.sa-app .dashboard-scroll,
+body.sa-app main {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.sa-app .menu-icon {
+  border-radius: 12px;
+  box-shadow: var(--sa-shadow-menu);
+  transition:
+    transform 0.2s var(--sa-ease-drawer),
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+body.sa-app .menu-icon:active {
+  transform: scale(0.94);
+}
+
+body.sa-app .menu-icon:focus-visible {
+  outline: 3px solid rgba(56, 182, 255, 0.55);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  /*
+   * Clear the fixed menu button (≈46px) + safe area so titles and cards
+   * do not sit under the hamburger.
+   */
+  body.sa-app .main-panel .dashboard-scroll {
+    padding-left: max(0.75rem, calc(var(--sa-safe-left) + 3.35rem));
+    padding-right: max(0.75rem, var(--sa-safe-right));
+    box-sizing: border-box;
+  }
+
+  body.sa-app .dashboard-scroll > h1,
+  body.sa-app main h1 {
+    font-size: clamp(1.05rem, 3.2vw + 0.65rem, 1.75rem) !important;
+    line-height: 1.25;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: left;
+  }
+
+  body.sa-app .subtitle {
+    font-size: clamp(0.8125rem, 1.2vw + 0.65rem, 1rem);
+    line-height: 1.45;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Sticky bar above scrolling canvas/content; stays below menu (1002) */
+  body.sa-app .main-panel .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    isolation: isolate;
+  }
+
+  body.sa-app .topbar {
+    padding-left: max(0.75rem, calc(var(--sa-safe-left) + 3.35rem));
+    padding-right: max(0.75rem, var(--sa-safe-right));
+    padding-top: max(0.5rem, var(--sa-safe-top));
+    padding-bottom: 0.5rem;
+    min-height: calc(52px + var(--sa-safe-top));
+    background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  }
+
+  body.sa-app .profile {
+    min-width: 0;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  body.sa-app .profile .meta {
+    min-width: 0;
+    max-width: min(58vw, 14rem);
+    text-align: right;
+  }
+
+  body.sa-app .profile .meta > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.sa-app .menu-icon {
+    top: max(10px, calc(var(--sa-safe-top) + 6px));
+    left: max(10px, calc(var(--sa-safe-left) + 4px));
+    z-index: 1002;
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+
+  body.sa-app .sidebar,
+  body.sa-app .school-admin-sidebar {
+    width: min(300px, 88vw) !important;
+    min-width: min(300px, 88vw) !important;
+    max-width: 100%;
+    padding-top: max(0.75rem, var(--sa-safe-top)) !important;
+    padding-bottom: max(1rem, var(--sa-safe-bottom)) !important;
+    transform: translate3d(-100%, 0, 0);
+    transition:
+      transform 0.4s var(--sa-ease-drawer),
+      box-shadow 0.35s ease;
+    will-change: transform;
+    box-shadow: none;
+    border-right: 1px solid rgba(226, 232, 240, 0.95);
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  }
+
+  body.sa-app .sidebar.open,
+  body.sa-app .school-admin-sidebar.open {
+    transform: translate3d(0, 0, 0);
+    box-shadow: var(--sa-shadow-drawer);
+  }
+
+  body.sa-app .sidebar:not(.open),
+  body.sa-app .school-admin-sidebar:not(.open) {
+    pointer-events: none;
+  }
+
+  body.sa-app .sidebar.open,
+  body.sa-app .school-admin-sidebar.open {
+    pointer-events: auto;
+  }
+
+  body.sa-app .main-panel.shifted {
+    margin-left: 0 !important;
+  }
+
+  body.sa-app .sidebar-overlay {
+    background: rgba(15, 23, 42, 0.38) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+  }
+
+  body.sa-app .sidebar-overlay.active {
+    opacity: 1 !important;
+  }
+
+  body.sa-app .sidebar-link {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-radius: 10px;
+    margin-bottom: 0.35rem;
+  }
+
+  body.sa-app .dashboard-scroll {
+    padding-bottom: max(1.25rem, var(--sa-safe-bottom));
+  }
+
+  body.sa-app main {
+    padding-left: max(1rem, calc(var(--sa-safe-left) + 3.35rem));
+    padding-right: max(1rem, var(--sa-safe-right));
+    padding-bottom: max(1.5rem, var(--sa-safe-bottom));
+  }
+
+  body.sa-app section[aria-label="Filters"] {
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(56, 182, 255, 0.06);
+    border-color: rgba(199, 218, 48, 0.65);
+  }
+
+  body.sa-app .metrics-row > .metric-card,
+  body.sa-app .extras-row > .metric-card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 14px rgba(15, 23, 42, 0.06);
+  }
+
+  body.sa-app .chart-card {
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
+  }
+
+  body.sa-app .heatmap-wrap {
+    position: relative;
+    border-radius: 0 0 10px 10px;
+  }
+
+  body.sa-app .heatmap-wrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 18px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(248, 250, 252, 0.55));
+    opacity: 0.65;
+  }
+
+  body.sa-app .filter-panel {
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+  }
+
+  body.sa-app .search-wrap input {
+    border-radius: 999px !important;
+  }
+
+  body.sa-app .table-wrap {
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(15, 23, 42, 0.06);
+  }
+
+  body.sa-app .table-wrap table {
+    font-size: max(0.8rem, 12px);
+  }
+
+  body.sa-app .chart-status .chart-status-host {
+    min-height: 260px;
+  }
+
+  /* Livewire pages: no topbar — keep content clear of fixed menu button */
+  body.sa-app .main-panel > main:first-child {
+    padding-top: max(3.5rem, calc(var(--sa-safe-top) + 3rem));
+    padding-left: max(1rem, calc(var(--sa-safe-left) + 3.35rem));
+    padding-right: max(1rem, var(--sa-safe-right));
+    margin-top: 0 !important;
+  }
+
+  /*
+   * Modals above drawer (1000), dim overlay (999), and menu (1002).
+   * Some views toggle display:flex without .active — raise .modal-backdrop globally for sa-app.
+   */
+  body.sa-app .modal-backdrop {
+    z-index: 1100 !important;
+  }
+
+  /* Livewire reports: Tailwind full-screen overlays use z-50 (50) */
+  body.sa-app .main-panel main .fixed.inset-0 {
+    z-index: 1100 !important;
+  }
+}
+
+@media (max-width: 900px) {
+  body.sa-app.sa-sidebar-open {
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 600px) {
+  body.sa-app .menu-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  body.sa-app .main-panel .dashboard-scroll,
+  body.sa-app .main-panel .topbar,
+  body.sa-app main {
+    padding-left: max(0.65rem, calc(var(--sa-safe-left) + 3.1rem));
+  }
+
+  body.sa-app .profile .meta {
+    max-width: min(52vw, 12rem);
+  }
+
+  body.sa-app .profile-avatar {
+    flex-shrink: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.sa-app .sidebar,
+  body.sa-app .school-admin-sidebar {
+    transition: none !important;
+  }
+
+  body.sa-app .menu-icon {
+    transition: none !important;
+  }
+
+  body.sa-app .sidebar-overlay {
+    transition: none !important;
+  }
+}

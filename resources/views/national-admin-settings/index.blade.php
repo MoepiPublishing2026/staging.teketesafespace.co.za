@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>National Admin Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Settings | Tekete SafeSpace – National Admin</title>
    
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -453,13 +453,13 @@ button.submit-btn {
             margin-bottom: 1.5rem;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
 </head>
-<body>
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+<body class="na-app">
 
-<aside class="sidebar">
+<aside class="sidebar" id="na-sidebar">
       <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
       </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -480,6 +480,7 @@ button.submit-btn {
 
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
+        <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
         <div class="topbar">
             <div class="profile">
                 <div class="meta">
@@ -641,14 +642,23 @@ button.submit-btn {
         if (!sidebar || !mainPanel) return;
         sidebar.classList.toggle('open');
         mainPanel.classList.toggle('shifted');
+        const isOpen = sidebar.classList.contains('open');
+        document.body.classList.toggle('na-sidebar-open', isOpen);
+        if (menuIcon) {
+            menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+        }
         if (sidebarOverlay) {
-            sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-            sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+            sidebarOverlay.setAttribute('aria-hidden', !isOpen);
+            sidebarOverlay.classList.toggle('active', isOpen);
         }
     }
 
     if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
     if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) toggleSidebar();
+    });
 
     if (sidebar) {
         const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
