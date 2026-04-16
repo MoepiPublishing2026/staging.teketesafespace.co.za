@@ -40,12 +40,12 @@ body.pa-app .menu-icon:focus-visible {
 
 @media (max-width: 900px) {
   /*
-   * Clear the fixed menu button (≈46px) + safe area so titles and cards
-   * do not sit under the hamburger.
+   * Clear the fixed menu on the left; add matching right inset so cards look
+   * centred (not shifted toward the right edge).
    */
   body.pa-app .main-panel .dashboard-scroll {
     padding-left: max(0.75rem, calc(var(--pa-safe-left) + 3.35rem));
-    padding-right: max(0.75rem, var(--pa-safe-right));
+    padding-right: max(0.75rem, calc(var(--pa-safe-right) + 2.25rem));
     box-sizing: border-box;
   }
 
@@ -75,7 +75,7 @@ body.pa-app .menu-icon:focus-visible {
 
   body.pa-app .topbar {
     padding-left: max(0.75rem, calc(var(--pa-safe-left) + 3.35rem));
-    padding-right: max(0.75rem, var(--pa-safe-right));
+    padding-right: max(0.75rem, calc(var(--pa-safe-right) + 2.25rem));
     padding-top: max(0.5rem, var(--pa-safe-top));
     padding-bottom: 0.5rem;
     min-height: calc(52px + var(--pa-safe-top));
@@ -168,7 +168,7 @@ body.pa-app .menu-icon:focus-visible {
 
   body.pa-app main {
     padding-left: max(1rem, calc(var(--pa-safe-left) + 3.35rem));
-    padding-right: max(1rem, var(--pa-safe-right));
+    padding-right: max(1rem, calc(var(--pa-safe-right) + 2.25rem));
     padding-bottom: max(1.5rem, var(--pa-safe-bottom));
   }
 
@@ -230,11 +230,37 @@ body.pa-app .menu-icon:focus-visible {
     min-height: 260px;
   }
 
+  /* Analytics grids — single column, no overlapping cells on iPhone Safari */
+  body.pa-app section[aria-label="Analytics"] .grid-two {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  body.pa-app section[aria-label="Analytics"] .grid-two > *,
+  body.pa-app section[aria-label="Analytics"] .chart-card {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    position: relative;
+    isolation: isolate;
+  }
+
+  body.pa-app section[aria-label="Analytics"] .chart-canvas-host,
+  body.pa-app section[aria-label="Analytics"] .chart-status-host {
+    min-width: 0;
+  }
+
   /* Pages with main directly under .main-panel (no dashboard-scroll) */
   body.pa-app .main-panel > main:first-child {
     padding-top: max(3.5rem, calc(var(--pa-safe-top) + 3rem));
     padding-left: max(1rem, calc(var(--pa-safe-left) + 3.35rem));
-    padding-right: max(1rem, var(--pa-safe-right));
+    padding-right: max(1rem, calc(var(--pa-safe-right) + 2.25rem));
     margin-top: 0 !important;
   }
 
@@ -267,6 +293,7 @@ body.pa-app .menu-icon:focus-visible {
   body.pa-app .main-panel .topbar,
   body.pa-app main {
     padding-left: max(0.65rem, calc(var(--pa-safe-left) + 3.1rem));
+    padding-right: max(0.65rem, calc(var(--pa-safe-right) + 2.1rem));
   }
 
   body.pa-app .profile .meta {

@@ -184,6 +184,44 @@ body.na-app .menu-icon:focus-visible {
     box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
   }
 
+  /*
+   * Chart grid — force one column and clear grid-column/grid-row from desktop
+   * so canvases don’t stack on top of each other on narrow iPhones.
+   */
+  body.na-app .chart-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  body.na-app .chart-grid > .chart-card {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    position: relative;
+    isolation: isolate;
+  }
+
+  body.na-app .chart-grid .chart-canvas-host,
+  body.na-app .chart-grid .chart-status-host {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.na-app .chart-grid .chart-canvas-host canvas,
+  body.na-app .chart-grid .chart-status-host canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
   /* Heatmap scroll strip hint */
   body.na-app .heatmap-wrap {
     position: relative;
