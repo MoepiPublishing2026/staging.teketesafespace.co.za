@@ -40,12 +40,12 @@ body.sa-app .menu-icon:focus-visible {
 
 @media (max-width: 900px) {
   /*
-   * Clear the fixed menu button (≈46px) + safe area so titles and cards
-   * do not sit under the hamburger.
+   * Clear the fixed menu on the left. Match right inset so cards don’t look
+   * shoved toward the right edge (left had ~3.35rem extra vs ~0.75rem right).
    */
   body.sa-app .main-panel .dashboard-scroll {
     padding-left: max(0.75rem, calc(var(--sa-safe-left) + 3.35rem));
-    padding-right: max(0.75rem, var(--sa-safe-right));
+    padding-right: max(0.75rem, calc(var(--sa-safe-right) + 2.25rem));
     box-sizing: border-box;
   }
 
@@ -75,7 +75,7 @@ body.sa-app .menu-icon:focus-visible {
 
   body.sa-app .topbar {
     padding-left: max(0.75rem, calc(var(--sa-safe-left) + 3.35rem));
-    padding-right: max(0.75rem, var(--sa-safe-right));
+    padding-right: max(0.75rem, calc(var(--sa-safe-right) + 2.25rem));
     padding-top: max(0.5rem, var(--sa-safe-top));
     padding-bottom: 0.5rem;
     min-height: calc(52px + var(--sa-safe-top));
@@ -172,7 +172,7 @@ body.sa-app .menu-icon:focus-visible {
 
   body.sa-app main {
     padding-left: max(1rem, calc(var(--sa-safe-left) + 3.35rem));
-    padding-right: max(1rem, var(--sa-safe-right));
+    padding-right: max(1rem, calc(var(--sa-safe-right) + 2.25rem));
     padding-bottom: max(1.5rem, var(--sa-safe-bottom));
   }
 
@@ -191,6 +191,47 @@ body.sa-app .menu-icon:focus-visible {
   body.sa-app .chart-card {
     border-radius: 14px;
     box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
+  }
+
+  /*
+   * Dashboard charts — iPhone / Safari: single column, reset explicit grid
+   * rows/columns so cards never share a cell or paint on top of each other.
+   */
+  body.sa-app .charts-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  body.sa-app .charts-grid > .chart-card {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    position: relative;
+    isolation: isolate;
+  }
+
+  body.sa-app .charts-grid > .chart-card:not(.chart-abuse-pie):not(.chart-status) {
+    min-height: 280px;
+  }
+
+  body.sa-app .charts-grid .chart-canvas-host,
+  body.sa-app .charts-grid .chart-status-host {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.sa-app .charts-grid .chart-canvas-host canvas,
+  body.sa-app .charts-grid .chart-status-host canvas {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   body.sa-app .heatmap-wrap {
@@ -238,7 +279,7 @@ body.sa-app .menu-icon:focus-visible {
   body.sa-app .main-panel > main:first-child {
     padding-top: max(3.5rem, calc(var(--sa-safe-top) + 3rem));
     padding-left: max(1rem, calc(var(--sa-safe-left) + 3.35rem));
-    padding-right: max(1rem, var(--sa-safe-right));
+    padding-right: max(1rem, calc(var(--sa-safe-right) + 2.25rem));
     margin-top: 0 !important;
   }
 
@@ -273,6 +314,7 @@ body.sa-app .menu-icon:focus-visible {
   body.sa-app .main-panel .topbar,
   body.sa-app main {
     padding-left: max(0.65rem, calc(var(--sa-safe-left) + 3.1rem));
+    padding-right: max(0.65rem, calc(var(--sa-safe-right) + 2.1rem));
   }
 
   body.sa-app .profile .meta {

@@ -549,9 +549,16 @@ form.filters button {
     gap: 1.5rem;
 }
 
-canvas {
+/* Default chart height only for simple canvases; hosts size pie/status via Chart.js */
+#monthlyTrendChart,
+#anonymousChart {
     width: 100% !important;
     height: 280px !important;
+}
+.chart-canvas-host canvas,
+.chart-status-host canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .modal-backdrop {
@@ -694,11 +701,28 @@ canvas {
         min-width: 0;
     }
     .grid-two {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+        width: 100%;
+        min-width: 0;
     }
-    canvas {
-        height: 250px !important;
+    section[aria-label="Analytics"] .grid-two > * {
+        min-width: 0;
+        width: 100%;
+    }
+    #monthlyTrendChart,
+    #anonymousChart {
+        height: 240px !important;
+    }
+    .chart-canvas-host canvas,
+    .chart-status-host canvas {
+        height: 100% !important;
+        min-height: 200px !important;
+    }
+    .chart-card.chart-abuse-pie,
+    .chart-card.chart-status {
+        width: 100% !important;
+        max-width: 100%;
     }
     .heatmap-panel {
         padding: 1rem;
@@ -823,7 +847,7 @@ canvas {
     }
     .chart-title-left {
         text-align: left !important;
-        margin-top: 89px !important;
+        margin-top: 1.25rem !important;
         padding-left: 0 !important;
     }
 
