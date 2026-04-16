@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Settings | Tekete SafeSpace – Provincial Admin</title>
    
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
@@ -432,11 +432,12 @@ button.submit-btn {
             margin-bottom: 1.5rem;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/provincial-admin-mobile.css') }}">
 </head>
-<body>
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+<body class="pa-app">
+    <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
 
-<aside class="sidebar">
+<aside class="sidebar" id="provincialSidebar">
       <div class="sidebar-logo">
         <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
       </div>
@@ -583,42 +584,9 @@ button.submit-btn {
 
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 
+@include('components.provincial-admin-sidebar-script')
+
 <script>
-    // Mobile menu toggle
-    const menuIcon = document.querySelector('.menu-icon');
-    const sidebar = document.querySelector('.sidebar');
-    const mainPanel = document.querySelector('.main-panel');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-    function toggleSidebar() {
-        if (!sidebar || !mainPanel) return;
-        sidebar.classList.toggle('open');
-        mainPanel.classList.toggle('shifted');
-        if (sidebarOverlay) {
-            sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-            sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
-        }
-    }
-
-    if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-
-    if (sidebar) {
-        const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
-            });
-        });
-
-        const logoutButton = sidebar.querySelector('button[type="submit"]');
-        if (logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
-            });
-        }
-    }
-
    // Profile picture preview functionality
     const profilePictureInput = document.getElementById('profile-picture-input');
     const profilePicturePreview = document.getElementById('profile-picture-preview');
