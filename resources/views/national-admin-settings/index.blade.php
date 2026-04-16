@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>National Admin Settings</title>
+    <title>Settings | Tekete SafeSpace – National Admin</title>
    
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -459,7 +459,7 @@ button.submit-btn {
 
 <aside class="sidebar" id="na-sidebar">
       <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
       </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>

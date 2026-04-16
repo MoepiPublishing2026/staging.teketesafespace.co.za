@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Reports - Provincial Admin - {{ $province->province_name ?? '' }}</title>
+    <title>Reports | Tekete SafeSpace – {{ $province->province_name ?? 'Provincial Admin' }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
@@ -448,7 +448,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 <aside class="sidebar" id="sidebarPanel">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>

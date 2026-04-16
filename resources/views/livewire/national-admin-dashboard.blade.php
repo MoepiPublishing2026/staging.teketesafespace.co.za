@@ -4,6 +4,7 @@
         <div class="flex flex-col h-full">
             <!-- Logo/Title Section -->
             <div class="p-6 text-center">
+                <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Tekete SafeSpace</p>
                 <h1 class="text-2xl font-bold text-gray-700 uppercase tracking-wide">NATIONAL<br>ADMIN</h1>
             </div>
             <!-- Navigation Menu -->
@@ -33,7 +34,7 @@
             </nav>
             <!-- Footer -->
             <div class="p-4 text-center">
-                <p class="text-sm text-gray-600">© 2025 SafeSpace</p>
+                <p class="text-sm text-gray-600">© {{ date('Y') }} Tekete SafeSpace</p>
             </div>
         </div>
     </aside>

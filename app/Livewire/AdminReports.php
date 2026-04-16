@@ -435,6 +435,6 @@ class AdminReports extends Component
             'typeOptions'    => $typeOptions,
             'subtypeOptions' => $subtypeOptions,
             'gradeOptions'   => $gradeOptions,
-        ]);
+        ])->layout('components.layouts.school-admin', ['title' => 'Reports | Tekete SafeSpace']);
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Provincial Admin Settings</title>
+    <title>Settings | Tekete SafeSpace – Provincial Admin</title>
    
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
@@ -438,7 +438,7 @@ button.submit-btn {
 
 <aside class="sidebar">
       <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
       </div>
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>

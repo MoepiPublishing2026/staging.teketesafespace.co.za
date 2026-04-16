@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Reports - School Admin - {{ $school->school_name ?? '' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Reports | Tekete SafeSpace – {{ $school->school_name ?? 'School Admin' }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
    <style>
@@ -424,81 +424,23 @@ tbody tr:last-child td {
     background: #f2f2f2;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== RESPONSIVE (layout chrome: components/school-admin-styles + school-admin-mobile.css) ===== */
 @media (max-width: 900px) {
-    .menu-icon { display: flex !important; }
-    .sidebar {
-        position: fixed; top: 0; left: 0; width: 0; height: 100vh;
-        background: white; overflow-x: hidden; overflow-y: auto;
-        transition: width 0.3s ease; z-index: 1000;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-        padding-top: 0;
-    }
-    .sidebar.open { width: 240px; }
-    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-    .sidebar.open .sidebar-logo { display: flex; }
-    .sidebar-logo img { width: 70px; height: auto; }
-    .main-panel { margin-left: 0 !important; transition: margin-left 0.3s ease; height: 100vh; }
-    .main-panel.shifted { margin-left: 240px; }
     main { padding: 1.5rem; }
     #searchForm { flex-direction: column; align-items: stretch !important; }
-    #searchForm input { width: 100% !important; }
+    #searchForm input { width: 100% !important; max-width: 100% !important; }
     #searchForm button { width: 100% !important; }
 }
-
-@media (max-width: 600px) {
-    .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
-    .sidebar.open { width: 100%; max-width: 280px; }
-    .main-panel.shifted { margin-left: 0; }
-    .sidebar-logo img { width: 60px; height: auto; }
-}
-
-.menu-icon {
-    display: none; position: fixed; top: 12px; left: 12px;
-    width: 44px; height: 44px; padding: 0;
-    border: 2px solid #e5e7eb; background: white !important;
-    border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    cursor: pointer; z-index: 1001; align-items: center; justify-content: center;
-    font-size: 22px; color: #38b6ff !important;
-}
-.menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
-.sidebar-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.3); z-index: 999; opacity: 0; transition: opacity 0.2s ease;
-}
-.sidebar-overlay.active { display: block; opacity: 1; }
-@media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
 </style>
+    @include('components.school-admin-styles')
+    <link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
 
 </head>
-<body>
-<aside class="sidebar">
-     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
-     </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/admin/dashboard') }}" class="sidebar-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/admin/reports') }}" class="sidebar-link {{ request()->is('admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/admin/settings') }}" class="sidebar-link {{ request()->is('admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-
-        <!-- Sign Out as a styled form -->
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">
-    Sign Out
-</a>
-
-<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-    @csrf
-</form>
-
-    </ul>
-</aside>
-
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<body class="sa-app">
+@include('components.school-admin-sidebar')
 
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
-        <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
         <!-- Top bar with profile only (sticky) -->
         <div class="topbar">
             <div class="profile">
@@ -537,7 +479,7 @@ tbody tr:last-child td {
         name="case_number" 
         placeholder="Search by Case Number" 
         value="{{ request('case_number') }}" 
-        style="padding: 0.5rem 0.75rem; border: 2px solid #c7da30; border-radius: 0.375rem; font-family: 'Montserrat', sans-serif; font-size: 1rem; width: 440px;" 
+        style="padding: 0.5rem 0.75rem; border: 2px solid #c7da30; border-radius: 0.375rem; font-family: 'Montserrat', sans-serif; font-size: 1rem; width: min(440px, 100%); max-width: 100%; box-sizing: border-box;" 
         aria-label="Search by Case Number"
     >
     <button 
@@ -636,25 +578,7 @@ tbody tr:last-child td {
 </div>
 
 
-<script>
-const menuIcon = document.querySelector('.menu-icon');
-const sidebar = document.querySelector('.sidebar');
-const mainPanel = document.querySelector('.main-panel');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-function toggleSidebar() {
-    if (!sidebar || !mainPanel) return;
-    sidebar.classList.toggle('open');
-    mainPanel.classList.toggle('shifted');
-    if (sidebarOverlay) {
-        sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-        sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
-    }
-}
-
-if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
-if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-</script>
+@include('components.school-admin-sidebar-script')
 
 <script>
 function openReportModal(reportId) {

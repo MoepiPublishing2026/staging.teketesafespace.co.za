@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace School Admin Dashboard</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
@@ -37,7 +37,9 @@ html, body {
 body {
     display: flex;
     min-height: 100vh;
-    width: 100vw;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 100%;
     overflow: hidden;
 }
 
@@ -175,24 +177,52 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
 
 .chart-abuse-pie     { grid-column: 2 / 3; grid-row: 2; }
 
-.chart-abuse-pie {
-    height: 400px; /* Increase this value to make the whole card larger */
+/* Pie + legend need flexible height so legend rows are not clipped */
+.chart-card.chart-abuse-pie {
+    height: auto;
+    min-height: 370px;
     display: flex;
     flex-direction: column;
 }
+.chart-abuse-pie .chart-canvas-host {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 280px;
+}
 
 #abuseTypeChart {
-    flex-grow: 1; /* Forces the canvas to take up all remaining space below the H2 */
+    display: block;
     width: 100% !important;
     height: 100% !important;
 }
 
-/* Last chart centered and alone in row 3 */
+/* Status breakdown: flexible height + host (matches national admin) */
+.chart-card.chart-status {
+  height: auto;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
 .chart-status {
-  grid-column: 1 / 3;    /* spans both columns */
+  grid-column: 1 / 3;
   grid-row: 4;
-  width: 70%;            /* centered but still equal height */
+  width: 70%;
   justify-self: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+.chart-status .chart-status-host {
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 280px;
+}
+#statusChart {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .profile-avatar img {
@@ -637,8 +667,8 @@ canvas {
         padding: 0 1rem;
         height: 56px;
     }
+    /* Title sizes: school-admin-mobile.css (body.sa-app) */
     h1, .subtitle {
-        font-size: 14px;
         padding: 0 1rem;
         text-align: center;
     }
@@ -650,6 +680,7 @@ canvas {
     .chart-anonymous { grid-column: 1; grid-row: 3; }
     .chart-abuse-pie { grid-column: 1; grid-row: 4; }
     .chart-status { grid-column: 1; grid-row: 5; width: 100%; }
+    .chart-status .chart-status-host { min-height: 240px; }
 }
 
 /* Small mobile (max-width: 480px) */
@@ -704,8 +735,9 @@ canvas {
 
     </style>
     @include('components.school-admin-styles')
+    <link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
 </head>
-<body>
+<body class="sa-app">
 @include('components.school-admin-sidebar')
 
 
@@ -740,7 +772,7 @@ canvas {
         <!-- Scrollable dashboard content -->
         <div class="dashboard-scroll" id="main-content">
            <h1>
- Tekete Safe Space School Admin Dashboard - 
+ Tekete SafeSpace School Admin Dashboard - 
   <span class="school-name">{{ $school->school_name }}</span>
 </h1>
 
@@ -916,14 +948,27 @@ canvas {
             <canvas id="anonymousChart"></canvas>
         </div>
 
+        @php
+            $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+            /* Room for pie + full legend (Chart.js draws legend inside this box) */
+            $abusePieHostHeight = max(380, min(900, 200 + $abuseTypeCount * 34));
+        @endphp
         <div class="chart-card chart-abuse-pie">
             <h2>Report Types Distribution</h2>
-            <canvas id="abuseTypeChart"></canvas>
+            <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
+                <canvas id="abuseTypeChart"></canvas>
+            </div>
         </div>
 
+        @php
+            $statusBreakdownN = max(count($statusCounts ?? []), 1);
+            $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
+        @endphp
         <div class="chart-card chart-status">
             <h2>Status Breakdown</h2>
-            <canvas id="statusChart"></canvas>
+            <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
+                <canvas id="statusChart" aria-label="Reports by status"></canvas>
+            </div>
         </div>
 
     </div>
@@ -1119,7 +1164,38 @@ function percentagesTo100(values) {
     return floored.map(x => x.floor);
 }
 
+/** Human-readable status for chart axis + tooltips */
+function formatStatusLabel(slug) {
+    if (slug == null || slug === '') return '';
+    const key = String(slug);
+    const map = {
+        'awaiting-resolution': 'Awaiting Resolution',
+        'under-review': 'Under Review',
+        'forwarded': 'Forwarded',
+        'closed': 'Closed',
+        'unresolved': 'Unresolved',
+        'false-report': 'False Report',
+    };
+    if (map[key]) return map[key];
+    return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function renderOverviewCharts(dataset) {
+    const statusCtx = document.getElementById('statusChart')?.getContext('2d');
+    const statusGradientColors = ['#99c4d3', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4'];
+    const statusBarColors = [];
+    const statusCapColors = [];
+    statusGradientColors.forEach((color) => {
+        if (statusCtx) {
+            const gradient = statusCtx.createLinearGradient(0, 0, 600, 0);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, color);
+            statusBarColors.push(gradient);
+        } else {
+            statusBarColors.push(color);
+        }
+        statusCapColors.push(color);
+    });
     // Monthly Trends - vertical bar chart
    createChart('monthlyTrendChart', {
     type: 'line',  // Changed from 'bar' to 'line'
@@ -1158,6 +1234,7 @@ function renderOverviewCharts(dataset) {
     const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
     const abuseColors = ['#004c99', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4', '#C0C0C0', '#FF0000', '#FFFF00'];
 
+    const abuseLegendPosition = abuseLabels.length > 5 ? 'right' : 'bottom';
     createChart('abuseTypeChart', {
         type: 'pie',
         data: {
@@ -1170,19 +1247,29 @@ function renderOverviewCharts(dataset) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: { padding: 0 },
+            layout: {
+                padding: abuseLegendPosition === 'right'
+                    ? { top: 8, right: 8, bottom: 8, left: 8 }
+                    : { top: 4, right: 12, bottom: 4, left: 12 }
+            },
             plugins: {
                 legend: {
-                    position: 'bottom',
+                    position: abuseLegendPosition,
+                    align: 'center',
+                    fullSize: true,
                     labels: {
-                        padding: 12,
-                        font: { size: 12, family: 'Montserrat' },
+                        padding: abuseLegendPosition === 'right' ? 10 : 14,
+                        boxWidth: 14,
+                        boxHeight: 14,
+                        usePointStyle: true,
+                        maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
+                        font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
                         generateLabels: function(chart) {
                             const data = chart.data;
                             const ds = data.datasets[0];
                             const pcts = percentagesTo100(ds.data);
                             return data.labels.map((label, i) => ({
-                                text: label + ' (' + pcts[i] + '%)',
+                                text: (label || '—') + ' (' + pcts[i] + '%)',
                                 fillStyle: ds.backgroundColor[i],
                                 strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
                                 lineWidth: 1,
@@ -1204,92 +1291,125 @@ function renderOverviewCharts(dataset) {
             }
         }
     });
-   // Status Chart - SOLID (NO CURVES) BARS WITH CUSTOM COLORS
-const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
-const labels = statuses.map(s => s[0]);
-const values = statuses.map(s => s[1]);
+    // Status Breakdown — share of total (0–100%), gradients + caps (national admin pattern)
+    const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
+    const statusLabels = statuses.map(s => s[0]);
+    const statusValues = statuses.map(s => s[1]);
+    const reportTotal = statusValues.reduce((a, b) => a + b, 0);
+    const statusPctBars = statusValues.map((v) => (reportTotal > 0 ? (v / reportTotal) * 100 : 0));
+    const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
+    const statusLayoutPad = window.matchMedia('(max-width: 600px)').matches ? 36 : 50;
 
-const customColors = ['#00c382', '#fcb825', '#99c4d3', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4', '#C0C0C0', '#FF0000', '#FFFF00'];
-const leftColors = labels.map((_, i) => customColors[i % customColors.length]);
-const rightColors = leftColors.map(c => c);
+    const statusBarPlugin = {
+        id: 'schoolStatusBarPlugin',
+        afterDatasetDraw(chart) {
+            const { ctx, chartArea } = chart;
+            const datasetMeta = chart.getDatasetMeta(0);
+            datasetMeta.data.forEach((bar, i) => {
+                const pct = parseFloat(chart.data.datasets[0].data[i]) || 0;
+                const percentage = pct.toFixed(1);
+                const fullX = chart.scales.x.getPixelForValue(100);
+                const filledX = chartArea.left + (parseFloat(percentage) / 100) * (fullX - chartArea.left);
+                const y = bar.y;
+                const h = bar.height;
+                const emptyBarColors = ['#c1e6f3ff', '#fdf0d4ff', '#cbffeeff', '#e6c8fcff', '#c5d7f5ff', '#cfeafaff', '#f7bfe1ff'];
+                ctx.fillStyle = emptyBarColors[i % emptyBarColors.length];
+                ctx.fillRect(chartArea.left, y - h / 2, fullX - chartArea.left, h);
+                ctx.fillStyle = statusBarColors[i % statusBarColors.length];
+                ctx.fillRect(chartArea.left, y - h / 2, filledX - chartArea.left, h);
+                const capWidth = 40;
+                const capHeight = 24;
+                let left = filledX;
+                if (filledX + capWidth > chartArea.right - 5) left = Math.max(chartArea.left, chartArea.right - capWidth - 5);
+                const mid = y;
+                ctx.beginPath();
+                ctx.moveTo(left, y - capHeight / 2);
+                ctx.lineTo(left + capWidth - 8, y - capHeight / 2);
+                ctx.lineTo(left + capWidth, mid);
+                ctx.lineTo(left + capWidth - 8, y + capHeight / 2);
+                ctx.lineTo(left, y + capHeight / 2);
+                ctx.closePath();
+                ctx.fillStyle = statusCapColors[i % statusCapColors.length];
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px Montserrat';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(percentage + '%', left + capWidth / 2 - 4, mid);
+            });
+        }
+    };
 
-createChart('statusChart', {
-    type: 'bar',
-    data: {
-        labels: labels,
-        datasets: [
-            {
-                label: 'Left Side',
-                data: values.map(v => -v),
-                backgroundColor: leftColors,
-                borderRadius: 0,
+    createChart('statusChart', {
+        type: 'bar',
+        plugins: [statusBarPlugin],
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: '',
+                data: statusPctBars,
+                backgroundColor: statusLabels.map((_, i) => statusBarColors[i % statusBarColors.length]),
+                borderRadius: { topLeft: 20, bottomLeft: 20, topRight: 0, bottomRight: 0 },
                 borderWidth: 0,
-                borderSkipped: false,
-            },
-            {
-                label: 'Right Side',
-                data: values,
-                backgroundColor: rightColors,
-                borderRadius: 0,
-                borderWidth: 0,
-                borderSkipped: false,
-            }
-        ]
-    },
-    options: {
-        indexAxis: 'y',
-        scales: {
-            x: {
-                stacked: true,
-                ticks: { 
-                    callback: val => Math.abs(val),
-                    color: '#666',
-                    font: { size: 12 }
-                },
-                grid: {
-                    display: true,           // show vertical lines
-                    drawTicks: false,
-                    drawBorder: false,
-                    color: 'rgba(0,0,0,0.08)',
-                    borderDash: [0, 0],
-                    lineWidth: 1
-                },
-                border: { display: false }
-            },
-            y: { 
-                stacked: true,
-                ticks: { font: { size: 13, weight: '600' } },
-                grid: { display: false }  // remove horizontal lines
-            }
+                barPercentage: 0.55,
+                categoryPercentage: 0.55
+            }]
         },
-        plugins: {
-            legend: { display: false },
-            tooltip: { 
-                backgroundColor: 'rgba(0,0,0,0.9)',
-                titleColor: 'white',
-                bodyColor: 'white',
-                cornerRadius: 6,
-                callbacks: { 
-                    title: ctx => labels[ctx[0].dataIndex],
-                    label: ctx => `${Math.abs(ctx.parsed.x)} reports`
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { right: statusLayoutPad, left: 4 } },
+            onClick: (event, elements) => {
+                if (elements && elements.length && statusLabels[elements[0].index] !== undefined) {
+                    navigateWithFilter(statusLabels[elements[0].index]);
                 }
             },
-            datalabels: { display: false } // remove any bar labels
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-            duration: 1500,
-            easing: 'easeOutQuart'
-        },
-        elements: {
-            bar: {
-                borderSkipped: false
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'y'
+            },
+            scales: {
+                x: {
+                    display: false,
+                    beginAtZero: true,
+                    max: 100
+                },
+                y: {
+                    ticks: {
+                        color: '#333',
+                        font: { size: tickFontSize, weight: '600', family: 'Montserrat' },
+                        callback: function(value, index) {
+                            const raw = statusLabels[index] !== undefined ? statusLabels[index] : statusLabels[value];
+                            return raw != null ? formatStatusLabel(raw) : '';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: { display: false },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: 'rgba(15, 23, 42, 0.94)',
+                    titleFont: { size: 13, weight: '600', family: 'Montserrat' },
+                    bodyFont: { size: 17, weight: '700', family: 'Montserrat' },
+                    titleSpacing: 6,
+                    bodySpacing: 4,
+                    padding: 12,
+                    cornerRadius: 10,
+                    callbacks: {
+                        title: (items) => (items.length ? formatStatusLabel(items[0].label) : ''),
+                        label: (item) => {
+                            const n = statusValues[item.dataIndex];
+                            return n != null ? Number(n).toLocaleString() : '';
+                        }
+                    }
+                }
             }
         }
-    }
-});
-
+    });
 
     // Anonymous vs Identified - doughnut chart
     createChart('anonymousChart', {

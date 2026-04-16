@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tekete Safe Space Provincial Dashboard</title>
+    <title>Tekete SafeSpace Provincial Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
@@ -1100,7 +1100,7 @@ canvas {
 
 <aside class="sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -1148,7 +1148,7 @@ canvas {
 
     <div class="dashboard-scroll" id="main-content">
         <h1>
-            Tekete Safe Space Provincial Dashboard -
+            Tekete SafeSpace Provincial Dashboard -
             <span class="province-name">{{ $province->province_name }}</span>
         </h1>
 

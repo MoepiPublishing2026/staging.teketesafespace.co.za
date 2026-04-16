@@ -129,6 +129,7 @@ class DistrictAdminSettings extends Component
 
     public function render()
     {
-        return view('livewire.district-admin-settings');
+        return view('livewire.district-admin-settings')
+            ->layout('components.layouts.app', ['title' => 'My Profile | Tekete SafeSpace']);
     }
 }

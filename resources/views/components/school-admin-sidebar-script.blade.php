@@ -6,28 +6,40 @@ document.addEventListener('DOMContentLoaded', function() {
     var overlay = document.getElementById('sidebarOverlay');
     var mainPanel = document.querySelector('.main-panel');
 
-    function toggleSidebar() {
+    function setSidebarOpen(open) {
         if (!sidebar || !mainPanel) return;
-        sidebar.classList.toggle('open');
-        mainPanel.classList.toggle('shifted');
+        sidebar.classList.toggle('open', open);
+        mainPanel.classList.toggle('shifted', open);
         if (overlay) {
-            overlay.classList.toggle('active', sidebar.classList.contains('open'));
-            overlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+            overlay.classList.toggle('active', open);
+            overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+        }
+        document.body.classList.toggle('sa-sidebar-open', open);
+        if (toggle) {
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         }
     }
 
+    function toggleSidebar() {
+        if (!sidebar) return;
+        setSidebarOpen(!sidebar.classList.contains('open'));
+    }
+
     if (toggle) toggle.addEventListener('click', toggleSidebar);
-    if (overlay) overlay.addEventListener('click', toggleSidebar);
+    if (overlay) overlay.addEventListener('click', function() { setSidebarOpen(false); });
 
     window.addEventListener('resize', function() {
         if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-            if (mainPanel) mainPanel.classList.remove('shifted');
-            if (overlay) {
-                overlay.classList.remove('active');
-                overlay.setAttribute('aria-hidden', 'true');
-            }
+            setSidebarOpen(false);
         }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Escape' || !sidebar || !sidebar.classList.contains('open')) return;
+        var reportModal = document.getElementById('reportModal');
+        if (reportModal && reportModal.style.display === 'flex') return;
+        e.preventDefault();
+        setSidebarOpen(false);
     });
 });
 </script>

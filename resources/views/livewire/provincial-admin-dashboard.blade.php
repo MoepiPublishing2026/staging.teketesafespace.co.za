@@ -66,7 +66,7 @@
             </nav>
 
             <div class="p-4 text-center">
-                <p class="text-sm text-gray-600">© 2025 SafeSpace</p>
+                <p class="text-sm text-gray-600">© {{ date('Y') }} Tekete SafeSpace</p>
             </div>
         </div>
     </aside>

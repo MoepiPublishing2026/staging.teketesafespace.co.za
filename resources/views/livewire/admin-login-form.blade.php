@@ -6,7 +6,7 @@
             
             <!-- Logo -->
             <div>
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 110px; height: auto;">
+                <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace" style="width: 110px; height: auto;">
             </div>
 
             <!-- Desktop Links -->
@@ -42,7 +42,7 @@
         <!-- Menu Panel -->
         <div class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
             <div class="flex items-center justify-between p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
+                <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace" class="h-8">
                 <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-black hover:bg-gray-100">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -181,7 +181,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
                      style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
                     <div>
-                        <p>&copy; {{ date('Y') }} Tekete Safe Space from Moepi Publishing. All rights reserved.</p>
+                        <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
                     </div>
                     <div class="flex items-center gap-4 order-2">
                  <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">

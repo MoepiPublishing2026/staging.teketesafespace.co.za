@@ -781,7 +781,7 @@ form.filters button {
 
 <aside class="sidebar" id="na-sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -816,7 +816,7 @@ form.filters button {
     </div>
 
     <div class="dashboard-scroll" id="main-content">
-        <h1>Tekete Safe Space National Dashboard</h1>
+        <h1>Tekete SafeSpace National Dashboard</h1>
         <p class="subtitle">Nation-wide case intelligence and live report monitoring.</p>
 
         <section class="panel" aria-label="Filters">

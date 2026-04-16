@@ -58,12 +58,12 @@
         <h1 class="text-4xl font-bold text-black-800 mb-6 font-montserrat-black">MY PROFILE</h1>
         
         
-        <!--[if BLOCK]><![endif]--><?php if(session()->has('success_message')): ?>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('success_message')): ?>
             <div class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded mb-6">
                 <?php echo e(session('success_message')); ?>
 
             </div>
-        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         
         <div class="bg-white rounded-3xl shadow-sm p-8" style="border: 4px solid #c7da30;">
@@ -82,7 +82,7 @@
                             </div>
 
                             
-                            <!--[if BLOCK]><![endif]--><?php if($profile_picture): ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($profile_picture): ?>
                                 <img wire:loading.remove wire:target="profile_picture"
                                      src="<?php echo e($profile_picture->temporaryUrl()); ?>" 
                                      alt="Profile Picture Preview" 
@@ -104,7 +104,7 @@
                                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                                     </svg>
                                 </div>
-                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </div>
                         
                         <div class="flex flex-col">
@@ -126,11 +126,11 @@
                                 Uploading...
                             </div>
                             
-                            <!--[if BLOCK]><![endif]--><?php if($profile_picture): ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($profile_picture): ?>
                                 <p class="text-sm text-green-600 mt-2">File selected: <?php echo e($profile_picture->getClientOriginalName()); ?></p>
-                            <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             
-                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['profile_picture'];
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['profile_picture'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -139,7 +139,7 @@ $message = $__bag->first($__errorArgs[0]); ?>
                             <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </div>
                     </div>
 
@@ -159,14 +159,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                            class="w-full rounded-lg px-4 py-4 focus:outline-none font-montserrat-regular"
                            style="border: 3px solid #c7da30; font-size: 15px;" 
                            readonly>
-                    <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['email'];
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-600 text-sm"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
 
                 
@@ -176,14 +176,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                            placeholder="0000000000"
                            class="w-full rounded-lg px-4 py-4 focus:outline-none font-montserrat-regular"
                            style="border: 3px solid #c7da30; font-size: 15px;">
-                    <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['phone_number'];
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['phone_number'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-600 text-sm"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
 
                 
@@ -195,14 +195,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         <input type="password" wire:model.defer="current_password"
                                class="w-full rounded-lg px-4 py-4 focus:outline-none font-montserrat-regular"
                                style="border: 3px solid #c7da30; font-size: 15px;">
-                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['current_password'];
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['current_password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-600 text-sm"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
 
                     <div class="mb-6">
@@ -210,14 +210,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         <input type="password" wire:model.defer="new_password"
                                class="w-full rounded-lg px-4 py-4 focus:outline-none font-montserrat-regular"
                                style="border: 3px solid #c7da30; font-size: 15px;">
-                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['new_password'];
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['new_password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-600 text-sm"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
 
                     <div class="mb-6">
@@ -225,14 +225,14 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         <input type="password" wire:model.defer="confirm_password"
                                class="w-full rounded-lg px-4 py-4 focus:outline-none font-montserrat-regular"
                                style="border: 3px solid #c7da30; font-size: 15px;">
-                        <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['confirm_password'];
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['confirm_password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-600 text-sm"><?php echo e($message); ?></span> <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 </div>
 

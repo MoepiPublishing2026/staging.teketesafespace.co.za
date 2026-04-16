@@ -1,17 +1,17 @@
 {{-- Shared School Admin Sidebar - Use across Dashboard, Reports, False Reports, Settings --}}
 <aside class="sidebar school-admin-sidebar" id="schoolAdminSidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/admin/dashboard') }}" class="sidebar-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/admin/reports') }}" class="sidebar-link {{ request()->is('admin/reports*') ? 'active' : '' }}">Reports</a>
         <a href="{{ url('/admin/false-reports') }}" class="sidebar-link {{ request()->is('admin/false-reports*') ? 'active' : '' }}">False Reports</a>
         <a href="{{ url('/admin/settings') }}" class="sidebar-link {{ request()->is('admin/settings') ? 'active' : '' }}">My Profile</a>
-        {{-- Show Export PDF only on Dashboard --}}
+        {{-- Export PDF only on Dashboard (other pages may define exportPDF in-page if needed) --}}
             @if(request()->is('admin/dashboard'))
-                <a href="#" 
-                   onclick="event.preventDefault(); if(typeof exportPDF === 'function') exportPDF();" 
+                <a href="#"
+                   onclick="event.preventDefault(); if(typeof exportPDF === 'function') exportPDF();"
                    class="sidebar-link">
                    Export PDF
                 </a>
@@ -20,5 +20,5 @@
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
     </ul>
 </aside>
-<button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
+<button class="menu-icon" id="sidebarToggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="schoolAdminSidebar">&#9776;</button>
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
