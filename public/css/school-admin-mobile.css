@@ -39,24 +39,42 @@ body.sa-app .menu-icon:focus-visible {
 }
 
 @media (max-width: 900px) {
+  /*
+   * Clear the fixed menu button (≈46px) + safe area so titles and cards
+   * do not sit under the hamburger.
+   */
+  body.sa-app .main-panel .dashboard-scroll {
+    padding-left: max(0.75rem, calc(var(--sa-safe-left) + 3.35rem));
+    padding-right: max(0.75rem, var(--sa-safe-right));
+    box-sizing: border-box;
+  }
+
   body.sa-app .dashboard-scroll > h1,
   body.sa-app main h1 {
     font-size: clamp(1.05rem, 3.2vw + 0.65rem, 1.75rem) !important;
     line-height: 1.25;
-    padding-left: max(0.25rem, var(--sa-safe-left));
-    padding-right: max(0.25rem, var(--sa-safe-right));
+    padding-left: 0;
+    padding-right: 0;
     text-align: left;
   }
 
   body.sa-app .subtitle {
     font-size: clamp(0.8125rem, 1.2vw + 0.65rem, 1rem);
     line-height: 1.45;
-    padding-left: max(0.25rem, var(--sa-safe-left));
-    padding-right: max(0.25rem, var(--sa-safe-right));
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Sticky bar above scrolling canvas/content; stays below menu (1002) */
+  body.sa-app .main-panel .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    isolation: isolate;
   }
 
   body.sa-app .topbar {
-    padding-left: max(0.75rem, var(--sa-safe-left));
+    padding-left: max(0.75rem, calc(var(--sa-safe-left) + 3.35rem));
     padding-right: max(0.75rem, var(--sa-safe-right));
     padding-top: max(0.5rem, var(--sa-safe-top));
     padding-bottom: 0.5rem;
@@ -149,13 +167,11 @@ body.sa-app .menu-icon:focus-visible {
   }
 
   body.sa-app .dashboard-scroll {
-    padding-left: max(0.75rem, var(--sa-safe-left));
-    padding-right: max(0.75rem, var(--sa-safe-right));
     padding-bottom: max(1.25rem, var(--sa-safe-bottom));
   }
 
   body.sa-app main {
-    padding-left: max(1rem, var(--sa-safe-left));
+    padding-left: max(1rem, calc(var(--sa-safe-left) + 3.35rem));
     padding-right: max(1rem, var(--sa-safe-right));
     padding-bottom: max(1.5rem, var(--sa-safe-bottom));
   }
@@ -221,7 +237,22 @@ body.sa-app .menu-icon:focus-visible {
   /* Livewire pages: no topbar — keep content clear of fixed menu button */
   body.sa-app .main-panel > main:first-child {
     padding-top: max(3.5rem, calc(var(--sa-safe-top) + 3rem));
+    padding-left: max(1rem, calc(var(--sa-safe-left) + 3.35rem));
+    padding-right: max(1rem, var(--sa-safe-right));
     margin-top: 0 !important;
+  }
+
+  /*
+   * Modals above drawer (1000), dim overlay (999), and menu (1002).
+   * Some views toggle display:flex without .active — raise .modal-backdrop globally for sa-app.
+   */
+  body.sa-app .modal-backdrop {
+    z-index: 1100 !important;
+  }
+
+  /* Livewire reports: Tailwind full-screen overlays use z-50 (50) */
+  body.sa-app .main-panel main .fixed.inset-0 {
+    z-index: 1100 !important;
   }
 }
 
@@ -236,6 +267,12 @@ body.sa-app .menu-icon:focus-visible {
     width: 44px;
     height: 44px;
     font-size: 20px;
+  }
+
+  body.sa-app .main-panel .dashboard-scroll,
+  body.sa-app .main-panel .topbar,
+  body.sa-app main {
+    padding-left: max(0.65rem, calc(var(--sa-safe-left) + 3.1rem));
   }
 
   body.sa-app .profile .meta {

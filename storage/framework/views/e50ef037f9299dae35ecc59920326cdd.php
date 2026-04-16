@@ -667,10 +667,9 @@ canvas {
         padding: 0 1rem;
         height: 56px;
     }
-    /* Title sizes: school-admin-mobile.css (body.sa-app) */
+    /* Title alignment: padding comes from .dashboard-scroll in school-admin-mobile.css */
     h1, .subtitle {
-        padding: 0 1rem;
-        text-align: center;
+        text-align: left;
     }
     .charts-grid {
         grid-template-columns: 1fr;
