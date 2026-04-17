@@ -14,10 +14,8 @@
     class="fixed bottom-0 left-0 right-0 z-40" x-cloak id="privacy-notice"
     x-bind:style="{ pointerEvents: show ? 'auto' : 'none' }">
 
-    <div x-show="show" x-transition.opacity x-cloak id="privacy-overlay"
-        class="fixed inset-0 z-30 bg-transparent"
-        x-bind:style="{ pointerEvents: show ? 'auto' : 'none' }"
-        style="pointer-events: none;"></div>
+    <div x-show="show" x-transition.opacity x-cloak id="privacy-overlay" class="fixed inset-0 z-30 bg-transparent"
+        x-bind:style="{ pointerEvents: show ? 'auto' : 'none' }" style="pointer-events: none;"></div>
 
     <script>
         // Fallback for browsers without Alpine.js support
@@ -77,7 +75,7 @@
                         Cookies Policy
                     </h3>
                     <p class="text-gray-600 text-sm sm:text-base leading-relaxed px-2">
-                        We use essential cookies to keep Safe Space secure and working properly.
+                        We use essential cookies to keep Tekete SafeSpace secure and working properly.
                         This includes safety features like anonymous sessions, secure logins,
                         and improving support services by continuing, you accept these cookies.
                     </p>
@@ -107,7 +105,7 @@
                         Cookies Policy
                     </h3>
                     <p class="text-gray-600 text-base leading-relaxed">
-                        We use essential cookies to keep Safe Space secure and working properly.
+                        We use essential cookies to keep Tekete SafeSpace secure and working properly.
                         This includes safety features like anonymous sessions, secure logins,
                         and improving support services by continuing, you accept these cookies.
                     </p>
