@@ -191,7 +191,7 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
             style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
-                <p>&copy; {{ date('Y') }} Safe Space from Moepi Publishing. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
             <div class="flex items-center gap-4 order-2">
                 <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">

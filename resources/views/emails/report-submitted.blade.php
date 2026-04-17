@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Report Submission Confirmation</title>
     <style>
@@ -32,6 +33,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Report Submitted Successfully!</h1>
     <p>Thank you for submitting your report. Your case number is: <strong>{{ $caseNumber }}</strong>.</p>
@@ -39,8 +41,9 @@
 
     <footer>
         <div>
-            <p>© {{ date('Y') }} Tekete Safe Space from Moepi Publishing</p>
+            <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing</p>
         </div>
     </footer>
 </body>
+
 </html>

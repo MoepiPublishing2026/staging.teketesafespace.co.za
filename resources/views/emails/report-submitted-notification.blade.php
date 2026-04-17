@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Updated status report: {{ $status }}</title>
@@ -25,24 +26,27 @@
         }
     </style>
 </head>
+
 <body>
     <div class="content">
         <p>Hello,</p>
 
         <p>Your case number is <strong>{{ $report->case_number }}</strong>.</p>
 
-        <p>Your report status has been updated to <strong>{{ $status }}</strong>. Please visit the website to view the reason for the status update on your report.</p>
+        <p>Your report status has been updated to <strong>{{ $status }}</strong>. Please visit the website to view
+            the reason for the status update on your report.</p>
 
         <br>
 
         <p>Thank you.</p>
-        <p>— The Support Team</p>
+        <p>The Support Team</p>
     </div>
 
     <footer>
         <div>
-            <p>© {{ date('Y') }} Tekete Safe Space from Moepi Publishing</p>
+            <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing</p>
         </div>
     </footer>
 </body>
+
 </html>
