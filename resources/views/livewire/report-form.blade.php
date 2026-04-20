@@ -102,7 +102,7 @@
             @endif
 
             <p class="text-center text-[15px] text-black mb-6 sm:mb-8">
-                Abuse Type: {{ $selectedAbuseTypeName }}
+                Report Type: {{ $selectedAbuseTypeName }}
             </p>
 
             @if (session('success_message'))
