@@ -277,7 +277,7 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
                      {{ $gradeOption }}
                    </option>
                       @endforeach
-                      @else
+    @else
                                     <option value="Creche">Creche</option>
                                     <option value="Grade R">Grade R</option>
                                     <option value="Grade 1">Grade 1</option>
