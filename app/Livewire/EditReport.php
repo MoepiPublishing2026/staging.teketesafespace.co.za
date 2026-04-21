@@ -141,19 +141,30 @@ class EditReport extends Component
         return $applicable;
     }
 
-    public function updatedAge($value)
-    {
-        $applicableGrades = $this->applicableGrades;
-        if (empty($applicableGrades)) {
-            $this->grade = '';
-            $this->addError('age', 'No grade available for this age.');
-            return;
-        }
+   public function updatedAge($value)
+{
+    // Use blank() to treat 0 as a valid age, but catch null/empty strings
+    if (blank($value)) {
+        $this->grade = '';
+        return;
+    }
+
+    // Force call the computed property method to get the fresh list
+    $applicableGrades = $this->getApplicableGradesProperty();
+
+    if (!empty($applicableGrades)) {
         $this->resetErrorBag('age');
-        if (!$this->grade || !in_array($this->grade, $applicableGrades)) {
+
+        // If the current grade is no longer valid for the new age, 
+        // or if no grade is selected, auto-select the first one.
+        if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
             $this->grade = $applicableGrades[0];
         }
+    } else {
+        $this->grade = '';
+        $this->addError('age', 'No grade available for this age.');
     }
+}
 
     public function updatedGrade() { if ($this->age) $this->updatedAge($this->age); }
 

@@ -299,19 +299,22 @@
                             </div>
 
                             {{-- CHANGED: dynamic grade dropdown matching ReportForm exactly --}}
-                            <div>
+                             {{-- CHANGED: dynamic grade dropdown matching ReportForm exactly --}}
+                            <div  wire:key="grade-wrapper-{{ $age }}">
                                 <label for="grade" class="text-[11px] text-black">Grade <span
                                         class="text-red-500">*</span></label>
                                 <select wire:model.live="grade" id="grade"
                                     class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black bg-white"
                                     required>
                                     <option value="">-- Select Grade --</option>
-                                    @if ($age)
-                                        @foreach ($this->applicableGrades as $gradeOption)
-                                            <option value="{{ $gradeOption }}" @selected($grade === $gradeOption)>
-                                                {{ $gradeOption }}</option>
-                                        @endforeach
-                                    @else
+                                   @if (!blank($age))
+            {{-- Dynamic Filtered List --}}
+            @foreach ($this->applicableGrades as $gradeOption)
+                <option value="{{ $gradeOption }}" wire:key="edit-grade-{{ $gradeOption }}">
+                    {{ $gradeOption }}
+                </option>
+            @endforeach
+        @else
                                         <option value="Creche">Creche</option>
                                         <option value="Grade R">Grade R</option>
                                         <option value="Grade 1">Grade 1</option>
