@@ -263,19 +263,21 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
                             @enderror
                         </div>
 
-                        <div>
+                        <div wire:key="grade-wrapper-{{ $age }}">
                             <label for="grade" class="text-[12px] text-black">Grade</label>
                             <select wire:model.live="grade" id="grade"
                                 class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] 
                                         p-2 sm:p-3 text-[14.8px] text-black bg-white"
                                 required>
                                 <option value="">-- Select Grade --</option>
-                                @if ($age)
-                                    @foreach ($this->applicableGrades as $gradeOption)
-                                        <option value="{{ $gradeOption }}" @selected($grade === $gradeOption)>
-                                            {{ $gradeOption }}</option>
-                                    @endforeach
-                                @else
+                              @if (!blank($age))
+                         {{-- When age is 0 or more, show ONLY the filtered grades --}}
+                      @foreach ($this->applicableGrades as $gradeOption)
+                       <option value="{{ $gradeOption }}" wire:key="grade-{{ $gradeOption }}">               
+                     {{ $gradeOption }}
+                   </option>
+                      @endforeach
+                      @else
                                     <option value="Creche">Creche</option>
                                     <option value="Grade R">Grade R</option>
                                     <option value="Grade 1">Grade 1</option>
