@@ -35,7 +35,7 @@
 <div class="flex min-h-screen m-0 p-0" style="min-height: 100vh;">
     <aside class="sidebar school-admin-sidebar" id="schoolAdminSidebar">
         <div class="sidebar-logo">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+            <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
         </div>
         <ul class="sidebar-list">
             <a href="{{ route('provincial.admin.dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>

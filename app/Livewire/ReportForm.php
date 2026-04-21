@@ -115,7 +115,10 @@ protected array $gradeAgeRanges = [
  */
 public function getApplicableGradesProperty()
 {
-    if (!$this->age) return [];
+   // Use blank() to check for null/empty string, but it allows 0
+    if (blank($this->age)) {
+        return [];
+    }
     $age = (int)$this->age;
     $applicableGrades = [];
     foreach ($this->gradeAgeRanges as $grade => $range) {
@@ -140,28 +143,32 @@ public function getApplicableGradesProperty()
  */
 public function updatedAge($value)
 {
-    $applicableGrades = $this->applicableGrades;
-
-    // ✅ If no grade matches the age
-    if (empty($applicableGrades)) {
+   // Use blank() check - blank is true for null/empty string, but FALSE for 0.
+    // We only want to reset the grade if the age is truly empty.
+    if (blank($value)) {
         $this->grade = '';
-        $this->addError('age', 'No grade available for this age.');
         return;
     }
+    $applicableGrades = $this->applicableGrades;
 
-    // Clear previous error if age becomes valid
-    $this->resetErrorBag('age');
+   if (!empty($applicableGrades)) {
+        $this->resetErrorBag('age');
 
-    // Auto-select first matching grade
-    if (!$this->grade || !in_array($this->grade, $applicableGrades)) {
-        $this->grade = $applicableGrades[0];
+        // Check if current grade is still valid for the new age
+        if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
+            // FORCE the selection to the first available grade
+            $this->grade = $applicableGrades[0];
+        }
+    } else {
+        $this->grade = '';
+        $this->addError('age', 'No grade available for this age.');
     }
 }
 
 
 public function updatedGrade()
 {
-    if ($this->age) {
+   if (is_numeric($this->age)) {
         $this->updatedAge($this->age);
     }
 }

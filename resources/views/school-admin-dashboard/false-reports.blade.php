@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>False Reports Analysis - SafeSpace School Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>False Reports Analysis | Tekete SafeSpace</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
        :root {
@@ -446,8 +446,9 @@ us
 
     </style>
     @include('components.school-admin-styles')
+    <link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
 </head>
-<body>
+<body class="sa-app">
 @include('components.school-admin-sidebar')
 
     <div class="main-panel">

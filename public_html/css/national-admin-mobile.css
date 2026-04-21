@@ -1,0 +1,315 @@
+/**
+ * National Admin — mobile & small-screen polish
+ * Loaded after inline page styles; scoped with body.na-app
+ */
+
+:root {
+  --na-safe-top: env(safe-area-inset-top, 0px);
+  --na-safe-right: env(safe-area-inset-right, 0px);
+  --na-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --na-safe-left: env(safe-area-inset-left, 0px);
+  --na-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --na-shadow-drawer: 12px 0 48px rgba(15, 23, 42, 0.14);
+  --na-shadow-menu: 0 4px 24px rgba(15, 23, 42, 0.12);
+}
+
+/* ─── Base: comfortable scrolling & tap targets ─── */
+body.na-app .dashboard-scroll,
+body.na-app main {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+body.na-app .menu-icon {
+  border-radius: 12px;
+  box-shadow: var(--na-shadow-menu);
+  transition:
+    transform 0.2s var(--na-ease-drawer),
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+body.na-app .menu-icon:active {
+  transform: scale(0.94);
+}
+
+body.na-app .menu-icon:focus-visible {
+  outline: 3px solid rgba(56, 182, 255, 0.55);
+  outline-offset: 2px;
+}
+
+/* ─── Tablet & phone (match existing 900px breakpoint) ─── */
+@media (max-width: 900px) {
+  /* Fluid page titles */
+  body.na-app .dashboard-scroll > h1,
+  body.na-app main h1 {
+    font-size: clamp(1.05rem, 3.2vw + 0.65rem, 1.75rem) !important;
+    line-height: 1.2;
+    padding-left: max(0.25rem, var(--na-safe-left));
+    padding-right: max(0.25rem, var(--na-safe-right));
+  }
+
+  body.na-app .subtitle {
+    font-size: clamp(0.8125rem, 1.2vw + 0.65rem, 1rem);
+    line-height: 1.45;
+    padding-left: max(0.25rem, var(--na-safe-left));
+    padding-right: max(0.25rem, var(--na-safe-right));
+  }
+
+  /* Top bar: clear hamburger + notch / home indicator */
+  body.na-app .topbar {
+    padding-left: max(0.75rem, var(--na-safe-left));
+    padding-right: max(0.75rem, var(--na-safe-right));
+    padding-top: max(0.5rem, var(--na-safe-top));
+    padding-bottom: 0.5rem;
+    min-height: calc(52px + var(--na-safe-top));
+    background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  }
+
+  body.na-app .profile {
+    min-width: 0;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  body.na-app .profile .meta {
+    min-width: 0;
+    max-width: min(58vw, 14rem);
+    text-align: right;
+  }
+
+  body.na-app .profile .meta > span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Hamburger: align with safe area */
+  body.na-app .menu-icon {
+    top: max(10px, calc(var(--na-safe-top) + 6px));
+    left: max(10px, calc(var(--na-safe-left) + 4px));
+    z-index: 1002;
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+
+  /* Drawer: GPU-friendly slide (overrides width animation) */
+  body.na-app .sidebar {
+    width: min(300px, 88vw) !important;
+    max-width: 100%;
+    padding-top: max(0.75rem, var(--na-safe-top)) !important;
+    padding-bottom: max(1rem, var(--na-safe-bottom)) !important;
+    transform: translate3d(-100%, 0, 0);
+    transition:
+      transform 0.4s var(--na-ease-drawer),
+      box-shadow 0.35s ease;
+    will-change: transform;
+    box-shadow: none;
+    border-right: 1px solid rgba(226, 232, 240, 0.95);
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  }
+
+  body.na-app .sidebar.open {
+    transform: translate3d(0, 0, 0);
+    box-shadow: var(--na-shadow-drawer);
+  }
+
+  body.na-app .sidebar:not(.open) {
+    pointer-events: none;
+  }
+
+  body.na-app .sidebar.open {
+    pointer-events: auto;
+  }
+
+  /* Never squeeze main content when drawer opens */
+  body.na-app .main-panel.shifted {
+    margin-left: 0 !important;
+  }
+
+  /* Dim + blur overlay */
+  body.na-app .sidebar-overlay {
+    background: rgba(15, 23, 42, 0.38) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+  }
+
+  body.na-app .sidebar-overlay.active {
+    opacity: 1 !important;
+  }
+
+  /* Nav links: generous touch targets */
+  body.na-app .sidebar-link {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-radius: 10px;
+    margin-bottom: 0.35rem;
+  }
+
+  /* Content breathing room */
+  body.na-app .dashboard-scroll {
+    padding-left: max(0.75rem, var(--na-safe-left));
+    padding-right: max(0.75rem, var(--na-safe-right));
+    padding-bottom: max(1.25rem, var(--na-safe-bottom));
+  }
+
+  body.na-app main {
+    padding-left: max(1rem, var(--na-safe-left));
+    padding-right: max(1rem, var(--na-safe-right));
+    padding-bottom: max(1.5rem, var(--na-safe-bottom));
+  }
+
+  /* Filters: card-like on small screens */
+  body.na-app section[aria-label="Filters"] {
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(56, 182, 255, 0.06);
+    border-color: rgba(199, 218, 48, 0.65);
+  }
+
+  /* Metric tiles */
+  body.na-app .metrics-row > .metric-card,
+  body.na-app .extras-row > .metric-card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 14px rgba(15, 23, 42, 0.06);
+  }
+
+  /* Charts: softer container */
+  body.na-app .chart-card {
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05);
+  }
+
+  /*
+   * Chart grid — force one column and clear grid-column/grid-row from desktop
+   * so canvases don’t stack on top of each other on narrow iPhones.
+   */
+  body.na-app .chart-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  body.na-app .chart-grid > .chart-card {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    position: relative;
+    isolation: isolate;
+  }
+
+  body.na-app .chart-grid .chart-canvas-host,
+  body.na-app .chart-grid .chart-status-host {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.na-app .chart-grid .chart-canvas-host canvas,
+  body.na-app .chart-grid .chart-status-host canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* Heatmap scroll strip hint */
+  body.na-app .heatmap-wrap {
+    position: relative;
+    border-radius: 0 0 10px 10px;
+  }
+
+  body.na-app .heatmap-wrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 18px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(248, 250, 252, 0.55));
+    opacity: 0.65;
+  }
+
+  /* Reports: filter panel */
+  body.na-app .filter-panel {
+    border-radius: 14px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+  }
+
+  body.na-app .search-wrap input {
+    border-radius: 999px !important;
+  }
+
+  /* Table: sticky scroll affordance */
+  body.na-app .table-wrap {
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(15, 23, 42, 0.06);
+  }
+
+  body.na-app .table-wrap table {
+    font-size: max(0.8rem, 12px);
+  }
+
+  /* Settings: card */
+  body.na-app .card {
+    border-radius: 16px;
+    box-shadow: 0 4px 28px rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+  }
+
+  /* Status breakdown chart: avoid cramped bars on small screens */
+  body.na-app .chart-status .chart-status-host {
+    min-height: 260px;
+  }
+}
+
+/* ─── Scroll lock when drawer open ─── */
+@media (max-width: 900px) {
+  body.na-app.na-sidebar-open {
+    overflow: hidden !important;
+  }
+}
+
+/* ─── Compact phones ─── */
+@media (max-width: 600px) {
+  body.na-app .menu-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  body.na-app .profile .meta {
+    max-width: min(52vw, 12rem);
+  }
+
+  body.na-app .profile-avatar {
+    flex-shrink: 0;
+  }
+}
+
+/* ─── Respect reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  body.na-app .sidebar {
+    transition: none !important;
+  }
+
+  body.na-app .menu-icon {
+    transition: none !important;
+  }
+
+  body.na-app .sidebar-overlay {
+    transition: none !important;
+  }
+}

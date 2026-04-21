@@ -77,6 +77,7 @@ class ProvincialSettings extends Component
 
     public function render()
     {
-        return view('livewire.provincial-settings');
+        return view('livewire.provincial-settings')
+            ->layout('components.layouts.app', ['title' => 'My Profile | Tekete SafeSpace']);
     }
 }

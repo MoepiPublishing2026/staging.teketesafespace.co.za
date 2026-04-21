@@ -1,8 +1,11 @@
-
+{{-- Provincial admin sidebar toggle — include once per page --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var toggle = document.getElementById('sidebarToggle');
-    var sidebar = document.getElementById('schoolAdminSidebar');
+    if (!toggle) toggle = document.querySelector('.menu-icon');
+    var sidebar = document.getElementById('provincialSidebar');
+    if (!sidebar) sidebar = document.getElementById('sidebarPanel');
+    if (!sidebar) sidebar = document.querySelector('aside.sidebar');
     var overlay = document.getElementById('sidebarOverlay');
     var mainPanel = document.querySelector('.main-panel');
 
@@ -14,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             overlay.classList.toggle('active', open);
             overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
         }
-        document.body.classList.toggle('sa-sidebar-open', open);
+        document.body.classList.toggle('pa-sidebar-open', open);
         if (toggle) {
             toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         }
@@ -37,10 +40,23 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape' || !sidebar || !sidebar.classList.contains('open')) return;
         var reportModal = document.getElementById('reportModal');
-        if (reportModal && reportModal.style.display === 'flex') return;
+        if (reportModal && reportModal.getAttribute('aria-hidden') === 'false') return;
+        var statusModal = document.getElementById('statusModal');
+        var extrasModal = document.getElementById('extrasModal');
+        if (statusModal && statusModal.classList.contains('active')) return;
+        if (extrasModal && extrasModal.classList.contains('active')) return;
         e.preventDefault();
         setSidebarOpen(false);
-    });
+    }, true);
+
+    if (sidebar) {
+        sidebar.querySelectorAll('.sidebar-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) {
+                    setSidebarOpen(false);
+                }
+            });
+        });
+    }
 });
 </script>
-<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/components/school-admin-sidebar-script.blade.php ENDPATH**/ ?>

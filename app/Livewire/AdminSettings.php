@@ -160,6 +160,6 @@ public function updateSettings()
 
     public function render()
     {
-        return view('livewire.admin-settings');
+        return view('livewire.admin-settings')->layout('components.layouts.school-admin', ['title' => 'My Profile | Tekete SafeSpace']);
     }
 }

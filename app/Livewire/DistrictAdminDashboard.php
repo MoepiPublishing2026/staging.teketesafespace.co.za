@@ -680,6 +680,6 @@ public function exportPDF()
             'dataRefreshedAt' => $this->dataRefreshedAt,
             'periodComparison' => $this->periodComparison,
             'dataQuality' => $this->dataQuality,
-        ]);
+        ])->layout('components.layouts.app', ['title' => 'District Dashboard | Tekete SafeSpace']);
     }
 }

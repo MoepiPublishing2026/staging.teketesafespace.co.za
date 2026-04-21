@@ -1,1 +1,6 @@
 .env
+storage/framework/views/*
+storage/framework/cache/*
+storage/logs/*
+vendor/*
+.history/*

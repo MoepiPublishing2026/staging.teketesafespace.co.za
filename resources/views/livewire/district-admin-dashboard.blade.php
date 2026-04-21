@@ -55,7 +55,7 @@
             
             <!-- Footer -->
             <div class="p-4 text-center">
-                <p class="text-sm text-gray-600">© 2025 SafeSpace</p>
+                <p class="text-sm text-gray-600">&copy; {{ date('Y') }} Tekete SafeSpace</p>
             </div>
         </div>
     </aside>
@@ -87,13 +87,13 @@
 
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
-                <h2 class="text-3xl font-poppins font-extrabold uppercase tracking-wide" style="font-family: 'Poppins', sans-serif;">District Administrator Dashboard</h2>
+                <h2 class="text-3xl font-poppins font-extrabold uppercase tracking-wide" style="font-family: 'Poppins', sans-serif;">Tekete SafeSpace - District Administrator Dashboard</h2>
                 <p class="text-gray-600 mt-2">
                     Showing insights for <span class="font-semibold text-lime-700">{{ $districtName }}</span>
                     @if($provinceName)
                     in {{ $provinceName }} Province
                     @endif
-                </>
+                </p>
             </div>
 
             <div class="bg-gray-100 rounded-lg px-4 py-3 shadow-sm">
@@ -259,7 +259,7 @@
                             <label for="toDate" class="block text-sm font-medium text-gray-700">To:</label>
                             <input id="toDate" type="date" wire:model="toDate" class="border rounded px-3 py-2">
                         </div>
-                        <button wire:click.prevent="resetFilters" class="bg-gradient-to-r from-[#7f9b05] to-[#d7e47a] text-white font-bold py-2 px-4 rounded whitespace-nowrap">🔄 Reset Filters</button>
+                        <button wire:click.prevent="resetFilters" class="bg-gradient-to-r from-[#7f9b05] to-[#d7e47a] text-white font-bold py-2 px-4 rounded whitespace-nowrap">?9?4 Reset Filters</button>
                     </div>
                 </div>
             </div>
@@ -408,7 +408,7 @@
                                         <span class="text-xs font-bold px-2 py-1 rounded-full bg-gray-100 text-gray-700">{{ $report->status ? ucwords(str_replace('-', ' ', $report->status)) : 'Unknown' }}</span>
                                     </div>
                                     <p class="text-sm text-gray-500 mt-1">
-                                        {{ $report->school->school_name ?? 'No school recorded' }} · {{ optional($report->created_at)->format('Y-m-d') }}
+                                        {{ $report->school->school_name ?? 'No school recorded' }} ?? {{ optional($report->created_at)->format('Y-m-d') }}
                                     </p>
                                     <p class="text-sm text-gray-600 mt-1">
                                         {{ \Illuminate\Support\Str::limit($report->details ?? 'No description available.', 120) }}
@@ -908,7 +908,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
                 function exportPDF() {
-                    const element = document.getElementById('main-content'); // âœ… grabs main content only
+                    const element = document.getElementById('main-content'); // ?0?9?0?4?? grabs main content only
                     if (!element) {
                         alert("Main content not found! Add id='main-content' to your <main> tag.");
                         return;

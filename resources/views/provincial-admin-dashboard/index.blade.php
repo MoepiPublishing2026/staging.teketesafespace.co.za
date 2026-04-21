@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tekete Safe Space Provincial Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Tekete SafeSpace Provincial Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
@@ -392,14 +392,41 @@ h2 {
     padding-left: 0 !important;
 }
 
-.chart-abuse-pie {
-    height: 380px;
+/* Pie + legend need flexible height so legend rows are not clipped */
+.chart-card.chart-abuse-pie {
+    height: auto;
+    min-height: 370px;
     display: flex;
     flex-direction: column;
 }
+.chart-abuse-pie .chart-canvas-host {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 280px;
+}
 
 #abuseTypeChart {
-    flex-grow: 1;
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Status breakdown: flexible height + host (matches school admin) */
+.chart-card.chart-status {
+    height: auto;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+.chart-status .chart-status-host {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 280px;
+}
+#statusChart {
+    display: block;
     width: 100% !important;
     height: 100% !important;
 }
@@ -522,9 +549,16 @@ form.filters button {
     gap: 1.5rem;
 }
 
-canvas {
+/* Default chart height only for simple canvases; hosts size pie/status via Chart.js */
+#monthlyTrendChart,
+#anonymousChart {
     width: 100% !important;
     height: 280px !important;
+}
+.chart-canvas-host canvas,
+.chart-status-host canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .modal-backdrop {
@@ -667,11 +701,28 @@ canvas {
         min-width: 0;
     }
     .grid-two {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+        width: 100%;
+        min-width: 0;
     }
-    canvas {
-        height: 250px !important;
+    section[aria-label="Analytics"] .grid-two > * {
+        min-width: 0;
+        width: 100%;
+    }
+    #monthlyTrendChart,
+    #anonymousChart {
+        height: 240px !important;
+    }
+    .chart-canvas-host canvas,
+    .chart-status-host canvas {
+        height: 100% !important;
+        min-height: 200px !important;
+    }
+    .chart-card.chart-abuse-pie,
+    .chart-card.chart-status {
+        width: 100% !important;
+        max-width: 100%;
     }
     .heatmap-panel {
         padding: 1rem;
@@ -796,7 +847,7 @@ canvas {
     }
     .chart-title-left {
         text-align: left !important;
-        margin-top: 89px !important;
+        margin-top: 1.25rem !important;
         padding-left: 0 !important;
     }
 
@@ -1095,12 +1146,13 @@ canvas {
   border-radius: 6px;
 }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/provincial-admin-mobile.css') }}">
 </head>
-<body>
+<body class="pa-app">
 
-<aside class="sidebar">
+<aside class="sidebar" id="provincialSidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -1117,7 +1169,7 @@ canvas {
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <div class="main-panel">
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
 
     <div class="topbar">
         <div class="profile">
@@ -1148,7 +1200,7 @@ canvas {
 
     <div class="dashboard-scroll" id="main-content">
         <h1>
-            Tekete Safe Space Provincial Dashboard -
+            Tekete SafeSpace Provincial Dashboard -
             <span class="province-name">{{ $province->province_name }}</span>
         </h1>
 
@@ -1269,14 +1321,26 @@ canvas {
                     <h2>Monthly Trends</h2>
                     <canvas id="monthlyTrendChart"></canvas>
                 </div>
+                @php
+                    $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+                    $abusePieHostHeight = max(380, min(900, 200 + $abuseTypeCount * 34));
+                @endphp
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
-                    <canvas id="abuseTypeChart"></canvas>
+                    <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
+                        <canvas id="abuseTypeChart"></canvas>
+                    </div>
                 </div>
             </div>
-            <div style="margin-top: 1.5rem;">
+            @php
+                $statusBreakdownN = max(count($statusCounts ?? []), 1);
+                $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
+            @endphp
+            <div class="chart-card chart-status" style="margin-top: 1.5rem;">
                 <h2 class="chart-title-left">Status Breakdown</h2>
-                <canvas id="statusChart"></canvas>
+                <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
+                    <canvas id="statusChart" aria-label="Reports by status"></canvas>
+                </div>
             </div>
             <div class="grid-two" style="margin-top: 1.5rem;">
                 <div>
@@ -1644,6 +1708,22 @@ function percentagesTo100(values) {
     return floored.map(x => x.floor);
 }
 
+/** Human-readable status for chart axis + tooltips */
+function formatStatusLabel(slug) {
+    if (slug == null || slug === '') return '';
+    const key = String(slug);
+    const map = {
+        'awaiting-resolution': 'Awaiting Resolution',
+        'under-review': 'Under Review',
+        'forwarded': 'Forwarded',
+        'closed': 'Closed',
+        'unresolved': 'Unresolved',
+        'false-report': 'False Report',
+    };
+    if (map[key]) return map[key];
+    return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function renderOverviewCharts(dataset) {
     createChart('monthlyTrendChart', {
         type: 'line',
@@ -1677,6 +1757,7 @@ function renderOverviewCharts(dataset) {
     const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
     const abuseColors = ['#004c99', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4', '#C0C0C0', '#FF0000', '#FFFF00'];
 
+    const abuseLegendPosition = abuseLabels.length > 5 ? 'right' : 'bottom';
     createChart('abuseTypeChart', {
         type: 'pie',
         data: {
@@ -1689,19 +1770,29 @@ function renderOverviewCharts(dataset) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: { padding: 10 },
+            layout: {
+                padding: abuseLegendPosition === 'right'
+                    ? { top: 8, right: 8, bottom: 8, left: 8 }
+                    : { top: 4, right: 12, bottom: 4, left: 12 }
+            },
             plugins: {
                 legend: {
-                    position: 'bottom',
+                    position: abuseLegendPosition,
+                    align: 'center',
+                    fullSize: true,
                     labels: {
-                        padding: 12,
-                        font: { size: 12, family: 'Montserrat' },
+                        padding: abuseLegendPosition === 'right' ? 10 : 14,
+                        boxWidth: 14,
+                        boxHeight: 14,
+                        usePointStyle: true,
+                        maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
+                        font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
                         generateLabels: function(chart) {
                             const data = chart.data;
                             const ds = data.datasets[0];
                             const pcts = percentagesTo100(ds.data);
                             return data.labels.map((label, i) => ({
-                                text: label + ' (' + pcts[i] + '%)',
+                                text: (label || '—') + ' (' + pcts[i] + '%)',
                                 fillStyle: ds.backgroundColor[i],
                                 strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
                                 lineWidth: 1,
@@ -1724,79 +1815,79 @@ function renderOverviewCharts(dataset) {
         }
     });
 
-    const statusCtx = document.getElementById("statusChart")?.getContext("2d");
-    const customColors = ['#99c4d3','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4'];
-    const barColors = [];
-    const capColors = [];
-    if (statusCtx) {
-        customColors.forEach(color => {
+    const statusCtx = document.getElementById('statusChart')?.getContext('2d');
+    const statusGradientColors = ['#99c4d3', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4'];
+    const statusBarColors = [];
+    const statusCapColors = [];
+    statusGradientColors.forEach((color) => {
+        if (statusCtx) {
             const gradient = statusCtx.createLinearGradient(0, 0, 600, 0);
             gradient.addColorStop(0, color);
             gradient.addColorStop(1, color);
-            barColors.push(gradient);
-            capColors.push(color);
-        });
-    }
+            statusBarColors.push(gradient);
+        } else {
+            statusBarColors.push(color);
+        }
+        statusCapColors.push(color);
+    });
 
-    const barPlugin = {
-        id: "barPlugin",
+    const statusBarPlugin = {
+        id: 'provincialStatusBarPlugin',
         afterDatasetDraw(chart) {
             const { ctx, chartArea } = chart;
             const datasetMeta = chart.getDatasetMeta(0);
-            const total = chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
             datasetMeta.data.forEach((bar, i) => {
-                const value = chart.data.datasets[0].data[i];
-                const percentage = total ? ((value / total) * 100).toFixed(1) : '0';
+                const pct = parseFloat(chart.data.datasets[0].data[i]) || 0;
+                const percentage = pct.toFixed(1);
                 const fullX = chart.scales.x.getPixelForValue(100);
-                const chartWidth = fullX - chartArea.left;
-                const filledX = chartArea.left + (parseFloat(percentage) / 100) * chartWidth;
+                const filledX = chartArea.left + (parseFloat(percentage) / 100) * (fullX - chartArea.left);
                 const y = bar.y;
                 const h = bar.height;
-                const emptyBarColors = ['#c1e6f3ff','#fdf0d4ff','#cbffeeff','#e6c8fcff','#c5d7f5ff','#cfeafaff','#f7bfe1ff'];
+                const emptyBarColors = ['#c1e6f3ff', '#fdf0d4ff', '#cbffeeff', '#e6c8fcff', '#c5d7f5ff', '#cfeafaff', '#f7bfe1ff'];
                 ctx.fillStyle = emptyBarColors[i % emptyBarColors.length];
                 ctx.fillRect(chartArea.left, y - h / 2, fullX - chartArea.left, h);
-                ctx.fillStyle = barColors[i % barColors.length];
+                ctx.fillStyle = statusBarColors[i % statusBarColors.length];
                 ctx.fillRect(chartArea.left, y - h / 2, filledX - chartArea.left, h);
                 const capWidth = 40;
                 const capHeight = 24;
                 let left = filledX;
-                const right = filledX + capWidth;
-                if (right > chartArea.right - 5) {
-                    left = Math.max(chartArea.left, chartArea.right - capWidth - 5);
-                }
-                const top = y - capHeight / 2;
-                const bottom = y + capHeight / 2;
+                if (filledX + capWidth > chartArea.right - 5) left = Math.max(chartArea.left, chartArea.right - capWidth - 5);
                 const mid = y;
                 ctx.beginPath();
-                ctx.moveTo(left, top);
-                ctx.lineTo(left + capWidth - 8, top);
+                ctx.moveTo(left, y - capHeight / 2);
+                ctx.lineTo(left + capWidth - 8, y - capHeight / 2);
                 ctx.lineTo(left + capWidth, mid);
-                ctx.lineTo(left + capWidth - 8, bottom);
-                ctx.lineTo(left, bottom);
+                ctx.lineTo(left + capWidth - 8, y + capHeight / 2);
+                ctx.lineTo(left, y + capHeight / 2);
                 ctx.closePath();
-                ctx.fillStyle = capColors[i % capColors.length];
+                ctx.fillStyle = statusCapColors[i % statusCapColors.length];
                 ctx.fill();
-                ctx.fillStyle = "#fff";
-                ctx.font = "12px Montserrat";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.fillText(percentage + "%", left + capWidth / 2 - 4, mid);
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px Montserrat';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(percentage + '%', left + capWidth / 2 - 4, mid);
             });
         }
     };
 
     const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
-    const labels = statuses.map(s => s[0]);
-    const values = statuses.map(s => s[1]);
+    const statusLabels = statuses.map(s => s[0]);
+    const statusValues = statuses.map(s => s[1]);
+    const reportTotal = statusValues.reduce((a, b) => a + b, 0);
+    const statusPctBars = statusValues.map((v) => (reportTotal > 0 ? (v / reportTotal) * 100 : 0));
+    const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
+    const statusLayoutPad = window.matchMedia('(max-width: 600px)').matches ? 36 : 50;
 
-    createChart("statusChart", {
-        type: "bar",
-        plugins: [barPlugin],
+    createChart('statusChart', {
+        type: 'bar',
+        plugins: [statusBarPlugin],
         data: {
-            labels,
+            labels: statusLabels,
             datasets: [{
-                data: values,
-                backgroundColor: barColors,
+                label: '',
+                data: statusPctBars,
+                backgroundColor: statusLabels.map((_, i) => statusBarColors[i % statusBarColors.length]),
                 borderRadius: { topLeft: 20, bottomLeft: 20, topRight: 0, bottomRight: 0 },
                 borderWidth: 0,
                 barPercentage: 0.55,
@@ -1804,41 +1895,54 @@ function renderOverviewCharts(dataset) {
             }]
         },
         options: {
-    indexAxis: "y",
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: { padding: { right: 50 } },
-
-    
-    interaction: {
-        mode: 'index',
-        axis: 'y',
-        intersect: false
-    },
-
-    scales: {
-        x: { display: false, max: 100 },
-        y: { 
-            ticks: { color: "#333", font: { size: 13, weight: "600" } } 
-        }
-    },
-
-    plugins: {
-        legend: { display: false },
-
-        // ADD TOOLTIP
-        tooltip: {
-            enabled: true,
-            callbacks: {
-                label: function(context) {
-                    return context.label + ": " + context.raw;
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { right: statusLayoutPad, left: 4 } },
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'y'
+            },
+            scales: {
+                x: {
+                    display: false,
+                    beginAtZero: true,
+                    max: 100
+                },
+                y: {
+                    ticks: {
+                        color: '#333',
+                        font: { size: tickFontSize, weight: '600', family: 'Montserrat' },
+                        callback: function(value, index) {
+                            const raw = statusLabels[index] !== undefined ? statusLabels[index] : statusLabels[value];
+                            return raw != null ? formatStatusLabel(raw) : '';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: { display: false },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: 'rgba(15, 23, 42, 0.94)',
+                    titleFont: { size: 13, weight: '600', family: 'Montserrat' },
+                    bodyFont: { size: 17, weight: '700', family: 'Montserrat' },
+                    titleSpacing: 6,
+                    bodySpacing: 4,
+                    padding: 12,
+                    cornerRadius: 10,
+                    callbacks: {
+                        title: (items) => (items.length ? formatStatusLabel(items[0].label) : ''),
+                        label: (item) => {
+                            const n = statusValues[item.dataIndex];
+                            return n != null ? Number(n).toLocaleString() : '';
+                        }
+                    }
                 }
             }
-        },
-
-        datalabels: { display: false }
-    }
-}
+        }
     });
 
     createChart('anonymousChart', {
@@ -1967,23 +2071,8 @@ function navigateWithFilterByAnonymous(isAnonymous) {
     window.location.href = url.toString();
 }
 
-const menuIcon = document.querySelector('.menu-icon');
-const sidebar = document.querySelector('.sidebar');
-const mainPanel = document.querySelector('.main-panel');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-function toggleSidebar() {
-    if (!sidebar || !mainPanel) return;
-    sidebar.classList.toggle('open');
-    mainPanel.classList.toggle('shifted');
-    if (sidebarOverlay) {
-        sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-        sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
-    }
-}
-if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
-if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 </script>
+@include('components.provincial-admin-sidebar-script')
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>

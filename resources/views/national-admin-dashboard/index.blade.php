@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Tekete Safe Space National Dashboard</title>
+    <title>Tekete SafeSpace National Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
@@ -373,13 +373,16 @@ h1 {
 }
 
 .chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; }
-.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: 370px; display: flex; flex-direction: column; }
+/* Pie + legend need flexible height so bottom legend rows are not clipped */
+.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: auto; min-height: 370px; display: flex; flex-direction: column; }
+.chart-abuse-pie .chart-canvas-host { position: relative; width: 100%; flex: 1 1 auto; min-height: 280px; }
 .chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 370px; display: flex; flex-direction: column; }
 .chart-schools   { grid-column: 2 / 3; grid-row: 2; display: flex; flex-direction: column; }
-.chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; }
+.chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; display: flex; flex-direction: column; min-height: 320px; }
+.chart-status .chart-status-host { position: relative; width: 100%; flex: 1 1 auto; min-height: 280px; }
 
 #abuseTypeChart {
-    flex-grow: 1;
+    display: block;
     width: 100% !important;
     height: 100% !important;
 }
@@ -628,7 +631,8 @@ form.filters button {
 .grid-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.5rem; }
 .grid-three { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
 
-canvas { width: 100% !important; height: 280px !important; }
+.chart-grid .chart-card:not(.chart-status) canvas { width: 100% !important; height: 280px !important; }
+.chart-status .chart-status-host canvas { width: 100% !important; height: 100% !important; min-height: 0 !important; }
 
 .modal-backdrop {
     position: fixed; inset: 0;
@@ -718,7 +722,8 @@ canvas { width: 100% !important; height: 280px !important; }
         grid-column: 1; width: 100%;
     }
     .chart-card { min-height: 250px; }
-    canvas { height: 250px !important; }
+    .chart-grid .chart-card:not(.chart-status) canvas { height: 250px !important; }
+    .chart-status .chart-status-host { min-height: 240px; }
     .heatmap-panel { padding: 1rem; }
     .heatmap-toolbar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
     .heatmap-wrap { -webkit-overflow-scrolling: touch; overflow-x: auto; overflow-y: visible; }
@@ -770,12 +775,13 @@ canvas { width: 100% !important; height: 280px !important; }
     section[aria-label="Filters"] { padding: 0.5rem 0.75rem; }
 }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
 </head>
-<body>
+<body class="na-app">
 
-<aside class="sidebar">
+<aside class="sidebar" id="na-sidebar">
     <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
@@ -792,7 +798,7 @@ canvas { width: 100% !important; height: 280px !important; }
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
 <div class="main-panel">
-    <button class="menu-icon" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
 
     <div class="topbar">
         <div class="profile">
@@ -810,7 +816,7 @@ canvas { width: 100% !important; height: 280px !important; }
     </div>
 
     <div class="dashboard-scroll" id="main-content">
-        <h1>Tekete Safe Space National Dashboard</h1>
+        <h1>Tekete SafeSpace National Dashboard</h1>
         <p class="subtitle">Nation-wide case intelligence and live report monitoring.</p>
 
         <section class="panel" aria-label="Filters">
@@ -938,9 +944,16 @@ canvas { width: 100% !important; height: 280px !important; }
                     <canvas id="monthlyTrendChart"></canvas>
                 </div>
 
+                @php
+                    $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+                    /* Room for pie + full legend (Chart.js draws legend inside this box) */
+                    $abusePieHostHeight = max(380, min(900, 200 + $abuseTypeCount * 34));
+                @endphp
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
-                    <canvas id="abuseTypeChart"></canvas>
+                    <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
+                        <canvas id="abuseTypeChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="chart-card chart-anonymous">
@@ -975,9 +988,15 @@ canvas { width: 100% !important; height: 280px !important; }
                     </div>
                 </div>
 
+                @php
+                    $statusBreakdownN = max(count($statusCounts ?? []), 1);
+                    $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
+                @endphp
                 <div class="chart-card chart-status">
                     <h2>Status Breakdown</h2>
-                    <canvas id="statusChart"></canvas>
+                    <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
                 </div>
 
             </section>
@@ -1269,6 +1288,22 @@ function percentagesTo100(values) {
   return floored.map(x => x.floor);
 }
 
+/** Human-readable status for chart axis + tooltips (matches dashboard filters) */
+function formatStatusLabel(slug) {
+  if (slug == null || slug === '') return '';
+  const key = String(slug);
+  const map = {
+    'awaiting-resolution': 'Awaiting Resolution',
+    'under-review': 'Under Review',
+    'forwarded': 'Forwarded',
+    'closed': 'Closed',
+    'unresolved': 'Unresolved',
+    'false-report': 'False Report',
+  };
+  if (map[key]) return map[key];
+  return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function renderOverviewCharts(dataset) {
   const ctx = document.getElementById("statusChart")?.getContext("2d");
   const customColors = ['#99c4d3','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4'];
@@ -1311,6 +1346,7 @@ function renderOverviewCharts(dataset) {
   const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
   const abuseColors = ['#004c99','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4','#C0C0C0','#FF0000','#FFFF00'];
 
+  const abuseLegendPosition = abuseLabels.length > 5 ? 'right' : 'bottom';
   createChart('abuseTypeChart', {
     type: 'pie',
     data: {
@@ -1318,17 +1354,30 @@ function renderOverviewCharts(dataset) {
       datasets: [{ data: abuseCounts, backgroundColor: abuseColors.slice(0, Math.max(abuseLabels.length, 1)) }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false, layout: { padding: 10 },
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: {
+        padding: abuseLegendPosition === 'right'
+          ? { top: 8, right: 8, bottom: 8, left: 8 }
+          : { top: 4, right: 12, bottom: 4, left: 12 }
+      },
       plugins: {
         legend: {
-          position: 'bottom',
+          position: abuseLegendPosition,
+          align: 'center',
+          fullSize: true,
           labels: {
-            padding: 12, font: { size: 12, family: 'Montserrat' },
+            padding: abuseLegendPosition === 'right' ? 10 : 14,
+            boxWidth: 14,
+            boxHeight: 14,
+            usePointStyle: true,
+            maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
+            font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
             generateLabels: function(chart) {
               const data = chart.data; const ds = data.datasets[0];
               const pcts = percentagesTo100(ds.data);
               return data.labels.map((label, i) => ({
-                text: label + ' (' + pcts[i] + '%)',
+                text: (label || '—') + ' (' + pcts[i] + '%)',
                 fillStyle: ds.backgroundColor[i],
                 strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
                 lineWidth: 1, hidden: false, index: i
@@ -1349,10 +1398,9 @@ function renderOverviewCharts(dataset) {
     afterDatasetDraw(chart) {
       const { ctx, chartArea } = chart;
       const datasetMeta = chart.getDatasetMeta(0);
-      const total = chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
       datasetMeta.data.forEach((bar, i) => {
-        const value = chart.data.datasets[0].data[i];
-        const percentage = total ? ((value / total) * 100).toFixed(1) : '0';
+        const pct = parseFloat(chart.data.datasets[0].data[i]) || 0;
+        const percentage = pct.toFixed(1);
         const fullX = chart.scales.x.getPixelForValue(100);
         const filledX = chartArea.left + (parseFloat(percentage) / 100) * (fullX - chartArea.left);
         const y = bar.y; const h = bar.height;
@@ -1383,23 +1431,69 @@ function renderOverviewCharts(dataset) {
   const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
   const labels = statuses.map(s => s[0]);
   const values = statuses.map(s => s[1]);
+  const reportTotal = values.reduce((a, b) => a + b, 0);
+  /* Bar length = share of all reports (0–100); tooltips use raw `values` counts */
+  const statusPctBars = values.map((v) => (reportTotal > 0 ? (v / reportTotal) * 100 : 0));
+  const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
 
   createChart("statusChart", {
     type: "bar", plugins: [barPlugin],
     data: {
       labels,
       datasets: [{
-        data: values, backgroundColor: barColors,
+        label: '',
+        data: statusPctBars, backgroundColor: barColors,
         borderRadius: { topLeft: 20, bottomLeft: 20, topRight: 0, bottomRight: 0 },
         borderWidth: 0, barPercentage: 0.55, categoryPercentage: 0.55
       }]
     },
     options: {
       indexAxis: "y", responsive: true, maintainAspectRatio: false,
-      layout: { padding: { right: 50 } },
-      scales: { x: { display: false, max: 100 }, y: { ticks: { color: "#333", font: { size: 13, weight: "600" } } } },
-      plugins: { legend: { display: false }, datalabels: { display: false } }
-    }
+      layout: { padding: { right: 50, left: 4 } },
+      interaction: {
+        mode: 'nearest',
+        intersect: false,
+        axis: 'y',
+      },
+      scales: {
+        x: {
+          display: false,
+          beginAtZero: true,
+          max: 100,
+        },
+        y: {
+          ticks: {
+            color: '#333',
+            font: { size: tickFontSize, weight: '600', family: 'Montserrat' },
+            callback: function(value, index) {
+              const raw = labels[index] !== undefined ? labels[index] : labels[value];
+              return raw != null ? formatStatusLabel(raw) : '';
+            },
+          },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        datalabels: { display: false },
+        tooltip: {
+          displayColors: false,
+          backgroundColor: 'rgba(15, 23, 42, 0.94)',
+          titleFont: { size: 13, weight: '600', family: 'Montserrat' },
+          bodyFont: { size: 17, weight: '700', family: 'Montserrat' },
+          titleSpacing: 6,
+          bodySpacing: 4,
+          padding: 12,
+          cornerRadius: 10,
+          callbacks: {
+            title: (items) => (items.length ? formatStatusLabel(items[0].label) : ''),
+            label: (item) => {
+              const n = values[item.dataIndex];
+              return n != null ? Number(n).toLocaleString() : '';
+            },
+          },
+        },
+      },
+    },
   });
 
   createChart('anonymousChart', {
@@ -1514,13 +1608,22 @@ function toggleSidebar() {
   if (!sidebar || !mainPanel) return;
   sidebar.classList.toggle('open');
   mainPanel.classList.toggle('shifted');
+  const isOpen = sidebar.classList.contains('open');
+  document.body.classList.toggle('na-sidebar-open', isOpen);
+  if (menuIcon) {
+    menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+  }
   if (sidebarOverlay) {
-    sidebarOverlay.classList.toggle('active', sidebar.classList.contains('open'));
-    sidebarOverlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+    sidebarOverlay.classList.toggle('active', isOpen);
+    sidebarOverlay.setAttribute('aria-hidden', !isOpen);
   }
 }
 if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
 if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) toggleSidebar();
+});
 </script>
 
 <script>
