@@ -144,10 +144,12 @@
                     <input type="hidden" wire:model.live="otp" id="otp">
                     <div class="flex justify-center gap-1 sm:gap-2 w-full otp-container px-2 sm:px-0">
                         @for ($i = 0; $i < 6; $i++)
-                            <input type="text" maxlength="1"
-                                class="otp-input w-[44px] h-[48px] sm:w-[52px] sm:h-[52px] xs:w-[48px] xs:h-[48px] md:w-[60px] md:h-[60px] lg:w-[70px] lg:h-[70px] text-center text-black border-[3px] border-[#c7da30] rounded-[12px] text-lg sm:text-xl font-semibold outline-none focus:border-[#a8c529] transition-colors flex-shrink-0"
-                                oninput="updateOtp()" onkeydown="moveBack(event, {{ $i }})"
-                                id="otp-{{ $i }}">
+                           <input type="text" maxlength="1"
+    class="otp-input w-[44px] h-[48px] sm:w-[52px] sm:h-[52px] xs:w-[48px] xs:h-[48px] md:w-[60px] md:h-[60px] lg:w-[70px] lg:h-[70px] text-center text-black border-[3px] border-[#c7da30] rounded-[12px] text-lg sm:text-xl font-semibold outline-none focus:border-[#a8c529] transition-colors flex-shrink-0"
+    oninput="updateOtp()"
+    onkeydown="moveBack(event, {{ $i }})"
+    onpaste="handleOtpPaste(event)"
+    id="otp-{{ $i }}">
                         @endfor
                     </div>
                     @error('otp')
@@ -249,6 +251,20 @@
                 document.getElementById('otp-' + (index - 1)).focus();
             }
         }
+
+        function handleOtpPaste(e) {
+    e.preventDefault();
+    const pasted = (e.clipboardData || window.clipboardData).getData('text').trim();
+    const digits = pasted.replace(/\D/g, '').slice(0, 6);
+    digits.split('').forEach((char, i) => {
+        const input = document.getElementById('otp-' + i);
+        if (input) input.value = char;
+    });
+    const lastFilled = digits.length < 6 ? digits.length : 5;
+    const focusTarget = document.getElementById('otp-' + lastFilled);
+    if (focusTarget) focusTarget.focus();
+    updateOtp();
+}
 
         window.addEventListener('load', () => {
             const firstBox = document.getElementById('otp-0');
