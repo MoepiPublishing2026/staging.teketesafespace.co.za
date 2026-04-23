@@ -89,7 +89,7 @@
                 </div>
 
                 <h2 class="font-[Montserrat] font-medium text-[18px] sm:text-[20px] text-[#000000] mb-6">
-                    Download the Tekete Safe Space App
+                    Download the Tekete SafeSpace App
                 </h2>
 
                 <!-- MOBILE DOWNLOAD BUTTONS + GREEN GRAPHIC -->
