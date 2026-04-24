@@ -38,6 +38,8 @@ class ReportController extends Controller
                 if ($input === 'is_anonymous') {
                     $value = filter_var($request->input($input), FILTER_VALIDATE_BOOLEAN);
                     $query->where($column, $value);
+                } elseif ($input === 'status' && in_array($request->input('status'), Report::canonicalDashboardStatuses(), true)) {
+                    $query->whereCanonicalDashboardStatus($request->input('status'));
                 } else {
                     $query->where($column, $request->input($input));
                 }
