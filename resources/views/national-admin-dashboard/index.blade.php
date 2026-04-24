@@ -372,7 +372,7 @@ h1 {
   border-radius: 12px;
 }
 
-.chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; }
+.chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; display: flex; flex-direction: column; min-height: 0; }
 /* Pie + legend need flexible height so bottom legend rows are not clipped */
 .chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: auto; min-height: 370px; display: flex; flex-direction: column; }
 .chart-abuse-pie .chart-canvas-host { position: relative; width: 100%; flex: 1 1 auto; min-height: 280px; }
@@ -631,7 +631,13 @@ form.filters button {
 .grid-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.5rem; }
 .grid-three { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
 
-.chart-grid .chart-card:not(.chart-status) canvas { width: 100% !important; height: 280px !important; }
+.chart-grid .chart-card:not(.chart-status):not(.chart-monthly) canvas { width: 100% !important; height: 280px !important; }
+.chart-card.chart-monthly #monthlyTrendChart {
+    flex: 1 1 auto;
+    min-height: 260px !important;
+    width: 100% !important;
+    height: auto !important;
+}
 .chart-status .chart-status-host canvas { width: 100% !important; height: 100% !important; min-height: 0 !important; }
 
 .modal-backdrop {
@@ -722,7 +728,8 @@ form.filters button {
         grid-column: 1; width: 100%;
     }
     .chart-card { min-height: 250px; }
-    .chart-grid .chart-card:not(.chart-status) canvas { height: 250px !important; }
+    .chart-grid .chart-card:not(.chart-status):not(.chart-monthly) canvas { height: 250px !important; }
+    .chart-card.chart-monthly #monthlyTrendChart { min-height: 220px !important; height: auto !important; }
     .chart-status .chart-status-host { min-height: 240px; }
     .heatmap-panel { padding: 1rem; }
     .heatmap-toolbar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
@@ -1361,9 +1368,10 @@ function renderOverviewCharts(dataset) {
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      layout: { padding: { top: 4, bottom: 22, left: 2, right: 6 } },
       plugins: { legend: { display: true, position: 'top' } },
       scales: {
-        x: { ticks: { color: '#4b5664' } },
+        x: { ticks: { color: '#4b5664', padding: 4 }, grid: { drawBorder: false } },
         y: { beginAtZero: true, ticks: { precision: 0 }, grid: { drawBorder: false } }
       }
     }

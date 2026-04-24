@@ -550,7 +550,20 @@ form.filters button {
 }
 
 /* Default chart height only for simple canvases; hosts size pie/status via Chart.js */
-#monthlyTrendChart,
+.chart-monthly-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+    min-height: min(420px, 55vh);
+}
+.chart-monthly-block #monthlyTrendChart {
+    flex: 1 1 auto;
+    min-height: 280px;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none;
+}
 #anonymousChart {
     width: 100% !important;
     height: 400px !important;
@@ -710,7 +723,10 @@ form.filters button {
         min-width: 0;
         width: 100%;
     }
-    #monthlyTrendChart,
+    .chart-monthly-block #monthlyTrendChart {
+        min-height: 240px !important;
+        height: auto !important;
+    }
     #anonymousChart {
         height: 240px !important;
     }
@@ -1317,7 +1333,7 @@ form.filters button {
 
         <section class="panel" aria-label="Analytics">
             <div class="grid-two">
-                <div>
+                <div class="chart-monthly-block">
                     <h2>Monthly Trends</h2>
                     <canvas id="monthlyTrendChart"></canvas>
                 </div>
@@ -1773,9 +1789,10 @@ function renderOverviewCharts(dataset) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 4, bottom: 22, left: 2, right: 6 } },
             plugins: { legend: { display: true, position: 'top' } },
             scales: {
-                x: { ticks: { color: '#4b5664' } },
+                x: { ticks: { color: '#4b5664', padding: 4 }, grid: { drawBorder: false } },
                 y: { beginAtZero: true, ticks: { precision: 0 }, grid: { drawBorder: false } }
             }
         }

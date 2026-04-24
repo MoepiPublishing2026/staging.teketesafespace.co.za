@@ -161,6 +161,19 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
 .chart-top-abuse     { grid-column: 1 / 2; grid-row: 1; }
 .chart-monthly       { grid-column: 2 / 3; grid-row: 1; }
 
+/* Monthly Trends only: flex so title + canvas share the card (avoids clipped x-axis month labels) */
+.chart-card.chart-monthly {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.chart-card.chart-monthly canvas {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100% !important;
+    height: auto !important;
+}
+
 .chart-anonymous     { grid-column: 1 / 2; grid-row: 2; }
 
 .chart-anonymous {
@@ -1220,9 +1233,15 @@ function renderOverviewCharts(dataset) {
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+            padding: { top: 4, bottom: 22, left: 2, right: 6 }
+        },
         plugins: { legend: { display: true, position: 'top' } },
         scales: {
-            x: { ticks: { color: '#4b5664' } },
+            x: {
+                ticks: { color: '#4b5664', padding: 4 },
+                grid: { drawBorder: false }
+            },
             y: {
                 beginAtZero: true,
                 ticks: { precision: 0 },
@@ -1475,15 +1494,13 @@ function renderOverviewCharts(dataset) {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-          plugins: {
-    datalabels: { display: false }
-}
-,
+            plugins: {
+                datalabels: { display: false }
+            },
             scales: {
                 x: { beginAtZero: true, ticks: { precision: 0 } },
                 y: { ticks: { align: 'start', padding: 10 } }
             }
-            
         }
     });
 }
