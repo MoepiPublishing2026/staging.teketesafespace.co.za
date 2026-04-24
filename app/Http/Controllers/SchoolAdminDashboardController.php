@@ -121,10 +121,13 @@ class SchoolAdminDashboardController extends Controller
             'false-report',
         ];
 
-        // Count reports per status
-        $statusCounts = [];
-        foreach ($statusOrder as $status) {
-            $statusCounts[$status] = $reports->where('status', $status)->count();
+        // Count reports per canonical status (legacy DB values map into six buckets + false-report)
+        $statusCounts = array_fill_keys($statusOrder, 0);
+        foreach ($reports as $report) {
+            $bucket = Report::normalizeStatusForDashboard($report->status);
+            if (isset($statusCounts[$bucket])) {
+                $statusCounts[$bucket]++;
+            }
         }
 
         // Monthly counts for each month (Jan-Dec)
@@ -197,9 +200,9 @@ class SchoolAdminDashboardController extends Controller
             $activeFilters[] = "To: $toDate";
         }
 
-        // Prepare status reports group for modal
-        $statusReportPayload = $reports->groupBy(fn($report) => $report->status ?: 'unknown')->map(fn($collection) =>
-            $collection->map(fn($report) => [
+        // Prepare status reports group for modal (keys match headline cards)
+        $statusReportPayload = $reports->groupBy(fn ($report) => Report::normalizeStatusForDashboard($report->status))->map(fn ($collection) =>
+            $collection->map(fn ($report) => [
                 'case_number' => $report->case_number,
                 'status' => $report->status,
                 'abuse_type' => optional($report->abuseType)->type_name,
@@ -232,7 +235,7 @@ class SchoolAdminDashboardController extends Controller
         ])->values()->toArray();
 
         // False reports summary for dashboard card (identify repeat reporters)
-        $falseReportsForSchool = $reports->where('status', 'false-report');
+        $falseReportsForSchool = $reports->filter(fn ($r) => Report::normalizeStatusForDashboard($r->status) === 'false-report');
         $falseReportTotal = $falseReportsForSchool->count();
         $repeatByEmail = $falseReportsForSchool->filter(fn($r) => !empty(trim($r->reporter_email ?? '')))
             ->groupBy(fn($r) => strtolower(trim($r->reporter_email)))
@@ -299,7 +302,7 @@ class SchoolAdminDashboardController extends Controller
         // Get all false reports for this school
         $falseReports = Report::with(['abuseType', 'subtype'])
             ->where('school_name', $schoolName)
-            ->where('status', 'false-report')
+            ->whereCanonicalDashboardStatus('false-report')
             ->orderBy('created_at', 'desc')
             ->get();
 
