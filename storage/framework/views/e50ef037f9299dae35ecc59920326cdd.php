@@ -953,8 +953,8 @@ canvas {
 
         <?php
             $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
-            /* Room for pie + full legend (Chart.js draws legend inside this box) */
-            $abusePieHostHeight = max(380, min(900, 200 + $abuseTypeCount * 34));
+            /* Match provincial/national: pie + bottom legend without oversized empty canvas */
+            $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
         ?>
         <div class="chart-card chart-abuse-pie">
             <h2>Report Types Distribution</h2>
@@ -1238,7 +1238,7 @@ function renderOverviewCharts(dataset) {
     const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
     const abuseColors = ['#004c99', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4', '#C0C0C0', '#FF0000', '#FFFF00'];
 
-    const abuseLegendPosition = abuseLabels.length > 5 ? 'right' : 'bottom';
+    const abuseLegendPosition = 'bottom';
     createChart('abuseTypeChart', {
         type: 'pie',
         data: {
