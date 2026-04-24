@@ -80,9 +80,12 @@ class NationalAdminDashboardController extends Controller
             'closed', 'unresolved', 'false-report'
         ];
 
-        $statusCounts = [];
-        foreach ($statusOrder as $status) {
-            $statusCounts[$status] = $reports->where('status', $status)->count();
+        $statusCounts = array_fill_keys($statusOrder, 0);
+        foreach ($reports as $report) {
+            $bucket = Report::normalizeStatusForDashboard($report->status);
+            if (isset($statusCounts[$bucket])) {
+                $statusCounts[$bucket]++;
+            }
         }
 
         /* -----------------------------------------
@@ -174,7 +177,7 @@ class NationalAdminDashboardController extends Controller
          * STATUS REPORT PAYLOAD (FOR MODALS)
          * ----------------------------------------- */
         $statusReportPayload = $reports
-            ->groupBy(fn($r) => $r->status ?: 'unknown')
+            ->groupBy(fn ($r) => Report::normalizeStatusForDashboard($r->status))
             ->map(fn($list) =>
                 $list->map(fn($r) => [
                     'case_number' => $r->case_number,
