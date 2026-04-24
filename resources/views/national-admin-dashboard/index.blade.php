@@ -751,6 +751,13 @@ form.filters button {
     .modal-card { width: min(96vw, 480px); padding: 1.25rem; }
     section[aria-label="Filters"] { padding: 0.75rem 1rem; }
     .panel { padding: 0; }
+    
+    .chart-monthly   {grid-row: 1; justify-self: center;}
+/* Pie + legend need flexible height so bottom legend rows are not clipped */
+    .chart-abuse-pie {grid-row: 2; justify-self: center;}
+    .chart-anonymous {grid-row: 3; justify-self: center; height: 20px;}
+    .chart-schools   {grid-row: 4; justify-self: center; }
+    .chart-status    {grid-row: 5; justify-self: center;}
 }
 
 @media (max-width: 600px) {
@@ -947,7 +954,7 @@ form.filters button {
                 @php
                     $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
                     /* Room for pie + full legend (Chart.js draws legend inside this box) */
-                    $abusePieHostHeight = max(380, min(900, 200 + $abuseTypeCount * 34));
+                    $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
                 @endphp
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
@@ -1345,8 +1352,8 @@ function renderOverviewCharts(dataset) {
   const abuseCountsRaw = dataset.abuseCounts || [];
   const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
   const abuseColors = ['#004c99','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4','#C0C0C0','#FF0000','#FFFF00'];
-
-  const abuseLegendPosition = abuseLabels.length > 5 ? 'right' : 'bottom';
+  const abuseLegendPosition = 'bottom';
+  
   createChart('abuseTypeChart', {
     type: 'pie',
     data: {

@@ -64,7 +64,7 @@
             background: var(--theme-gradient);
             color: #000;
         }
-        button:not(.menu-icon){
+       button:not(.menu-icon):not(.submit-btn):not(.delete-btn){
             background-color: white !important;
             color: #38b6ff !important;
             border: 2px solid #c7da30 !important;
@@ -232,17 +232,44 @@
             }
             
             button.submit-btn {
-                width: 100%;
-                padding: 0.75rem 2rem;
-                font-size: 14px;
-            }
+    background-color: #f5f5f5 !important;
+    color: #4aa3df !important;
+    border: 3px solid #c7da30 !important;
+
+    border-radius: 999px !important; /* FULL pill shape */
+    padding: 0.75rem 4rem !important;
+
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
             
             .profile-pic, .profile-placeholder {
                 width: 100px;
                 height: 100px;
             }
         }
+.delete-btn {
+    background-color: #ef4444 !important; /* red */
+    color: #fff !important;
+    border: none !important;
 
+    border-radius: 999px; /* pill shape */
+    padding: 0.5rem 1.5rem;
+    margin-top: 0.5rem;
+
+    font-weight: 900;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626 !important; /* darker red */
+}
         /* Small mobile (max-width: 480px) */
         @media (max-width: 480px) {
             .menu-icon {
@@ -401,7 +428,7 @@
 button.submit-btn {
     border: 4px solid #c7da30;
     border-radius: 100px;
-    color: #000;
+    color: #38b6ff !important;
     font-weight: 900;
     padding: 0.75rem 5rem;
     font-size: 1rem;
@@ -512,12 +539,19 @@ button.submit-btn {
                         <div style="display:flex; flex-direction:column;">
                             <p style="margin-bottom:0.75rem; font-weight:900;">Update Profile Picture</p>
                             <label class="file-label">
-                                Choose File
-                                <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
-                            </label>
-                            @error('profile_picture')
-                                <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
-                            @enderror
+                                 Choose File
+                                        <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
+                                    </label>
+                                    
+                                    @if($user->profile_picture)
+                                        <button type="button" onclick="deleteProfilePicture()" class="delete-btn">
+    Delete Picture
+</button>
+                                    @endif
+                                    
+                                    @error('profile_picture')
+                                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                                    @enderror
                         </div>
                     </div>
 
@@ -687,6 +721,31 @@ button.submit-btn {
                 existingError.remove();
             }
         });
+    }
+    
+    // Delete profile picture function
+    function deleteProfilePicture() {
+        if (confirm('Are you sure you want to delete your profile picture?')) {
+            fetch('{{ route("national-admin.settings.delete-picture") }}', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Failed to delete profile picture');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the profile picture');
+            });
+        }
     }
 </script>
 
