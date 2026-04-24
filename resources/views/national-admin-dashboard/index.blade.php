@@ -372,30 +372,46 @@ h1 {
   border-radius: 12px;
 }
 
-.chart-monthly   { grid-column: 1 / 2; grid-row: 1; height: 400px; display: flex; flex-direction: column; min-height: 0; }
-/* Pie + legend need flexible height so bottom legend rows are not clipped */
-.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; height: auto; min-height: 370px; display: flex; flex-direction: column; }
-.chart-abuse-pie .chart-canvas-host { position: relative; width: 100%; flex: 1 1 auto; min-height: 280px; }
-.chart-anonymous { grid-column: 1 / 2; grid-row: 2; height: 370px; display: flex; flex-direction: column; }
-.chart-schools   { grid-column: 2 / 3; grid-row: 2; display: flex; flex-direction: column; }
-.chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; display: flex; flex-direction: column; min-height: 320px; }
+.chart-monthly   { grid-column: 1 / 2; grid-row: 1; }
+.chart-anonymous { grid-column: 1 / 2; grid-row: 2; }
+.chart-schools   { grid-column: 2 / 3; grid-row: 2; }
+/* Same layout as Status Breakdown: flex card + host + canvas fills host */
+.chart-card.chart-monthly,
+.chart-card.chart-anonymous,
+.chart-card.chart-abuse-pie,
+.chart-card.chart-status,
+.chart-card.chart-schools {
+    height: auto;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.chart-abuse-pie { grid-column: 2 / 3; grid-row: 1; min-height: 370px; }
+.chart-abuse-pie .chart-canvas-host,
+.chart-monthly .chart-canvas-host,
+.chart-anonymous .chart-canvas-host {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 280px;
+}
+.chart-status    { grid-column: 1 / 3; grid-row: 3; width: 70%; justify-self: center; }
 .chart-status .chart-status-host { position: relative; width: 100%; flex: 1 1 auto; min-height: 280px; }
 
-#abuseTypeChart {
+.chart-grid .chart-canvas-host canvas,
+.chart-grid .chart-status-host canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
+    min-height: 0 !important;
 }
 
-#anonymousChart {
-    flex-grow: 1;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Top Reporting Schools table */
-.schools-table-wrap {
-    flex: 1;
+/* Top Reporting Schools table (fills card like chart hosts) */
+.chart-schools .schools-table-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
     overflow-y: auto;
     overflow-x: hidden;
     margin-top: 0.5rem;
@@ -631,15 +647,6 @@ form.filters button {
 .grid-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.5rem; }
 .grid-three { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
 
-.chart-grid .chart-card:not(.chart-status):not(.chart-monthly) canvas { width: 100% !important; height: 280px !important; }
-.chart-card.chart-monthly #monthlyTrendChart {
-    flex: 1 1 auto;
-    min-height: 260px !important;
-    width: 100% !important;
-    height: auto !important;
-}
-.chart-status .chart-status-host canvas { width: 100% !important; height: 100% !important; min-height: 0 !important; }
-
 .modal-backdrop {
     position: fixed; inset: 0;
     background: rgba(17, 24, 39, 0.58);
@@ -728,8 +735,8 @@ form.filters button {
         grid-column: 1; width: 100%;
     }
     .chart-card { min-height: 250px; }
-    .chart-grid .chart-card:not(.chart-status):not(.chart-monthly) canvas { height: 250px !important; }
-    .chart-card.chart-monthly #monthlyTrendChart { min-height: 220px !important; height: auto !important; }
+    .chart-grid .chart-canvas-host,
+    .chart-grid .chart-status-host { min-height: 220px; }
     .chart-status .chart-status-host { min-height: 240px; }
     .heatmap-panel { padding: 1rem; }
     .heatmap-toolbar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
@@ -951,18 +958,22 @@ form.filters button {
         </section>
 
         <section class="panel" aria-label="Analytics">
+            @php
+                $monthlyPointCount = max(count($months ?? []), 1);
+                $monthlyTrendHostH = (int) max(260, min(440, 170 + $monthlyPointCount * 12));
+                $anonymousHostH = (int) max(280, min(400, 300));
+                $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+                $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
+            @endphp
             <section class="chart-grid" aria-label="Dashboard charts overview">
 
                 <div class="chart-card chart-monthly">
                     <h2>Monthly Trends</h2>
-                    <canvas id="monthlyTrendChart"></canvas>
+                    <div class="chart-canvas-host" style="height: {{ $monthlyTrendHostH }}px;">
+                        <canvas id="monthlyTrendChart"></canvas>
+                    </div>
                 </div>
 
-                @php
-                    $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
-                    /* Room for pie + full legend (Chart.js draws legend inside this box) */
-                    $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
-                @endphp
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
                     <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
@@ -972,7 +983,9 @@ form.filters button {
 
                 <div class="chart-card chart-anonymous">
                     <h2>Anonymous vs Identified</h2>
-                    <canvas id="anonymousChart"></canvas>
+                    <div class="chart-canvas-host" style="height: {{ $anonymousHostH }}px;">
+                        <canvas id="anonymousChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="chart-card chart-schools">

@@ -549,29 +549,46 @@ form.filters button {
     gap: 1.5rem;
 }
 
-/* Default chart height only for simple canvases; hosts size pie/status via Chart.js */
+/* Monthly Trends: same title + host + canvas pattern as Status Breakdown */
 .chart-monthly-block {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
     min-width: 0;
-    min-height: min(420px, 55vh);
+    height: auto;
+    min-height: 320px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
 }
-.chart-monthly-block #monthlyTrendChart {
+.chart-monthly-block .chart-canvas-host {
+    position: relative;
+    width: 100%;
     flex: 1 1 auto;
     min-height: 280px;
-    width: 100% !important;
-    height: auto !important;
-    max-height: none;
 }
-#anonymousChart {
-    width: 100% !important;
-    height: 400px !important;
+.chart-card.chart-anonymous {
+    height: auto;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
 }
-.chart-canvas-host canvas,
-.chart-status-host canvas {
+.chart-card.chart-anonymous .chart-canvas-host {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 280px;
+}
+section[aria-label="Analytics"] .chart-canvas-host canvas,
+section[aria-label="Analytics"] .chart-status-host canvas {
+    display: block;
     width: 100% !important;
     height: 100% !important;
+    min-height: 0 !important;
 }
 
 .modal-backdrop {
@@ -723,12 +740,9 @@ form.filters button {
         min-width: 0;
         width: 100%;
     }
-    .chart-monthly-block #monthlyTrendChart {
-        min-height: 240px !important;
-        height: auto !important;
-    }
-    #anonymousChart {
-        height: 240px !important;
+    .chart-monthly-block .chart-canvas-host,
+    .chart-card.chart-anonymous .chart-canvas-host {
+        min-height: 220px;
     }
     .chart-canvas-host canvas,
     .chart-status-host canvas {
@@ -1332,15 +1346,20 @@ form.filters button {
         </section>
 
         <section class="panel" aria-label="Analytics">
+            @php
+                $monthlyPointCount = max(count($months ?? []), 1);
+                $monthlyTrendHostH = (int) max(260, min(440, 170 + $monthlyPointCount * 12));
+                $anonymousHostH = (int) max(280, min(400, 300));
+                $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+                $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
+            @endphp
             <div class="grid-two">
                 <div class="chart-monthly-block">
                     <h2>Monthly Trends</h2>
-                    <canvas id="monthlyTrendChart"></canvas>
+                    <div class="chart-canvas-host" style="height: {{ $monthlyTrendHostH }}px;">
+                        <canvas id="monthlyTrendChart"></canvas>
+                    </div>
                 </div>
-                @php
-                    $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
-                    $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
-                @endphp
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
                     <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
@@ -1359,9 +1378,11 @@ form.filters button {
                 </div>
             </div>
             <div class="grid-two" style="margin-top: 1.5rem;">
-                <div>
+                <div class="chart-card chart-anonymous">
                     <h2>Anonymous vs Identified</h2>
-                    <canvas id="anonymousChart"></canvas>
+                    <div class="chart-canvas-host" style="height: {{ $anonymousHostH }}px;">
+                        <canvas id="anonymousChart"></canvas>
+                    </div>
                 </div>
                 <div>
                     <h2>Top Reporting Schools</h2>
