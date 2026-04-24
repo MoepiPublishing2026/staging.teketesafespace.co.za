@@ -94,10 +94,13 @@ class ProvincialAdminDashboardController extends Controller
             'false-report',
         ];
 
-        // Count reports per status
-        $statusCounts = [];
-        foreach ($statusOrder as $status) {
-            $statusCounts[$status] = $reports->where('status', $status)->count();
+        // Count reports per canonical status (pending, legacy labels, etc. map into six buckets)
+        $statusCounts = array_fill_keys($statusOrder, 0);
+        foreach ($reports as $report) {
+            $bucket = Report::normalizeStatusForDashboard($report->status);
+            if (isset($statusCounts[$bucket])) {
+                $statusCounts[$bucket]++;
+            }
         }
 
         // Monthly counts for each month (Jan-Dec)
@@ -124,13 +127,16 @@ class ProvincialAdminDashboardController extends Controller
             'identified' => $reports->where('is_anonymous', 0)->count(),
         ];
 
-        // Top schools by report count (within this province)
-        $topSchools = $reports->filter(fn($report) => optional($report->school)->school_name !== null)
-            ->groupBy(fn($report) => $report->school->school_name)
-            ->map(fn($group) => $group->count())
-            ->sortDesc()
-            ->take(8)
-            ->toArray();
+        // Schools with linked record: card + modal = full list; chart/table = top 8 by volume
+        $reportsWithLinkedSchool = $reports->filter(fn ($report) => optional($report->school)->school_name);
+        $schoolGroups = $reportsWithLinkedSchool
+            ->groupBy(fn ($report) => $report->school->school_name)
+            ->map(fn ($group) => $group->count())
+            ->sortDesc();
+        $activeSchoolsWithReports = $schoolGroups->count();
+        $activeSchoolsByReports = $schoolGroups->toArray();
+        $topSchools = $schoolGroups->take(8)->toArray();
+        $reportsWithoutLinkedSchool = $totalReports - $reportsWithLinkedSchool->count();
 
         // Recent reports
         $recentReports = $reports->sortByDesc('created_at')->take(10);
@@ -159,8 +165,8 @@ class ProvincialAdminDashboardController extends Controller
             $activeFilters[] = "To: $toDate";
         }
 
-        // Prepare status reports group for modal
-        $statusReportPayload = $reports->groupBy(fn($report) => $report->status ?: 'unknown')->map(fn($collection) =>
+        // Prepare status reports group for modal (keys match headline status cards)
+        $statusReportPayload = $reports->groupBy(fn ($report) => Report::normalizeStatusForDashboard($report->status))->map(fn($collection) =>
             $collection->map(fn($report) => [
                 'case_number' => $report->case_number,
                 'status' => $report->status,
@@ -279,6 +285,9 @@ class ProvincialAdminDashboardController extends Controller
             'anonymousCounts' => $anonymousCounts,
             'statusCounts' => $statusCounts,
             'topSchools' => $topSchools,
+            'activeSchoolsWithReports' => $activeSchoolsWithReports,
+            'activeSchoolsByReports' => $activeSchoolsByReports,
+            'reportsWithoutLinkedSchool' => $reportsWithoutLinkedSchool,
             'recentReports' => $recentReports,
             'activeFilters' => $activeFilters,
             'statusReportPayload' => $statusReportPayload,
