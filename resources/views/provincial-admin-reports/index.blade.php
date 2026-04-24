@@ -406,7 +406,7 @@ tbody tr:last-child td { border-bottom: none; }
     border-color: #c7da30 !important;
     box-shadow: 0 0 0 3px rgba(199,218,48,0.15) !important;
 }
-.choices__list--single .choices__item {
+.choices_list--single .choices_item {
     font-size: 13px !important;
     font-family: 'Montserrat', sans-serif !important;
     color: #111 !important;
@@ -419,7 +419,7 @@ tbody tr:last-child td { border-bottom: none; }
     font-size: 13px !important;
     z-index: 9999 !important;
 }
-.choices__list--dropdown .choices__item {
+.choices_list--dropdown .choices_item {
     font-size: 13px !important;
     font-family: 'Montserrat', sans-serif !important;
     color: #111 !important;
@@ -579,7 +579,7 @@ tbody tr:last-child td { border-bottom: none; }
                         <option value="">All Subtypes</option>
                         @foreach($subtypeOptions as $sub)
                             <option value="{{ $sub->id }}"
-                                    data-type="{{ $sub->abuse_type_id }}"
+                                    data-type="{{ $sub->report_type_id }}"
                                     {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
                                 {{ $sub->sub_type_name }}
                             </option>
@@ -674,7 +674,7 @@ tbody tr:last-child td { border-bottom: none; }
                         <td>{{ $report->district->district_name ?? 'N/A' }}</td>
                         <td>{{ $report->school->school_name ?? 'N/A' }}</td>
                         <td>{{ $report->grade ?? 'N/A' }}</td>
-                        <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
+                        <td>{{ $report->reportType->type_name ?? 'N/A' }}</td>
                         <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
                         <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
                         <td>{{ $report->created_at->format('Y-m-d') }}</td>
@@ -764,7 +764,7 @@ function clearFilters() {
 
 // ── Report detail modal ──────────────────────────────────────────
 function openReportModal(reportId) {
-    fetch(`/provincial-admin/reports/${reportId}`, {
+    fetch(/provincial-admin/reports/${reportId}, {
         headers: { 'Accept': 'application/json' }
     })
     .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
@@ -773,7 +773,7 @@ function openReportModal(reportId) {
         document.getElementById('modalFullName').textContent    = report.full_name || 'Anonymous';
         document.getElementById('modalEmail').textContent       = report.reporter_email || 'Anonymous';
         document.getElementById('modalPhone').textContent       = report.phone_number || 'N/A';
-        document.getElementById('modalType').textContent        = report.abuseType || 'N/A';
+        document.getElementById('modalType').textContent        = report.reportType || 'N/A';
         document.getElementById('modalSubtype').textContent     = report.subtype || 'N/A';
         document.getElementById('modalSchool').textContent      = report.school || 'N/A';
         document.getElementById('modalGrade').textContent       = report.grade || 'N/A';
@@ -787,7 +787,7 @@ function openReportModal(reportId) {
         if (report.attachments && report.attachments.length > 0) {
             report.attachments.forEach(filePath => {
                 const ext       = filePath.split('.').pop().toLowerCase();
-                const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
+                const publicUrl = /storage/${filePath.replace(/^\/+/, '')};
                 let elem;
 
                 if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
@@ -891,7 +891,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        const selectedOpt = subtypeSelect.querySelector(`option[value="${currentSubtype}"]`);
+        const selectedOpt = subtypeSelect.querySelector(option[value="${currentSubtype}"]);
         if (selectedOpt && selectedOpt.style.display === 'none') {
             subtypeSelect.value = '';
         }
