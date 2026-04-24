@@ -393,7 +393,7 @@ h1 {
     height: 100% !important;
 }
 
-/* Top Reporting Schools table styles */
+/* Top Reporting Schools table */
 .schools-table-wrap {
     flex: 1;
     overflow-y: auto;
@@ -752,12 +752,12 @@ form.filters button {
     section[aria-label="Filters"] { padding: 0.75rem 1rem; }
     .panel { padding: 0; }
     
-    .chart-monthly   {grid-row: 1; justify-self: center;}
-/* Pie + legend need flexible height so bottom legend rows are not clipped */
-    .chart-abuse-pie {grid-row: 2; justify-self: center;}
-    .chart-anonymous {grid-row: 3; justify-self: center; height: 20px;}
-    .chart-schools   {grid-row: 4; justify-self: center; }
-    .chart-status    {grid-row: 5; justify-self: center;}
+    .chart-monthly   { grid-row: 1; justify-self: stretch; width: 100%; height: auto; min-height: 300px; }
+    /* Pie + legend need flexible height so bottom legend rows are not clipped */
+    .chart-abuse-pie { grid-row: 2; justify-self: stretch; width: 100%; min-height: 320px; }
+    .chart-anonymous { grid-row: 3; justify-self: stretch; width: 100%; height: auto; min-height: 300px; max-height: none; }
+    .chart-schools   { grid-row: 4; justify-self: stretch; width: 100%; height: auto; min-height: 280px; max-height: none; }
+    .chart-status    { grid-row: 5; justify-self: stretch; width: 100%; }
 }
 
 @media (max-width: 600px) {
@@ -936,10 +936,10 @@ form.filters button {
                 <div class="card-value">{{ count($abuseTypeLabels) }}</div>
                 <span class="card-subtext"></span>
             </div>
-            <div class="metric-card extras-schools" onclick="openExtrasModal('schools')">
+            <div class="metric-card extras-schools" onclick="openExtrasModal('schools')" title="Open full list of schools with reports">
                 <span class="card-title">Active Schools</span>
-                <div class="card-value">{{ count($topSchools) }}</div>
-                <span class="card-subtext"></span>
+                <div class="card-value">{{ number_format($activeSchoolsWithReports ?? 0) }}</div>
+                <span class="card-subtext">Tap for every school</span>
             </div>
         </section>
 
@@ -968,7 +968,6 @@ form.filters button {
                     <canvas id="anonymousChart"></canvas>
                 </div>
 
-                <!-- Top Reporting Schools — HTML table instead of canvas -->
                 <div class="chart-card chart-schools">
                     <h2>Top Reporting Schools</h2>
                     <div class="schools-table-wrap">
@@ -980,16 +979,32 @@ form.filters button {
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($topSchools as $schoolName => $schoolCount)
+                                @forelse($topSchools ?? [] as $schoolName => $schoolCount)
                                     <tr>
                                         <td>{{ $schoolName }}</td>
                                         <td>{{ number_format($schoolCount) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="2" style="text-align:center; color:#6b7280; padding:1rem;">No schools with reports.</td>
+                                        <td colspan="2" style="text-align:center; color:#6b7280; padding:1rem;">
+                                            No schools with a linked record in this filter.
+                                            @if(($reportsWithoutLinkedSchool ?? 0) > 0)
+                                                <br><span style="font-size:12px;">{{ number_format($reportsWithoutLinkedSchool) }} report(s) have no linked school.</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforelse
+                                @if(count($topSchools ?? []) > 0)
+                                @php $sumTopSchools = array_sum($topSchools); @endphp
+                                <tr>
+                                    <td colspan="2" style="font-size:12px; color:#6b7280; padding:0.65rem 0.5rem 0; line-height:1.45;">
+                                        Top {{ count($topSchools) }} by volume: <strong>{{ number_format($sumTopSchools) }}</strong> reports.
+                                        @if(($reportsWithoutLinkedSchool ?? 0) > 0)
+                                            <strong>{{ number_format($reportsWithoutLinkedSchool) }}</strong> report(s) have no linked school.
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -1159,7 +1174,10 @@ form.filters button {
     'abuseTypePercentages' => $abuseTypePercentages ?? [],
     'statusCounts' => $statusCounts,
     'anonymousCounts' => $anonymousCounts,
-    'topSchools' => $topSchools,
+    'topSchools' => $topSchools ?? [],
+    'activeSchoolsByReports' => $activeSchoolsByReports ?? [],
+    'activeSchoolsWithReports' => $activeSchoolsWithReports ?? 0,
+    'reportsWithoutLinkedSchool' => $reportsWithoutLinkedSchool ?? 0,
     'statusReports' => $statusReportPayload,
     'allReports' => $allReportsPayload,
 ]) !!}
@@ -1583,16 +1601,24 @@ function openExtrasModal(type) {
     bodyEl.innerHTML = html;
   } else if (type === 'schools') {
     titleEl.textContent = 'Active Schools';
-    const schools = data.topSchools || {};
+    const schools = data.activeSchoolsByReports || {};
     const entries = Object.entries(schools);
+    const activeN = Number(data.activeSchoolsWithReports || 0);
+    const noSchool = Number(data.reportsWithoutLinkedSchool || 0);
+    const sumListed = entries.reduce((s, [, c]) => s + Number(c || 0), 0);
     if (entries.length === 0) {
-      bodyEl.innerHTML = '<p>No schools with reports in the selected period.</p>';
+      bodyEl.innerHTML = '<p>No schools with a linked record for the current filters.</p>';
     } else {
-      let html = '<table style="width:100%; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">School</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Reports</th></tr></thead><tbody>';
+      let html = '<p style="margin:0 0 0.75rem; font-size:13px; color:#4b5563;">All <strong>' + activeN.toLocaleString() + '</strong> school(s) with at least one report (linked school record), sorted by report count.</p>';
+      html += '<div style="max-height:min(52vh,480px); overflow-y:auto; border:1px solid #e5e7eb; border-radius:8px;">';
+      html += '<table style="width:100%; border-collapse:collapse;"><thead style="position:sticky; top:0; background:#fff; z-index:1;"><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">School</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Reports</th></tr></thead><tbody>';
       entries.forEach(([name, count]) => {
         html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb; word-break:break-word;">' + (name || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb; white-space:nowrap;">' + Number(count).toLocaleString() + '</td></tr>';
       });
-      html += '</tbody></table>';
+      html += '</tbody></table></div>';
+      html += '<p style="margin:0.75rem 0 0; font-size:12px; color:#6b7280; line-height:1.45;">Rows total <strong>' + sumListed.toLocaleString() + '</strong> reports with a linked school.';
+      if (noSchool > 0) html += ' <strong>' + noSchool.toLocaleString() + '</strong> report(s) have no linked school (not listed above).';
+      html += '</p>';
       bodyEl.innerHTML = html;
     }
   }

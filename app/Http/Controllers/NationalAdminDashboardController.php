@@ -129,15 +129,18 @@ class NationalAdminDashboardController extends Controller
         ];
 
         /* -----------------------------------------
-         * TOP SCHOOLS
+         * SCHOOLS (linked school record only)
+         * Active Schools card + modal: full list. Top Reporting Schools chart: top 8 only.
          * ----------------------------------------- */
-        $topSchools = $reports
-            ->filter(fn($r) => optional($r->school)->school_name)
-            ->groupBy(fn($r) => $r->school->school_name)
+        $reportsWithLinkedSchool = $reports->filter(fn ($r) => optional($r->school)->school_name);
+        $schoolGroups = $reportsWithLinkedSchool
+            ->groupBy(fn ($r) => $r->school->school_name)
             ->map->count()
-            ->sortDesc()
-            ->take(8)
-            ->toArray();
+            ->sortDesc();
+        $activeSchoolsWithReports = $schoolGroups->count();
+        $activeSchoolsByReports = $schoolGroups->toArray();
+        $topSchools = $schoolGroups->take(8)->toArray();
+        $reportsWithoutLinkedSchool = $totalReports - $reportsWithLinkedSchool->count();
 
         /* -----------------------------------------
          * RECENT REPORTS (LAST 10)
@@ -315,6 +318,9 @@ class NationalAdminDashboardController extends Controller
             'statusCounts' => $statusCounts,
 
             'topSchools' => $topSchools,
+            'activeSchoolsByReports' => $activeSchoolsByReports,
+            'activeSchoolsWithReports' => $activeSchoolsWithReports,
+            'reportsWithoutLinkedSchool' => $reportsWithoutLinkedSchool,
             'recentReports' => $recentReports,
             'activeFilters' => $activeFilters,
 
