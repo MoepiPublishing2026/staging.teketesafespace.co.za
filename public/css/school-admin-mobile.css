@@ -226,12 +226,14 @@ body.sa-app .menu-icon:focus-visible {
     position: relative;
     width: 100%;
     min-width: 0;
+    min-height: 220px;
   }
 
   body.sa-app .charts-grid .chart-canvas-host canvas,
   body.sa-app .charts-grid .chart-status-host canvas {
     width: 100% !important;
     height: 100% !important;
+    min-height: 0 !important;
   }
 
   body.sa-app .heatmap-wrap {

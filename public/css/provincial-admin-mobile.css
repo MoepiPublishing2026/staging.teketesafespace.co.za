@@ -254,6 +254,14 @@ body.pa-app .menu-icon:focus-visible {
   body.pa-app section[aria-label="Analytics"] .chart-canvas-host,
   body.pa-app section[aria-label="Analytics"] .chart-status-host {
     min-width: 0;
+    min-height: 220px;
+  }
+
+  body.pa-app section[aria-label="Analytics"] .chart-canvas-host canvas,
+  body.pa-app section[aria-label="Analytics"] .chart-status-host canvas {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
   }
 
   /* Pages with main directly under .main-panel (no dashboard-scroll) */
