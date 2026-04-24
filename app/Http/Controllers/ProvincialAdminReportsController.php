@@ -115,9 +115,13 @@ class ProvincialAdminReportsController extends Controller
             $query->where('subtype_id', $request->input('subtype_id'));
         }
 
-        // ── Status filter ────────────────────────────────────────────
+        // ── Status filter (canonical buckets include pending, completed, etc.) ──
         if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
+            if (in_array($request->input('status'), Report::canonicalDashboardStatuses(), true)) {
+                $query->whereCanonicalDashboardStatus($request->input('status'));
+            } else {
+                $query->where('status', $request->input('status'));
+            }
         }
 
         // ── Anonymous filter ─────────────────────────────────────────
