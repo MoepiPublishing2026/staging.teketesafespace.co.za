@@ -931,10 +931,10 @@ form.filters button {
                 <span class="card-title">Identified</span>
                 <div class="card-value">{{ number_format($anonymousCounts['identified'] ?? 0) }}</div>
             </div>
-            <div class="metric-card extras-abuse" onclick="openExtrasModal('abuse-types')">
+            <div class="metric-card extras-abuse" onclick="openExtrasModal('abuse-types')" title="Report types that appear in the current filters">
                 <span class="card-title">Active Report Types</span>
-                <div class="card-value">{{ count($abuseTypeLabels) }}</div>
-                <span class="card-subtext"></span>
+                <div class="card-value">{{ number_format($activeReportTypesCount ?? 0) }}</div>
+                <span class="card-subtext">In filtered reports</span>
             </div>
             <div class="metric-card extras-schools" onclick="openExtrasModal('schools')" title="Open full list of schools with reports">
                 <span class="card-title">Active Schools</span>
@@ -1172,6 +1172,9 @@ form.filters button {
     'abuseLabels' => $abuseTypeLabels,
     'abuseCounts' => $abuseTypeCounts,
     'abuseTypePercentages' => $abuseTypePercentages ?? [],
+    'activeReportTypesCount' => $activeReportTypesCount ?? 0,
+    'activeAbuseTypeBreakdown' => $activeAbuseTypeBreakdown ?? [],
+    'reportsWithoutAbuseTypeLabel' => $reportsWithoutAbuseTypeLabel ?? 0,
     'statusCounts' => $statusCounts,
     'anonymousCounts' => $anonymousCounts,
     'topSchools' => $topSchools ?? [],
@@ -1592,13 +1595,27 @@ function openExtrasModal(type) {
       '<button type="button" onclick="navigateWithFilterByAnonymous(0); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
   } else if (type === 'abuse-types') {
     titleEl.textContent = 'Active Report Types';
-    const labels = data.abuseLabels || []; const counts = data.abuseCounts || []; const pcts = data.abuseTypePercentages || [];
-    let html = '<table style="width:100%; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Report Type</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Count</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">%</th></tr></thead><tbody>';
-    labels.forEach((label, i) => {
-      html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (label || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (counts[i] || 0).toLocaleString() + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (pcts[i] ?? 0) + '%</td></tr>';
-    });
-    html += '</tbody></table>';
-    bodyEl.innerHTML = html;
+    const rows = data.activeAbuseTypeBreakdown || [];
+    const totalTypes = Number(data.activeReportTypesCount || 0);
+    const noLabel = Number(data.reportsWithoutAbuseTypeLabel || 0);
+    if (rows.length === 0) {
+      bodyEl.innerHTML = '<p>No report types with a linked type name for the current filters.</p>';
+    } else {
+      let html = '<p style="margin:0 0 0.75rem; font-size:13px; color:#4b5563;"><strong>' + totalTypes.toLocaleString() + '</strong> distinct type(s) in these reports. Percentages are share of <strong>all</strong> filtered reports.</p>';
+      html += '<div style="max-height:min(52vh,480px); overflow-y:auto; border:1px solid #e5e7eb; border-radius:8px;">';
+      html += '<table style="width:100%; border-collapse:collapse;"><thead style="position:sticky; top:0; background:#fff; z-index:1;"><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Report Type</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Count</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">%</th></tr></thead><tbody>';
+      rows.forEach((row) => {
+        const label = row.label != null ? String(row.label) : 'N/A';
+        const c = Number(row.count || 0);
+        const p = row.pct != null ? Number(row.pct) : 0;
+        html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb; word-break:break-word;">' + label + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + c.toLocaleString() + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + p + '%</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      if (noLabel > 0) {
+        html += '<p style="margin:0.75rem 0 0; font-size:12px; color:#6b7280;"><strong>' + noLabel.toLocaleString() + '</strong> report(s) have no linked report type (not counted above).</p>';
+      }
+      bodyEl.innerHTML = html;
+    }
   } else if (type === 'schools') {
     titleEl.textContent = 'Active Schools';
     const schools = data.activeSchoolsByReports || {};
