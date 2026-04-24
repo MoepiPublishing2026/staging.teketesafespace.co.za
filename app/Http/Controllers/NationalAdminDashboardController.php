@@ -120,6 +120,25 @@ class NationalAdminDashboardController extends Controller
             ? array_map(fn($c) => round(($c / $totalAbuseReports) * 100, 2), $abuseTypeCounts)
             : array_fill(0, count($abuseTypeCounts), 0);
 
+        /* Distinct report types actually present in filtered reports (for Active Report Types card + modal) */
+        $reportsWithAbuseTypeNamed = $reports->filter(fn ($r) => optional($r->abuseType)->type_name);
+        $abuseTypeGroupsInFilter = $reportsWithAbuseTypeNamed
+            ->groupBy(fn ($r) => $r->abuseType->type_name)
+            ->map->count()
+            ->sortDesc();
+        $activeReportTypesCount = $abuseTypeGroupsInFilter->count();
+        $reportsWithoutAbuseTypeLabel = $totalReports - $reportsWithAbuseTypeNamed->count();
+        $activeAbuseTypeBreakdown = $abuseTypeGroupsInFilter
+            ->map(function ($count, $label) use ($totalReports) {
+                return [
+                    'label' => $label,
+                    'count' => $count,
+                    'pct' => $totalReports > 0 ? round(($count / $totalReports) * 100, 2) : 0,
+                ];
+            })
+            ->values()
+            ->toArray();
+
         /* -----------------------------------------
          * ANONYMOUS COUNTS
          * ----------------------------------------- */
@@ -313,6 +332,10 @@ class NationalAdminDashboardController extends Controller
             'abuseTypeLabels' => $abuseTypeLabels,
             'abuseTypeCounts' => $abuseTypeCounts,
             'abuseTypePercentages' => $abuseTypePercentages,
+
+            'activeReportTypesCount' => $activeReportTypesCount,
+            'activeAbuseTypeBreakdown' => $activeAbuseTypeBreakdown,
+            'reportsWithoutAbuseTypeLabel' => $reportsWithoutAbuseTypeLabel,
 
             'anonymousCounts' => $anonymousCounts,
             'statusCounts' => $statusCounts,
