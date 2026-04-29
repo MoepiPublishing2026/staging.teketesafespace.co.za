@@ -46,8 +46,6 @@ class ProvincialAdminReportsController extends Controller
             'status'     => 'status',
             'district'   => 'district_id',
             'abuse_type' => 'abuse_type_id',
-            // is_anonymous handled separately below
-            // school_id   handled separately below
         ];
 
         foreach ($filterableFields as $input => $column) {
@@ -70,7 +68,6 @@ class ProvincialAdminReportsController extends Controller
         }
 
         // ── Global search bar ────────────────────────────────────────
-        // Searches: case number, email, full name, description, school name (via relationship)
         if ($s = trim($request->input('search', ''))) {
             $query->where(function ($q) use ($s) {
                 $q->where('case_number',      'like', "%{$s}%")
@@ -97,8 +94,6 @@ class ProvincialAdminReportsController extends Controller
         }
 
         // ── School filter ────────────────────────────────────────────
-        // school_name comes from the datalist text input
-        // Try exact match first (user picked from datalist), then fallback to LIKE
         if ($s = trim($request->input('school_name', ''))) {
             $query->whereHas('school', fn ($sq) =>
                 $sq->where('school_name', 'like', "%{$s}%")
@@ -115,7 +110,7 @@ class ProvincialAdminReportsController extends Controller
             $query->where('subtype_id', $request->input('subtype_id'));
         }
 
-        // ── Status filter (canonical buckets include pending, completed, etc.) ──
+        // ── Status filter ────────────────────────────────────────────
         if ($request->filled('status')) {
             if (in_array($request->input('status'), Report::canonicalDashboardStatuses(), true)) {
                 $query->whereCanonicalDashboardStatus($request->input('status'));
@@ -125,7 +120,6 @@ class ProvincialAdminReportsController extends Controller
         }
 
         // ── Anonymous filter ─────────────────────────────────────────
-        // Use has() check not filled() because '0' is falsy
         if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
             $query->where('is_anonymous', (int) $request->input('is_anonymous'));
         }
@@ -149,8 +143,19 @@ class ProvincialAdminReportsController extends Controller
         // ── Dropdown options ─────────────────────────────────────────
         $typeOptions = AbuseType::orderBy('type_name')->get();
 
-        // Load all subtypes; client-side JS filters them by selected type
-        $subtypeOptions = Subtype::orderBy('sub_type_name')->get();
+        $subtypeOptions = Subtype::orderBy('sub_type_name')
+            ->get()
+            ->filter(function ($sub) use (&$otherSeen) {
+                if (str_contains(strtolower($sub->sub_type_name), 'other')) {
+                    if ($otherSeen) return false;
+                    $otherSeen = true;
+                }
+                return true;
+            })
+            ->sortBy(function ($sub) {
+                return str_contains(strtolower($sub->sub_type_name), 'other') ? 1 : 0;
+            })
+            ->values();
 
         $gradeOptions = Report::where('province_id', $province_id)
             ->whereNotNull('grade')
@@ -181,9 +186,11 @@ class ProvincialAdminReportsController extends Controller
             ->values()
             ->toArray();
 
-        $schoolOptions = School::where('province_id', $province_id)
-            ->orderBy('school_name')
-            ->get();
+        $schoolName = request('school_id')
+            ? School::find(request('school_id'))?->school_name ?? ''
+            : request('school_name', '');
+
+        $schoolOptions = School::orderBy('school_name')->get();
 
         return view('provincial-admin-reports.index', compact(
             'reports',
@@ -191,7 +198,8 @@ class ProvincialAdminReportsController extends Controller
             'typeOptions',
             'subtypeOptions',
             'gradeOptions',
-            'schoolOptions'
+            'schoolOptions',
+            'schoolName'
         ));
     }
 

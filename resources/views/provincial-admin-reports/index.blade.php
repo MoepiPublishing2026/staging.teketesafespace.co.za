@@ -501,13 +501,12 @@ tbody tr:last-child td { border-bottom: none; }
 
             {{-- Filter Grid --}}
             <div class="filter-grid">
-
                 <div>
                     <label class="filter-label">Anonymous</label>
                     <select name="is_anonymous" class="filter-input">
                         <option value="">All</option>
                         <option value="1" {{ request('is_anonymous') === '1' ? 'selected' : '' }}>Anonymous</option>
-                        <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Not Anonymous</option>
+                        <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Non Anonymous</option>
                     </select>
                 </div>
 
@@ -521,7 +520,7 @@ tbody tr:last-child td { border-bottom: none; }
                         list="schoolDatalist"
                         autocomplete="off"
                         placeholder="Type to search school…"
-                        value="{{ request('school_id') ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? '') : request('school_name', '') }}"
+                        value="{{ $schoolName }}"
                     />
                     <datalist id="schoolDatalist">
                         @foreach($schoolOptions as $school)
@@ -605,7 +604,11 @@ tbody tr:last-child td { border-bottom: none; }
                     <button type="submit" class="filter-btn filter-btn-apply" style="flex:1;">
                         <i class="fas fa-filter" style="margin-right:4px;"></i> Apply
                     </button>
-                    <button type="button" class="filter-btn filter-btn-clear" style="flex:1;" onclick="clearFilters()">
+                    <button 
+                        type="button" 
+                        class="filter-btn filter-btn-clear" 
+                        style="flex:1;" 
+                        onclick="event.preventDefault(); event.stopPropagation(); clearFilters();">
                         <i class="fas fa-times" style="margin-right:4px;"></i> Clear
                     </button>
                 </div>
@@ -744,7 +747,6 @@ tbody tr:last-child td { border-bottom: none; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/dist/choices.min.js"></script>
 <script>
-
 // ── PDF Export ───────────────────────────────────────────────────
 function exportPDF() {
     const element = document.getElementById('main-content');
@@ -759,12 +761,13 @@ function exportPDF() {
 
 // ── Clear all filters ────────────────────────────────────────────
 function clearFilters() {
+    document.getElementById('filterForm').reset();
     window.location.href = '{{ url('/provincial-admin/reports') }}';
 }
 
 // ── Report detail modal ──────────────────────────────────────────
 function openReportModal(reportId) {
-    fetch(/provincial-admin/reports/${reportId}, {
+    fetch(`/provincial-admin/reports/${reportId}`, {
         headers: { 'Accept': 'application/json' }
     })
     .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
@@ -773,7 +776,7 @@ function openReportModal(reportId) {
         document.getElementById('modalFullName').textContent    = report.full_name || 'Anonymous';
         document.getElementById('modalEmail').textContent       = report.reporter_email || 'Anonymous';
         document.getElementById('modalPhone').textContent       = report.phone_number || 'N/A';
-        document.getElementById('modalType').textContent        = report.reportType || 'N/A';
+        document.getElementById('modalType').textContent        = report.abuseType || 'N/A';
         document.getElementById('modalSubtype').textContent     = report.subtype || 'N/A';
         document.getElementById('modalSchool').textContent      = report.school || 'N/A';
         document.getElementById('modalGrade').textContent       = report.grade || 'N/A';
@@ -787,18 +790,21 @@ function openReportModal(reportId) {
         if (report.attachments && report.attachments.length > 0) {
             report.attachments.forEach(filePath => {
                 const ext       = filePath.split('.').pop().toLowerCase();
-                const publicUrl = /storage/${filePath.replace(/^\/+/, '')};
+                const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
                 let elem;
 
                 if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
                     elem = document.createElement('img');
                     elem.src = publicUrl;
                     elem.alt = 'Attachment';
-                    Object.assign(elem.style, { width:'80px', height:'80px', marginRight:'10px', border:'2px solid #c7da30', borderRadius:'8px', objectFit:'cover' });
+                    Object.assign(elem.style, {
+                        width: '80px', height: '80px', marginRight: '10px',
+                        border: '2px solid #c7da30', borderRadius: '8px', objectFit: 'cover'
+                    });
                 } else if (['mp4','mov','avi','wmv'].includes(ext)) {
                     elem = document.createElement('video');
                     elem.controls = true;
-                    Object.assign(elem.style, { width:'120px', height:'80px', marginRight:'10px' });
+                    Object.assign(elem.style, { width: '120px', height: '80px', marginRight: '10px' });
                     const src = document.createElement('source');
                     src.src  = publicUrl;
                     src.type = 'video/' + ext;
@@ -808,7 +814,10 @@ function openReportModal(reportId) {
                     elem.href        = publicUrl;
                     elem.target      = '_blank';
                     elem.textContent = filePath.split('/').pop();
-                    Object.assign(elem.style, { color:'#4c8eda', textDecoration:'underline', marginRight:'10px', display:'inline-block' });
+                    Object.assign(elem.style, {
+                        color: '#4c8eda', textDecoration: 'underline',
+                        marginRight: '10px', display: 'inline-block'
+                    });
                 }
                 attachmentSpan.appendChild(elem);
             });
@@ -864,15 +873,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ── Choices.js school searchable dropdown ────────────────────
-    new Choices('#schoolSelect', {
-        searchEnabled: true,
-        searchPlaceholderValue: 'Type to search school...',
-        itemSelectText: '',
-        shouldSort: false,
-        position: 'bottom',
-    });
-
     // ── Subtype filtered by report type ──────────────────────────
     const typeSelect    = document.querySelector('select[name="type_id"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
@@ -891,7 +891,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        const selectedOpt = subtypeSelect.querySelector(option[value="${currentSubtype}"]);
+        const selectedOpt = subtypeSelect.querySelector(`option[value="${currentSubtype}"]`);
         if (selectedOpt && selectedOpt.style.display === 'none') {
             subtypeSelect.value = '';
         }
