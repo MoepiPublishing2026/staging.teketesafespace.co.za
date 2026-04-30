@@ -22,12 +22,12 @@
 
         /* Sidebar */
         .sidebar {
-    width: 240px;
+    width: 235px;
     background-color: white;
     border-right: 1px solid #eaeaea;
     display: flex;
     flex-direction: column;
-    padding-top: 140px;
+    padding-top: 120px;
     position: sticky;
     top: 0;
     height: 100vh;
@@ -35,20 +35,8 @@
     z-index: 100;
     flex-shrink: 0;
 }
-
-        .sidebar-logo {
-            position: fixed;
-            top: 40px;
-            left: 40px;
-            width: 100px;
-            height: auto;
-        }
-
-        .sidebar-logo img {
-            width: 115px;
-            height: auto;
-            display: block;
-        }
+        .sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
+        .sidebar-logo img { width: 115px; height: auto; display: block; }
         .sidebar::before {
             content: '';
             position: absolute;
@@ -59,7 +47,7 @@
             background: #eaeaea;
             z-index: 1;
         }
-        .sidebar-list { list-style: none; padding-left: 22px; }
+        .sidebar-list { list-style: none; padding: 0 0 0 22px; }
         .sidebar-link {
             display: block;
             width: 92%;
@@ -67,36 +55,34 @@
             margin-bottom: 17px;
             font-size: 15px;
             font-weight: 900;
-            color: #222;
+            color: #545454;
             border-radius: 8px;
             transition: all 0.25s ease;
         }
         .sidebar-link:hover,
-.sidebar-link.active {
-    background: var(--theme-gradient);
-    color: white;
-}
-
-        button{
-            margin: 10px;
-            display: block;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            text-decoration: none;
-            color: #222;
-            font-weight: 400;
-            border-radius: 0.5rem;
-            transition: background 0.2s, color 0.2s;
-            border:#c7da30;
-            background: none;
-            font-size: 16px;
-            padding-right: 110px;
+        .sidebar-link.active {
+            background: var(--theme-gradient);
+            color: #000;
+        }
+       button:not(.menu-icon):not(.submit-btn):not(.delete-btn){
+            background-color: white !important;
+            color: #38b6ff !important;
+            border: 2px solid #c7da30 !important;
+            font-weight: 900 !important;
+            font-family: 'Montserrat', sans-serif !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            margin: 0 !important;
         }
 
-        button.active,
-        button:hover {
-            background: white;
-            color: white;
+        button:not(.menu-icon):hover,
+        button:not(.menu-icon):focus {
+            background-color: #c7da30 !important;
+            color: white !important;
+            border-color: #38b6ff !important;
+            outline: none;
         }
 
         /* Hide menu icon on desktop */
@@ -183,16 +169,7 @@
                 width: 240px;
             }
 
-            .sidebar-logo {
-                display: none;
-                position: sticky;
-                top: 0;
-                left: 0;
-                width: 100%;
-                padding: 12px 12px 0;
-                background: white;
-                justify-content: flex-end;
-            }
+            .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
             .sidebar.open .sidebar-logo { display: flex; }
             .sidebar-logo img { width: 95px; height: auto; }
             
@@ -208,7 +185,8 @@
             
             main {
                 padding: 1rem;
-                overflow-x: auto;
+                min-width: 0;
+                min-height: 0;
             }
             
             h1 {
@@ -254,17 +232,44 @@
             }
             
             button.submit-btn {
-                width: 100%;
-                padding: 0.75rem 2rem;
-                font-size: 14px;
-            }
+    background-color: #f5f5f5 !important;
+    color: #4aa3df !important;
+    border: 3px solid #c7da30 !important;
+
+    border-radius: 999px !important; /* FULL pill shape */
+    padding: 0.75rem 4rem !important;
+
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
             
             .profile-pic, .profile-placeholder {
                 width: 100px;
                 height: 100px;
             }
         }
+.delete-btn {
+    background-color: #ef4444 !important; /* red */
+    color: #fff !important;
+    border: none !important;
 
+    border-radius: 999px; /* pill shape */
+    padding: 0.5rem 1.5rem;
+    margin-top: 0.5rem;
+
+    font-weight: 900;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: #dc2626 !important; /* darker red */
+}
         /* Small mobile (max-width: 480px) */
         @media (max-width: 480px) {
             .menu-icon {
@@ -543,36 +548,30 @@ button.submit-btn {
                                 </div>
                                 
                                 <div style="display:flex; flex-direction:column;">
-                                    <p style="margin-bottom:0.75rem; font-weight:900;">Update Profile Picture</p>
-                                    <label class="file-label">
-                                        Choose File
+                            <p style="margin-bottom:0.75rem; font-weight:900;">Update Profile Picture</p>
+                            <label class="file-label">
+                                 Choose File
                                         <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
                                     </label>
                                     
                                     @if($user->profile_picture)
-                                        <button type="button" onclick="deleteProfilePicture()" 
-                                                style="background: #ef4444; color: white; border: none; margin-top: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; cursor: pointer; font-weight: 600;">
-                                            Delete Picture
-                                        </button>
+                                        <button type="button" onclick="deleteProfilePicture()" class="delete-btn">
+    Delete Picture
+</button>
                                     @endif
                                     
                                     @error('profile_picture')
                                         <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
                                     @enderror
-                                </div>
-                            </div>
-                        
-                            <div style="text-align:right; flex: 1; min-width: 150px;">
-                                <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>
-                                <p style="color:#4b5563; margin:0;">Administrator</p>
-                            </div>
-                        </div>    
-           
-                    <!--<div style="text-align:right; flex: 1; min-width: 150px;">-->
-                    <!--    <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>-->
-                    <!--    <p style="color:#4b5563; margin:0;">Administrator</p>-->
-                    <!--</div>-->
+                        </div>
+                    </div>
+
+                    <div style="text-align:right; flex: 1; min-width: 150px;">
+                        <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>
+                        <p style="color:#4b5563; margin:0;">Administrator</p>
+                    </div>
                 </div>
+
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
