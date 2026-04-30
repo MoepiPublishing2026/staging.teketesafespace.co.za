@@ -512,21 +512,20 @@ tbody tr:last-child td { border-bottom: none; }
 
                <div>
                     <label class="filter-label">School</label>
-                    <input
-                        type="text"
-                        name="school_name"
-                        id="schoolSearch"
-                        class="filter-input"
-                        list="schoolDatalist"
-                        autocomplete="off"
-                        placeholder="Type to search school…"
-                        value="{{ $schoolName }}"
-                    />
-                    <datalist id="schoolDatalist">
-                        @foreach($schoolOptions as $school)
-                            <option value="{{ $school->school_name }}">
-                        @endforeach
-                    </datalist>
+                    <div style="position:relative;">
+                        <input
+                            type="text"
+                            name="school_name"
+                            id="schoolSearch"
+                            class="filter-input"
+                            autocomplete="off"
+                            placeholder="Type to search school…"
+                            value="{{ $schoolName }}"
+                        />
+                        <input type="hidden" name="school_id" id="schoolId" value="{{ request('school_id') }}" />
+                        <div id="schoolDropdown"
+                             style="display:none; position:absolute; left:0; right:0; top:100%; background:#fff; border:1px solid #d1d5db; max-height:200px; overflow-y:auto; z-index:9999; font-size:13px;"></div>
+                    </div>
                 </div>
 
                 <div>
@@ -620,8 +619,8 @@ tbody tr:last-child td { border-bottom: none; }
                $activeFilters = array_filter([
                     'Search'    => request('search'),
                     'School'    => request('school_id')
-                                    ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? request('school_id'))
-                                    : null,
+                                    ? ($schoolOptions->firstWhere('school_id', request('school_id'))?->school_name ?? request('school_id'))
+                                    : (request('school_name') ?: null),
                     'Name'      => request('full_name'),
                     'Grade'     => request('grade'),
                     'From'      => request('date_from'),
@@ -876,6 +875,183 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Subtype filtered by report type ──────────────────────────
     const typeSelect    = document.querySelector('select[name="type_id"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
+
+    (function initSchoolAutocomplete() {
+        const API_ENDPOINT = '/api/schools';
+        const LS_KEY = 'schools_cache_v3';
+        const CACHE_TTL = 24 * 60 * 60 * 1000;
+
+        const input = document.getElementById('schoolSearch');
+        const dropdown = document.getElementById('schoolDropdown');
+        const hiddenId = document.getElementById('schoolId');
+        if (!input || !dropdown || !hiddenId) return;
+
+        let schools = [];
+        let items = [];
+        let focused = -1;
+        let timer = null;
+
+        function loadCache() {
+            try {
+                const raw = localStorage.getItem(LS_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+                if (!parsed.data || !parsed.timestamp) return false;
+                if (Date.now() - parsed.timestamp > CACHE_TTL) return false;
+                if (parsed.data.length > 0 && parsed.data[0].name) {
+                    schools = parsed.data;
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function saveCache(data) {
+            try {
+                localStorage.setItem(LS_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+            } catch (e) {}
+        }
+
+        async function loadFromDatabase() {
+            try {
+                const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const json = await res.json();
+                if (Array.isArray(json)) {
+                    schools = json;
+                    saveCache(schools);
+                }
+            } catch (e) {}
+        }
+
+        (async function init() {
+            if (!loadCache()) {
+                await loadFromDatabase();
+            }
+            fetch(API_ENDPOINT).then(r => r.json()).then(d => {
+                if (Array.isArray(d)) {
+                    schools = d;
+                    saveCache(schools);
+                }
+            }).catch(() => {});
+        })();
+
+        function searchPrefix(q, limit = 20) {
+            if (!q) return [];
+            const low = q.toLowerCase();
+            const out = [];
+            for (let i = 0; i < schools.length && out.length < limit; i++) {
+                const s = schools[i];
+                if (!s || !s.name) continue;
+                if (s.name.toLowerCase().startsWith(low)) {
+                    out.push(s);
+                }
+            }
+            return out;
+        }
+
+        function clearSuggestions() {
+            dropdown.innerHTML = '';
+            dropdown.style.display = 'none';
+            items = [];
+            focused = -1;
+        }
+
+        function selectItem(index) {
+            const it = items[index];
+            if (!it) return;
+            input.value = it.name;
+            hiddenId.value = it.id ?? '';
+            clearSuggestions();
+        }
+
+        function render(arr) {
+            dropdown.innerHTML = '';
+            items = arr || [];
+            focused = -1;
+            if (!items.length) {
+                dropdown.style.display = 'none';
+                return;
+            }
+            for (let i = 0; i < items.length; i++) {
+                const it = items[i];
+                const el = document.createElement('div');
+                el.textContent = it.name + (it.province ? (' (' + it.province + ')') : '');
+                el.dataset.index = i;
+                el.style.padding = '8px';
+                el.style.cursor = 'pointer';
+                el.addEventListener('pointerdown', function(e) {
+                    e.preventDefault();
+                    selectItem(parseInt(this.dataset.index, 10));
+                });
+                el.addEventListener('mouseenter', function() {
+                    focused = parseInt(this.dataset.index, 10);
+                    updateFocus();
+                });
+                dropdown.appendChild(el);
+            }
+            dropdown.style.display = 'block';
+        }
+
+        function updateFocus() {
+            const children = dropdown.children;
+            for (let i = 0; i < children.length; i++) {
+                children[i].style.background = '';
+                children[i].style.color = '';
+                if (i === focused) {
+                    children[i].style.background = '#c6d933';
+                    children[i].style.color = '#000';
+                }
+            }
+            if (focused >= 0 && children[focused]) {
+                children[focused].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        input.addEventListener('input', function() {
+            hiddenId.value = '';
+            clearTimeout(timer);
+            const q = this.value.trim();
+            if (q.length < 1) {
+                clearSuggestions();
+                return;
+            }
+            timer = setTimeout(() => {
+                render(searchPrefix(q, 20));
+            }, 120);
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (dropdown.style.display === 'none') return;
+            const count = dropdown.children.length;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                focused = Math.min(count - 1, Math.max(0, focused + 1));
+                updateFocus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                focused = Math.max(0, focused - 1);
+                updateFocus();
+            } else if (e.key === 'Enter') {
+                if (focused >= 0) {
+                    e.preventDefault();
+                    selectItem(focused);
+                } else {
+                    clearSuggestions();
+                }
+            } else if (e.key === 'Escape') {
+                clearSuggestions();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                clearSuggestions();
+            }
+        });
+    })();
 
 function filterSubtypes() {
                 const selectedType = typeSelect.value;

@@ -94,7 +94,9 @@ class ProvincialAdminReportsController extends Controller
         }
 
         // ── School filter ────────────────────────────────────────────
-        if ($s = trim($request->input('school_name', ''))) {
+        if ($request->filled('school_id')) {
+            $query->where('school_id', $request->input('school_id'));
+        } elseif ($s = trim($request->input('school_name', ''))) {
             $query->whereHas('school', fn ($sq) =>
                 $sq->where('school_name', 'like', "%{$s}%")
             );

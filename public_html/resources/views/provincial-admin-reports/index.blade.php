@@ -394,48 +394,20 @@ tbody tr:last-child td { border-bottom: none; }
                         <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Not Anonymous</option>
                     </select>
                 </div>
-               <div style="position:relative;" id="schoolDropdownWrap">
+               <div>
                     <label class="filter-label">School</label>
-                    {{-- Hidden real input submitted with the form --}}
-                    <input type="hidden" name="school_id" id="schoolIdInput" value="{{ request('school_id') }}">
-                    <input type="hidden" name="school_name" id="schoolNameInput" value="{{ request('school_name') }}">
-                    {{-- Visible search box --}}
-                    <input
-                        type="text"
-                        id="schoolSearch"
-                        class="filter-input"
-                        autocomplete="off"
-                        placeholder="Type to search school…"
-                        value="{{ request('school_id') ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? '') : request('school_name', '') }}"
-                        onInput="filterSchools(this.value)"
-                        onFocus="openSchoolList()"
-                    />
-                    {{-- Dropdown list --}}
-                    <div id="schoolListBox" style="
-                        display:none;
-                        position:absolute;
-                        left:0; right:0;
-                        background:#fff;
-                        border:2px solid #c7da30;
-                        border-radius:8px;
-                        max-height:220px;
-                        overflow-y:auto;
-                        z-index:999;
-                        box-shadow:0 4px 16px rgba(0,0,0,0.13);
-                        font-family:'Montserrat',sans-serif;
-                        font-size:13px;
-                    ">
-                        <div class="school-option" data-id="" data-name="" style="padding:8px 12px; cursor:pointer; color:#6b7280; font-style:italic;"
-                             onMouseDown="selectSchool('','')">All Schools</div>
-                        @foreach($schoolOptions as $school)
-                            <div class="school-option"
-                                 data-id="{{ $school->id }}"
-                                 data-name="{{ strtolower($school->school_name) }}"
-                                 style="padding:8px 12px; cursor:pointer;"
-                                 onMouseDown="selectSchool('{{ $school->id }}','{{ addslashes($school->school_name) }}')">
-                                {{ $school->school_name }}
-                            </div>
-                        @endforeach
+                    <div style="position:relative;">
+                        <input
+                            type="text"
+                            name="school_name"
+                            id="schoolSearch"
+                            class="filter-input"
+                            autocomplete="off"
+                            placeholder="Type to search school…"
+                            value="{{ request('school_name', '') }}"
+                        />
+                        <div id="schoolDropdown"
+                             style="display:none; position:absolute; left:0; right:0; top:100%; background:#fff; border:1px solid #d1d5db; max-height:200px; overflow-y:auto; z-index:9999; font-size:13px;"></div>
                     </div>
                 </div>
 
@@ -764,50 +736,179 @@ function clearFilters() {
     window.location.href = '{{ url('/provincial-admin/reports') }}';
 }
 
-// ── School searchable dropdown ───────────────────────────────────
-function openSchoolList() {
-    const box  = document.getElementById('schoolListBox');
-    const wrap = document.getElementById('schoolDropdownWrap');
-    box.style.display = 'block';
-    const rect       = wrap.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    if (spaceBelow < 240) {
-        box.style.bottom = (wrap.offsetHeight + 2) + 'px';
-        box.style.top    = 'auto';
-    } else {
-        box.style.top    = (wrap.offsetHeight + 2) + 'px';
-        box.style.bottom = 'auto';
+function initSchoolAutocomplete() {
+    const API_ENDPOINT = '/api/schools';
+    const LS_KEY = 'schools_cache_v3';
+    const CACHE_TTL = 24 * 60 * 60 * 1000;
+
+    const input = document.getElementById('schoolSearch');
+    const dropdown = document.getElementById('schoolDropdown');
+    if (!input || !dropdown) return;
+
+    let schools = [];
+    let items = [];
+    let focused = -1;
+    let timer = null;
+
+    function loadCache() {
+        try {
+            const raw = localStorage.getItem(LS_KEY);
+            if (!raw) return false;
+            const parsed = JSON.parse(raw);
+            if (!parsed.data || !parsed.timestamp) return false;
+            if (Date.now() - parsed.timestamp > CACHE_TTL) return false;
+            if (parsed.data.length > 0 && parsed.data[0].name) {
+                schools = parsed.data;
+                return true;
+            }
+            return false;
+        } catch (e) {
+            return false;
+        }
     }
-}
 
-function filterSchools(query) {
-    const q = query.toLowerCase().trim();
-    // Clear ID; use free text as school_name fallback
-    document.getElementById('schoolIdInput').value   = '';
-    document.getElementById('schoolNameInput').value = query;
+    function saveCache(data) {
+        try {
+            localStorage.setItem(LS_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+        } catch (e) {}
+    }
 
-    document.querySelectorAll('#schoolListBox .school-option').forEach(opt => {
-        const name = opt.dataset.name || '';
-        opt.style.display = (!q || name.includes(q) || opt.dataset.id === '') ? '' : 'none';
+    async function loadFromDatabase() {
+        try {
+            const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const json = await res.json();
+            if (Array.isArray(json)) {
+                schools = json;
+                saveCache(schools);
+            }
+        } catch (e) {}
+    }
+
+    (async function init() {
+        if (!loadCache()) {
+            await loadFromDatabase();
+        }
+        fetch(API_ENDPOINT).then(r => r.json()).then(d => {
+            if (Array.isArray(d)) {
+                schools = d;
+                saveCache(schools);
+            }
+        }).catch(() => {});
+    })();
+
+    function searchPrefix(q, limit = 20) {
+        if (!q) return [];
+        const low = q.toLowerCase();
+        const out = [];
+        for (let i = 0; i < schools.length && out.length < limit; i++) {
+            const s = schools[i];
+            if (!s || !s.name) continue;
+            if (s.name.toLowerCase().startsWith(low)) {
+                out.push(s);
+            }
+        }
+        return out;
+    }
+
+    function clearSuggestions() {
+        dropdown.innerHTML = '';
+        dropdown.style.display = 'none';
+        items = [];
+        focused = -1;
+    }
+
+    function selectItem(index) {
+        const it = items[index];
+        if (!it) return;
+        input.value = it.name;
+        clearSuggestions();
+    }
+
+    function render(arr) {
+        dropdown.innerHTML = '';
+        items = arr || [];
+        focused = -1;
+        if (!items.length) {
+            dropdown.style.display = 'none';
+            return;
+        }
+        for (let i = 0; i < items.length; i++) {
+            const it = items[i];
+            const el = document.createElement('div');
+            el.textContent = it.name + (it.province ? (' (' + it.province + ')') : '');
+            el.dataset.index = i;
+            el.style.padding = '8px';
+            el.style.cursor = 'pointer';
+            el.addEventListener('pointerdown', function(e) {
+                e.preventDefault();
+                selectItem(parseInt(this.dataset.index, 10));
+            });
+            el.addEventListener('mouseenter', function() {
+                focused = parseInt(this.dataset.index, 10);
+                updateFocus();
+            });
+            dropdown.appendChild(el);
+        }
+        dropdown.style.display = 'block';
+    }
+
+    function updateFocus() {
+        const children = dropdown.children;
+        for (let i = 0; i < children.length; i++) {
+            children[i].style.background = '';
+            children[i].style.color = '';
+            if (i === focused) {
+                children[i].style.background = '#c6d933';
+                children[i].style.color = '#000';
+            }
+        }
+        if (focused >= 0 && children[focused]) {
+            children[focused].scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    input.addEventListener('input', function() {
+        clearTimeout(timer);
+        const q = this.value.trim();
+        if (q.length < 1) {
+            clearSuggestions();
+            return;
+        }
+        timer = setTimeout(() => {
+            render(searchPrefix(q, 20));
+        }, 120);
     });
 
-    openSchoolList();
-}
+    input.addEventListener('keydown', function(e) {
+        if (dropdown.style.display === 'none') return;
+        const count = dropdown.children.length;
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            focused = Math.min(count - 1, Math.max(0, focused + 1));
+            updateFocus();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            focused = Math.max(0, focused - 1);
+            updateFocus();
+        } else if (e.key === 'Enter') {
+            if (focused >= 0) {
+                e.preventDefault();
+                selectItem(focused);
+            } else {
+                clearSuggestions();
+            }
+        } else if (e.key === 'Escape') {
+            clearSuggestions();
+        }
+    });
 
-function selectSchool(id, name) {
-    document.getElementById('schoolIdInput').value   = id;
-    document.getElementById('schoolNameInput').value = id ? '' : name;
-    document.getElementById('schoolSearch').value    = name;
-    document.getElementById('schoolListBox').style.display = 'none';
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            clearSuggestions();
+        }
+    });
 }
-
-// Close school dropdown when clicking outside
-document.addEventListener('click', function (e) {
-    const wrap = document.getElementById('schoolDropdownWrap');
-    if (wrap && !wrap.contains(e.target)) {
-        document.getElementById('schoolListBox').style.display = 'none';
-    }
-});
 
 // ── Report detail modal ──────────────────────────────────────────
 function openReportModal(reportId) {
@@ -880,6 +981,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportM
 
 // ── DOMContentLoaded: hover highlights + subtype filter ─────────
 document.addEventListener('DOMContentLoaded', function () {
+    initSchoolAutocomplete();
     var toggle = document.getElementById('sidebarToggle');
     var sidebar = document.getElementById('sidebarPanel');
     var overlay = document.getElementById('sidebarOverlay');

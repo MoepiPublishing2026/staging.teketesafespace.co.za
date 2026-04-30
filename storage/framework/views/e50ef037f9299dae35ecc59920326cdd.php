@@ -147,83 +147,50 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
   width: 100%;
 }
 
-/* All chart cards same size */
-.chart-card {
-  width: 100%;
-  height: 400px;              /* Ensures equal height */
-  background:white;
-  padding: 20px;
-  border-radius: 12px;
-
+/* Chart cards: Status Breakdown pattern — flex column, title + host + canvas fills host */
+.charts-grid > .chart-card {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
 }
 
-/* Position each chart based on your order */
 .chart-top-abuse     { grid-column: 1 / 2; grid-row: 1; }
 .chart-monthly       { grid-column: 2 / 3; grid-row: 1; }
-
-/* Monthly Trends only: flex so title + canvas share the card (avoids clipped x-axis month labels) */
-.chart-card.chart-monthly {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-}
-.chart-card.chart-monthly canvas {
-    flex: 1 1 auto;
-    min-height: 0;
-    width: 100% !important;
-    height: auto !important;
-}
-
 .chart-anonymous     { grid-column: 1 / 2; grid-row: 2; }
-
-.chart-anonymous {
-    height: 400px; /* Increase this value to make the whole card larger */
-    display: flex;
-    flex-direction: column;
-}
-
-#anonymousChart {
-    flex-grow: 1; /* Forces the canvas to take up all remaining space below the H2 */
-    width: 100% !important;
-    height: 100% !important;
-}
-
 .chart-abuse-pie     { grid-column: 2 / 3; grid-row: 2; }
 
-/* Pie + legend need flexible height so legend rows are not clipped */
 .chart-card.chart-abuse-pie {
-    height: auto;
     min-height: 370px;
-    display: flex;
-    flex-direction: column;
 }
-.chart-abuse-pie .chart-canvas-host {
+.chart-abuse-pie .chart-canvas-host,
+.chart-top-abuse .chart-canvas-host,
+.chart-monthly .chart-canvas-host,
+.chart-anonymous .chart-canvas-host {
     position: relative;
     width: 100%;
     flex: 1 1 auto;
     min-height: 280px;
 }
 
-#abuseTypeChart {
+.charts-grid .chart-canvas-host canvas,
+.charts-grid .chart-status-host canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
+    min-height: 0 !important;
 }
 
-/* Status breakdown: flexible height + host (matches national admin) */
-.chart-card.chart-status {
-  height: auto;
-  min-height: 320px;
-  display: flex;
-  flex-direction: column;
-}
 .chart-status {
   grid-column: 1 / 3;
   grid-row: 4;
   width: 70%;
   justify-self: center;
-  display: flex;
-  flex-direction: column;
   min-height: 320px;
 }
 .chart-status .chart-status-host {
@@ -231,11 +198,6 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
   width: 100%;
   flex: 1 1 auto;
   min-height: 280px;
-}
-#statusChart {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
 }
 
 .profile-avatar img {
@@ -692,6 +654,8 @@ canvas {
     .chart-anonymous { grid-column: 1; grid-row: 3; }
     .chart-abuse-pie { grid-column: 1; grid-row: 4; }
     .chart-status { grid-column: 1; grid-row: 5; width: 100%; }
+    .charts-grid .chart-canvas-host,
+    .charts-grid .chart-status-host { min-height: 220px; }
     .chart-status .chart-status-host { min-height: 240px; }
 }
 
@@ -947,28 +911,38 @@ canvas {
             <!--<?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>-->
 
           <section class="panel" aria-label="Analytics">
+    <?php
+        $topAbuseBarCount = max(count(array_keys($topAbuseTypes ?? [])), 1);
+        $topAbuseHostH = (int) max(280, min(520, 120 + $topAbuseBarCount * 36));
+        $monthlyPointCount = max(count($months ?? []), 1);
+        $monthlyTrendHostH = (int) max(260, min(440, 170 + $monthlyPointCount * 12));
+        $anonymousHostH = (int) max(280, min(400, 300));
+        $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
+        $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
+    ?>
     <div class="charts-grid">
 
         <div class="chart-card chart-top-abuse">
             <h2>Top Report Types</h2>
-            <canvas id="topAbuseTypesChart"></canvas>
+            <div class="chart-canvas-host" style="height: <?php echo e($topAbuseHostH); ?>px;">
+                <canvas id="topAbuseTypesChart"></canvas>
+            </div>
         </div>
 
         <div class="chart-card chart-monthly">
             <h2>Monthly Trends</h2>
-            <canvas id="monthlyTrendChart"></canvas>
+            <div class="chart-canvas-host" style="height: <?php echo e($monthlyTrendHostH); ?>px;">
+                <canvas id="monthlyTrendChart"></canvas>
+            </div>
         </div>
 
         <div class="chart-card chart-anonymous">
             <h2>Anonymous vs Identified</h2>
-            <canvas id="anonymousChart"></canvas>
+            <div class="chart-canvas-host" style="height: <?php echo e($anonymousHostH); ?>px;">
+                <canvas id="anonymousChart"></canvas>
+            </div>
         </div>
 
-        <?php
-            $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
-            /* Match provincial/national: pie + bottom legend without oversized empty canvas */
-            $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
-        ?>
         <div class="chart-card chart-abuse-pie">
             <h2>Report Types Distribution</h2>
             <div class="chart-canvas-host" style="height: <?php echo e($abusePieHostHeight); ?>px;">
