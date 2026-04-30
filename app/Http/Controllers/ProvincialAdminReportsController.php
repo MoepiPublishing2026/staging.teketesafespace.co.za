@@ -143,19 +143,7 @@ class ProvincialAdminReportsController extends Controller
         // ── Dropdown options ─────────────────────────────────────────
         $typeOptions = AbuseType::orderBy('type_name')->get();
 
-        $subtypeOptions = Subtype::orderBy('sub_type_name')
-            ->get()
-            ->filter(function ($sub) use (&$otherSeen) {
-                if (str_contains(strtolower($sub->sub_type_name), 'other')) {
-                    if ($otherSeen) return false;
-                    $otherSeen = true;
-                }
-                return true;
-            })
-            ->sortBy(function ($sub) {
-                return str_contains(strtolower($sub->sub_type_name), 'other') ? 1 : 0;
-            })
-            ->values();
+        $subtypeOptions = Subtype::orderBy('abuse_type_id')->orderBy('sub_type_name')->get();
 
         $gradeOptions = Report::where('province_id', $province_id)
             ->whereNotNull('grade')

@@ -578,7 +578,7 @@ tbody tr:last-child td { border-bottom: none; }
                         <option value="">All Subtypes</option>
                         @foreach($subtypeOptions as $sub)
                             <option value="{{ $sub->id }}"
-                                    data-type="{{ $sub->report_type_id }}"
+                                    data-type="{{ $sub->abuse_type_id }}"
                                     {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
                                 {{ $sub->sub_type_name }}
                             </option>
@@ -877,25 +877,57 @@ document.addEventListener('DOMContentLoaded', function () {
     const typeSelect    = document.querySelector('select[name="type_id"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
 
-    function filterSubtypes() {
-        const selectedType   = typeSelect.value;
-        const currentSubtype = subtypeSelect.value;
+function filterSubtypes() {
+                const selectedType = typeSelect.value;
 
-        Array.from(subtypeSelect.options).forEach(function(opt) {
-            if (opt.value === '') { opt.style.display = ''; return; }
-            if (!selectedType || opt.dataset.type === selectedType) {
-                opt.style.display = '';
-            } else {
-                opt.style.display = 'none';
-                if (opt.selected) opt.selected = false;
-            }
-        });
+                const options = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
+                const placeholder = subtypeSelect.options[0]; // "All Subtypes"
 
-        const selectedOpt = subtypeSelect.querySelector(`option[value="${currentSubtype}"]`);
-        if (selectedOpt && selectedOpt.style.display === 'none') {
-            subtypeSelect.value = '';
-        }
-    }
+                // Separate "Other" and non-Other options
+                const seenOtherTypes = new Set();
+                const regular = [];
+                const others  = [];
+
+                options.forEach(function(opt) {
+                    const isOther = opt.text.trim().toLowerCase() === 'other';
+                    const optType = opt.getAttribute('data-type');
+
+                    if (!selectedType) {
+                        // No type selected: show all non-Others, show only one Other total
+                        if (isOther) {
+                            if (!seenOtherTypes.has('global')) {
+                                seenOtherTypes.add('global');
+                                others.push(opt);
+                            }
+                        } else {
+                            regular.push(opt);
+                        }
+                    } else {
+                        // Type selected: show only matching subtypes
+                        if (String(optType) === String(selectedType)) {
+                            if (isOther) {
+                                others.push(opt);
+                            } else {
+                                regular.push(opt);
+                            }
+                        }
+                    }
+                });
+
+                // Rebuild the select: placeholder → regular options → Others at bottom
+                subtypeSelect.innerHTML = '';
+                subtypeSelect.appendChild(placeholder);
+
+                regular.forEach(opt => {
+                    opt.style.display = '';
+                    subtypeSelect.appendChild(opt);
+                });
+
+                others.forEach(opt => {
+                    opt.style.display = '';
+                    subtypeSelect.appendChild(opt);
+                });
+}
 
     typeSelect.addEventListener('change', filterSubtypes);
     filterSubtypes();
