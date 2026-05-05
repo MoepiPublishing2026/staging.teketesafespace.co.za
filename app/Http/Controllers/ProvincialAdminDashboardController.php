@@ -48,7 +48,7 @@ class ProvincialAdminDashboardController extends Controller
         $abuseTypes = AbuseType::orderBy('type_name')->get();
 
         // Base reports query with eager loading (filtered by province)
-        $reportsQuery = Report::with(['province', 'district', 'school', 'abuseType'])
+        $reportsQuery = Report::with(['province', 'district', 'school.district', 'abuseType'])
             ->where('province_id', $province_id);
 
         // Apply all filters regardless of tab
@@ -210,7 +210,10 @@ class ProvincialAdminDashboardController extends Controller
             $row = [];
             foreach ($abuseTypes as $atype) {
                 $count = $reports
-                    ->filter(fn($r) => $r->district_id == $districtId && $r->abuseType && $r->abuseType->type_name === $atype->type_name)
+                    ->filter(function ($r) use ($districtId, $atype) {
+                        $rid = $r->district_id ?? optional($r->school)->district_id;
+                        return $rid == $districtId && $r->abuseType && $r->abuseType->type_name === $atype->type_name;
+                    })
                     ->count();
                 $row[] = $count;
             }
@@ -263,6 +266,19 @@ class ProvincialAdminDashboardController extends Controller
         }
         $mapUserProvinceName = $province->province_name ?? null;
 
+        $mapDistrictCounts = $reports
+            ->map(function ($r) {
+                $districtName = optional($r->district)->district_name
+                    ?? optional(optional($r->school)->district)->district_name;
+                return $districtName ? ['district' => $districtName] : null;
+            })
+            ->filter()
+            ->groupBy('district')
+            ->map->count()
+            ->toArray();
+
+        $mapProvinceSlug = preg_replace('/[^a-z]/', '', strtolower((string) ($province->province_name ?? '')));
+
         return view('provincial-admin-dashboard.index', [
             'adminType' => 'provincial',
             'province' => $province,
@@ -310,6 +326,8 @@ class ProvincialAdminDashboardController extends Controller
             // Geographic map choropleth
             'mapProvinceCounts' => $mapProvinceCounts,
             'mapUserProvinceName' => $mapUserProvinceName,
+            'mapDistrictCounts' => $mapDistrictCounts,
+            'mapProvinceSlug' => $mapProvinceSlug,
         ]);
     }
 }
