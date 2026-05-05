@@ -458,14 +458,14 @@ h1 {
 
 /* Heatmap */
 .heatmap-panel {
-  background: linear-gradient(135deg, #fafbfc 0%, #fff 100%);
-  border-radius: 1rem;
-  padding: 1.5rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.25rem;
   overflow-x: auto;
-  box-shadow: 0 4px 20px rgba(56, 182, 255, 0.08), 0 1px 3px rgba(0,0,0,0.06);
   width: 100%;
   max-width: 100%;
-  border: 1px solid rgba(56, 182, 255, 0.15);
+  border: 2px solid #c7da30;
+  box-shadow: none;
 }
 .heatmap-panel h2 { margin-bottom: 0.5rem; }
 .heatmap-toolbar {
@@ -477,103 +477,78 @@ h1 {
 }
 .heatmap-view-toggle {
   display: flex;
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 3px;
-  gap: 2px;
+  gap: 0.5rem;
 }
 .heatmap-view-toggle button {
-  padding: 0.4rem 0.9rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
+  padding: 0.35rem 0.75rem !important;
+  border: 2px solid #c7da30 !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
   cursor: pointer;
-  background: transparent;
-  color: #6b7280;
-  transition: all 0.2s ease;
+  background: #fff !important;
+  color: #545454 !important;
+  box-shadow: none !important;
 }
-.heatmap-view-toggle button:hover { color: #1f2937; }
+.heatmap-view-toggle button:hover { background: #c7da30 !important; color: #fff !important; }
 .heatmap-view-toggle button.active {
-  background: white;
-  color: #0c4a6e;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  background: #c7da30 !important;
+  color: #fff !important;
 }
 .heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .heatmap-table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
-.heatmap-table th, .heatmap-table td { border: 1px solid #e5e7eb; padding: 0.5rem 0.65rem; text-align: center; }
+.heatmap-table th, .heatmap-table td { border: 1px solid #111827; padding: 0.5rem 0.65rem; text-align: center; }
 .heatmap-corner {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #d1d5db;
   font-weight: 700;
   text-align: left !important;
   min-width: 120px;
-  position: sticky;
-  left: 0;
-  z-index: 1;
+  position: static !important;
+  left: auto !important;
+  z-index: auto !important;
 }
 .heatmap-col {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #d1d5db;
   font-weight: 700;
   white-space: nowrap;
   min-width: 90px;
 }
 .heatmap-row {
-  background: #fafbfc;
+  background: #d1d5db;
   font-weight: 600;
   text-align: left !important;
   padding-left: 0.75rem;
-  position: sticky;
-  left: 0;
-  z-index: 1;
+  position: static !important;
+  left: auto !important;
+  z-index: auto !important;
 }
 .heatmap-cell {
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: none;
   min-width: 50px;
   position: relative;
-  animation: heatmapCellFadeIn 0.4s ease backwards;
+  animation: none;
 }
 .heatmap-cell.heatmap-cell-dark { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
-.heatmap-cell:hover { transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 2; }
+.heatmap-cell:hover { transform: none; box-shadow: none; z-index: 2; }
 .heatmap-cell::after { content: ''; position: absolute; inset: 0; border-radius: 2px; pointer-events: none; }
-.heatmap-cell.heatmap-hotspot::before {
-  content: '◆';
-  position: absolute;
-  top: 2px; right: 4px;
-  font-size: 8px;
-  color: rgba(255,255,255,0.9);
-  opacity: 0.9;
-}
-.heatmap-cell.heatmap-cell-dark.heatmap-hotspot::before { color: rgba(255,255,255,0.95); }
+.heatmap-cell.heatmap-hotspot::before { display: none; }
 @media (hover: none) {
   .heatmap-cell:hover { transform: none; }
   .heatmap-cell:active { box-shadow: 0 0 0 3px #38b6ff; }
 }
-@keyframes heatmapCellFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-.heatmap-total-cell {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%) !important;
-  color: #fff !important;
-  font-weight: 700;
-}
-.heatmap-total-row th, .heatmap-total-col {
-  background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%) !important;
-  font-weight: 700;
-  color: #0c4a6e;
-}
+.heatmap-total-cell, .heatmap-total-col, .heatmap-total-row { display: none; }
 .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
 .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
 .heatmap-scale-bar {
   height: 14px; width: 180px; border-radius: 7px;
-  background: linear-gradient(to right, #e0f2fe 0%, #fef9c3 25%, #eab308 50%, #f97316 75%, #ef4444 100%);
-  border: 1px solid #e5e7eb;
+  background: linear-gradient(to right, #22c55e 0%, #38b6ff 50%, #ef4444 100%);
+  border: 1px solid #111827;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
 .heatmap-scale-bar.heatmap-scale-pct {
-  background: linear-gradient(to right, #f0fdf4 0%, #86efac 25%, #22c55e 50%, #15803d 75%, #14532d 100%);
+  background: linear-gradient(to right, #22c55e 0%, #38b6ff 50%, #ef4444 100%);
 }
 .heatmap-legend { margin-top: 0.5rem; font-size: 12px; color: #6b7280; }
 
@@ -582,6 +557,7 @@ h1 {
 .sa-map-container {
   height: 450px; width: 100%; max-width: 100%; min-height: 350px;
   border-radius: 0.5rem; overflow: hidden; border: 1px solid #e5e7eb; position: relative;
+  background: #f1f5f9;
 }
 .map-legend {
   position: absolute; bottom: 20px; right: 20px; z-index: 1000;
@@ -589,15 +565,20 @@ h1 {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 12px; font-family: 'Montserrat', sans-serif;
 }
 .map-legend-title { font-weight: 700; margin-bottom: 6px; color: #1f2937; }
-.map-legend-bar {
-  height: 10px; width: 120px; border-radius: 5px;
-  background: linear-gradient(to right, #e0f2fe 0%, #fef9c3 25%, #eab308 50%, #f97316 75%, #ef4444 100%);
-  margin: 4px 0; border: 1px solid #e5e7eb;
-}
-.map-legend-labels { display: flex; justify-content: space-between; font-size: 11px; color: #6b7280; }
-.leaflet-tooltip.map-tooltip {
-  background: rgba(30, 64, 175, 0.95); color: white; border: none;
-  padding: 6px 10px; font-weight: 600; font-size: 13px; border-radius: 6px;
+.map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111827; margin-top: 4px; }
+.map-legend-swatch { width: 14px; height: 10px; border: 1px solid #111827; }
+.map-legend-swatch.low { background: #22c55e; }
+.map-legend-swatch.medium { background: #38b6ff; }
+.map-legend-swatch.high { background: #ef4444; }
+.leaflet-tooltip.map-label {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: #111827;
+  font-weight: 900;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 /* Filters panel */
@@ -1047,10 +1028,9 @@ form.filters button {
                 <h2>Reports by Province &amp; Report Type</h2>
                 <div class="heatmap-toolbar">
                     <div class="heatmap-view-toggle" role="group" aria-label="View mode">
-                        <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">Counts</button>
-                        <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">Row %</button>
+                        <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">COUNTS</button>
+                        <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">ROW%</button>
                     </div>
-                    <span class="heatmap-legend" style="margin:0;">Click a cell to view filtered reports</span>
                 </div>
                 <div class="heatmap-wrap">
                     <table class="heatmap-table" role="table">
@@ -1071,10 +1051,10 @@ form.filters button {
                                     @foreach($row as $colIdx => $count)
                                         @php
                                             $intensity = ($heatmapMax ?? 1) > 0 ? min(1, $count / ($heatmapMax ?? 1)) : 0;
-                                            $colors = ['#e0f2fe','#fef9c3','#eab308','#f97316','#ef4444'];
-                                            $colorIdx = $intensity >= 0.8 ? 4 : ($intensity >= 0.6 ? 3 : ($intensity >= 0.4 ? 2 : ($intensity >= 0.2 ? 1 : 0)));
+                                            $colors = ['#22c55e', '#38b6ff', '#ef4444'];
+                                            $colorIdx = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
                                             $bgColor = $colors[$colorIdx];
-                                            $isDark = $intensity >= 0.6;
+                                            $isDark = $colorIdx === 2;
                                             $pct = $heatmapPercentages[$province][$colIdx] ?? 0;
                                             $atype = $heatmapAbuseTypes[$colIdx] ?? '';
                                             $isHotspot = in_array($colIdx, $heatmapHotspots[$province] ?? []);
@@ -1119,9 +1099,9 @@ form.filters button {
                 </div>
                 <div class="heatmap-scale-wrap">
                     <div class="heatmap-scale heatmap-scale-count" id="heatmapScaleCount">
-                        <span>Low</span>
+                        <span>LOW</span>
                         <div class="heatmap-scale-bar" aria-hidden="true"></div>
-                        <span>High</span>
+                        <span>HIGH</span>
                     </div>
                     <div class="heatmap-scale heatmap-scale-pct" id="heatmapScalePct" style="display:none;">
                         <span>0%</span>
@@ -1129,22 +1109,19 @@ form.filters button {
                         <span>100%</span>
                     </div>
                 </div>
-                <p class="heatmap-legend">◆ = top 3 in province. Provinces sorted by total.</p>
             </section>
 
             <section class="panel map-panel" aria-label="Reports by Province Map">
                 <h2>Reports by Province (Geographic)</h2>
                 <div id="sa-map" class="sa-map-container">
                     <div id="map-legend" class="map-legend" style="display:none;">
-                        <div class="map-legend-title">Report count</div>
-                        <div class="map-legend-bar"></div>
-                        <div class="map-legend-labels">
-                            <span id="map-legend-min">0</span>
-                            <span id="map-legend-max">0</span>
-                        </div>
+                        <div class="map-legend-title">HEATMAP LEGEND</div>
+                        <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>LOW</span></div>
+                        <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>MEDIUM</span></div>
+                        <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>HIGH</span></div>
                     </div>
                 </div>
-                <p class="heatmap-legend">Blue = low, yellow = medium, red = high report count. Hover for details.</p>
+                <p class="heatmap-legend">Low/Medium/High show relative report volume across provinces.</p>
             </section>
 
         </section>
@@ -1728,29 +1705,28 @@ window.agePyramidData = {
     return 0;
   }
 
-  const map = L.map('sa-map', { zoomControl: true }).setView([-29, 24], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map);
+  const map = L.map('sa-map', {
+    zoomControl: false,
+    dragging: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    boxZoom: false,
+    keyboard: false,
+    tap: false,
+    touchZoom: false,
+  }).setView([-29, 24], 5);
 
   const maxCount = Math.max(1, ...Object.values(provinceCounts));
-  const mapColors = ['#e0f2fe','#fef9c3','#eab308','#f97316','#ef4444'];
+  const thresholds = { low: maxCount * 0.33, medium: maxCount * 0.66 };
 
   function getColor(count) {
-    if (count === 0) return mapColors[0];
-    const intensity = Math.min(1, count / maxCount);
-    const idx = intensity >= 0.8 ? 4 : intensity >= 0.6 ? 3 : intensity >= 0.4 ? 2 : intensity >= 0.2 ? 1 : 0;
-    return mapColors[idx];
+    if (count <= thresholds.low) return '#22c55e';
+    if (count <= thresholds.medium) return '#38b6ff';
+    return '#ef4444';
   }
 
   const legendEl = document.getElementById('map-legend');
-  if (legendEl) {
-    legendEl.style.display = 'block';
-    const minEl = document.getElementById('map-legend-min');
-    const maxEl = document.getElementById('map-legend-max');
-    if (minEl) minEl.textContent = '0';
-    if (maxEl) maxEl.textContent = String(maxCount);
-  }
+  if (legendEl) legendEl.style.display = 'block';
 
   const provinceLayers = {};
 
@@ -1766,18 +1742,18 @@ window.agePyramidData = {
       L.geoJSON(geojson, {
         style: function(feature) {
           const name = feature.properties?.name || '';
-          return { fillColor: getColor(getCountForProvince(name)), weight: 1.5, opacity: 1, color: '#1e40af', fillOpacity: 0.85 };
+          return { fillColor: getColor(getCountForProvince(name)), weight: 1.2, opacity: 1, color: '#c7da30', fillOpacity: 0.9 };
         },
         onEachFeature: function(feature, layer) {
           const name = feature.properties?.name || 'Unknown';
           const count = getCountForProvince(name);
           provinceLayers[normalizeName(name).replace(/-/g, ' ')] = { layer, name, count };
           layer.feature = feature;
-          layer._defaultStyle = { weight: 1.5, color: '#1e40af' };
-          layer.bindTooltip(name + ': ' + count + ' reports', { permanent: false, direction: 'center', className: 'map-tooltip' });
+          layer._defaultStyle = { weight: 1.2, color: '#c7da30' };
+          layer.bindTooltip(String(name).toUpperCase(), { permanent: true, direction: 'center', className: 'map-label' });
           layer.on({
-            mouseover: function(e) { const l = e.target; l.setStyle({ weight: 3, color: '#0c4a6e' }); l.bringToFront(); },
-            mouseout: function(e) { const l = e.target; l.setStyle(l._defaultStyle || { weight: 1.5, color: '#1e40af' }); }
+            mouseover: function(e) { const l = e.target; l.setStyle({ weight: 2.2, color: '#38b6ff' }); l.bringToFront(); },
+            mouseout: function(e) { const l = e.target; l.setStyle(l._defaultStyle || { weight: 1.2, color: '#c7da30' }); }
           });
         }
       }).addTo(map);
@@ -1787,9 +1763,9 @@ window.agePyramidData = {
         Object.values(provinceLayers).forEach(({ layer }) => {
           const geoName = layer.feature?.properties?.name || '';
           if (province && matchProvinceName(province, geoName)) {
-            layer.setStyle({ weight: 4, color: '#0369a1' }); layer.bringToFront();
+            layer.setStyle({ weight: 2.2, color: '#38b6ff' }); layer.bringToFront();
           } else {
-            layer.setStyle(layer._defaultStyle || { weight: 1.5, color: '#1e40af' });
+            layer.setStyle(layer._defaultStyle || { weight: 1.2, color: '#c7da30' });
           }
         });
       });
