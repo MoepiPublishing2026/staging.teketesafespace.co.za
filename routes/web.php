@@ -27,6 +27,7 @@ use App\Http\Controllers\SchoolAdminReportsController;
 use App\Livewire\ContactUs;
 // use App\Http\Controllers\SubscriptionController;
 use App\Livewire\ClarificationModal;
+use App\Http\Controllers\NationalHeatmapController;
 
 
 /*
@@ -83,6 +84,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
     Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)->name('provincial.reports.index');
 
+    Route::get('/provincial/heatmap', [App\Http\Controllers\ProvincialHeatMapController::class, 'index'])->name('provincial.heatmap');
+
+
+
      Route::get('/provincial/profile', \App\Livewire\ProvincialSettings::class)->name('provincial.settings');
 
     Route::get('/provincial/export-pdf/{province}', [ProvincialReportController::class, 'exportPDF'])
@@ -111,6 +116,7 @@ Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')
 Route::get('/national-admin/dashboard', [NationalAdminDashboardController::class, 'index'])
     ->name('national.admin.dashboard')
     ->middleware('auth');
+Route::get('/national-admin/heatmap', [NationalHeatmapController::class, 'index'])->name('national-admin.heatmap');
 Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports');
 Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
 
