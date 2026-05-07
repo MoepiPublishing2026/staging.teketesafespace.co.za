@@ -453,6 +453,7 @@ tbody tr:last-child td { border-bottom: none; }
     <ul class="sidebar-list">
         <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/provincial-admin/reports') }}"   class="sidebar-link {{ request()->is('provincial-admin/reports')   ? 'active' : '' }}">Reports</a>
+        <a href="{{ url('/provincial-admin/heatmap') }}"   class="sidebar-link {{ request()->is('provincial-admin/heatmap')   ? 'active' : '' }}">Heat-map</a>
         <a href="{{ url('/provincial-admin/settings') }}"  class="sidebar-link {{ request()->is('provincial-admin/settings')  ? 'active' : '' }}">My Profile</a>
         <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
         <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>

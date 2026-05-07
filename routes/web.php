@@ -27,6 +27,7 @@ use App\Http\Controllers\SchoolAdminReportsController;
 use App\Livewire\ContactUs;
 // use App\Http\Controllers\SubscriptionController;
 use App\Livewire\ClarificationModal;
+use App\Http\Controllers\NationalHeatmapController;
 
 
 /*
@@ -115,6 +116,7 @@ Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')
 Route::get('/national-admin/dashboard', [NationalAdminDashboardController::class, 'index'])
     ->name('national.admin.dashboard')
     ->middleware('auth');
+Route::get('/national-admin/heatmap', [NationalHeatmapController::class, 'index'])->name('national-admin.heatmap');
 Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports');
 Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
 
