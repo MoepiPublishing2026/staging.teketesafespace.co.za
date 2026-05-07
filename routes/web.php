@@ -83,6 +83,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
     Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)->name('provincial.reports.index');
 
+    Route::get('/provincial/heatmap', [App\Http\Controllers\ProvincialHeatMapController::class, 'index'])->name('provincial.heatmap');
+
+
+
      Route::get('/provincial/profile', \App\Livewire\ProvincialSettings::class)->name('provincial.settings');
 
     Route::get('/provincial/export-pdf/{province}', [ProvincialReportController::class, 'exportPDF'])
