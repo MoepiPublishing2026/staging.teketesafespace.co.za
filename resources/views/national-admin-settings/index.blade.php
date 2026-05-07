@@ -469,6 +469,7 @@ button.submit-btn {
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
+         <a href="{{ url('/national-admin/heatmap') }}"   class="sidebar-link {{ request()->is('national-admin/heatmap')   ? 'active' : '' }}">Heat-map</a>
         <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
 
         <!-- Sign Out as a styled form -->

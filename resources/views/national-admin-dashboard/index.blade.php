@@ -788,6 +788,7 @@ form.filters button {
     <ul class="sidebar-list">
         <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
         <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
+        <a href="{{ url('/national-admin/heatmap') }}"   class="sidebar-link {{ request()->is('national-admin/heatmap')   ? 'active' : '' }}">Heat-map</a>
         <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
         <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
         <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>

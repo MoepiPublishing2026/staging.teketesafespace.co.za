@@ -3,1196 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Tekete SafeSpace Provincial Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <title>Tekete SafeSpace – Heat-Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-       :root {
-   --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
-   --theme-dark: #0c8cb3ff;
-   --red: #ef4444;
-   --yellow: #eab308;
-   --blue: #3b82f6;
-   --orange: #f97316;
-   --gray: #2a2e32;
-   --green: #22c55e;
-   --bg: white;
-   --text: #253f58ff;
-   --sidebar-bg: white;
-   --sidebar-hover: var(--theme-gradient);
-   --sidebar-active: linear-gradient(to right, #38b6ff, #38b6ff);
-   --sidebar-border: #c7da30;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-html {
-    overflow-x: hidden;
-}
-
-html, body {
-  font-family: 'Montserrat', sans-serif !important;
-  color: #545454 !important;
-}
-
-body {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-    min-width: 0;
-    overflow-x: hidden;
-    overflow-y: hidden;
-}
-
-.sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-}
-
-.sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
-.sidebar-logo img { width: 115px; height: auto; display: block; }
-
-.sidebar-list {
-    list-style: none;
-    padding: 0 0 0 22px;
-}
-
-.sidebar-link {
-    display: block;
-    width: 92%;
-  font-size: 15px !important;
-  font-weight: 900 !important;
-  color: #545454 !important;
-  font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-    background: var(--theme-gradient);
-    color: #000;
-}
-
-button {
- background-color: white !important;
-  color: #38b6ff !important;
-  border: 2px solid #c7da30 !important;
-  font-weight: 900 !important;
-  font-family: 'Montserrat', sans-serif !important;
-  padding: 0.75rem 1rem !important;
-  border-radius: 0.5rem !important;
-  cursor: pointer !important;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-button:hover, button:focus {
-  background-color: #c7da30 !important;
-  color: white !important;
-  border-color: #38b6ff !important;
-  outline: none;
-}
-
-button.active{
-    background: var(--theme-gradient);
-    color: var(--theme-dark);
-}
-
-button:hover, .sidebar-link:hover, .sidebar-link.active {
-  color: #fff !important;
-  background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
-}
-
-.topbar {
-    width: 100%;
-    background: white;
-    border-bottom: 1px solid white;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 1rem 2.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    min-height: 64px;
-}
-
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.table th, .table td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 2px solid #e5e7eb;
-    word-wrap: break-word;
-    white-space: normal;
-}
-
-.profile {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-}
-
-.profile-avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: #ececec;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
-}
-
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile .meta {
-    text-align: right;
-}
-.profile .meta > span:first-child {
-    color: #38b6ff;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.profile .meta span {
-    display: block;
-    line-height: 1.3;
-    font-weight: 700;
-    color: #232323;
-}
-
-.profile .meta .role {
-    font-weight: 400;
-    color: #333030ff;
-    font-size: 0.9rem;
-}
-
-.main-panel {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 100vh;
-    height: auto;
-    background: white;
-    overflow-x: hidden;
-}
-
-.sidebar-link.active {
-    background: linear-gradient(to right, #38b6ff, #38b6ff);
-    color: #000;
-    font-weight: 400;
-}
-
-.metrics-row > .metric-card {
-    flex: 0 0 100px;
-    max-width: 115px;
-    min-width: 115px;
-}
-
-.dashboard-scroll {
-    flex: 1 1 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 2.5rem;
-    max-width: 1280px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-h1 {
-    margin: 0 0 0.5rem;
-    font-weight: 900 !important;
-    font-size: 32px !important;
-    font-family: 'Montserrat', sans-serif !important;
-    letter-spacing: 0.03em;
-    text-transform: uppercase !important;
-    color: #545454 !important;
-    text-align: center;
-}
-h2 {
-  color: #38b6ff !important;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-}
-.subtitle {
-    margin-bottom: 2rem;
-    color: #5f6b7b;
-}
-
-.metrics-row, .extras-row {
-    display: flex;
-    gap: 1.2rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.metric-card {
-    flex: 1;
-    background: #fff;
-    border-radius: 1rem;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-    padding: 12px 15px;
-    min-width: 110px;
-    height: 110px;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    transition: background .18s, color .15s;
-    position: relative;
-}
-
-.metric-card.active,
-.metric-card:active {
-    color: #fff !important;
-}
-
-.metric-card .card-value {
-    font-weight: 800 !important;
-    font-size: 30px !important;
-    color: inherit !important;
-    font-family: 'Montserrat', sans-serif !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    line-height: 1;
-}
-
-.card-title {
-    font-weight: 900 !important;
-    font-size: 14px !important;
-    font-family: 'Montserrat', sans-serif !important;
-    margin-bottom: 0;
-    color: inherit;
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1.2;
-}
-
-.metrics-row > .metric-card.status-total {
-    background-color: #38b6ff;
-    color: white;
-}
-
-.metrics-row > .metric-card.status-awaiting {
-    background-color: #fcb825;
-    color: white;
-}
-
-.metrics-row > .metric-card.status-forwarded {
-    background-color: #64d58f;
-    color: white;
-}
-
-.metrics-row > .metric-card.status-review {
-    background-color: #9b57cc;
-    color: white;
-}
-
-.metrics-row > .metric-card.status-closed {
-    background-color: #81acef;
-    color: white;
-}
-
-.metrics-row > .metric-card.status-unresolved {
-    background-color: #99c4d3;
-    color: white;
-}
-
-.metrics-row > .metric-card.status-false {
-    background-color: #ff66c4;
-    color: white;
-}
-
-.extras-anonymous, .extras-identified, .extras-abuse, .extras-schools {
-    background: white;
-    color: #1f2933;
-    cursor: pointer;
-    font-family: 'Century Gothic';
-    box-shadow: 0 4px 8px rgba(199, 218, 48, 0.2);
-    border: 2px solid var(--sidebar-border);
-}
-
-.metric-card.extras-anonymous .card-value,
-.metric-card.extras-identified .card-value,
-.metric-card.extras-abuse .card-value,
-.metric-card.extras-schools .card-value {
-    font-size: 40px;
-    font-weight: 800;
-    margin-bottom: 0.17rem;
-    color: #38b6ff !important;
-    font-family: 'Century Gothic';
-    line-height: 1;
-}
-
-.card-subtext {
-    font-size: 0.8rem;
-    color: #080808ff;
-    margin-bottom: 0.25rem;
-}
-.extras-row .metric-card {
-    background: white;
-    color: #1f2933;
-    cursor: pointer;
-}
-
-.extras-row .card-title {
-    color: #1f2933 !important;
-    font-weight: 700;
-}
-
-.extras-row .card-value {
-    color: #38b6ff !important;
-}
-
-.panel {
-    background: white;
-    border-radius: 1rem;
-    padding: 0px;
-    max-width: 100%;
-}
-
-.panel + .panel {
-    margin-top: 1.8rem;
-}
-
-.chart-title-left {
-    text-align: left !important;
-    margin-left: 0 !important;
-    padding-left: 0 !important;
-}
-
-/* Pie + legend need flexible height so legend rows are not clipped */
-.chart-card.chart-abuse-pie {
-    height: auto;
-    min-height: 370px;
-    display: flex;
-    flex-direction: column;
-}
-.chart-abuse-pie .chart-canvas-host {
-    position: relative;
-    width: 100%;
-    flex: 1 1 auto;
-    min-height: 280px;
-}
-
-#abuseTypeChart {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Status breakdown: flexible height + host (matches school admin) */
-.chart-card.chart-status {
-    height: auto;
-    min-height: 320px;
-    display: flex;
-    flex-direction: column;
-}
-.chart-status .chart-status-host {
-    position: relative;
-    width: 100%;
-    flex: 1 1 auto;
-    min-height: 280px;
-}
-#statusChart {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-}
-
-section[aria-label="Filters"] {
-    border: 2px solid var(--sidebar-border);
-    padding: 1rem 1.5rem;
-    border-radius: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-form.filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: flex-end;
-    max-width: 100%;
-}
-
-form.filters select,
-form.filters input[type="date"],
-form.filters button {
-    padding: 0.65rem 0.85rem;
-    border-radius: 0.75rem;
-    border: 2px solid #c9db41ff;
-    font-weight: 600;
-    background: white;
-    min-width: 160px;
-    box-shadow: inset 0 1px 3px rgba(92, 120, 88, 0.08);
-    cursor: pointer;
-}
-
-form.filters label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 14px;
-    font-weight: 600;
-    color: #545454;
-    min-width: 160px;
-}
-
-form.filters label input[type="date"] {
-    margin: 0;
-}
-
-form.filters button {
-    background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 100%);
-    border: none;
-    color: white;
-}
-
-.filter-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1.25rem;
-}
-
-.filter-chips span {
-    background: rgba(47, 123, 52, 0.08);
-    color: var(--green);
-    border-radius: 999px;
-    padding: 0.4rem 0.85rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-}
-
-.menu-icon {
-    display: none;
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: 2px solid #e5e7eb;
-    background: white !important;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    cursor: pointer;
-    z-index: 1001;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: #38b6ff !important;
-}
-.menu-icon:hover {
-    background: #f3f4f6 !important;
-    border-color: #38b6ff !important;
-}
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-.sidebar-overlay.active {
-    display: block;
-    opacity: 1;
-}
-@media (min-width: 901px) {
-    .sidebar-overlay {
-        display: none !important;
-    }
-}
-
-.grid-two {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 0.5rem;
-}
-
-.grid-three {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-}
-
-/* Monthly Trends: same title + host + canvas pattern as Status Breakdown */
-.chart-monthly-block {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    min-width: 0;
-    height: auto;
-    min-height: 320px;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-}
-.chart-monthly-block .chart-canvas-host {
-    position: relative;
-    width: 100%;
-    flex: 1 1 auto;
-    min-height: 280px;
-}
-.chart-card.chart-anonymous {
-    height: auto;
-    min-height: 320px;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-}
-.chart-card.chart-anonymous .chart-canvas-host {
-    position: relative;
-    width: 100%;
-    flex: 1 1 auto;
-    min-height: 280px;
-}
-section[aria-label="Analytics"] .chart-canvas-host canvas,
-section[aria-label="Analytics"] .chart-status-host canvas {
-    display: block;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-}
-
-.modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 12, 12, 0.42);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-    border: 3px solid #38b6ff !important;
-}
-
-.modal-backdrop.active {
-    display: flex;
-}
-
-.modal-card {
-    background: #fff;
-    border: 2.5px solid #d7e47a;
-    border-radius: 16px;
-    width: 1000px;
-    max-width: 95vw;
-    box-shadow: 0 6px 40px rgba(46,56,64,0.18),
-                0 1.5px 3px rgba(140,160,145,0.05);
-    padding: 2rem;
-    position: relative;
-    font-family: 'Montserrat', sans-serif;
-    color: #333;
-}
-
-.modal-card h3 {
-    margin: 0 0 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--green-dark);
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #ef4444;
-    cursor: pointer;
-}
-.extras-modal-btn {
-    padding: 0.5rem 1rem;
-    background: #38b6ff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: 'Montserrat', sans-serif;
-}
-.extras-modal-btn:hover {
-    background: #0c8cb3;
-}
-.filter-separator {
-    border: none;
-    border-bottom: 2px solid silver;
-    margin: 0 0 1rem 0;
-}
-
-.filters button#refreshBtn {
-    color: white;
-    border: none;
-    padding: 0.65rem 0.85rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    margin-left: 0.5rem;
-    transition: background-color 0.2s;
-}
-
-@media (max-width: 1200px) {
-    .metrics-row > .metric-card {
-        flex: 1 1 calc(25% - 1rem);
-        min-width: 90px;
-        max-width: none;
-    }
-    .extras-row > .metric-card {
-        flex: 1 1 calc(50% - 0.5rem);
-        min-width: 0;
-    }
-}
-
-@media (max-width: 900px) {
-    body {
-        overflow-x: hidden;
-    }
-    .menu-icon {
-        display: flex !important;
-    }
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 0;
-        height: 100vh;
-        background: white;
-        overflow-x: hidden;
-        overflow-y: auto;
-        transition: width 0.3s ease;
-        z-index: 1000;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-        padding-top: 0;
-    }
-    .sidebar.open {
-        width: 240px;
-    }
-    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-    .sidebar.open .sidebar-logo { display: flex; }
-    .sidebar-logo img { width: 95px; height: auto; }
-    .main-panel {
-        margin-left: 0 !important;
-        width: 100%;
-    }
-    .main-panel.shifted {
-        margin-left: 0 !important;
-    }
-    .dashboard-scroll {
-        padding: 1rem;
-    }
-    .metrics-row, .extras-row {
-        gap: 0.75rem;
-    }
-    .metrics-row > .metric-card {
-        flex: 1 1 calc(50% - 0.5rem);
-        min-width: 0;
-        max-width: none;
-        min-height: 90px;
-        padding: 10px 12px;
-    }
-    .metrics-row > .metric-card .card-value {
-        font-size: 24px !important;
-    }
-    .extras-row > .metric-card {
-        flex: 1 1 calc(50% - 0.5rem);
-        min-width: 0;
-    }
-    .grid-two {
-        grid-template-columns: 1fr !important;
-        gap: 1.25rem !important;
-        width: 100%;
-        min-width: 0;
-    }
-    section[aria-label="Analytics"] .grid-two > * {
-        min-width: 0;
-        width: 100%;
-    }
-    .chart-monthly-block .chart-canvas-host,
-    .chart-card.chart-anonymous .chart-canvas-host {
-        min-height: 220px;
-    }
-    .chart-canvas-host canvas,
-    .chart-status-host canvas {
-        height: 100% !important;
-        min-height: 200px !important;
-    }
-    .chart-card.chart-abuse-pie,
-    .chart-card.chart-status {
-        width: 100% !important;
-        max-width: 100%;
-    }
-    .heatmap-panel {
-        padding: 1rem;
-    }
-    .heatmap-toolbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    .heatmap-wrap {
-        -webkit-overflow-scrolling: touch;
-        overflow-x: auto;
-        overflow-y: visible;
-    }
-    .heatmap-table {
-        font-size: 11px;
-    }
-    .heatmap-table th,
-    .heatmap-table td {
-        padding: 0.35rem 0.45rem;
-    }
-    .heatmap-corner {
-        min-width: 90px;
-        font-size: 11px;
-    }
-    .heatmap-col {
-        min-width: 65px;
-        font-size: 10px;
-    }
-    .heatmap-row {
-        min-width: 90px;
-        font-size: 11px;
-    }
-    .heatmap-cell {
-        min-width: 40px;
-    }
-    .heatmap-scale {
-        flex-wrap: wrap;
-        gap: 0.35rem;
-    }
-    .heatmap-scale-bar {
-        width: 100px;
-    }
-    .map-panel {
-        padding: 1rem;
-    }
-    .sa-map-container {
-        height: 320px;
-        min-height: 280px;
-    }
-    .map-legend {
-        bottom: 10px;
-        right: 10px;
-        padding: 8px 10px;
-        font-size: 11px;
-    }
-    .map-legend-bar {
-        width: 80px;
-        height: 8px;
-    }
-    form.filters {
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: stretch;
-    }
-    form.filters select,
-    form.filters input[type="date"],
-    form.filters button {
-        min-width: 100%;
-        width: 100%;
-    }
-    form.filters label {
-        width: 100%;
-    }
-    form.filters label input {
-        width: 100%;
-    }
-    .topbar {
-        padding: 0.75rem 1rem;
-        min-height: 56px;
-    }
-    .profile .meta > span:first-child {
-        font-size: 14px;
-    }
-    .profile .meta .role {
-        font-size: 12px;
-    }
-    h1 {
-        font-size: 22px !important;
-        padding: 0 0.5rem;
-    }
-    .subtitle {
-        font-size: 13px;
-        padding: 0 0.5rem;
-    }
-    .modal-card {
-        width: min(96vw, 480px);
-        padding: 1.25rem;
-    }
-    section[aria-label="Filters"] {
-        padding: 0.75rem 1rem;
-    }
-    .panel {
-        padding: 0;
-    }
-}
-
-@media (max-width: 600px) {
-    .sidebar-logo img { width: 85px; height: auto; }
-}
-
-
-
-
-@media (max-width: 600px) {
-    .menu-icon {
-        top: 10px;
-        left: 10px;
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-    .chart-title-left {
-        text-align: left !important;
-        margin-top: 1.25rem !important;
-        padding-left: 0 !important;
-    }
-
-
-    .sidebar.open {
-        width: 100%;
-        max-width: 280px;
-    }
-    .main-panel.shifted {
-        margin-left: 0;
-    }
-    .dashboard-scroll {
-        padding: 0.75rem;
-    }
-    .metrics-row > .metric-card {
-        flex: 1 1 100%;
-    }
-    .extras-row > .metric-card {
-        flex: 1 1 100%;
-    }
-    .metrics-row > .metric-card .card-value {
-        font-size: 22px !important;
-    }
-    .card-title {
-        font-size: 12px !important;
-    }
-    .heatmap-corner {
-        min-width: 75px;
-    }
-    .heatmap-col {
-        min-width: 55px;
-        font-size: 9px;
-    }
-    .heatmap-cell {
-        min-width: 36px;
-    }
-    .heatmap-table th,
-    .heatmap-table td {
-        padding: 0.3rem 0.35rem;
-    }
-    .sa-map-container {
-        height: 280px;
-        min-height: 240px;
-    }
-    .map-legend {
-        bottom: 8px;
-        right: 8px;
-        padding: 6px 8px;
-        font-size: 10px;
-    }
-    .map-legend-bar {
-        width: 60px;
-    }
-    h1 {
-        font-size: 18px !important;
-    }
-    .subtitle {
-        font-size: 12px;
-    }
-    section[aria-label="Filters"] {
-        padding: 0.5rem 0.75rem;
-    }
-}
-
-/* Heatmap */
-.heatmap-panel {
-  background: linear-gradient(135deg, #fafbfc 0%, #fff 100%);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  overflow-x: auto;
-  box-shadow: 0 4px 20px rgba(56, 182, 255, 0.08), 0 1px 3px rgba(0,0,0,0.06);
-  width: 100%;
-  max-width: 100%;
-  border: 1px solid rgba(56, 182, 255, 0.15);
-}
-.heatmap-panel h2 {
-  margin-bottom: 0.5rem;
-}
-.heatmap-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.heatmap-view-toggle {
-  display: flex;
-  background: #f3f4f6;
-  border-radius: 8px;
-  padding: 3px;
-  gap: 2px;
-}
-.heatmap-view-toggle button {
-  padding: 0.4rem 0.9rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  background: transparent;
-  color: #6b7280;
-  transition: all 0.2s ease;
-}
-.heatmap-view-toggle button:hover {
-  color: #1f2937;
-}
-.heatmap-view-toggle button.active {
-  background: white;
-  color: #0c4a6e;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-}
-.heatmap-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-.heatmap-table {
-  border-collapse: collapse;
-  font-size: 13px;
-  min-width: 100%;
-}
-.heatmap-table th,
-.heatmap-table td {
-  border: 1px solid #e5e7eb;
-  padding: 0.5rem 0.65rem;
-  text-align: center;
-}
-.heatmap-corner {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-  font-weight: 700;
-  text-align: left !important;
-  min-width: 120px;
-  position: sticky;
-  left: 0;
-  z-index: 1;
-}
-.heatmap-col {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-  font-weight: 700;
-  white-space: nowrap;
-  min-width: 90px;
-}
-.heatmap-row {
-  background: #fafbfc;
-  font-weight: 600;
-  text-align: left !important;
-  padding-left: 0.75rem;
-  position: sticky;
-  left: 0;
-  z-index: 1;
-}
-.heatmap-cell {
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-width: 50px;
-  position: relative;
-  animation: heatmapCellFadeIn 0.4s ease backwards;
-}
-.heatmap-cell.heatmap-cell-dark {
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
-}
-.heatmap-cell:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  z-index: 2;
-}
-.heatmap-cell::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 2px;
-  pointer-events: none;
-}
-.heatmap-cell.heatmap-hotspot::before {
-  content: '◆';
-  position: absolute;
-  top: 2px;
-  right: 4px;
-  font-size: 8px;
-  color: rgba(255,255,255,0.9);
-  opacity: 0.9;
-}
-.heatmap-cell.heatmap-cell-dark.heatmap-hotspot::before {
-  color: rgba(255,255,255,0.95);
-}
-@media (hover: none) {
-  .heatmap-cell:hover {
-    transform: none;
-  }
-  .heatmap-cell:active {
-    box-shadow: 0 0 0 3px #38b6ff;
-  }
-}
-@keyframes heatmapCellFadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-.heatmap-total-cell {
-  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%) !important;
-  color: #fff !important;
-  font-weight: 700;
-}
-.heatmap-total-row th,
-.heatmap-total-col {
-  background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%) !important;
-  font-weight: 700;
-  color: #0c4a6e;
-}
-.heatmap-scale-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.heatmap-scale {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 12px;
-  color: #6b7280;
-}
-.heatmap-scale-bar {
-  height: 14px;
-  width: 180px;
-  border-radius: 7px;
-  background: linear-gradient(to right, #e0f2fe 0%, #fef9c3 25%, #eab308 50%, #f97316 75%, #ef4444 100%);
-  border: 1px solid #e5e7eb;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-}
-.heatmap-scale-bar.heatmap-scale-pct {
-  background: linear-gradient(to right, #f0fdf4 0%, #86efac 25%, #22c55e 50%, #15803d 75%, #14532d 100%);
-}
-.heatmap-legend {
-  margin-top: 0.5rem;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* Geographic map */
-.map-panel {
-  background: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-.sa-map-container {
-  height: 450px;
-  width: 100%;
-  max-width: 100%;
-  min-height: 350px;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  position: relative;
-}
-.map-legend {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  background: rgba(255,255,255,0.95);
-  padding: 10px 14px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  font-size: 12px;
-  font-family: 'Montserrat', sans-serif;
-}
-.map-legend-title {
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #1f2937;
-}
-.map-legend-bar {
-  height: 10px;
-  width: 120px;
-  border-radius: 5px;
-  background: linear-gradient(to right, #e0f2fe 0%, #fef9c3 25%, #eab308 50%, #f97316 75%, #ef4444 100%);
-  margin: 4px 0;
-  border: 1px solid #e5e7eb;
-}
-.map-legend-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #6b7280;
-}
-.leaflet-tooltip.map-tooltip {
-  background: rgba(30, 64, 175, 0.95);
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  font-weight: 600;
-  font-size: 13px;
-  border-radius: 6px;
-}
+        :root {
+            --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
+            --theme-dark: #0c8cb3ff;
+            --green: #22c55e;
+            --sidebar-border: #c7da30;
+        }
+
+        * { box-sizing: border-box; }
+        html { overflow-x: hidden; }
+        html, body {
+            font-family: 'Montserrat', sans-serif !important;
+            color: #545454 !important;
+        }
+        body {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 235px;
+            background-color: white;
+            border-right: 1px solid #eaeaea;
+            display: flex;
+            flex-direction: column;
+            padding-top: 120px;
+            flex-shrink: 0;
+        }
+        .sidebar-logo { position: fixed; top: 40px; left: 40px; }
+        .sidebar-logo img { width: 115px; height: auto; display: block; }
+        .sidebar-list { list-style: none; padding: 0 0 0 22px; margin: 0; }
+        .sidebar-link {
+            display: block;
+            width: 92%;
+            font-size: 15px !important;
+            font-weight: 900 !important;
+            color: #545454 !important;
+            font-family: 'Montserrat', sans-serif !important;
+            padding: 11px 18px;
+            margin-bottom: 17px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--theme-gradient) !important;
+            color: #fff !important;
+        }
+
+        /* ── Buttons ── */
+        button {
+            background-color: white !important;
+            color: #38b6ff !important;
+            border: 2px solid #c7da30 !important;
+            font-weight: 900 !important;
+            font-family: 'Montserrat', sans-serif !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        button:hover, button:focus {
+            background-color: #c7da30 !important;
+            color: white !important;
+            border-color: #38b6ff !important;
+            outline: none;
+        }
+
+        /* ── Top bar ── */
+        .topbar {
+            width: 100%;
+            background: white;
+            border-bottom: 1px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 1rem 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-height: 64px;
+        }
+        .profile { display: flex; align-items: center; gap: 0.8rem; }
+        .profile-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: #ececec; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 1px 6px rgba(51,51,63,0.08);
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile .meta { text-align: right; }
+        .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
+        .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
+        .profile .meta .role { font-weight: 400; color: #333030ff; font-size: 0.9rem; }
+
+        /* ── Main panel ── */
+        .main-panel {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 100vh;
+            background: white;
+            overflow-x: hidden;
+        }
+        .dashboard-scroll {
+            flex: 1 1 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 2.5rem;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin: 0 0 0.5rem;
+            font-weight: 900 !important;
+            font-size: 32px !important;
+            font-family: 'Montserrat', sans-serif !important;
+            letter-spacing: 0.03em;
+            text-transform: uppercase !important;
+            color: #545454 !important;
+            text-align: center;
+        }
+        h2 {
+            color: #38b6ff !important;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+        }
+        .subtitle { margin-bottom: 2rem; color: #5f6b7b; text-align: center; }
+        .panel { background: white; border-radius: 1rem; padding: 0; max-width: 100%; }
+        .panel + .panel { margin-top: 1.8rem; }
+
+        /* ── Mobile menu icon ── */
+        .menu-icon {
+            display: none;
+            position: fixed;
+            top: 12px; left: 12px;
+            width: 44px; height: 44px;
+            padding: 0;
+            border: 2px solid #e5e7eb;
+            background: white !important;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer;
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #38b6ff !important;
+        }
+        .menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); z-index: 999;
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+        @media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
+
+        /* ── Filters ── */
+        section[aria-label="Filters"] {
+            border: 2px solid var(--sidebar-border);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-separator { border: none; border-bottom: 2px solid silver; margin: 0 0 1rem 0; }
+        form.filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        form.filters select,
+        form.filters input[type="date"],
+        form.filters button {
+            padding: 0.65rem 0.85rem;
+            border-radius: 0.75rem;
+            border: 2px solid #c9db41ff;
+            font-weight: 600;
+            background: white;
+            min-width: 160px;
+            cursor: pointer;
+        }
+        form.filters label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 14px;
+            font-weight: 600;
+            color: #545454;
+            min-width: 160px;
+        }
+        .filter-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; }
+        .filter-chips span {
+            background: rgba(47,123,52,0.08);
+            color: var(--green);
+            border-radius: 999px;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* ── Heatmap ── */
+        .heatmap-panel {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            width: 100%;
+            border: 2px solid #c7da30;
+        }
+        .heatmap-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .heatmap-view-toggle { display: flex; gap: 0.5rem; }
+        .heatmap-view-toggle button {
+            padding: 0.35rem 0.75rem !important;
+            border: 2px solid #c7da30 !important;
+            border-radius: 6px !important;
+            font-size: 11px !important;
+            font-weight: 900 !important;
+            background: #fff !important;
+            color: #545454 !important;
+        }
+        .heatmap-view-toggle button:hover,
+        .heatmap-view-toggle button.active { background: #c7da30 !important; color: #fff !important; }
+        .heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .heatmap-table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
+        .heatmap-table th, .heatmap-table td {
+            border: 1px solid #111827;
+            padding: 0.5rem 0.65rem;
+            text-align: center;
+        }
+        .heatmap-corner { background: #d1d5db; font-weight: 700; text-align: left !important; min-width: 120px; }
+        .heatmap-col    { background: #d1d5db; font-weight: 700; white-space: nowrap; min-width: 90px; }
+        .heatmap-row    { background: #d1d5db; font-weight: 600; text-align: left !important; padding-left: 0.75rem; }
+        .heatmap-cell   { font-weight: 600; cursor: pointer; min-width: 50px; position: relative; }
+        .heatmap-cell.heatmap-cell-dark { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
+        .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
+        .heatmap-scale-bar {
+            height: 14px; width: 180px; border-radius: 7px;
+            background: linear-gradient(to right, #22c55e 0%, #38b6ff 50%, #ef4444 100%);
+            border: 1px solid #111827;
+        }
+
+        /* ── Geographic map ── */
+        .map-panel { background: white; border-radius: 1rem; padding: 1.5rem; }
+        .district-map-container {
+            height: 450px; width: 100%; min-height: 350px;
+            border-radius: 0.5rem; overflow: hidden; position: relative;
+        }
+        .district-map-svg { width: 100%; height: 100%; display: block; }
+        .district-map-shape {
+            stroke: #111827; stroke-width: 1.1;
+            transition: stroke 0.15s ease, stroke-width 0.15s ease;
+        }
+        .district-map-shape:hover { stroke: #38b6ff; stroke-width: 1.8; }
+        .district-map-marker circle { fill: rgba(255,255,255,0.92); stroke: #111827; stroke-width: 1.4; }
+        .district-map-marker text { fill: #111827; font-weight: 900; font-size: 10px; dominant-baseline: middle; text-anchor: middle; }
+        .district-map-key {
+            position: absolute; top: 12px; left: 12px; z-index: 15;
+            background: rgba(255,255,255,0.96); border: 1px solid rgba(17,24,39,0.2);
+            border-radius: 10px; padding: 10px 10px 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            max-height: calc(100% - 24px); overflow: auto; min-width: 180px;
+        }
+        .district-map-key-title { font-weight: 900; font-size: 11px; color: #111827; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+        .district-map-key-row {
+            display: grid; grid-template-columns: 14px 26px 1fr auto;
+            gap: 8px; align-items: center; font-size: 11px; color: #111827;
+            padding: 4px 0; border-top: 1px solid rgba(17,24,39,0.08);
+        }
+        .district-map-key-row:first-of-type { border-top: none; }
+        .district-map-key-swatch { width: 14px; height: 10px; border: 1px solid #111827; border-radius: 3px; }
+        .district-map-key-num   { font-weight: 900; }
+        .district-map-key-name  { font-weight: 700; }
+        .district-map-key-count { font-weight: 900; color: #4b5563; white-space: nowrap; }
+        .district-map-tooltip {
+            position: absolute; left: 0; top: 0;
+            transform: translate(-9999px, -9999px);
+            background: rgba(255,255,255,0.98); border: 1px solid rgba(17,24,39,0.2);
+            border-radius: 10px; padding: 8px 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            font-size: 12px; color: #111827; pointer-events: none; z-index: 20; max-width: 220px;
+        }
+        .district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
+        .district-map-tooltip .tt-sub   { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
+        .map-legend {
+            position: absolute; bottom: 20px; right: 20px; z-index: 1000;
+            background: rgba(255,255,255,0.95); padding: 10px 14px;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 12px; font-family: 'Montserrat', sans-serif;
+        }
+        .map-legend-title { font-weight: 700; margin-bottom: 6px; color: #1f2937; }
+        .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111827; margin-top: 4px; }
+        .map-legend-swatch { width: 14px; height: 10px; border: 1px solid #111827; }
+        .map-legend-swatch.low    { background: #22c55e; }
+        .map-legend-swatch.medium { background: #38b6ff; }
+        .map-legend-swatch.high   { background: #ef4444; }
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .menu-icon { display: flex !important; }
+            .sidebar {
+                position: fixed; top: 0; left: 0; width: 0; height: 100vh;
+                overflow-x: hidden; overflow-y: auto;
+                transition: width 0.3s ease; z-index: 1000;
+                box-shadow: 2px 0 12px rgba(0,0,0,0.15); padding-top: 0;
+            }
+            .sidebar.open { width: 240px; }
+            .sidebar-logo { display: none; position: sticky; top: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
+            .sidebar.open .sidebar-logo { display: flex; }
+            .main-panel { margin-left: 0 !important; width: 100%; }
+            .dashboard-scroll { padding: 1rem; }
+            h1 { font-size: 22px !important; }
+            .district-map-container { height: 320px; min-height: 280px; }
+            .heatmap-table { font-size: 11px; }
+            .heatmap-table th, .heatmap-table td { padding: 0.35rem 0.45rem; }
+            form.filters { flex-direction: column; }
+            form.filters select, form.filters input[type="date"], form.filters button,
+            form.filters label { min-width: 100%; width: 100%; }
+        }
+        @media (max-width: 600px) {
+            .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
+            .sidebar.open { width: 100%; max-width: 280px; }
+            h1 { font-size: 18px !important; }
+            .district-map-container { height: 280px; min-height: 240px; }
+        }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/provincial-admin-mobile.css') }}">
 </head>
-<body class="pa-app">
+<body>
 
 <aside class="sidebar" id="provincialSidebar">
     <div class="sidebar-logo">
         <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}" class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial-admin/settings') }}" class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
+        <a href="{{ url('/provincial-admin/dashboard') }}"   class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+        <a href="{{ url('/provincial-admin/reports') }}"     class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
+        <a href="{{ url('/provincial/heatmap') }}"           class="sidebar-link {{ request()->is('provincial/heatmap') ? 'active' : '' }}">Heat-Map</a>
+        <a href="{{ url('/provincial-admin/settings') }}"    class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
         <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
         <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
     </ul>
 </aside>
 
@@ -1206,21 +371,20 @@ section[aria-label="Analytics"] .chart-status-host canvas {
             <div class="meta">
                 @php
                     $currentUser = auth()->user()->fresh();
-                    $fullName = $currentUser->name ?? 'Administrator';
-                    $nameParts = explode(' ', $fullName, 2);
-                    $firstName = $nameParts[0] ?? '';
-                    $surname = $nameParts[1] ?? '';
+                    $fullName    = $currentUser->name ?? 'Administrator';
+                    $nameParts   = explode(' ', $fullName, 2);
+                    $firstName   = $nameParts[0] ?? '';
+                    $surname     = $nameParts[1] ?? '';
                 @endphp
                 <span>{{ $firstName }} {{ $surname }}</span>
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
                 @if($currentUser && $currentUser->profile_picture)
-                    <img src="{{ $currentUser->profile_picture_url }}"
-                         alt="Profile Picture"
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture"
                          onerror="this.style.display='none'; this.parentElement.style.background='#ececec';">
                 @else
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color: #999;">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color:#999;">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
                 @endif
@@ -1229,18 +393,15 @@ section[aria-label="Analytics"] .chart-status-host canvas {
     </div>
 
     <div class="dashboard-scroll" id="main-content">
-        <h1>
-            Tekete SafeSpace Provincial Dashboard -
-            <span class="province-name">{{ $province->province_name }}</span>
-        </h1>
 
-        <p class="subtitle">Provincial case intelligence and live report monitoring.</p>
+        <h1>Heat-Map – <span>{{ $province->province_name }}</span></h1>
+        <p class="subtitle">District × Report Type breakdown and geographic distribution.</p>
 
+        {{-- ── Filters ── --}}
         <section class="panel" aria-label="Filters">
             <h2>Filters</h2>
             <hr class="filter-separator"/>
             <form method="GET" action="{{ url()->current() }}" class="filters" id="filtersForm">
-                <input type="hidden" name="tab" value="{{ $activeTab }}">
                 <select name="district" id="districtSelect" onchange="this.form.submit()">
                     <option value="">All Districts</option>
                     @foreach ($districts as $district)
@@ -1249,7 +410,8 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                         </option>
                     @endforeach
                 </select>
-                <select name="school" id="schoolSelect" onchange="this.form.submit()">
+
+                <select name="school" onchange="this.form.submit()">
                     <option value="">All Schools</option>
                     @foreach ($schools as $school)
                         <option value="{{ $school->school_id }}" {{ $schoolFilter == $school->school_id ? 'selected' : '' }}>
@@ -1257,6 +419,7 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                         </option>
                     @endforeach
                 </select>
+
                 <select name="abuse_type" onchange="this.form.submit()">
                     <option value="">Any Report Type</option>
                     @foreach ($abuseTypes as $type)
@@ -1265,24 +428,20 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                         </option>
                     @endforeach
                 </select>
+
                 <select name="age_range" onchange="this.form.submit()">
                     <option value="">Any Age</option>
                     @foreach (['0-10','11-15','16-20','21-22'] as $range)
-                        <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>
-                            {{ $range }}
-                        </option>
+                        <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>{{ $range }}</option>
                     @endforeach
                 </select>
-                <label>
-                    From
-                    <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()">
-                </label>
-                <label>
-                    To
-                    <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()">
-                </label>
-                <button type="button" id="refreshBtn">Refresh Table</button>
+
+                <label>From <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()"></label>
+                <label>To   <input type="date" name="to_date"   value="{{ $toDate }}"   onchange="this.form.submit()"></label>
+
+                <button type="button" id="refreshBtn">Reset Filters</button>
             </form>
+
             @if(!empty($activeFilters))
                 <div class="filter-chips" aria-label="Active filters">
                     @foreach ($activeFilters as $chip)
@@ -1292,966 +451,319 @@ section[aria-label="Analytics"] .chart-status-host canvas {
             @endif
         </section>
 
-        <section class="metrics-row" aria-label="Headline metrics">
-            <div class="metric-card status-total" onclick="activateCard(this, 'total')">
-                <span class="card-title">Total Reports</span>
-                <div class="card-value">{{ number_format($summaryCounts['total'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-awaiting" onclick="activateCard(this, 'awaiting-resolution')">
-                <span class="card-title">Awaiting Resolution</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-forwarded" onclick="activateCard(this, 'forwarded')">
-                <span class="card-title">Forwarded</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['forwarded'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-review" onclick="activateCard(this, 'under-review')">
-                <span class="card-title">Under Review</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['under-review'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-closed" onclick="activateCard(this, 'closed')">
-                <span class="card-title">Closed</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['closed'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-unresolved" onclick="activateCard(this, 'unresolved')">
-                <span class="card-title">Unresolved</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['unresolved'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-false" onclick="activateCard(this, 'false-report')">
-                <span class="card-title">False-Report</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['false-report'] ?? 0) }}</div>
-            </div>
-        </section>
-
-        <section class="extras-row" aria-label="Extra metrics">
-            <div class="metric-card extras-anonymous" onclick="openExtrasModal('anonymous')">
-                <span class="card-title">Anonymous</span>
-                <div class="card-value">{{ number_format($anonymousCounts['anonymous'] ?? 0) }}</div>
-                <span class="card-subtext"></span>
-            </div>
-            <div class="metric-card extras-identified" onclick="openExtrasModal('identified')">
-                <span class="card-title">Identified</span>
-                <div class="card-value">{{ number_format($anonymousCounts['identified'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card extras-abuse" onclick="openExtrasModal('abuse-types')">
-                <span class="card-title">Types Of Report Tracked</span>
-                <div class="card-value">{{ count($abuseTypeLabels) }}</div>
-                <span class="card-subtext"></span>
-            </div>
-            <div class="metric-card extras-schools" onclick="openExtrasModal('schools')" title="Open full list of schools with reports">
-                <span class="card-title">Active Schools</span>
-                <div class="card-value">{{ number_format($activeSchoolsWithReports ?? 0) }}</div>
-                <span class="card-subtext">Tap for every school</span>
-            </div>
-        </section>
-
-        <section class="panel" aria-label="Analytics">
-            @php
-                $monthlyPointCount = max(count($months ?? []), 1);
-                $monthlyTrendHostH = (int) max(260, min(440, 170 + $monthlyPointCount * 12));
-                $anonymousHostH = (int) max(280, min(400, 300));
-                $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
-                $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
-            @endphp
-            <div class="grid-two">
-                <div class="chart-monthly-block">
-                    <h2>Monthly Trends</h2>
-                    <div class="chart-canvas-host" style="height: {{ $monthlyTrendHostH }}px;">
-                        <canvas id="monthlyTrendChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card chart-abuse-pie">
-                    <h2>Report Types Distribution</h2>
-                    <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
-                        <canvas id="abuseTypeChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            @php
-                $statusBreakdownN = max(count($statusCounts ?? []), 1);
-                $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
-            @endphp
-            <div class="chart-card chart-status" style="margin-top: 1.5rem;">
-                <h2 class="chart-title-left">Status Breakdown</h2>
-                <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
-                    <canvas id="statusChart" aria-label="Reports by status"></canvas>
-                </div>
-            </div>
-            <div class="grid-two" style="margin-top: 1.5rem;">
-                <div class="chart-card chart-anonymous">
-                    <h2>Anonymous vs Identified</h2>
-                    <div class="chart-canvas-host" style="height: {{ $anonymousHostH }}px;">
-                        <canvas id="anonymousChart"></canvas>
-                    </div>
-                </div>
-                <div>
-                    <h2>Top Reporting Schools</h2>
-                    <div class="table-responsive">
-                        <table style="width:100%; border-collapse:collapse;" class="table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align:left;">School</th>
-                                    <th style="text-align:right; white-space:nowrap;">Reports</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($topSchools ?? [] as $schoolName => $schoolCount)
-                                    <tr>
-                                        <td style="padding:0.5rem; border-bottom:1px solid #e5e7eb; word-break:break-word;">
-                                            {{ $schoolName }}
-                                        </td>
-                                        <td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb; white-space:nowrap;">
-                                            {{ number_format($schoolCount) }}
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="2" style="text-align:center; color:#6b7280; padding:1rem;">
-                                            No schools with a linked record for these filters.
-                                            @if(($reportsWithoutLinkedSchool ?? 0) > 0)
-                                                <br><span style="font-size:12px;">{{ number_format($reportsWithoutLinkedSchool) }} report(s) have no linked school.</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforelse
-                                @if(count($topSchools ?? []) > 0)
-                                @php
-                                    $sumTopSchools = array_sum($topSchools);
-                                    $moreSchools = max(0, ($activeSchoolsWithReports ?? 0) - count($topSchools));
-                                @endphp
-                                <tr>
-                                    <td colspan="2" style="font-size:12px; color:#6b7280; padding:0.65rem 0.5rem 0; line-height:1.45;">
-                                        Top {{ count($topSchools) }} by volume: <strong>{{ number_format($sumTopSchools) }}</strong> reports.
-                                        @if(($reportsWithoutLinkedSchool ?? 0) > 0)
-                                            <strong>{{ number_format($reportsWithoutLinkedSchool) }}</strong> report(s) have no linked school.
-                                        @endif
-                                        @if($moreSchools > 0)
-                                            <strong>{{ number_format($moreSchools) }}</strong> other active school(s) not listed — see Active Schools card for the total.
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
+        {{-- ── Heatmap ── --}}
         <section class="panel heatmap-panel" aria-label="Reports by District and Type">
             <h2>Reports by District &amp; Report Type</h2>
             <div class="heatmap-toolbar">
                 <div class="heatmap-view-toggle" role="group" aria-label="View mode">
-                    <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">Counts</button>
-                    <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">Row %</button>
+                    <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">COUNTS</button>
+                    <button type="button" class="heatmap-view-btn"        data-view="percent" aria-pressed="false">ROW %</button>
                 </div>
-                <span class="heatmap-legend" style="margin:0;">Click a cell to view filtered reports</span>
             </div>
             <div class="heatmap-wrap">
                 <table class="heatmap-table" role="table">
                     <thead>
                         <tr>
                             <th class="heatmap-corner">District</th>
-                            @foreach($heatmapAbuseTypes ?? [] as $atype)
+                            @foreach($heatmapAbuseTypes as $atype)
                                 <th class="heatmap-col">{{ $atype }}</th>
                             @endforeach
-                            <th class="heatmap-total-col">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($heatmapMatrix ?? [] as $district => $row)
+                        @forelse($heatmapMatrix as $district => $row)
                             @php $rowIdx = $loop->index; @endphp
                             <tr>
                                 <th class="heatmap-row">{{ $district }}</th>
                                 @foreach($row as $colIdx => $count)
                                     @php
-                                        $intensity = ($heatmapMax ?? 1) > 0 ? min(1, $count / ($heatmapMax ?? 1)) : 0;
-                                        $colors = ['#e0f2fe','#fef9c3','#eab308','#f97316','#ef4444'];
-                                        $colorIdx = $intensity >= 0.8 ? 4 : ($intensity >= 0.6 ? 3 : ($intensity >= 0.4 ? 2 : ($intensity >= 0.2 ? 1 : 0)));
-                                        $bgColor = $colors[$colorIdx];
-                                        $isDark = $intensity >= 0.6;
-                                        $pct = $heatmapPercentages[$district][$colIdx] ?? 0;
-                                        $atype = $heatmapAbuseTypes[$colIdx] ?? '';
-                                        $isHotspot = in_array($colIdx, $heatmapHotspots[$district] ?? []);
-                                        $districtId = $heatmapDistrictNameToId[$district] ?? null;
+                                        $intensity   = ($heatmapMax > 0) ? min(1, $count / $heatmapMax) : 0;
+                                        $colorIdx    = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
+                                        $bgColor     = ['#22c55e','#38b6ff','#ef4444'][$colorIdx];
+                                        $isDark      = $colorIdx === 2;
+                                        $pct         = $heatmapPercentages[$district][$colIdx] ?? 0;
+                                        $atype       = $heatmapAbuseTypes[$colIdx] ?? '';
+                                        $districtId  = $heatmapDistrictNameToId[$district] ?? null;
                                         $abuseTypeId = $heatmapAbuseTypeNameToId[$atype] ?? null;
-                                        $animDelay = ($rowIdx * count($row) + $colIdx) * 0.02;
                                     @endphp
-                                    <td class="heatmap-cell {{ $isDark ? 'heatmap-cell-dark' : '' }} {{ $isHotspot ? 'heatmap-hotspot' : '' }}"
-                                        style="background-color: {{ $bgColor }}; animation-delay: {{ $animDelay }}s;"
+                                    <td class="heatmap-cell {{ $isDark ? 'heatmap-cell-dark' : '' }}"
+                                        style="background-color:{{ $bgColor }};"
                                         data-count="{{ $count }}"
                                         data-percent="{{ $pct }}"
                                         data-district="{{ $district }}"
                                         data-abuse-type="{{ $atype }}"
                                         data-district-id="{{ $districtId }}"
                                         data-abuse-type-id="{{ $abuseTypeId }}"
-                                        data-view="count"
-                                        role="button"
-                                        tabindex="0"
-                                        title="{{ $district }} × {{ $atype }}: {{ $count }} reports ({{ $pct }}% of district) — Click to view reports">
+                                        role="button" tabindex="0"
+                                        title="{{ $district }} × {{ $atype }}: {{ $count }} reports ({{ $pct }}%)">
                                         <span class="heatmap-cell-count">{{ $count }}</span>
                                         <span class="heatmap-cell-pct" style="display:none;">{{ $pct }}%</span>
                                     </td>
                                 @endforeach
-                                <td class="heatmap-total-cell">{{ $heatmapRowTotals[$district] ?? 0 }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ count($heatmapAbuseTypes ?? []) + 2 }}" style="text-align:center; padding:2rem; color:#6b7280;">No report data for the selected filters.</td>
+                                <td colspan="{{ count($heatmapAbuseTypes) + 1 }}" style="text-align:center;padding:2rem;color:#6b7280;">
+                                    No report data for the selected filters.
+                                </td>
                             </tr>
                         @endforelse
-                        @if(!empty($heatmapMatrix))
-                            <tr class="heatmap-total-row">
-                                <th class="heatmap-corner">Total</th>
-                                @foreach($heatmapColumnTotals ?? [] as $colTotal)
-                                    <td class="heatmap-total-col">{{ $colTotal }}</td>
-                                @endforeach
-                                <td class="heatmap-total-cell">{{ $heatmapGrandTotal ?? 0 }}</td>
-                            </tr>
-                        @endif
                     </tbody>
                 </table>
             </div>
             <div class="heatmap-scale-wrap">
-                <div class="heatmap-scale heatmap-scale-count" id="heatmapScaleCount">
-                    <span>Low</span>
-                    <div class="heatmap-scale-bar" aria-hidden="true"></div>
-                    <span>High</span>
+                <div class="heatmap-scale" id="heatmapScaleCount">
+                    <span>LOW</span><div class="heatmap-scale-bar" aria-hidden="true"></div><span>HIGH</span>
                 </div>
-                <div class="heatmap-scale heatmap-scale-pct" id="heatmapScalePct" style="display:none;">
-                    <span>0%</span>
-                    <div class="heatmap-scale-bar heatmap-scale-pct" aria-hidden="true"></div>
-                    <span>100%</span>
+                <div class="heatmap-scale" id="heatmapScalePct" style="display:none;">
+                    <span>0%</span><div class="heatmap-scale-bar" aria-hidden="true"></div><span>100%</span>
                 </div>
             </div>
-            <p class="heatmap-legend">◆ = top 3 in district. Districts sorted by total.</p>
         </section>
 
-        <section class="panel map-panel" aria-label="Reports by Province Map">
-            <h2>Reports by Province (Geographic)</h2>
-            <div id="sa-map" class="sa-map-container">
+        {{-- ── Geographic map ── --}}
+        <section class="panel map-panel" aria-label="Reports by District Geographic">
+            <h2>Reports by District (Geographic)</h2>
+            <div id="district-map" class="district-map-container">
+                <div id="district-map-key" class="district-map-key" style="display:none;">
+                    <div class="district-map-key-title">Districts</div>
+                    <div id="district-map-key-rows"></div>
+                </div>
                 <div id="map-legend" class="map-legend" style="display:none;">
-                    <div class="map-legend-title">Report count</div>
-                    <div class="map-legend-bar"></div>
-                    <div class="map-legend-labels">
-                        <span id="map-legend-min">0</span>
-                        <span id="map-legend-max">0</span>
-                    </div>
+                    <div class="map-legend-title">{{ strtoupper($province->province_name) }} HEATMAP LEGEND</div>
+                    <div class="map-legend-row"><span class="map-legend-swatch low"    aria-hidden="true"></span><span>LOW</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>MEDIUM</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch high"   aria-hidden="true"></span><span>HIGH</span></div>
+                </div>
+                <div id="district-map-tooltip" class="district-map-tooltip" style="display:none;">
+                    <div class="tt-title" id="district-map-tooltip-title"></div>
+                    <div class="tt-sub"   id="district-map-tooltip-sub"></div>
                 </div>
             </div>
-            <p class="heatmap-legend">Blue = low, yellow = medium, red = high report count. Your province highlighted. Hover for details.</p>
         </section>
-    </div>
-</div>
 
-<!-- Modal for report details -->
-<div class="modal-backdrop" id="statusModal" aria-hidden="true" onclick="if(event.target === this) closeStatusModal();">
-    <div class="modal-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
-            <h3 id="statusModalTitle">Reports</h3>
-            <button class="modal-close" onclick="closeStatusModal()" aria-label="Close">&times;</button>
-        </div>
-        <div style="overflow-x:auto; max-height: 60vh;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background-color: #f3f4f6;">
-                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #e5e7eb; font-weight: 600;">Case Number</th>
-                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #e5e7eb; font-weight: 600;">Abuse Type</th>
-                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #e5e7eb; font-weight: 600;">Status</th>
-                        <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #e5e7eb; font-weight: 600;">Created Date</th>
-                    </tr>
-                </thead>
-                <tbody id="statusModalBody">
-                    <tr>
-                        <td colspan="4" style="text-align:center; padding:1.25rem;">Loading reports...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+    </div><!-- /.dashboard-scroll -->
+</div><!-- /.main-panel -->
 
-<!-- Modal for extras cards -->
-<div class="modal-backdrop" id="extrasModal" aria-hidden="true" onclick="if(event.target === this) closeExtrasModal();">
-    <div class="modal-card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="extrasModalTitle">Details</h3>
-            <button class="modal-close" onclick="closeExtrasModal()" aria-label="Close">&times;</button>
-        </div>
-        <div id="extrasModalBody" style="max-height: 60vh; overflow-y: auto;"></div>
-    </div>
-</div>
-
-<!-- Chart Data -->
-<script id="dashboard-data" type="application/json">
-{!! json_encode([
-    'months' => $months,
-    'monthlyCounts' => $monthlyCounts,
-    'abuseLabels' => $abuseTypeLabels,
-    'abuseCounts' => $abuseTypeCounts,
-    'abuseTypePercentages' => $abuseTypePercentages ?? [],
-    'statusCounts' => $statusCounts,
-    'anonymousCounts' => $anonymousCounts,
-    'topSchools' => $topSchools ?? [],
-    'activeSchoolsWithReports' => $activeSchoolsWithReports ?? 0,
-    'activeSchoolsByReports' => $activeSchoolsByReports ?? [],
-    'reportsWithoutLinkedSchool' => $reportsWithoutLinkedSchool ?? 0,
-    'statusReports' => $statusReportPayload,
-    'allReports' => $allReportsPayload,
-    'anonymousReports' => $anonymousReportsPayload ?? [],
-    'identifiedReports' => $identifiedReportsPayload ?? [],
-]) !!}
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+{{-- ── JS: heatmap toggle ── --}}
 <script>
-    Chart.register(ChartDataLabels);
+(function () {
+    const reportsUrl = "{{ url('/provincial-admin/reports') }}";
+    const viewBtns   = document.querySelectorAll('.heatmap-view-btn');
+    const scaleCount = document.getElementById('heatmapScaleCount');
+    const scalePct   = document.getElementById('heatmapScalePct');
 
-(function() {
-  const reportsUrl = "{{ url('/provincial-admin/reports') }}";
-  const viewBtns = document.querySelectorAll('.heatmap-view-btn');
-  const scaleCount = document.getElementById('heatmapScaleCount');
-  const scalePct = document.getElementById('heatmapScalePct');
-
-  if (viewBtns.length) {
     viewBtns.forEach(btn => {
-      btn.addEventListener('click', function() {
-        const view = this.dataset.view;
-        viewBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
-        this.classList.add('active');
-        this.setAttribute('aria-pressed', 'true');
-        document.querySelectorAll('.heatmap-cell[data-count]').forEach(cell => {
-          const countEl = cell.querySelector('.heatmap-cell-count');
-          const pctEl = cell.querySelector('.heatmap-cell-pct');
-          if (countEl && pctEl) {
-            if (view === 'percent') {
-              countEl.style.display = 'none';
-              pctEl.style.display = '';
-            } else {
-              countEl.style.display = '';
-              pctEl.style.display = 'none';
-            }
-          }
-        });
-        if (scaleCount && scalePct) {
-          scaleCount.style.display = view === 'count' ? 'flex' : 'none';
-          scalePct.style.display = view === 'percent' ? 'flex' : 'none';
-        }
-      });
-    });
-  }
+        btn.addEventListener('click', function () {
+            const view = this.dataset.view;
+            viewBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+            this.classList.add('active');
+            this.setAttribute('aria-pressed', 'true');
 
-  document.querySelectorAll('.heatmap-cell[data-district-id]').forEach(cell => {
-    cell.addEventListener('click', function() {
-      const did = this.dataset.districtId;
-      const aid = this.dataset.abuseTypeId;
-      const count = parseInt(this.dataset.count, 10);
-      if (count === 0) return;
-      const url = new URL(reportsUrl, window.location.origin);
-      const params = new URLSearchParams(window.location.search);
-      ['district','school','abuse_type','from_date','to_date','age_range'].forEach(k => {
-        if (params.has(k)) url.searchParams.set(k, params.get(k));
-      });
-      if (did) url.searchParams.set('district', did);
-      if (aid) url.searchParams.set('abuse_type', aid);
-      window.location.href = url.toString();
+            document.querySelectorAll('.heatmap-cell').forEach(cell => {
+                const countEl = cell.querySelector('.heatmap-cell-count');
+                const pctEl   = cell.querySelector('.heatmap-cell-pct');
+                if (countEl && pctEl) {
+                    countEl.style.display = view === 'percent' ? 'none' : '';
+                    pctEl.style.display   = view === 'percent' ? ''     : 'none';
+                }
+            });
+            if (scaleCount && scalePct) {
+                scaleCount.style.display = view === 'count'   ? 'flex' : 'none';
+                scalePct.style.display   = view === 'percent' ? 'flex' : 'none';
+            }
+        });
     });
-    cell.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        this.click();
-      }
+
+    // Click cell → navigate to filtered reports
+    document.querySelectorAll('.heatmap-cell[data-district-id]').forEach(cell => {
+        cell.addEventListener('click', function () {
+            const count = parseInt(this.dataset.count, 10);
+            if (count === 0) return;
+            const url    = new URL(reportsUrl, window.location.origin);
+            const params = new URLSearchParams(window.location.search);
+            ['district','school','abuse_type','from_date','to_date','age_range'].forEach(k => {
+                if (params.has(k)) url.searchParams.set(k, params.get(k));
+            });
+            if (this.dataset.districtId)  url.searchParams.set('district',   this.dataset.districtId);
+            if (this.dataset.abuseTypeId) url.searchParams.set('abuse_type', this.dataset.abuseTypeId);
+            window.location.href = url.toString();
+        });
+        cell.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+        });
     });
-  });
+
+    // Reset filters button
+    document.getElementById('refreshBtn').addEventListener('click', function () {
+        const form = document.getElementById('filtersForm');
+        form.querySelectorAll('select').forEach(s => { s.selectedIndex = 0; });
+        form.querySelectorAll('input[type="date"]').forEach(i => { i.value = ''; });
+        form.submit();
+    });
 })();
-
-document.getElementById('refreshBtn').addEventListener('click', function () {
-    const form = document.getElementById('filtersForm');
-    form.querySelectorAll('select').forEach(select => {
-        select.selectedIndex = 0;
-        select.disabled = false;
-    });
-    form.querySelectorAll('input[type="date"]').forEach(input => {
-        input.value = '';
-    });
-    form.submit();
-});
-
-const chartRegistry = {};
-let statusReportsMap = {};
-let allReportsList = [];
-
-function activateCard(el, status) {
-    document.querySelectorAll('.metric-card').forEach(card => card.classList.remove('active'));
-    el.classList.add('active');
-    openStatusModal(status);
-}
-
-function openStatusModal(status) {
-    let reports = [];
-
-    if (status === 'total') {
-        reports = allReportsList;
-    } else if (status === 'anonymous') {
-        reports = statusReportsMap['anonymous'] || [];
-    } else if (status === 'identified') {
-        reports = statusReportsMap['identified'] || [];
-    } else if (statusReportsMap[status]) {
-        reports = statusReportsMap[status];
-    }
-
-    const tbody = document.getElementById('statusModalBody');
-    const title = document.getElementById('statusModalTitle');
-    tbody.innerHTML = '';
-
-    if (!reports || reports.length === 0) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="4" style="text-align:center; padding:1.25rem;">No reports for this selection.</td>';
-        tbody.appendChild(emptyRow);
-    } else {
-        reports.forEach(report => {
-            const row = document.createElement('tr');
-            row.style.cursor = 'pointer';
-            row.style.borderBottom = '1px solid #e5e7eb';
-            row.onmouseover = function() { this.style.backgroundColor = '#f9fafb'; };
-            row.onmouseout = function() { this.style.backgroundColor = ''; };
-            row.innerHTML = `
-                <td style="padding: 0.75rem;">${report.case_number ?? 'N/A'}</td>
-                <td style="padding: 0.75rem;">${report.abuse_type ?? 'N/A'}</td>
-                <td style="padding: 0.75rem;">${report.status ? report.status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'N/A'}</td>
-                <td style="padding: 0.75rem;">${report.created_at ?? 'N/A'}</td>`;
-            tbody.appendChild(row);
-        });
-    }
-
-    let titleText = 'Reports';
-    if (status === 'total') {
-        titleText = 'All Reports (' + reports.length + ')';
-    } else if (status === 'false-report') {
-        titleText = 'False Reports (' + reports.length + ')';
-    } else {
-        titleText = status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) + ' Reports (' + reports.length + ')';
-    }
-
-    title.textContent = titleText;
-
-    const modal = document.getElementById('statusModal');
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-}
-
-function closeStatusModal() {
-    const modal = document.getElementById('statusModal');
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-}
-
-function createChart(id, config) {
-    const canvas = document.getElementById(id);
-    if (!canvas) return;
-    if (chartRegistry[id]) chartRegistry[id].destroy();
-    chartRegistry[id] = new Chart(canvas.getContext('2d'), config);
-}
-
-function getValue(source, key, fallback) {
-    return source && Object.prototype.hasOwnProperty.call(source, key) && source[key] != null
-        ? source[key]
-        : fallback;
-}
-
-function percentagesTo100(values) {
-    const arr = values.map(Number);
-    const total = arr.reduce((a, b) => a + b, 0);
-    if (total === 0) return arr.map(() => 0);
-    const raw = arr.map(v => (v / total) * 100);
-    const floored = raw.map((r, i) => ({ i, floor: Math.floor(r), rem: r - Math.floor(r) }));
-    let sum = floored.reduce((s, x) => s + x.floor, 0);
-    const diff = 100 - sum;
-    floored.sort((a, b) => b.rem - a.rem);
-    for (let d = 0; d < diff; d++) floored[d].floor += 1;
-    floored.sort((a, b) => a.i - b.i);
-    return floored.map(x => x.floor);
-}
-
-/** Human-readable status for chart axis + tooltips */
-function formatStatusLabel(slug) {
-    if (slug == null || slug === '') return '';
-    const key = String(slug);
-    const map = {
-        'awaiting-resolution': 'Awaiting Resolution',
-        'under-review': 'Under Review',
-        'forwarded': 'Forwarded',
-        'closed': 'Closed',
-        'unresolved': 'Unresolved',
-        'false-report': 'False Report',
-    };
-    if (map[key]) return map[key];
-    return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function renderOverviewCharts(dataset) {
-    createChart('monthlyTrendChart', {
-        type: 'line',
-        data: {
-            labels: dataset.months || [],
-            datasets: [{
-                label: 'Reports',
-                data: dataset.monthlyCounts || [],
-                borderColor: '#ff66c4',
-                backgroundColor: 'rgba(236, 144, 224, 0.2)',
-                fill: true,
-                tension: 0.3,
-                borderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: { padding: { top: 4, bottom: 22, left: 2, right: 6 } },
-            plugins: { legend: { display: true, position: 'top' } },
-            scales: {
-                x: { ticks: { color: '#4b5664', padding: 4 }, grid: { drawBorder: false } },
-                y: { beginAtZero: true, ticks: { precision: 0 }, grid: { drawBorder: false } }
-            }
-        }
-    });
-
-    const abuseLabels = dataset.abuseLabels || [];
-    const abuseCountsRaw = dataset.abuseCounts || [];
-    const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
-    const abuseColors = ['#004c99', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4', '#C0C0C0', '#FF0000', '#FFFF00'];
-
-    const abuseLegendPosition = 'bottom';
-    createChart('abuseTypeChart', {
-        type: 'pie',
-        data: {
-            labels: abuseLabels,
-            datasets: [{
-                data: abuseCounts,
-                backgroundColor: abuseColors.slice(0, Math.max(abuseLabels.length, 1))
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: {
-                padding: abuseLegendPosition === 'right'
-                    ? { top: 8, right: 8, bottom: 8, left: 8 }
-                    : { top: 4, right: 12, bottom: 4, left: 12 }
-            },
-            plugins: {
-                legend: {
-                    position: abuseLegendPosition,
-                    align: 'center',
-                    fullSize: true,
-                    labels: {
-                        padding: abuseLegendPosition === 'right' ? 10 : 14,
-                        boxWidth: 14,
-                        boxHeight: 14,
-                        usePointStyle: true,
-                        maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
-                        font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
-                        generateLabels: function(chart) {
-                            const data = chart.data;
-                            const ds = data.datasets[0];
-                            const pcts = percentagesTo100(ds.data);
-                            return data.labels.map((label, i) => ({
-                                text: (label || '—') + ' (' + pcts[i] + '%)',
-                                fillStyle: ds.backgroundColor[i],
-                                strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
-                                lineWidth: 1,
-                                hidden: false,
-                                index: i
-                            }));
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => {
-                            const pcts = percentagesTo100(ctx.dataset.data);
-                            return `${ctx.label}: ${ctx.parsed} (${pcts[ctx.dataIndex]}%)`;
-                        }
-                    }
-                },
-                datalabels: { display: false }
-            }
-        }
-    });
-
-    const statusCtx = document.getElementById('statusChart')?.getContext('2d');
-    const statusGradientColors = ['#99c4d3', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4'];
-    const statusBarColors = [];
-    const statusCapColors = [];
-    statusGradientColors.forEach((color) => {
-        if (statusCtx) {
-            const gradient = statusCtx.createLinearGradient(0, 0, 600, 0);
-            gradient.addColorStop(0, color);
-            gradient.addColorStop(1, color);
-            statusBarColors.push(gradient);
-        } else {
-            statusBarColors.push(color);
-        }
-        statusCapColors.push(color);
-    });
-
-    const statusBarPlugin = {
-        id: 'provincialStatusBarPlugin',
-        afterDatasetDraw(chart) {
-            const { ctx, chartArea } = chart;
-            const datasetMeta = chart.getDatasetMeta(0);
-            datasetMeta.data.forEach((bar, i) => {
-                const pct = parseFloat(chart.data.datasets[0].data[i]) || 0;
-                const percentage = pct.toFixed(1);
-                const fullX = chart.scales.x.getPixelForValue(100);
-                const filledX = chartArea.left + (parseFloat(percentage) / 100) * (fullX - chartArea.left);
-                const y = bar.y;
-                const h = bar.height;
-                const emptyBarColors = ['#c1e6f3ff', '#fdf0d4ff', '#cbffeeff', '#e6c8fcff', '#c5d7f5ff', '#cfeafaff', '#f7bfe1ff'];
-                ctx.fillStyle = emptyBarColors[i % emptyBarColors.length];
-                ctx.fillRect(chartArea.left, y - h / 2, fullX - chartArea.left, h);
-                ctx.fillStyle = statusBarColors[i % statusBarColors.length];
-                ctx.fillRect(chartArea.left, y - h / 2, filledX - chartArea.left, h);
-                const capWidth = 40;
-                const capHeight = 24;
-                let left = filledX;
-                if (filledX + capWidth > chartArea.right - 5) left = Math.max(chartArea.left, chartArea.right - capWidth - 5);
-                const mid = y;
-                ctx.beginPath();
-                ctx.moveTo(left, y - capHeight / 2);
-                ctx.lineTo(left + capWidth - 8, y - capHeight / 2);
-                ctx.lineTo(left + capWidth, mid);
-                ctx.lineTo(left + capWidth - 8, y + capHeight / 2);
-                ctx.lineTo(left, y + capHeight / 2);
-                ctx.closePath();
-                ctx.fillStyle = statusCapColors[i % statusCapColors.length];
-                ctx.fill();
-                ctx.fillStyle = '#fff';
-                ctx.font = '12px Montserrat';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(percentage + '%', left + capWidth / 2 - 4, mid);
-            });
-        }
-    };
-
-    const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
-    const statusLabels = statuses.map(s => s[0]);
-    const statusValues = statuses.map(s => s[1]);
-    const reportTotal = statusValues.reduce((a, b) => a + b, 0);
-    const statusPctBars = statusValues.map((v) => (reportTotal > 0 ? (v / reportTotal) * 100 : 0));
-    const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
-    const statusLayoutPad = window.matchMedia('(max-width: 600px)').matches ? 36 : 50;
-
-    createChart('statusChart', {
-        type: 'bar',
-        plugins: [statusBarPlugin],
-        data: {
-            labels: statusLabels,
-            datasets: [{
-                label: '',
-                data: statusPctBars,
-                backgroundColor: statusLabels.map((_, i) => statusBarColors[i % statusBarColors.length]),
-                borderRadius: { topLeft: 20, bottomLeft: 20, topRight: 0, bottomRight: 0 },
-                borderWidth: 0,
-                barPercentage: 0.55,
-                categoryPercentage: 0.55
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            layout: { padding: { right: statusLayoutPad, left: 4 } },
-            interaction: {
-                mode: 'nearest',
-                intersect: false,
-                axis: 'y'
-            },
-            scales: {
-                x: {
-                    display: false,
-                    beginAtZero: true,
-                    max: 100
-                },
-                y: {
-                    ticks: {
-                        color: '#333',
-                        font: { size: tickFontSize, weight: '600', family: 'Montserrat' },
-                        callback: function(value, index) {
-                            const raw = statusLabels[index] !== undefined ? statusLabels[index] : statusLabels[value];
-                            return raw != null ? formatStatusLabel(raw) : '';
-                        }
-                    }
-                }
-            },
-            plugins: {
-                legend: { display: false },
-                datalabels: { display: false },
-                tooltip: {
-                    displayColors: false,
-                    backgroundColor: 'rgba(15, 23, 42, 0.94)',
-                    titleFont: { size: 13, weight: '600', family: 'Montserrat' },
-                    bodyFont: { size: 17, weight: '700', family: 'Montserrat' },
-                    titleSpacing: 6,
-                    bodySpacing: 4,
-                    padding: 12,
-                    cornerRadius: 10,
-                    callbacks: {
-                        title: (items) => (items.length ? formatStatusLabel(items[0].label) : ''),
-                        label: (item) => {
-                            const n = statusValues[item.dataIndex];
-                            return n != null ? Number(n).toLocaleString() : '';
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    createChart('anonymousChart', {
-        type: 'doughnut',
-        data: {
-            labels: ['Anonymous', 'Identified'],
-            datasets: [{
-                data: [
-                    getValue(dataset.anonymousCounts, 'anonymous', 0),
-                    getValue(dataset.anonymousCounts, 'identified', 0)
-                ],
-                backgroundColor: ['#9b57cc', '#99c4d3']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom' },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => {
-                            const pcts = percentagesTo100(ctx.dataset.data);
-                            return `${ctx.label}: ${ctx.parsed} (${pcts[ctx.dataIndex]}%)`;
-                        }
-                    }
-                },
-                datalabels: {
-                    color: 'white',
-                    anchor: 'center',
-                    align: 'center',
-                    font: { weight: 'bold', size: 14, family: 'Montserrat' },
-                    display: function(ctx) { return ctx.dataset.data[ctx.dataIndex] > 0; },
-                    formatter: (value, ctx) => {
-                        const pcts = percentagesTo100(ctx.chart.data.datasets[0].data);
-                        return `${pcts[ctx.dataIndex]}%`;
-                    }
-                }
-            }
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    const dataElement = document.getElementById('dashboard-data');
-    const dataset = dataElement ? JSON.parse(dataElement.textContent || '{}') : {};
-    statusReportsMap = dataset.statusReports || {};
-    allReportsList = dataset.allReports || [];
-
-    if (dataset.anonymousReports) statusReportsMap['anonymous'] = dataset.anonymousReports;
-    if (dataset.identifiedReports) statusReportsMap['identified'] = dataset.identifiedReports;
-
-    renderOverviewCharts(dataset);
-
-    const firstCard = document.querySelector('.metric-card.status-total');
-    if (firstCard) firstCard.classList.add('active');
-});
-
-function navigateWithFilter(status) {
-    const url = new URL("{{ url('/provincial/reports') }}", window.location.origin);
-    const params = new URLSearchParams(window.location.search);
-    params.forEach((value, key) => { if (key !== 'status') url.searchParams.append(key, value); });
-    if (status && status !== 'total') { url.searchParams.set('status', status); } else { url.searchParams.delete('status'); }
-    window.location.href = url.toString();
-}
-
-function openExtrasModal(type) {
-    const dataElem = document.getElementById('dashboard-data');
-    const data = dataElem ? JSON.parse(dataElem.textContent || '{}') : {};
-    const modal = document.getElementById('extrasModal');
-    const titleEl = document.getElementById('extrasModalTitle');
-    const bodyEl = document.getElementById('extrasModalBody');
-    if (!modal || !titleEl || !bodyEl) return;
-
-    if (type === 'anonymous') {
-        titleEl.textContent = 'Anonymous Reports';
-        const count = (data.anonymousCounts || {}).anonymous || 0;
-        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports submitted anonymously: <strong>' + count.toLocaleString() + '</strong></p>' +
-            '<button type="button" onclick="navigateWithFilterByAnonymous(1); closeExtrasModal();" class="extras-modal-btn">View Anonymous Reports</button>';
-    } else if (type === 'identified') {
-        titleEl.textContent = 'Identified Reports';
-        const count = (data.anonymousCounts || {}).identified || 0;
-        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports where the reporter was identified: <strong>' + count.toLocaleString() + '</strong></p>' +
-            '<button type="button" onclick="navigateWithFilterByAnonymous(0); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
-    } else if (type === 'abuse-types') {
-        titleEl.textContent = 'Types Of Report Tracked';
-        const labels = data.abuseLabels || [];
-        const counts = data.abuseCounts || [];
-        const pcts = data.abuseTypePercentages || [];
-        let html = '<table style="width:100%; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Report Type</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Count</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">%</th></tr></thead><tbody>';
-        labels.forEach((label, i) => {
-            html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (label || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (counts[i] || 0).toLocaleString() + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (pcts[i] ?? 0) + '%</td></tr>';
-        });
-        html += '</tbody></table>';
-        bodyEl.innerHTML = html;
-    } else if (type === 'schools') {
-        titleEl.textContent = 'Active Schools';
-        const schools = data.activeSchoolsByReports || {};
-        const entries = Object.entries(schools);
-        const activeN = Number(data.activeSchoolsWithReports || 0);
-        const noSchool = Number(data.reportsWithoutLinkedSchool || 0);
-        const sumListed = entries.reduce((s, [, c]) => s + Number(c || 0), 0);
-        if (entries.length === 0) {
-            bodyEl.innerHTML = '<p>No schools with a linked record for the current filters.</p>';
-        } else {
-            let html = '<p style="margin:0 0 0.75rem; font-size:13px; color:#4b5563;">All <strong>' + activeN.toLocaleString() + '</strong> school(s) with at least one report (linked school record), sorted by report count.</p>';
-            html += '<div style="max-height:min(52vh,480px); overflow-y:auto; border:1px solid #e5e7eb; border-radius:8px;">';
-            html += '<table style="width:100%; border-collapse:collapse;"><thead style="position:sticky; top:0; background:#fff; z-index:1;"><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">School</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Reports</th></tr></thead><tbody>';
-            entries.forEach(([name, count]) => {
-                html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb; word-break:break-word;">' + (name || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb; white-space:nowrap;">' + Number(count).toLocaleString() + '</td></tr>';
-            });
-            html += '</tbody></table></div>';
-            html += '<p style="margin:0.75rem 0 0; font-size:12px; color:#6b7280; line-height:1.45;">Rows total <strong>' + sumListed.toLocaleString() + '</strong> reports with a linked school.';
-            if (noSchool > 0) html += ' <strong>' + noSchool.toLocaleString() + '</strong> report(s) have no linked school (not listed above).';
-            html += '</p>';
-            bodyEl.innerHTML = html;
-        }
-    }
-
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-}
-
-function closeExtrasModal() {
-    const modal = document.getElementById('extrasModal');
-    if (modal) { modal.classList.remove('active'); modal.setAttribute('aria-hidden', 'true'); }
-}
-
-function navigateWithFilterByAnonymous(isAnonymous) {
-    const url = new URL("{{ url('/provincial-admin/reports') }}", window.location.origin);
-    const params = new URLSearchParams(window.location.search);
-    params.forEach((value, key) => { if (key !== 'is_anonymous') url.searchParams.append(key, value); });
-    url.searchParams.set('is_anonymous', isAnonymous ? 1 : 0);
-    window.location.href = url.toString();
-}
-
 </script>
+
+{{-- ── JS: geographic map ── --}}
+<script>
+(function () {
+    const container    = document.getElementById('district-map');
+    if (!container) return;
+
+    const provinceSlug       = @json($mapProvinceSlug ?? '');
+    const districtCounts     = @json($heatmapRowTotals ?? []);
+    const tableDistrictNames = @json(array_keys($heatmapMatrix ?? []));
+    const legendEl           = document.getElementById('map-legend');
+    if (legendEl) legendEl.style.display = 'block';
+
+    const tooltipEl      = document.getElementById('district-map-tooltip');
+    const tooltipTitleEl = document.getElementById('district-map-tooltip-title');
+    const tooltipSubEl   = document.getElementById('district-map-tooltip-sub');
+    const keyEl          = document.getElementById('district-map-key');
+    const keyRowsEl      = document.getElementById('district-map-key-rows');
+
+    function stripPrefixes(name) {
+        return String(name || '').toLowerCase()
+            .replace(/&/g, 'and').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim()
+            .replace(/^city of\s+/, '')
+            .replace(/\s+district municipality$/, '')
+            .replace(/\s+metropolitan municipality$/, '');
+    }
+    function fmtTitle(name) {
+        return String(name || '').trim()
+            .replace(/\s+District Municipality$/i, '')
+            .replace(/\s+Metropolitan Municipality$/i, '').trim();
+    }
+
+    const countsByKey = {};
+    Object.entries(districtCounts || {}).forEach(([n, c]) => { countsByKey[stripPrefixes(n)] = Number(c) || 0; });
+
+    const max = Math.max(1, ...Object.values(countsByKey));
+    function getFill(count) {
+        if (count <= max * 0.33) return '#22c55e';
+        if (count <= max * 0.66) return '#38b6ff';
+        return '#ef4444';
+    }
+
+    function showTooltip(clientX, clientY, title, count) {
+        if (!tooltipEl) return;
+        tooltipTitleEl.textContent = title;
+        tooltipSubEl.textContent   = `${Number(count).toLocaleString()} report(s)`;
+        tooltipEl.style.display    = 'block';
+        const rect = container.getBoundingClientRect();
+        const x = Math.min(rect.width  - 12, Math.max(12, clientX - rect.left + 12));
+        const y = Math.min(rect.height - 12, Math.max(12, clientY - rect.top  + 12));
+        tooltipEl.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`;
+    }
+    function hideTooltip() {
+        if (!tooltipEl) return;
+        tooltipEl.style.display   = 'none';
+        tooltipEl.style.transform = 'translate(-9999px,-9999px)';
+    }
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const url   = `https://raw.githubusercontent.com/datawizzards/zadmaps/master/geojson/${provinceSlug}.json`;
+
+    fetch(url).then(r => r.json()).then(items => {
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('class', 'district-map-svg');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        const g = document.createElementNS(svgNS, 'g');
+        svg.appendChild(g);
+
+        const shapeByKey = {};
+        (items || []).forEach(it => {
+            const name  = it?.name ?? '';
+            const key   = stripPrefixes(name);
+            const count = countsByKey[key] ?? 0;
+            const path  = document.createElementNS(svgNS, 'path');
+            path.setAttribute('d',        it?.path ?? '');
+            path.setAttribute('class',    'district-map-shape');
+            path.setAttribute('fill',     getFill(count));
+            path.setAttribute('tabindex', '0');
+            path.setAttribute('role',     'img');
+            path.setAttribute('aria-label', `${fmtTitle(name)}: ${Number(count).toLocaleString()} report(s)`);
+            path.addEventListener('mouseenter', e => showTooltip(e.clientX, e.clientY, fmtTitle(name), count));
+            path.addEventListener('mousemove',  e => showTooltip(e.clientX, e.clientY, fmtTitle(name), count));
+            path.addEventListener('mouseleave', hideTooltip);
+            g.appendChild(path);
+            shapeByKey[key] = { name, pathEl: path, count };
+        });
+
+        container.querySelector('svg.district-map-svg')?.remove();
+        container.insertBefore(svg, container.firstChild);
+
+        requestAnimationFrame(() => {
+            try { const bb = g.getBBox(); svg.setAttribute('viewBox', `${bb.x-10} ${bb.y-10} ${bb.width+20} ${bb.height+20}`); } catch {}
+
+            const dedup = new Map();
+            (tableDistrictNames || []).forEach(n => { const k = stripPrefixes(n); if (k) dedup.set(k, n); });
+            const data = Array.from(dedup.entries()).map(([k, orig]) => {
+                const m = shapeByKey[k];
+                return { key: k, label: fmtTitle(m?.name ?? orig), count: Number(m?.count ?? countsByKey[k] ?? 0), pathEl: m?.pathEl ?? null };
+            });
+            data.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+
+            if (keyEl && keyRowsEl) {
+                keyRowsEl.innerHTML = '';
+                keyEl.style.display = 'block';
+                data.forEach((d, idx) => {
+                    const row    = document.createElement('div'); row.className = 'district-map-key-row';
+                    const swatch = document.createElement('span'); swatch.className = 'district-map-key-swatch'; swatch.style.background = getFill(d.count);
+                    const num    = document.createElement('span'); num.className = 'district-map-key-num';    num.textContent = idx + 1;
+                    const name   = document.createElement('span'); name.className = 'district-map-key-name';  name.textContent = d.label;
+                    const cnt    = document.createElement('span'); cnt.className  = 'district-map-key-count'; cnt.textContent  = Number(d.count).toLocaleString();
+                    row.append(swatch, num, name, cnt);
+                    keyRowsEl.appendChild(row);
+                });
+            }
+
+            const ml = document.createElementNS(svgNS, 'g');
+            g.appendChild(ml);
+            const placed = [];
+            data.forEach((d, idx) => {
+                if (!d.pathEl) return;
+                let bb; try { bb = d.pathEl.getBBox(); } catch { return; }
+                let x = bb.x + bb.width / 2, y = bb.y + bb.height / 2;
+                for (let i = 0; i < 20; i++) {
+                    const ok = !placed.some(p => Math.hypot(p.x - x, p.y - y) < 18);
+                    if (ok) break;
+                    const angle = (i + idx) * 0.9, r = 6 + i * 2.5;
+                    x = bb.x + bb.width / 2 + Math.cos(angle) * r;
+                    y = bb.y + bb.height / 2 + Math.sin(angle) * r;
+                }
+                placed.push({ x, y });
+                const mg = document.createElementNS(svgNS, 'g');
+                mg.setAttribute('class',     'district-map-marker');
+                mg.setAttribute('transform', `translate(${x},${y})`);
+                const ct  = String(d.count || 0);
+                const cr  = document.createElementNS(svgNS, 'circle');
+                cr.setAttribute('r', String(Math.max(10, Math.min(22, 8 + ct.length * 2.2))));
+                const tx  = document.createElementNS(svgNS, 'text');
+                tx.setAttribute('font-size', String(ct.length <= 2 ? 11 : ct.length === 3 ? 10 : ct.length === 4 ? 9 : 8));
+                tx.textContent = ct;
+                mg.append(cr, tx);
+                ml.appendChild(mg);
+            });
+        });
+    }).catch(() => {});
+})();
+</script>
+
 @include('components.provincial-admin-sidebar-script')
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script>
-(function() {
-  const mapEl = document.getElementById('sa-map');
-  if (!mapEl) return;
-
-  const provinceCounts = @json($mapProvinceCounts ?? []);
-  const userProvinceName = @json($mapUserProvinceName ?? null);
-  const geoJsonUrl = 'https://gist.githubusercontent.com/MeganBeckett/9101ba77bd0af06fd003ea5c99d051ab/raw/sa-provinces.json';
-
-  function normalizeName(name) {
-    if (!name) return '';
-    return String(name).trim().toLowerCase().replace(/\s+/g, ' ');
-  }
-
-  function getCountForProvince(geoName) {
-    const g = normalizeName(geoName).replace(/-/g, ' ');
-    for (const [dbName, count] of Object.entries(provinceCounts)) {
-      const d = normalizeName(dbName).replace(/-/g, ' ');
-      if (g === d) return count;
-      if (g.replace(/\s/g, '') === d.replace(/\s/g, '')) return count;
-    }
-    return 0;
-  }
-
-  const map = L.map('sa-map', { zoomControl: true }).setView([-29, 24], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  }).addTo(map);
-
-  const maxCount = Math.max(1, ...Object.values(provinceCounts));
-  const mapColors = ['#e0f2fe', '#fef9c3', '#eab308', '#f97316', '#ef4444'];
-
-  function getColor(count) {
-    if (count === 0) return mapColors[0];
-    const intensity = Math.min(1, count / maxCount);
-    const idx = intensity >= 0.8 ? 4 : intensity >= 0.6 ? 3 : intensity >= 0.4 ? 2 : intensity >= 0.2 ? 1 : 0;
-    return mapColors[idx];
-  }
-
-  const legendEl = document.getElementById('map-legend');
-  if (legendEl) {
-    legendEl.style.display = 'block';
-    const minEl = document.getElementById('map-legend-min');
-    const maxEl = document.getElementById('map-legend-max');
-    if (minEl) minEl.textContent = '0';
-    if (maxEl) maxEl.textContent = String(maxCount);
-  }
-
-  fetch(geoJsonUrl)
-    .then(r => r.json())
-    .then(geojson => {
-      let userProvinceLayer = null;
-      const geoLayer = L.geoJSON(geojson, {
-        style: function(feature) {
-          const name = feature.properties?.name || '';
-          const count = getCountForProvince(name);
-          return { fillColor: getColor(count), weight: 1.5, opacity: 1, color: '#1e40af', fillOpacity: 0.85 };
-        },
-        onEachFeature: function(feature, layer) {
-          const name = feature.properties?.name || 'Unknown';
-          const count = getCountForProvince(name);
-          if (userProvinceName && normalizeName(name).replace(/-/g, ' ') === normalizeName(userProvinceName).replace(/-/g, ' ')) {
-            userProvinceLayer = layer;
-          }
-          layer.feature = feature;
-          layer._defaultStyle = { weight: 1.5, color: '#1e40af' };
-          layer.bindTooltip(name + ': ' + count + ' reports', { permanent: false, direction: 'center', className: 'map-tooltip' });
-          layer.on({
-            mouseover: function(e) { const l = e.target; l.setStyle({ weight: 3, color: '#0c4a6e' }); l.bringToFront(); },
-            mouseout: function(e) { const l = e.target; l.setStyle(l._defaultStyle || { weight: 1.5, color: '#1e40af' }); }
-          });
-        }
-      }).addTo(map);
-
-      if (userProvinceLayer && userProvinceLayer.getBounds) {
-        try {
-          const bounds = userProvinceLayer.getBounds();
-          if (bounds.isValid()) map.fitBounds(bounds, { padding: [30, 30], maxZoom: 8 });
-        } catch (e) {}
-      }
-    })
-    .catch(err => console.warn('Map GeoJSON load failed:', err));
-})();
-</script>
-
-<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
-<script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
-    function exportPDF() {
-        const element = document.getElementById('main-content');
-        if (!element) {
-            alert("Main content not found!");
-            return;
-        }
-        html2pdf().from(element).set({
-            margin: 10,
-            filename: 'provincial-admin-dashboard.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-        }).save();
-    }
+function exportPDF() {
+    const el = document.getElementById('main-content');
+    if (!el) { alert('Content not found'); return; }
+    html2pdf().from(el).set({
+        margin: 10,
+        filename: 'provincial-heatmap.pdf',
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+    }).save();
+}
 </script>
 
 </body>
