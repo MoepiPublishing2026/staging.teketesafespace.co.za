@@ -11,12 +11,12 @@
        :root {
    --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
    --theme-dark: #0c8cb3ff;
-   --red: #E53935;
-   --yellow: #FFC107;
+   --red: #ed1c24;
+   --yellow: #fbbf0f;
    --blue: #3b82f6;
    --orange: #f97316;
    --gray: #2a2e32;
-   --green: #8BC34A;
+   --green: #d1cb23;
    --bg: white;
    --text: #253f58ff;
    --sidebar-bg: white;
@@ -218,7 +218,7 @@ h2 {
 .heatmap-cell:hover { outline: 2px solid #38b6ff; z-index: 2; }
 .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
 .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
-.heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #8BC34A 0%, #FFC107 50%, #E53935 100%); border: 1px solid #111827; }
+.heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%); border: 1px solid #111827; }
 
 .map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
 .district-map-container {
@@ -308,9 +308,9 @@ h2 {
 }
 .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
 .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-.map-legend-swatch.low { background: #8BC34A; }
-.map-legend-swatch.medium { background: #FFC107; }
-.map-legend-swatch.high { background: #E53935; }
+.map-legend-swatch.low { background: #d1cb23; }
+.map-legend-swatch.medium { background: #fbbf0f; }
+.map-legend-swatch.high { background: #ed1c24; }
 
 @media (max-width: 900px) {
     .menu-icon { display: flex !important; }
@@ -421,7 +421,7 @@ h2 {
                                         $abuseTypeId = $heatmapAbuseTypeNameToId[$atype] ?? null;
                                         $pct = $heatmapPercentages[$district][$colIdx] ?? 0;
                                         $intensity = ($heatmapMax ?? 1) > 0 ? min(1, $count / ($heatmapMax ?? 1)) : 0;
-                                        $colors = ['#8BC34A', '#FFC107', '#E53935'];
+                                        $colors = ['#d1cb23', '#fbbf0f', '#ed1c24'];
                                         $colorIdx = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
                                         $bgColor = $colors[$colorIdx];
                                         $isDark = $colorIdx === 2;
@@ -611,8 +611,8 @@ h2 {
   }
   function heatColor(ratio) {
     const t = clamp01(ratio);
-    if (t <= 0.5) return mixHex('#8BC34A', '#FFC107', t / 0.5);
-    return mixHex('#FFC107', '#E53935', (t - 0.5) / 0.5);
+    if (t <= 0.5) return mixHex('#d1cb23', '#fbbf0f', t / 0.5);
+    return mixHex('#fbbf0f', '#ed1c24', (t - 0.5) / 0.5);
   }
 
   function moveTooltip(clientX, clientY) {

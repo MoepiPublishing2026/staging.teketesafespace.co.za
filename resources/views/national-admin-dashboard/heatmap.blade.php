@@ -12,9 +12,9 @@
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
             --theme-dark: #0c8cb3ff;
             --blue: #38b6ff;
-            --green: #8BC34A;
-            --yellow: #FFC107;
-            --red: #E53935;
+            --green: #d1cb23;
+            --yellow: #fbbf0f;
+            --red: #ed1c24;
             --sidebar-border: #c7da30;
             --bg: white;
             --text: #545454;
@@ -240,7 +240,7 @@
         .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
         .heatmap-scale-bar {
             height: 14px; width: 180px; border-radius: 7px;
-            background: linear-gradient(to right, #8BC34A 0%, #FFC107 50%, #E53935 100%);
+            background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%);
             border: 1px solid #111827;
         }
 
@@ -270,9 +270,9 @@
         .map-legend-title { font-weight: 700; margin-bottom: 6px; color: #1f2937; }
         .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111827; margin-top: 4px; }
         .map-legend-swatch { width: 14px; height: 10px; border: 1px solid #111827; }
-        .map-legend-swatch.low { background: #8BC34A; }
-        .map-legend-swatch.medium { background: #FFC107; }
-        .map-legend-swatch.high { background: #E53935; }
+        .map-legend-swatch.low { background: #d1cb23; }
+        .map-legend-swatch.medium { background: #fbbf0f; }
+        .map-legend-swatch.high { background: #ed1c24; }
 
         .map-key-table {
             width: 100%;
@@ -449,7 +449,7 @@
                                 @foreach($row as $colIdx => $count)
                                     @php
                                         $intensity = ($provinceHeatmapMax ?? 1) > 0 ? min(1, $count / ($provinceHeatmapMax ?? 1)) : 0;
-                                        $colors = ['#8BC34A', '#FFC107', '#E53935'];
+                                        $colors = ['#d1cb23', '#fbbf0f', '#ed1c24'];
                                         $colorIdx = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
                                         $bgColor = $colors[$colorIdx];
                                         $isDark = $colorIdx === 2;
@@ -556,7 +556,7 @@
                         @php
                             $ratio = $provinceKeyMax > 0 ? $cnt / $provinceKeyMax : 0;
                             $level = $ratio >= 0.67 ? 'High' : ($ratio >= 0.34 ? 'Medium' : 'Low');
-                            $swatchColor = $ratio >= 0.67 ? '#E53935' : ($ratio >= 0.34 ? '#FFC107' : '#8BC34A');
+                            $swatchColor = $ratio >= 0.67 ? '#ed1c24' : ($ratio >= 0.34 ? '#fbbf0f' : '#d1cb23');
                         @endphp
                         <tr>
                             <td>{{ $provinceName }}</td>
@@ -695,9 +695,9 @@ function exportPDF() {
 
     function getColor(count) {
         const ratio = count / maxCount;
-        if (ratio >= 0.67) return '#E53935';
-        if (ratio >= 0.34) return '#FFC107';
-        return '#8BC34A';
+        if (ratio >= 0.67) return '#ed1c24';
+        if (ratio >= 0.34) return '#fbbf0f';
+        return '#d1cb23';
     }
 
     const map = L.map('sa-map', {
