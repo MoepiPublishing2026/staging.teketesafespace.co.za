@@ -7,6 +7,7 @@ use App\Models\Report;
 use App\Models\Province;
 use App\Models\District;
 use App\Models\AbuseType;
+use Illuminate\Support\Facades\DB;
 
 class NationalHeatmapController extends Controller
 {
@@ -23,32 +24,30 @@ class NationalHeatmapController extends Controller
 
         $abuseTypes = AbuseType::orderBy('type_name')->get();
 
-        /* ─────────────────────────────────────────
-         * BASE REPORTS QUERY (no filters for now;
-         * add filter inputs here when needed)
-         * ───────────────────────────────────────── */
-        $reports = Report::with(['province', 'district', 'abuseType'])->get();
+        $abuseTypeIds = $abuseTypes->pluck('id')->all();
 
         /* ─────────────────────────────────────────
          * HEATMAP: District × Abuse Type
          * ───────────────────────────────────────── */
         $heatmapAbuseTypes = $abuseTypes->pluck('type_name')->toArray();
 
-        // Build district → [ abuseType counts ] matrix
+        $districtTypeCounts = Report::query()
+            ->select('district_id', 'abuse_type_id', DB::raw('COUNT(*) as count'))
+            ->whereNotNull('district_id')
+            ->whereNotNull('abuse_type_id')
+            ->groupBy('district_id', 'abuse_type_id')
+            ->get();
+
+        $districtTypeLookup = [];
+        foreach ($districtTypeCounts as $row) {
+            $districtTypeLookup[(int) $row->district_id][(int) $row->abuse_type_id] = (int) $row->count;
+        }
+
         $heatmapMatrix = [];
-
-        // Index districts by id for quick look-up
-        $districtById = $districts->keyBy('id');
-
         foreach ($districts as $district) {
             $row = [];
-            foreach ($abuseTypes as $atype) {
-                $row[] = $reports
-                    ->filter(fn ($r) =>
-                        $r->district_id == $district->id &&
-                        optional($r->abuseType)->type_name === $atype->type_name
-                    )
-                    ->count();
+            foreach ($abuseTypeIds as $abuseTypeId) {
+                $row[] = $districtTypeLookup[(int) $district->id][(int) $abuseTypeId] ?? 0;
             }
             $heatmapMatrix[$district->name] = $row;
         }
@@ -85,16 +84,83 @@ class NationalHeatmapController extends Controller
         }
 
         /* ─────────────────────────────────────────
+         * HEATMAP: Province × Abuse Type
+         * (moved from the Dashboard into the Heat-map page)
+         * ───────────────────────────────────────── */
+        $provinceHeatmapAbuseTypes = $heatmapAbuseTypes;
+        $provinceHeatmapMatrix = [];
+
+        $provinceTypeCounts = Report::query()
+            ->select('province_id', 'abuse_type_id', DB::raw('COUNT(*) as count'))
+            ->whereNotNull('province_id')
+            ->whereNotNull('abuse_type_id')
+            ->groupBy('province_id', 'abuse_type_id')
+            ->get();
+
+        $provinceTypeLookup = [];
+        foreach ($provinceTypeCounts as $row) {
+            $provinceTypeLookup[(int) $row->province_id][(int) $row->abuse_type_id] = (int) $row->count;
+        }
+
+        foreach ($provinces as $province) {
+            $row = [];
+            foreach ($abuseTypeIds as $abuseTypeId) {
+                $row[] = $provinceTypeLookup[(int) $province->id][(int) $abuseTypeId] ?? 0;
+            }
+            $provinceHeatmapMatrix[$province->name] = $row;
+        }
+
+        uasort($provinceHeatmapMatrix, fn ($a, $b) => array_sum($b) <=> array_sum($a));
+
+        $provinceHeatmapRowTotals = [];
+        $provinceHeatmapColumnTotals = array_fill(0, count($provinceHeatmapAbuseTypes), 0);
+        foreach ($provinceHeatmapMatrix as $pName => $row) {
+            $provinceHeatmapRowTotals[$pName] = array_sum($row);
+            foreach ($row as $i => $count) {
+                $provinceHeatmapColumnTotals[$i] += $count;
+            }
+        }
+
+        $provinceHeatmapGrandTotal = array_sum($provinceHeatmapColumnTotals);
+        $provinceHeatmapMax = collect($provinceHeatmapMatrix)->flatten()->max() ?: 1;
+
+        $provinceHeatmapProvinceNameToId = $provinces->pluck('id', 'name')->toArray();
+        $provinceHeatmapAbuseTypeNameToId = $abuseTypes->pluck('id', 'type_name')->toArray();
+
+        $provinceHeatmapPercentages = [];
+        foreach ($provinceHeatmapMatrix as $pName => $row) {
+            $rowTotal = $provinceHeatmapRowTotals[$pName] ?? 0;
+            $provinceHeatmapPercentages[$pName] = array_map(
+                fn ($c) => $rowTotal > 0 ? round($c / $rowTotal * 100, 1) : 0,
+                $row
+            );
+        }
+
+        $provinceHeatmapHotspots = [];
+        foreach ($provinceHeatmapMatrix as $pName => $row) {
+            $withIndex = array_map(fn ($c, $i) => ['count' => $c, 'idx' => $i], $row, array_keys($row));
+            usort($withIndex, fn ($a, $b) => $b['count'] <=> $a['count']);
+            $provinceHeatmapHotspots[$pName] = array_column(array_slice($withIndex, 0, 3), 'idx');
+        }
+
+        /* ─────────────────────────────────────────
          * GEOGRAPHIC MAP: per-district counts
          * Expects districts to have latitude/longitude columns.
          * ───────────────────────────────────────── */
         $provinceNameById = $provinces->pluck('name', 'id')->toArray();
 
         $mapDistrictCounts = [];
+        $districtTotals = Report::query()
+            ->select('district_id', DB::raw('COUNT(*) as count'))
+            ->whereNotNull('district_id')
+            ->groupBy('district_id')
+            ->get()
+            ->keyBy('district_id');
+
         foreach ($districts as $district) {
-            $count = $reports->filter(fn ($r) => $r->district_id == $district->id)->count();
+            $count = (int) ($districtTotals[$district->id]->count ?? 0);
             $mapDistrictCounts[$district->name] = [
-                'count'    => $count,
+                'count' => $count,
                 'province' => $provinceNameById[$district->province_id] ?? '—',
             ];
         }
@@ -118,6 +184,18 @@ class NationalHeatmapController extends Controller
             'heatmapDistrictNameToId' => $heatmapDistrictNameToId,
             'heatmapAbuseTypeNameToId'=> $heatmapAbuseTypeNameToId,
             'heatmapPercentages'      => $heatmapPercentages,
+
+            // Heatmap (Province × Abuse Type)
+            'provinceHeatmapAbuseTypes'        => $provinceHeatmapAbuseTypes,
+            'provinceHeatmapMatrix'            => $provinceHeatmapMatrix,
+            'provinceHeatmapMax'               => $provinceHeatmapMax,
+            'provinceHeatmapRowTotals'         => $provinceHeatmapRowTotals,
+            'provinceHeatmapColumnTotals'      => $provinceHeatmapColumnTotals,
+            'provinceHeatmapGrandTotal'        => $provinceHeatmapGrandTotal,
+            'provinceHeatmapProvinceNameToId'  => $provinceHeatmapProvinceNameToId,
+            'provinceHeatmapAbuseTypeNameToId' => $provinceHeatmapAbuseTypeNameToId,
+            'provinceHeatmapPercentages'       => $provinceHeatmapPercentages,
+            'provinceHeatmapHotspots'          => $provinceHeatmapHotspots,
 
             // Map
             'mapDistrictCounts'       => $mapDistrictCounts,

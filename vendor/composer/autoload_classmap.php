@@ -27,6 +27,7 @@ return array(
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\HomeController' => $baseDir . '/app/Http/Controllers/HomeController.php',
     'App\\Http\\Controllers\\NationalAdminDashboardController' => $baseDir . '/app/Http/Controllers/NationalAdminDashboardController.php',
+    'App\\Http\\Controllers\\NationalHeatmapController' => $baseDir . '/app/Http/Controllers/NationalHeatmapController.php',
     'App\\Http\\Controllers\\ProvincialAdminDashboardController' => $baseDir . '/app/Http/Controllers/ProvincialAdminDashboardController.php',
     'App\\Http\\Controllers\\ProvincialAdminReportsController' => $baseDir . '/app/Http/Controllers/ProvincialAdminReportsController.php',
     'App\\Http\\Controllers\\ProvincialAdminSettingsController' => $baseDir . '/app/Http/Controllers/ProvincialAdminSettingsController.php',
