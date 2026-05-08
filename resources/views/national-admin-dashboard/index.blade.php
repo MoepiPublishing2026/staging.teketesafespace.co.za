@@ -542,12 +542,12 @@ h1 {
 .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
 .heatmap-scale-bar {
   height: 14px; width: 180px; border-radius: 7px;
-  background: linear-gradient(to right, #22c55e 0%, #38b6ff 50%, #ef4444 100%);
+  background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%);
   border: 1px solid #111827;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
 }
 .heatmap-scale-bar.heatmap-scale-pct {
-  background: linear-gradient(to right, #22c55e 0%, #38b6ff 50%, #ef4444 100%);
+  background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%);
 }
 .heatmap-legend { margin-top: 0.5rem; font-size: 12px; color: #6b7280; }
 
@@ -566,9 +566,9 @@ h1 {
 .map-legend-title { font-weight: 700; margin-bottom: 6px; color: #1f2937; }
 .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111827; margin-top: 4px; }
 .map-legend-swatch { width: 14px; height: 10px; border: 1px solid #111827; }
-.map-legend-swatch.low { background: #22c55e; }
-.map-legend-swatch.medium { background: #38b6ff; }
-.map-legend-swatch.high { background: #ef4444; }
+.map-legend-swatch.low { background: #d1cb23; }
+.map-legend-swatch.medium { background: #fbbf0f; }
+.map-legend-swatch.high { background: #ed1c24; }
 .leaflet-tooltip.map-label {
   background: transparent;
   border: none;
