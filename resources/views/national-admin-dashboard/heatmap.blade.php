@@ -11,9 +11,10 @@
         :root {
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
             --theme-dark: #0c8cb3ff;
-            --green: #22c55e;
             --blue: #38b6ff;
-            --red: #ef4444;
+            --green: #8BC34A;
+            --yellow: #FFC107;
+            --red: #E53935;
             --sidebar-border: #c7da30;
             --bg: white;
             --text: #545454;
@@ -239,7 +240,7 @@
         .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
         .heatmap-scale-bar {
             height: 14px; width: 180px; border-radius: 7px;
-            background: linear-gradient(to right, #22c55e 0%, #38b6ff 50%, #ef4444 100%);
+            background: linear-gradient(to right, #8BC34A 0%, #FFC107 50%, #E53935 100%);
             border: 1px solid #111827;
         }
 
@@ -269,9 +270,9 @@
         .map-legend-title { font-weight: 700; margin-bottom: 6px; color: #1f2937; }
         .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #111827; margin-top: 4px; }
         .map-legend-swatch { width: 14px; height: 10px; border: 1px solid #111827; }
-        .map-legend-swatch.low { background: #22c55e; }
-        .map-legend-swatch.medium { background: #38b6ff; }
-        .map-legend-swatch.high { background: #ef4444; }
+        .map-legend-swatch.low { background: #8BC34A; }
+        .map-legend-swatch.medium { background: #FFC107; }
+        .map-legend-swatch.high { background: #E53935; }
 
         .map-key-table {
             width: 100%;
@@ -409,7 +410,7 @@
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
-                @php $currentUser = auth()->user()->fresh(); @endphp
+                @php $currentUser = auth()->user()?->fresh(); @endphp
                 @if($currentUser && $currentUser->profile_picture)
                     <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture">
                 @endif
@@ -419,11 +420,10 @@
 
     <div class="dashboard-scroll" id="main-content">
         <h1>Tekete SafeSpace – Heatmap</h1>
-        <p class="subtitle">Reports by District &amp; Report Type across South Africa.</p>
+        <p class="subtitle">Reports by Province &amp; District, with geographic breakdown.</p>
 
-        {{-- ── HEATMAP: District × Abuse Type ── --}}
-        <section class="heatmap-panel" aria-label="Reports by District and Type">
-            <h2>Reports by District &amp; Report Type</h2>
+        <section class="heatmap-panel" id="provinceHeatmapPanel" aria-label="Reports by Province and Type">
+            <h2>Reports by Province &amp; Report Type</h2>
             <div class="heatmap-toolbar">
                 <div class="heatmap-view-toggle" role="group" aria-label="View mode">
                     <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">COUNTS</button>
@@ -434,64 +434,65 @@
                 <table class="heatmap-table" role="table">
                     <thead>
                         <tr>
-                            <th class="heatmap-corner">District</th>
-                            @foreach($heatmapAbuseTypes ?? [] as $atype)
+                            <th class="heatmap-corner">Province</th>
+                            @foreach($provinceHeatmapAbuseTypes ?? [] as $atype)
                                 <th class="heatmap-col">{{ $atype }}</th>
                             @endforeach
                             <th class="heatmap-total-col">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($heatmapMatrix ?? [] as $districtName => $row)
+                        @forelse($provinceHeatmapMatrix ?? [] as $provinceName => $row)
                             @php $rowIdx = $loop->index; @endphp
                             <tr>
-                                <th class="heatmap-row">{{ $districtName }}</th>
+                                <th class="heatmap-row">{{ $provinceName }}</th>
                                 @foreach($row as $colIdx => $count)
                                     @php
-                                        $intensity = ($heatmapMax ?? 1) > 0
-                                            ? min(1, $count / ($heatmapMax ?? 1)) : 0;
-                                        $bgColor = $intensity >= 0.67
-                                            ? '#ef4444'
-                                            : ($intensity >= 0.34 ? '#38b6ff' : '#22c55e');
-                                        $isDark = $intensity >= 0.67;
-                                        $pct = $heatmapPercentages[$districtName][$colIdx] ?? 0;
-                                        $atype = $heatmapAbuseTypes[$colIdx] ?? '';
-                                        $districtId = $heatmapDistrictNameToId[$districtName] ?? null;
-                                        $abuseTypeId = $heatmapAbuseTypeNameToId[$atype] ?? null;
+                                        $intensity = ($provinceHeatmapMax ?? 1) > 0 ? min(1, $count / ($provinceHeatmapMax ?? 1)) : 0;
+                                        $colors = ['#8BC34A', '#FFC107', '#E53935'];
+                                        $colorIdx = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
+                                        $bgColor = $colors[$colorIdx];
+                                        $isDark = $colorIdx === 2;
+                                        $pct = $provinceHeatmapPercentages[$provinceName][$colIdx] ?? 0;
+                                        $atype = $provinceHeatmapAbuseTypes[$colIdx] ?? '';
+                                        $isHotspot = in_array($colIdx, $provinceHeatmapHotspots[$provinceName] ?? []);
+                                        $provinceId = $provinceHeatmapProvinceNameToId[$provinceName] ?? null;
+                                        $abuseTypeId = $provinceHeatmapAbuseTypeNameToId[$atype] ?? null;
+                                        $animDelay = ($rowIdx * count($row) + $colIdx) * 0.02;
                                     @endphp
-                                    <td class="heatmap-cell {{ $isDark ? 'heatmap-cell-dark' : '' }}"
-                                        style="background-color: {{ $bgColor }};"
+                                    <td class="heatmap-cell {{ $isDark ? 'heatmap-cell-dark' : '' }} {{ $isHotspot ? 'heatmap-hotspot' : '' }}"
+                                        style="background-color: {{ $bgColor }}; animation-delay: {{ $animDelay }}s;"
                                         data-count="{{ $count }}"
                                         data-percent="{{ $pct }}"
-                                        data-district="{{ $districtName }}"
+                                        data-province="{{ $provinceName }}"
                                         data-abuse-type="{{ $atype }}"
-                                        data-district-id="{{ $districtId }}"
+                                        data-province-id="{{ $provinceId }}"
                                         data-abuse-type-id="{{ $abuseTypeId }}"
                                         role="button"
                                         tabindex="0"
-                                        title="{{ $districtName }} × {{ $atype }}: {{ $count }} reports ({{ $pct }}% of district) — Click to view reports">
+                                        title="{{ $provinceName }} × {{ $atype }}: {{ $count }} reports ({{ $pct }}% of province) — Click to view reports">
                                         <span class="heatmap-cell-count">{{ $count }}</span>
                                         <span class="heatmap-cell-pct" style="display:none;">{{ $pct }}%</span>
                                     </td>
                                 @endforeach
-                                <td class="heatmap-total-cell">{{ $heatmapRowTotals[$districtName] ?? 0 }}</td>
+                                <td class="heatmap-total-cell">{{ $provinceHeatmapRowTotals[$provinceName] ?? 0 }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="{{ count($heatmapAbuseTypes ?? []) + 2 }}"
+                                <td colspan="{{ count($provinceHeatmapAbuseTypes ?? []) + 2 }}"
                                     style="text-align:center; padding:2rem; color:#6b7280;">
                                     No report data available.
                                 </td>
                             </tr>
                         @endforelse
 
-                        @if(!empty($heatmapMatrix))
+                        @if(!empty($provinceHeatmapMatrix))
                             <tr class="heatmap-total-row">
                                 <th class="heatmap-corner">Total</th>
-                                @foreach($heatmapColumnTotals ?? [] as $colTotal)
+                                @foreach($provinceHeatmapColumnTotals ?? [] as $colTotal)
                                     <td class="heatmap-total-col">{{ $colTotal }}</td>
                                 @endforeach
-                                <td class="heatmap-total-cell">{{ $heatmapGrandTotal ?? 0 }}</td>
+                                <td class="heatmap-total-cell">{{ $provinceHeatmapGrandTotal ?? 0 }}</td>
                             </tr>
                         @endif
                     </tbody>
@@ -499,12 +500,12 @@
             </div>
 
             <div class="heatmap-scale-wrap">
-                <div class="heatmap-scale" id="heatmapScaleCount">
+                <div class="heatmap-scale" id="provinceHeatmapScaleCount">
                     <span>LOW</span>
                     <div class="heatmap-scale-bar" aria-hidden="true"></div>
                     <span>HIGH</span>
                 </div>
-                <div class="heatmap-scale" id="heatmapScalePct" style="display:none;">
+                <div class="heatmap-scale" id="provinceHeatmapScalePct" style="display:none;">
                     <span>0%</span>
                     <div class="heatmap-scale-bar" aria-hidden="true"></div>
                     <span>100%</span>
@@ -555,7 +556,7 @@
                         @php
                             $ratio = $provinceKeyMax > 0 ? $cnt / $provinceKeyMax : 0;
                             $level = $ratio >= 0.67 ? 'High' : ($ratio >= 0.34 ? 'Medium' : 'Low');
-                            $swatchColor = $ratio >= 0.67 ? '#ef4444' : ($ratio >= 0.34 ? '#38b6ff' : '#22c55e');
+                            $swatchColor = $ratio >= 0.67 ? '#E53935' : ($ratio >= 0.34 ? '#FFC107' : '#8BC34A');
                         @endphp
                         <tr>
                             <td>{{ $provinceName }}</td>
@@ -580,12 +581,14 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <script>
-// Heatmap toggle
 (function () {
     const reportsUrl = "{{ url('/national-admin/reports') }}";
-    const viewBtns = document.querySelectorAll('.heatmap-view-btn');
-    const scaleCount = document.getElementById('heatmapScaleCount');
-    const scalePct = document.getElementById('heatmapScalePct');
+    const panel = document.getElementById('provinceHeatmapPanel');
+    if (!panel) return;
+
+    const viewBtns = panel.querySelectorAll('.heatmap-view-btn');
+    const scaleCount = panel.querySelector('#provinceHeatmapScaleCount');
+    const scalePct = panel.querySelector('#provinceHeatmapScalePct');
 
     viewBtns.forEach(btn => {
         btn.addEventListener('click', function () {
@@ -594,7 +597,7 @@
             this.classList.add('active');
             this.setAttribute('aria-pressed', 'true');
 
-            document.querySelectorAll('.heatmap-cell').forEach(cell => {
+            panel.querySelectorAll('.heatmap-cell').forEach(cell => {
                 const countEl = cell.querySelector('.heatmap-cell-count');
                 const pctEl = cell.querySelector('.heatmap-cell-pct');
                 if (countEl && pctEl) {
@@ -610,15 +613,15 @@
         });
     });
 
-    // Click heatmap cell → reports page filtered by district + abuse type
-    document.querySelectorAll('.heatmap-cell[data-district-id]').forEach(cell => {
+    panel.querySelectorAll('.heatmap-cell[data-province-id]').forEach(cell => {
         cell.addEventListener('click', function () {
-            const did = this.dataset.districtId;
+            const pid = this.dataset.provinceId;
             const aid = this.dataset.abuseTypeId;
             const count = parseInt(this.dataset.count, 10);
             if (count === 0) return;
+
             const url = new URL(reportsUrl, window.location.origin);
-            if (did) url.searchParams.set('district', did);
+            if (pid) url.searchParams.set('province', pid);
             if (aid) url.searchParams.set('abuse_type', aid);
             window.location.href = url.toString();
         });
@@ -627,8 +630,9 @@
         });
     });
 })();
+</script>
 
-// Sidebar toggle
+<script>
 (function () {
     const menuIcon = document.querySelector('.menu-icon');
     const sidebar = document.querySelector('.sidebar');
@@ -647,7 +651,6 @@
     });
 })();
 
-// PDF export
 function exportPDF() {
     const element = document.getElementById('main-content');
     if (!element) { alert('Main content not found!'); return; }
@@ -692,9 +695,9 @@ function exportPDF() {
 
     function getColor(count) {
         const ratio = count / maxCount;
-        if (ratio >= 0.67) return '#ef4444';
-        if (ratio >= 0.34) return '#38b6ff';
-        return '#22c55e';
+        if (ratio >= 0.67) return '#E53935';
+        if (ratio >= 0.34) return '#FFC107';
+        return '#8BC34A';
     }
 
     const map = L.map('sa-map', {
@@ -714,8 +717,10 @@ function exportPDF() {
     const geoJsonUrl = 'https://gist.githubusercontent.com/MeganBeckett/9101ba77bd0af06fd003ea5c99d051ab/raw/sa-provinces.json';
 
     fetch(geoJsonUrl)
-        .then(r => r.json())
-        .then(geojson => {
+        .then(r => r.text())
+        .then(text => {
+            let geojson;
+            try { geojson = JSON.parse(text); } catch { return; }
             L.geoJSON(geojson, {
                 style: function (feature) {
                     const name  = feature.properties?.name || '';
