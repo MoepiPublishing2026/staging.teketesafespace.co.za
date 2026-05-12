@@ -104,8 +104,7 @@
 
                         <a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace"
                             target="_blank">
-                            <img src="{{ asset('images/Google Play Store.png') }}"
-                                class="w-[160px] h-[60px] object-contain">
+                            <img src="{{ asset('images/Google Play Store.png') }}" class="w-[130px] h-[60px] object-contain scale-[1.15]">
                         </a>
 
                         <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank">
