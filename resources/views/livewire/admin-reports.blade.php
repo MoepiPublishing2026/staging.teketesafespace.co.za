@@ -281,7 +281,7 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
                     <select class="filter-input" wire:model.live="filterAnonymous">
                         <option value="">All Reports</option>
                         <option value="1">Anonymous Only</option>
-                        <option value="0">identified</option>
+                        <option value="0">Identified</option>
                     </select>
                 </div>
 
