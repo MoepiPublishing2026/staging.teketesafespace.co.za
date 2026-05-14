@@ -7,6 +7,8 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Models\Report;
 
+Mail::to($user)->queue(new StatusUpdatedMail($report));
+
 class CaseStatusChanged extends Notification
 {
     use Queueable;

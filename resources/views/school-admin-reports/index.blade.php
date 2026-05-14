@@ -657,12 +657,47 @@ function openReportModal(reportId) {
     .catch(err => alert('Failed to load report details.'));
 }
 
-// Close modal
-function closeReportModal() {
-    const modal = document.getElementById('reportModal');
-    modal.style.display = 'none';
-    modal.setAttribute('aria-hidden', 'true');
+function confirmStatusUpdate() {
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = true;
+    btn.textContent = 'Updating…';
+
+    fetch(`/admin/reports/${currentReportId}/status`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            status: pendingStatus,
+            reason: document.getElementById('reasonInput').value
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(data => {
+        // Update the row in-place — no page reload needed
+        const row = document.querySelector(`tr[data-report-id="${currentReportId}"]`);
+        if (row) row.querySelector('.status-cell').textContent = data.status_label;
+
+        closeJustifyModal();
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.textContent = 'Confirm & Update';
+        alert('Update failed. Please try again.');
+    });
 }
+
+// Close modal
+//function closeReportModal() {
+//    const modal = document.getElementById('reportModal');
+//    modal.style.display = 'none';
+//    modal.setAttribute('aria-hidden', 'true');
+//}
 
 // Close modal with Escape key
 document.addEventListener('keydown', function(event) {

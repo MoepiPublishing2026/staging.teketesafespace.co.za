@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/reports', \App\Livewire\AdminReports::class)->name('admin.reports');
     Route::get('/admin/reports/{filter?}', \App\Livewire\AdminReports::class)->name('admin.reports.index');
     Route::get('/admin/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
+    Route::patch('/admin/reports/{report}/status', [ReportController::class, 'updateStatus']);
 });
 
 // District Admin Dashboard
