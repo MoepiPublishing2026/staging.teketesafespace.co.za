@@ -759,14 +759,15 @@ canvas {
     <h2>Filters</h2>
     <hr class="filter-separator"/>
     <form method="GET" action="{{ url()->current() }}" class="filters" id="filtersForm">
-        <select name="abuse_type" onchange="this.form.submit()">
+       <select name="abuse_type" onchange="this.form.submit()">
             <option value="">Any Reports Type</option>
-            @foreach ($abuseTypes as $type)
+            @foreach ($abuseTypes->sortBy('type_name') as $type)
                 <option value="{{ $type->id }}" {{ $abuseTypeFilter == $type->id ? 'selected' : '' }}>
                     {{ $type->type_name }}
                 </option>
             @endforeach
         </select>
+
         <select name="age_range" onchange="this.form.submit()">
             <option value="">Any Age</option>
             @foreach (['0-10','11-15','16-20','21-22'] as $range)
