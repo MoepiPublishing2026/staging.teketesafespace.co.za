@@ -1830,7 +1830,22 @@ function renderOverviewCharts(dataset) {
         }
     };
 
-    const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
+    const statusOrder = [
+    'awaiting-resolution',
+    'forwarded',
+    'under-review',
+    'closed',
+    'unresolved',
+    'false-report'
+];
+
+const statuses = Object.entries(dataset.statusCounts || {})
+    .sort((a, b) => {
+        const aIndex = statusOrder.indexOf(a[0]);
+        const bIndex = statusOrder.indexOf(b[0]);
+
+        return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    });
     const statusLabels = statuses.map(s => s[0]);
     const statusValues = statuses.map(s => s[1]);
     const reportTotal = statusValues.reduce((a, b) => a + b, 0);
