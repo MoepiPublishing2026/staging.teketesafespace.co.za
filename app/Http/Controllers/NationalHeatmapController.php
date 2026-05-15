@@ -2,95 +2,131 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Report;
-use App\Models\Province;
-use App\Models\District;
 use App\Models\AbuseType;
+use App\Models\District;
+use App\Models\Province;
+use App\Models\Report;
+use App\Models\School;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class NationalHeatmapController extends Controller
 {
+    /**
+     * Apply the same GET filters used on the national dashboard / reports list.
+     */
+    protected function applyHeatmapFilters(Builder $query, Request $request): void
+    {
+        if ($request->filled('province')) {
+            $query->where('province_id', $request->input('province'));
+        }
+        if ($request->filled('province') && $request->filled('district')) {
+            $query->where('district_id', $request->input('district'));
+        }
+        if ($request->filled('province') && $request->filled('district') && $request->filled('school')) {
+            $query->where('school_id', $request->input('school'));
+        }
+        if ($request->filled('abuse_type')) {
+            $query->where('abuse_type_id', $request->input('abuse_type'));
+        }
+
+        $ageRange = $request->input('age_range');
+        if ($ageRange) {
+            if ($ageRange === '30+') {
+                $query->where('age', '>=', 30);
+            } elseif (strpos((string) $ageRange, '-') !== false) {
+                [$minAge, $maxAge] = explode('-', $ageRange, 2);
+                if (is_numeric($minAge) && is_numeric($maxAge)) {
+                    $query->whereBetween('age', [(int) $minAge, (int) $maxAge]);
+                }
+            }
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->input('from_date'));
+        }
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->input('to_date'));
+        }
+    }
+
     public function index(Request $request)
     {
-        /* ─────────────────────────────────────────
-         * FILTER OPTIONS (for future filter bar)
-         * ───────────────────────────────────────── */
-        $provinces  = Province::orderBy('province_name')
+        $user = Auth::user();
+        if (!$user || ! in_array((string) $user->role, ['national', 'admin'], true)) {
+            abort(403, 'Unauthorized');
+        }
+
+        $provinceFilter = $request->input('province');
+        $districtFilter = $request->input('district');
+        $schoolFilter = $request->input('school');
+        $abuseTypeFilter = $request->input('abuse_type');
+        $ageRange = $request->input('age_range');
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+
+        $provinces = Province::orderBy('province_name')
             ->get(['province_id as id', 'province_name as name']);
 
-        $districts  = District::orderBy('district_name')
-            ->get(['district_id as id', 'district_name as name', 'province_id']);
+        $districts = $provinceFilter
+            ? District::where('province_id', $provinceFilter)
+                ->orderBy('district_name')
+                ->get(['district_id as id', 'district_name as name'])
+            : collect();
+
+        $schools = ($districtFilter && $provinceFilter)
+            ? School::where('district_id', $districtFilter)
+                ->orderBy('school_name')
+                ->get(['school_id', 'school_name'])
+            : collect();
 
         $abuseTypes = AbuseType::orderBy('type_name')->get();
-
         $abuseTypeIds = $abuseTypes->pluck('id')->all();
 
-        /* ─────────────────────────────────────────
-         * HEATMAP: District × Abuse Type
-         * ───────────────────────────────────────── */
-        $heatmapAbuseTypes = $abuseTypes->pluck('type_name')->toArray();
+        $baseQuery = Report::query();
+        $this->applyHeatmapFilters($baseQuery, $request);
 
-        $districtTypeCounts = Report::query()
-            ->select('district_id', 'abuse_type_id', DB::raw('COUNT(*) as count'))
-            ->whereNotNull('district_id')
-            ->whereNotNull('abuse_type_id')
-            ->groupBy('district_id', 'abuse_type_id')
-            ->get();
-
-        $districtTypeLookup = [];
-        foreach ($districtTypeCounts as $row) {
-            $districtTypeLookup[(int) $row->district_id][(int) $row->abuse_type_id] = (int) $row->count;
-        }
-
-        $heatmapMatrix = [];
-        foreach ($districts as $district) {
-            $row = [];
-            foreach ($abuseTypeIds as $abuseTypeId) {
-                $row[] = $districtTypeLookup[(int) $district->id][(int) $abuseTypeId] ?? 0;
-            }
-            $heatmapMatrix[$district->name] = $row;
-        }
-
-        // Sort by row total descending
-        uasort($heatmapMatrix, fn ($a, $b) => array_sum($b) <=> array_sum($a));
-
-        // Totals
-        $heatmapRowTotals    = [];
-        $heatmapColumnTotals = array_fill(0, count($heatmapAbuseTypes), 0);
-
-        foreach ($heatmapMatrix as $dName => $row) {
-            $heatmapRowTotals[$dName] = array_sum($row);
-            foreach ($row as $i => $count) {
-                $heatmapColumnTotals[$i] += $count;
+        $activeFilters = [];
+        if ($provinceFilter) {
+            $n = $provinces->firstWhere('id', $provinceFilter)?->name;
+            if ($n) {
+                $activeFilters[] = $n;
             }
         }
-
-        $heatmapGrandTotal = array_sum($heatmapColumnTotals);
-        $heatmapMax        = collect($heatmapMatrix)->flatten()->max() ?: 1;
-
-        // Name → ID maps for click-to-filter navigation
-        $heatmapDistrictNameToId  = $districts->pluck('id', 'name')->toArray();
-        $heatmapAbuseTypeNameToId = $abuseTypes->pluck('id', 'type_name')->toArray();
-
-        // Row percentages (each cell = % of that district's total)
-        $heatmapPercentages = [];
-        foreach ($heatmapMatrix as $dName => $row) {
-            $rowTotal = $heatmapRowTotals[$dName] ?? 0;
-            $heatmapPercentages[$dName] = array_map(
-                fn ($c) => $rowTotal > 0 ? round($c / $rowTotal * 100, 1) : 0,
-                $row
-            );
+        if ($provinceFilter && $districtFilter) {
+            $n = $districts->firstWhere('id', $districtFilter)?->name;
+            if ($n) {
+                $activeFilters[] = $n;
+            }
+        }
+        if ($provinceFilter && $districtFilter && $schoolFilter) {
+            $n = $schools->firstWhere('school_id', $schoolFilter)?->school_name;
+            if ($n) {
+                $activeFilters[] = $n;
+            }
+        }
+        if ($abuseTypeFilter) {
+            $n = $abuseTypes->firstWhere('id', $abuseTypeFilter)?->type_name;
+            if ($n) {
+                $activeFilters[] = $n;
+            }
+        }
+        if ($ageRange) {
+            $activeFilters[] = 'Age: ' . $ageRange;
+        }
+        if ($fromDate) {
+            $activeFilters[] = 'From: ' . $fromDate;
+        }
+        if ($toDate) {
+            $activeFilters[] = 'To: ' . $toDate;
         }
 
-        /* ─────────────────────────────────────────
-         * HEATMAP: Province × Abuse Type
-         * (moved from the Dashboard into the Heat-map page)
-         * ───────────────────────────────────────── */
-        $provinceHeatmapAbuseTypes = $heatmapAbuseTypes;
-        $provinceHeatmapMatrix = [];
+        /* Province × abuse type (same cell semantics as provincial district × type) */
+        $provinceHeatmapAbuseTypes = $abuseTypes->pluck('type_name')->toArray();
 
-        $provinceTypeCounts = Report::query()
+        $provinceTypeCounts = (clone $baseQuery)
             ->select('province_id', 'abuse_type_id', DB::raw('COUNT(*) as count'))
             ->whereNotNull('province_id')
             ->whereNotNull('abuse_type_id')
@@ -102,6 +138,7 @@ class NationalHeatmapController extends Controller
             $provinceTypeLookup[(int) $row->province_id][(int) $row->abuse_type_id] = (int) $row->count;
         }
 
+        $provinceHeatmapMatrix = [];
         foreach ($provinces as $province) {
             $row = [];
             foreach ($abuseTypeIds as $abuseTypeId) {
@@ -143,63 +180,53 @@ class NationalHeatmapController extends Controller
             $provinceHeatmapHotspots[$pName] = array_column(array_slice($withIndex, 0, 3), 'idx');
         }
 
-        /* ─────────────────────────────────────────
-         * GEOGRAPHIC MAP: per-district counts
-         * Expects districts to have latitude/longitude columns.
-         * ───────────────────────────────────────── */
-        $provinceNameById = $provinces->pluck('name', 'id')->toArray();
+        /* District counts for national geographic map (map_data.json is district-level) */
+        $allDistricts = District::orderBy('district_name')
+            ->get(['district_id as id', 'district_name as name']);
 
-        $mapDistrictCounts = [];
-        $districtTotals = Report::query()
+        $districtTotals = (clone $baseQuery)
             ->select('district_id', DB::raw('COUNT(*) as count'))
             ->whereNotNull('district_id')
             ->groupBy('district_id')
             ->get()
             ->keyBy('district_id');
 
-        foreach ($districts as $district) {
-            $count = (int) ($districtTotals[$district->id]->count ?? 0);
-            $mapDistrictCounts[$district->name] = [
-                'count' => $count,
-                'province' => $provinceNameById[$district->province_id] ?? '—',
-            ];
+        $mapDistrictCounts = [];
+        foreach ($allDistricts as $district) {
+            $mapDistrictCounts[$district->name] = (int) ($districtTotals[$district->id]->count ?? 0);
         }
 
-        // Sort by count descending for the key table
-        arsort($mapDistrictCounts);
+        $mapDistrictMax = collect($mapDistrictCounts)->max() ?: 1;
+        $mapDistrictNameToId = $allDistricts->pluck('id', 'name')->toArray();
 
-        $mapDistrictMax = collect($mapDistrictCounts)->max('count') ?: 1;
-
-        /* ─────────────────────────────────────────
-         * RETURN VIEW
-         * ───────────────────────────────────────── */
         return view('national-admin-dashboard.heatmap', [
-            // Heatmap
-            'heatmapAbuseTypes'       => $heatmapAbuseTypes,
-            'heatmapMatrix'           => $heatmapMatrix,
-            'heatmapMax'              => $heatmapMax,
-            'heatmapRowTotals'        => $heatmapRowTotals,
-            'heatmapColumnTotals'     => $heatmapColumnTotals,
-            'heatmapGrandTotal'       => $heatmapGrandTotal,
-            'heatmapDistrictNameToId' => $heatmapDistrictNameToId,
-            'heatmapAbuseTypeNameToId'=> $heatmapAbuseTypeNameToId,
-            'heatmapPercentages'      => $heatmapPercentages,
+            'provinces' => $provinces,
+            'districts' => $districts,
+            'schools' => $schools,
+            'abuseTypes' => $abuseTypes,
+            'provinceFilter' => $provinceFilter,
+            'districtFilter' => $districtFilter,
+            'schoolFilter' => $schoolFilter,
+            'abuseTypeFilter' => $abuseTypeFilter,
+            'ageRange' => $ageRange,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate,
+            'activeFilters' => $activeFilters,
 
-            // Heatmap (Province × Abuse Type)
-            'provinceHeatmapAbuseTypes'        => $provinceHeatmapAbuseTypes,
-            'provinceHeatmapMatrix'            => $provinceHeatmapMatrix,
-            'provinceHeatmapMax'               => $provinceHeatmapMax,
-            'provinceHeatmapRowTotals'         => $provinceHeatmapRowTotals,
-            'provinceHeatmapColumnTotals'      => $provinceHeatmapColumnTotals,
-            'provinceHeatmapGrandTotal'        => $provinceHeatmapGrandTotal,
-            'provinceHeatmapProvinceNameToId'  => $provinceHeatmapProvinceNameToId,
+            'provinceHeatmapAbuseTypes' => $provinceHeatmapAbuseTypes,
+            'provinceHeatmapMatrix' => $provinceHeatmapMatrix,
+            'provinceHeatmapMax' => $provinceHeatmapMax,
+            'provinceHeatmapRowTotals' => $provinceHeatmapRowTotals,
+            'provinceHeatmapColumnTotals' => $provinceHeatmapColumnTotals,
+            'provinceHeatmapGrandTotal' => $provinceHeatmapGrandTotal,
+            'provinceHeatmapProvinceNameToId' => $provinceHeatmapProvinceNameToId,
             'provinceHeatmapAbuseTypeNameToId' => $provinceHeatmapAbuseTypeNameToId,
-            'provinceHeatmapPercentages'       => $provinceHeatmapPercentages,
-            'provinceHeatmapHotspots'          => $provinceHeatmapHotspots,
+            'provinceHeatmapPercentages' => $provinceHeatmapPercentages,
+            'provinceHeatmapHotspots' => $provinceHeatmapHotspots,
 
-            // Map
-            'mapDistrictCounts'       => $mapDistrictCounts,
-            'mapDistrictMax'          => $mapDistrictMax,
+            'mapDistrictCounts' => $mapDistrictCounts,
+            'mapDistrictMax' => $mapDistrictMax,
+            'mapDistrictNameToId' => $mapDistrictNameToId,
         ]);
     }
 }
