@@ -747,6 +747,7 @@ tbody tr:last-child td { border-bottom: none; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/dist/choices.min.js"></script>
 <script>
+    
 // ── PDF Export ───────────────────────────────────────────────────
 function exportPDF() {
     const element = document.getElementById('main-content');
@@ -794,29 +795,42 @@ function openReportModal(reportId) {
                 let elem;
 
                 if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
+                    // Lightbox overlay on click
                     elem = document.createElement('img');
                     elem.src = publicUrl;
                     elem.alt = 'Attachment';
                     Object.assign(elem.style, {
                         width: '80px', height: '80px', marginRight: '10px',
-                        border: '2px solid #c7da30', borderRadius: '8px', objectFit: 'cover'
+                        border: '2px solid #c7da30', borderRadius: '8px',
+                        objectFit: 'cover', cursor: 'zoom-in', transition: 'opacity .15s'
                     });
+                    elem.onmouseover = () => elem.style.opacity = '.75';
+                    elem.onmouseout  = () => elem.style.opacity = '1';
+                    elem.onclick     = () => openLightbox(publicUrl);
+
                 } else if (['mp4','mov','avi','wmv'].includes(ext)) {
                     elem = document.createElement('video');
                     elem.controls = true;
-                    Object.assign(elem.style, { width: '120px', height: '80px', marginRight: '10px' });
+                    Object.assign(elem.style, {
+                        width: '200px', height: '130px', marginRight: '10px',
+                        border: '2px solid #c7da30', borderRadius: '8px', display: 'block'
+                    });
                     const src = document.createElement('source');
                     src.src  = publicUrl;
-                    src.type = 'video/' + ext;
+                    src.type = 'video/' + (ext === 'mov' ? 'mp4' : ext);
                     elem.appendChild(src);
+
                 } else {
+                    const icon = ext === 'pdf' ? '📄' : '📎';
                     elem = document.createElement('a');
                     elem.href        = publicUrl;
                     elem.target      = '_blank';
-                    elem.textContent = filePath.split('/').pop();
+                    elem.rel         = 'noopener noreferrer';
+                    elem.download    = filePath.split('/').pop();
+                    elem.textContent = icon + ' ' + filePath.split('/').pop();
                     Object.assign(elem.style, {
                         color: '#4c8eda', textDecoration: 'underline',
-                        marginRight: '10px', display: 'inline-block'
+                        marginRight: '10px', display: 'inline-block', fontSize: '13px'
                     });
                 }
                 attachmentSpan.appendChild(elem);
@@ -830,6 +844,34 @@ function openReportModal(reportId) {
         modal.setAttribute('aria-hidden', 'false');
     })
     .catch(() => alert('Failed to load report details.'));
+}
+
+function openLightbox(src) {
+    const overlay = document.createElement('div');
+    Object.assign(overlay.style, {
+        position: 'fixed', inset: '0',
+        background: 'rgba(0,0,0,.88)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: '99999', cursor: 'zoom-out'
+    });
+
+    const img = document.createElement('img');
+    img.src = src;
+    Object.assign(img.style, {
+        maxWidth: '90vw', maxHeight: '90vh',
+        borderRadius: '10px',
+        boxShadow: '0 8px 40px rgba(0,0,0,.6)'
+    });
+
+    // Close on overlay click or Escape
+    overlay.onclick = () => overlay.remove();
+    overlay.addEventListener('keydown', e => {
+        if (e.key === 'Escape') overlay.remove();
+    });
+
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    overlay.focus();
 }
 
 function closeReportModal() {

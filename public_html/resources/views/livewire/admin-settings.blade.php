@@ -120,7 +120,11 @@
                                     Choose File
                                 </span>
                             </label>
-                            
+                            <button type="button"
+    wire:click="deleteProfilePicture"
+    class="mt-4 inline-flex items-center justify-center px-6 py-3 text-sm font-bold rounded-full shadow-md delete-btn">
+    Delete Picture
+</button>
                             <div wire:loading wire:target="profile_picture" class="text-sm text-gray-600 mt-2">
                                 Uploading...
                             </div>

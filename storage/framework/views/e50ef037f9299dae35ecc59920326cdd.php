@@ -760,15 +760,16 @@ canvas {
     <h2>Filters</h2>
     <hr class="filter-separator"/>
     <form method="GET" action="<?php echo e(url()->current()); ?>" class="filters" id="filtersForm">
-        <select name="abuse_type" onchange="this.form.submit()">
+       <select name="abuse_type" onchange="this.form.submit()">
             <option value="">Any Reports Type</option>
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $abuseTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $abuseTypes->sortBy('type_name'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <option value="<?php echo e($type->id); ?>" <?php echo e($abuseTypeFilter == $type->id ? 'selected' : ''); ?>>
                     <?php echo e($type->type_name); ?>
 
                 </option>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </select>
+
         <select name="age_range" onchange="this.form.submit()">
             <option value="">Any Age</option>
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = ['0-10','11-15','16-20','21-22']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $range): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -1289,7 +1290,22 @@ function renderOverviewCharts(dataset) {
         }
     });
     // Status Breakdown — share of total (0–100%), gradients + caps (national admin pattern)
-    const statuses = Object.entries(dataset.statusCounts || {}).sort((a, b) => b[1] - a[1]);
+    const statusOrder = [
+    'awaiting-resolution',
+    'forwarded',
+    'under-review',
+    'closed',
+    'unresolved',
+    'false-report'
+];
+
+const statuses = Object.entries(dataset.statusCounts || {})
+    .sort((a, b) => {
+        const aIndex = statusOrder.indexOf(a[0]);
+        const bIndex = statusOrder.indexOf(b[0]);
+
+        return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    });
     const statusLabels = statuses.map(s => s[0]);
     const statusValues = statuses.map(s => s[1]);
     const reportTotal = statusValues.reduce((a, b) => a + b, 0);

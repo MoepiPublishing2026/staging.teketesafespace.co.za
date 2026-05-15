@@ -409,8 +409,8 @@ class AdminReports extends Component
         }
         $gradeOptions = $gradeQuery->distinct()->pluck('grade')->sort(function ($a, $b) {
             $order = [
-                'Grade R'  => 0,
-                'Creche'   => 1,
+                'Creche'  => 0,
+                'Grade R'   => 1,
                 'Grade 1'  => 2,
                 'Grade 2'  => 3,
                 'Grade 3'  => 4,

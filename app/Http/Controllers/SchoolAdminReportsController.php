@@ -8,6 +8,8 @@ use App\Models\Report;
 use App\Models\School;
 use App\Models\AbuseType;
 use App\Models\Subtype;
+use App\Notifications\StatusUpdatedNotification; // add at top with other imports
+use App\Models\StatusHistory;                     // add if you have this model
 
 class SchoolAdminReportsController extends Controller
 {
@@ -191,4 +193,28 @@ class SchoolAdminReportsController extends Controller
 
         abort(404, 'Not Found');
     }
+    public function updateStatus(Request $request, Report $report)
+    {
+        $validated = $request->validate([
+            'status' => 'required|string',
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $report->update(['status' => $validated['status']]);
+
+        StatusHistory::create([
+            'report_id'  => $report->id,
+            'status'     => $validated['status'],
+            'reason'     => $validated['reason'],
+            'changed_by' => auth()->id(),
+        ]);
+
+        // Queued — does NOT block the response
+        $report->user?->notify(new StatusUpdatedNotification($report));
+
+        return response()->json([
+            'ok'           => true,
+            'status_label' => ucfirst(str_replace('-', ' ', $validated['status'])),
+        ]);
+    }   
 }
