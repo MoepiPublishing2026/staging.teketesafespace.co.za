@@ -68,8 +68,8 @@ protected array $gradeAgeRanges = [
 
     protected $abuseTypePrefixes = [
         'Bullying' => 'BU',
-        'Suspected Sexual Harassment' => 'SX',
-        'Substance Addiction' => 'SB',
+        'Suspected Sexual Harassment' => 'SH',
+'Substance Addiction' => 'SA',
         'Violence' => 'VL',
         'Teenage Pregnancy' => 'TP',
         'Weapons' => 'WP',
