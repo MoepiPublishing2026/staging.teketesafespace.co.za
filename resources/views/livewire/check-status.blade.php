@@ -51,9 +51,9 @@
                     class="block text-black hover:text-[#c7da30] transition-colors">Back</a>
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
                     class="block text-black hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('landing-page') }}#about" onclick="toggleMobileMenu()"
+                <a href="{{ route('about-us') }}#about" onclick="toggleMobileMenu()"
                     class="block text-black hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="{{ route('landing-page') }}#section" onclick="toggleMobileMenu()"
+                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
                     class="block text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
             </nav>
         </div>
