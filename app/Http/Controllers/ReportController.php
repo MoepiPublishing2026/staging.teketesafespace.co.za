@@ -15,7 +15,7 @@ class ReportController extends Controller
     {
         // Start query with eager loading relationships
         $query = Report::with(['province', 'district', 'school', 'abuseType', 'subtype']);
-
+            
         // ── EXISTING filters ─────────────────────────────────────────
 
         // Case number search (kept for backward compatibility)
@@ -188,9 +188,6 @@ class ReportController extends Controller
             ->toArray();
 
             
-            
-    
-
         return view('national-admin-reports.index', compact(
             'reports',
             'provinceOptions',
@@ -203,6 +200,12 @@ class ReportController extends Controller
 
     public function show($id, Request $request)
     {
+        $user = Auth::user();
+
+        if (!$user || $user->role !== 'national') {
+            abort(403, 'Unauthorized');
+        }
+
         $report = Report::with(['province', 'district', 'school', 'abuseType', 'subtype', 'user'])
                         ->findOrFail($id);
 

@@ -351,28 +351,21 @@ tbody tr:last-child td { border-bottom: none; }
 
             {{-- Active filter badges --}}
            @php
-                $activeFilters = array_filter([
+               $activeFilters = array_filter([
                     'Search'    => request('search'),
-                    'Name'      => request('full_name'),
-                    'Province'  => request('province_id')
-                        ? ($provinceOptions->firstWhere('province_id', request('province_id'))?->province_name ?? request('province_id'))
-                        : null,
                     'School'    => request('school_id')
-                        ? ($schoolOptions->firstWhere('id', request('school_id'))?->school_name ?? request('school_id'))
-                        : request('school_name'),
+                                    ? ($schoolOptions->firstWhere('school_id', request('school_id'))?->school_name ?? request('school_id'))
+                                    : (request('school_name') ?: null),
+                    'Name'      => request('full_name'),
                     'Grade'     => request('grade'),
                     'From'      => request('date_from'),
                     'To'        => request('date_to'),
-                    'Type'      => request('type_id')
-                        ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name ?? request('type_id'))
-                        : null,
-                    'Subtype'   => request('subtype_id')
-                        ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id'))
-                        : null,
+                    'Type'      => request('type_id')    ? ($typeOptions->firstWhere('id', request('type_id'))?->type_name          ?? request('type_id'))    : null,
+                    'Subtype'   => request('subtype_id') ? ($subtypeOptions->firstWhere('id', request('subtype_id'))?->sub_type_name ?? request('subtype_id')) : null,
                     'Status'    => request('status'),
                     'Anonymous' => request('is_anonymous') !== null && request('is_anonymous') !== ''
-                        ? (request('is_anonymous') === '1' ? 'Yes' : 'No')
-                        : null,
+                                    ? (request('is_anonymous') === '1' ? 'Yes' : 'No')
+                                    : null,
                 ]);
             @endphp
             @if(count($activeFilters))
@@ -621,6 +614,275 @@ function toggleSidebar() {
 
 if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
 if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Sidebar toggle
+    var toggle    = document.getElementById('sidebarToggle');
+    var sidebar   = document.getElementById('sidebarPanel');
+    var overlay   = document.getElementById('sidebarOverlay');
+    var mainPanel = document.querySelector('.main-panel');
+
+    function toggleSidebar() {
+        if (!sidebar || !mainPanel) return;
+        sidebar.classList.toggle('open');
+        mainPanel.classList.toggle('shifted');
+        if (overlay) {
+            overlay.classList.toggle('active', sidebar.classList.contains('open'));
+            overlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
+        }
+    }
+
+    if (toggle)  toggle.addEventListener('click', toggleSidebar);
+    if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (mainPanel) mainPanel.classList.remove('shifted');
+            if (overlay) {
+                overlay.classList.remove('active');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+        }
+    });
+
+    // ── Subtype filtered by report type ──────────────────────────
+    const typeSelect    = document.querySelector('select[name="type_id"]');
+    const subtypeSelect = document.getElementById('subtypeSelect');
+
+    (function initSchoolAutocomplete() {
+        const API_ENDPOINT = '/api/schools';
+        const LS_KEY = 'schools_cache_v3';
+        const CACHE_TTL = 24 * 60 * 60 * 1000;
+
+        const input = document.getElementById('schoolSearch');
+        const dropdown = document.getElementById('schoolDropdown');
+        const hiddenId = document.getElementById('schoolId');
+        if (!input || !dropdown || !hiddenId) return;
+
+        let schools = [];
+        let items = [];
+        let focused = -1;
+        let timer = null;
+
+        function loadCache() {
+            try {
+                const raw = localStorage.getItem(LS_KEY);
+                if (!raw) return false;
+                const parsed = JSON.parse(raw);
+                if (!parsed.data || !parsed.timestamp) return false;
+                if (Date.now() - parsed.timestamp > CACHE_TTL) return false;
+                if (parsed.data.length > 0 && parsed.data[0].name) {
+                    schools = parsed.data;
+                    return true;
+                }
+                return false;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function saveCache(data) {
+            try {
+                localStorage.setItem(LS_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+            } catch (e) {}
+        }
+
+        async function loadFromDatabase() {
+            try {
+                const res = await fetch(API_ENDPOINT, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const json = await res.json();
+                if (Array.isArray(json)) {
+                    schools = json;
+                    saveCache(schools);
+                }
+            } catch (e) {}
+        }
+
+        (async function init() {
+            if (!loadCache()) {
+                await loadFromDatabase();
+            }
+            fetch(API_ENDPOINT).then(r => r.json()).then(d => {
+                if (Array.isArray(d)) {
+                    schools = d;
+                    saveCache(schools);
+                }
+            }).catch(() => {});
+        })();
+
+        function searchPrefix(q, limit = 20) {
+            if (!q) return [];
+            const low = q.toLowerCase();
+            const out = [];
+            for (let i = 0; i < schools.length && out.length < limit; i++) {
+                const s = schools[i];
+                if (!s || !s.name) continue;
+                if (s.name.toLowerCase().startsWith(low)) {
+                    out.push(s);
+                }
+            }
+            return out;
+        }
+
+        function clearSuggestions() {
+            dropdown.innerHTML = '';
+            dropdown.style.display = 'none';
+            items = [];
+            focused = -1;
+        }
+
+        function selectItem(index) {
+            const it = items[index];
+            if (!it) return;
+            input.value = it.name;
+            hiddenId.value = it.id ?? '';
+            clearSuggestions();
+        }
+
+        function render(arr) {
+            dropdown.innerHTML = '';
+            items = arr || [];
+            focused = -1;
+            if (!items.length) {
+                dropdown.style.display = 'none';
+                return;
+            }
+            for (let i = 0; i < items.length; i++) {
+                const it = items[i];
+                const el = document.createElement('div');
+                el.textContent = it.name + (it.province ? (' (' + it.province + ')') : '');
+                el.dataset.index = i;
+                el.style.padding = '8px';
+                el.style.cursor = 'pointer';
+                el.addEventListener('pointerdown', function(e) {
+                    e.preventDefault();
+                    selectItem(parseInt(this.dataset.index, 10));
+                });
+                el.addEventListener('mouseenter', function() {
+                    focused = parseInt(this.dataset.index, 10);
+                    updateFocus();
+                });
+                dropdown.appendChild(el);
+            }
+            dropdown.style.display = 'block';
+        }
+
+        function updateFocus() {
+            const children = dropdown.children;
+            for (let i = 0; i < children.length; i++) {
+                children[i].style.background = '';
+                children[i].style.color = '';
+                if (i === focused) {
+                    children[i].style.background = '#c6d933';
+                    children[i].style.color = '#000';
+                }
+            }
+            if (focused >= 0 && children[focused]) {
+                children[focused].scrollIntoView({ block: 'nearest' });
+            }
+        }
+
+        input.addEventListener('input', function() {
+            hiddenId.value = '';
+            clearTimeout(timer);
+            const q = this.value.trim();
+            if (q.length < 1) {
+                clearSuggestions();
+                return;
+            }
+            timer = setTimeout(() => {
+                render(searchPrefix(q, 20));
+            }, 120);
+        });
+
+        input.addEventListener('keydown', function(e) {
+            if (dropdown.style.display === 'none') return;
+            const count = dropdown.children.length;
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                focused = Math.min(count - 1, Math.max(0, focused + 1));
+                updateFocus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                focused = Math.max(0, focused - 1);
+                updateFocus();
+            } else if (e.key === 'Enter') {
+                if (focused >= 0) {
+                    e.preventDefault();
+                    selectItem(focused);
+                } else {
+                    clearSuggestions();
+                }
+            } else if (e.key === 'Escape') {
+                clearSuggestions();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                clearSuggestions();
+            }
+        });
+    })();
+
+function filterSubtypes() {
+                const selectedType = typeSelect.value;
+
+                const options = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
+                const placeholder = subtypeSelect.options[0]; // "All Subtypes"
+
+                // Separate "Other" and non-Other options
+                const seenOtherTypes = new Set();
+                const regular = [];
+                const others  = [];
+
+                options.forEach(function(opt) {
+                    const isOther = opt.text.trim().toLowerCase() === 'other';
+                    const optType = opt.getAttribute('data-type');
+
+                    if (!selectedType) {
+                        // No type selected: show all non-Others, show only one Other total
+                        if (isOther) {
+                            if (!seenOtherTypes.has('global')) {
+                                seenOtherTypes.add('global');
+                                others.push(opt);
+                            }
+                        } else {
+                            regular.push(opt);
+                        }
+                    } else {
+                        // Type selected: show only matching subtypes
+                        if (String(optType) === String(selectedType)) {
+                            if (isOther) {
+                                others.push(opt);
+                            } else {
+                                regular.push(opt);
+                            }
+                        }
+                    }
+                });
+
+                // Rebuild the select: placeholder → regular options → Others at bottom
+                subtypeSelect.innerHTML = '';
+                subtypeSelect.appendChild(placeholder);
+
+                regular.forEach(opt => {
+                    opt.style.display = '';
+                    subtypeSelect.appendChild(opt);
+                });
+
+                others.forEach(opt => {
+                    opt.style.display = '';
+                    subtypeSelect.appendChild(opt);
+                });
+}
+
+    typeSelect.addEventListener('change', filterSubtypes);
+    filterSubtypes();
+});
 
 </script>
 </body>
