@@ -507,7 +507,7 @@ tbody tr:last-child td { border-bottom: none; }
                     <select name="is_anonymous" class="filter-input">
                         <option value="">All</option>
                         <option value="1" {{ request('is_anonymous') === '1' ? 'selected' : '' }}>Anonymous</option>
-                        <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Non Anonymous</option>
+                        <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Identified</option>
                     </select>
                 </div>
 

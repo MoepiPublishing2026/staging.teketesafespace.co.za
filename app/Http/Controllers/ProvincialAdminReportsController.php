@@ -10,6 +10,7 @@ use App\Models\AbuseType;
 use App\Models\Subtype;
 use App\Models\School;
 
+
 class ProvincialAdminReportsController extends Controller
 {
     public function index(Request $request)
