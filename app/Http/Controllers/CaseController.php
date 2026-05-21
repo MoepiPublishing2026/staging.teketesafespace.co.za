@@ -11,8 +11,8 @@ class CaseController extends Controller
     // Map abuse type names to prefixes
     protected $abusePrefixes = [
         'Bullying' => 'BU',
-        'Sexual Abuse' => 'SX',
-        'Substance Abuse' => 'SB',
+        'Suspected Sexual Harassment' => 'SH',
+'Substance Abuse' => 'SA',
         'Violence' => 'VL',
         'Teenage Pregnancy' => 'TP',
         'Weapons' => 'WP',
