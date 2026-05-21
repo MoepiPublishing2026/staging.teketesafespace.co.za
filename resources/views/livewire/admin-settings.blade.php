@@ -108,18 +108,31 @@
                         
                         <div class="flex flex-col">
                             <p class="mb-3 font-montserrat-black">Update Profile Picture</p>
-                            <label class="inline-block">
-                                <span class="sr-only">Choose profile photo</span>
-                                <input type="file" wire:model="profile_picture" 
-                                       class="hidden"
-                                       id="profile-picture-input"
-                                       accept="image/*">
-                                <span class="cursor-pointer px-6 py-2 rounded-full font-semibold font-montserrat-black inline-block" 
-                                      style="background: linear-gradient(to bottom right, #c7da30, #d7e47a); color: black;"
-                                      onclick="document.getElementById('profile-picture-input').click()">
-                                    Choose File
-                                </span>
-                            </label>
+                            <label class="inline-block w-48">
+    <span class="sr-only">Choose profile photo</span>
+
+    <input type="file"
+           wire:model="profile_picture"
+           class="hidden"
+           id="profile-picture-input"
+           accept="image/*">
+
+    <span class="cursor-pointer w-full text-center px-6 py-3 rounded-full font-semibold font-montserrat-black inline-block transition hover:scale-105"
+          style="background: linear-gradient(to bottom right, #c7da30, #d7e47a); color: black;"
+          onclick="document.getElementById('profile-picture-input').click()">
+        Choose File
+    </span>
+</label>
+
+{{-- Delete Picture Button --}}
+@if(auth()->user()->profile_picture || $profile_picture)
+    <button type="button"
+            wire:click="deleteProfilePicture"
+            class="mt-3 w-48 px-6 py-3 rounded-full font-semibold font-montserrat-black transition hover:scale-105 text-center"
+            style="background: #ef4444; color: white;">
+        Delete Picture
+    </button>
+@endif
                             
                             <div wire:loading wire:target="profile_picture" class="text-sm text-gray-600 mt-2">
                                 Uploading...

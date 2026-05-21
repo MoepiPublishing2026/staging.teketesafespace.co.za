@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace Provincial Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
        :root {
@@ -154,8 +153,50 @@ h2 {
   margin: 0 0 1rem;
 }
 .subtitle { margin-bottom: 2rem; color: #5f6b7b; text-align: center; }
-.panel { background: white; border-radius: 1rem; padding: 0px; max-width: 100%; }
+.panel { background: white; border-radius: 1rem; padding: 0; max-width: 100%; }
 .panel + .panel { margin-top: 1.8rem; }
+
+.filter-panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.25rem;
+  width: 100%;
+  border: 2px solid #c7da30;
+  margin-bottom: 1.8rem;
+}
+.filter-panel hr { border: none; border-top: 1px solid #eaeaea; margin: 0.75rem 0 1rem; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+.filters select, .filters input[type="date"] {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #111827; border-radius: 6px;
+  background: #fff; color: #111827; min-width: 140px;
+}
+.filters label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 12px; font-weight: 700; color: #4b5563; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.filter-chips span {
+  background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px;
+  padding: 0.35rem 0.75rem; font-size: 12px; font-weight: 700; color: #374151;
+}
+.filter-clear { font-size: 12px; font-weight: 700; color: #38b6ff; text-decoration: none; margin-left: auto; }
+.filter-clear:hover { text-decoration: underline; }
+
+.heatmap-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+}
+.heatmap-summary-card {
+  background: #fff;
+  border: 2px solid #c7da30;
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+}
+.heatmap-summary-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; margin-bottom: 0.35rem; }
+.heatmap-summary-card .value { font-size: 26px; font-weight: 900; color: #111827; line-height: 1.1; }
+.heatmap-total-row th, .heatmap-total-row td { background: #e5e7eb; font-weight: 800; }
 
 .menu-icon {
     display: none;
@@ -222,7 +263,7 @@ h2 {
 
 .map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
 .district-map-container {
-  height: 420px;
+  height: 520px;
   width: 100%;
   max-width: 100%;
   min-height: 320px;
@@ -231,9 +272,18 @@ h2 {
   position: relative;
   background: #f6f7f2;
 }
-.district-map-svg { width: 100%; height: 100%; display: block; }
-.district-map-shape { stroke: rgba(255,255,255,0.9); stroke-width: 1.2; transition: stroke 0.15s ease, stroke-width 0.15s ease; }
-.district-map-shape.is-hover { stroke: #111827; stroke-width: 2.2; }
+.district-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; z-index: 1; }
+.district-map-shape { stroke: rgba(255,255,255,0.9); stroke-width: 1.2; transition: stroke 0.15s ease, stroke-width 0.15s ease, filter 0.15s ease; }
+.district-map-shape.is-hover,
+.district-map-shape.is-key-hover { stroke: #111827; stroke-width: 2.2; }
+.district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 3; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
+.heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
+.map-label-layer { pointer-events: none; user-select: none; }
+.map-label-layer text {
+  font-family: 'Montserrat', system-ui, sans-serif; font-weight: 900;
+  paint-order: stroke fill; stroke: #fff; stroke-width: 0.45px; stroke-linejoin: round;
+  fill: #1f2937;
+}
 .district-map-status {
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -277,6 +327,30 @@ h2 {
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
+.district-map-key-title .map-key-meta { font-weight: 700; color: #6b7280; text-transform: none; letter-spacing: 0; }
+.map-key-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.map-key-search {
+  width: 100%;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 8px;
+  border: 1px solid rgba(17,24,39,0.25);
+  border-radius: 6px;
+  background: #fff;
+}
+.map-key-sort { display: flex; gap: 4px; }
+.map-key-sort-btn {
+  flex: 1;
+  padding: 4px 6px !important;
+  font-size: 10px !important;
+  border-radius: 5px !important;
+  min-height: 0 !important;
+}
+.map-key-sort-btn.active { background: #c7da30 !important; color: #fff !important; }
+.district-map-key-rows { max-height: 340px; overflow-y: auto; }
+.district-map-key-row.is-zero .district-map-key-name { color: #9ca3af; }
+.district-map-key-row.is-zero .district-map-key-count { color: #9ca3af; font-weight: 700; }
 .district-map-key-row {
   display: grid;
   grid-template-columns: 14px 1fr auto;
@@ -308,6 +382,7 @@ h2 {
 }
 .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
 .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
+.map-legend-swatch.none { background: #d1cb23; opacity: 0.85; }
 .map-legend-swatch.low { background: #d1cb23; }
 .map-legend-swatch.medium { background: #fbbf0f; }
 .map-legend-swatch.high { background: #ed1c24; }
@@ -390,6 +465,64 @@ h2 {
         </h1>
         <p class="subtitle">Provincial case intelligence and live report monitoring.</p>
 
+        <section class="filter-panel" aria-label="Filters">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.75rem;">
+                <h2 style="margin:0;">Filters</h2>
+                @if(!empty($activeFilters))
+                    <a href="{{ url('/provincial/heatmap') }}" class="filter-clear">Clear all filters</a>
+                @endif
+            </div>
+            <hr>
+            <form method="GET" action="{{ url('/provincial/heatmap') }}" class="filters">
+                <select name="district" onchange="this.form.submit()">
+                    <option value="">All Districts</option>
+                    @foreach ($districts as $district)
+                        <option value="{{ $district->id }}" {{ (string) $districtFilter === (string) $district->id ? 'selected' : '' }}>{{ $district->name }}</option>
+                    @endforeach
+                </select>
+                <select name="school" onchange="this.form.submit()" {{ $districtFilter ? '' : 'disabled' }}>
+                    <option value="">All Schools</option>
+                    @foreach ($schools as $school)
+                        <option value="{{ $school->school_id }}" {{ (string) $schoolFilter === (string) $school->school_id ? 'selected' : '' }}>{{ $school->school_name }}</option>
+                    @endforeach
+                </select>
+                <select name="abuse_type" onchange="this.form.submit()">
+                    <option value="">Any Report Type</option>
+                    @foreach ($abuseTypes as $type)
+                        <option value="{{ $type->id }}" {{ (string) $abuseTypeFilter === (string) $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
+                    @endforeach
+                </select>
+                <select name="age_range" onchange="this.form.submit()">
+                    <option value="">Any Age</option>
+                    @foreach (['0-10','11-15','16-20','21-22','30+'] as $range)
+                        <option value="{{ $range }}" {{ $ageRange === $range ? 'selected' : '' }}>{{ $range }}</option>
+                    @endforeach
+                </select>
+                <label>From <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()"></label>
+                <label>To <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()"></label>
+            </form>
+            @if(!empty($activeFilters))
+                <div class="filter-chips" aria-label="Active filters">
+                    @foreach ($activeFilters as $chip)<span>{{ $chip }}</span>@endforeach
+                </div>
+            @endif
+        </section>
+
+        <div class="heatmap-summary" aria-label="Summary">
+            <div class="heatmap-summary-card">
+                <div class="label">Total reports</div>
+                <div class="value">{{ number_format($heatmapGrandTotal ?? 0) }}</div>
+            </div>
+            <div class="heatmap-summary-card">
+                <div class="label">Districts with data</div>
+                <div class="value">{{ $districtsWithReports ?? 0 }} <span style="font-size:14px;font-weight:700;color:#6b7280;">/ {{ count($districts ?? []) }}</span></div>
+            </div>
+            <div class="heatmap-summary-card">
+                <div class="label">Report types</div>
+                <div class="value">{{ count($heatmapAbuseTypes ?? []) }}</div>
+            </div>
+        </div>
+
         <section class="heatmap-panel" id="districtHeatmapPanel" aria-label="Reports by District and Type">
             <h2>Reports by District &amp; Report Type</h2>
             <div class="heatmap-toolbar">
@@ -407,12 +540,17 @@ h2 {
                             @foreach($heatmapAbuseTypes ?? [] as $atype)
                                 <th class="heatmap-col">{{ $atype }}</th>
                             @endforeach
+                            <th class="heatmap-col">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($heatmapMatrix ?? [] as $district => $row)
-                            @php $rowIdx = $loop->index; @endphp
-                            <tr>
+                            @php
+                                $rowIdx = $loop->index;
+                                $rowDistrictId = $heatmapDistrictNameToId[$district] ?? null;
+                                $isActiveDistrict = $districtFilter && (string) $rowDistrictId === (string) $districtFilter;
+                            @endphp
+                            <tr class="{{ $isActiveDistrict ? 'heatmap-row-active' : '' }}">
                                 <th class="heatmap-row">{{ $district }}</th>
                                 @foreach($row as $colIdx => $count)
                                     @php
@@ -443,6 +581,7 @@ h2 {
                                         <span class="heatmap-cell-pct" style="display:none;">{{ $pct }}%</span>
                                     </td>
                                 @endforeach
+                                <td class="heatmap-row" style="font-weight:800;">{{ number_format($heatmapRowTotals[$district] ?? 0) }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -450,6 +589,17 @@ h2 {
                             </tr>
                         @endforelse
                     </tbody>
+                    @if(!empty($heatmapMatrix))
+                    <tfoot>
+                        <tr class="heatmap-total-row">
+                            <th class="heatmap-row">Total</th>
+                            @foreach($heatmapColumnTotals ?? [] as $colTotal)
+                                <td>{{ number_format($colTotal) }}</td>
+                            @endforeach
+                            <td>{{ number_format($heatmapGrandTotal ?? 0) }}</td>
+                        </tr>
+                    </tfoot>
+                    @endif
                 </table>
             </div>
 
@@ -472,19 +622,28 @@ h2 {
             <div id="district-map" class="district-map-container">
                 <div class="district-map-status" id="districtMapStatus">Loading map…</div>
                 <div class="district-map-key" id="districtMapKey" style="display:none;">
-                    <div class="district-map-key-title">Districts</div>
-                    <div id="districtMapKeyRows"></div>
+                    <div class="district-map-key-title">Districts <span class="map-key-meta" id="districtMapKeyMeta"></span></div>
+                    <div class="map-key-tools">
+                        <input type="search" class="map-key-search" id="districtMapKeySearch" placeholder="Search districts…" aria-label="Search districts">
+                        <div class="map-key-sort">
+                            <button type="button" class="map-key-sort-btn active" data-sort="name">A–Z</button>
+                            <button type="button" class="map-key-sort-btn" data-sort="count">By reports</button>
+                        </div>
+                    </div>
+                    <div class="district-map-key-rows" id="districtMapKeyRows"></div>
                 </div>
                 <div class="district-map-tooltip" id="districtMapTooltip" style="display:none;">
                     <div class="tt-title" id="districtMapTooltipTitle"></div>
                     <div class="tt-sub" id="districtMapTooltipSub"></div>
                 </div>
                 <div class="map-legend" aria-label="Heatmap legend">
+                    <div class="map-legend-row"><span class="map-legend-swatch none" aria-hidden="true"></span><span>No reports</span></div>
                     <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
                     <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
                     <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low</span></div>
                 </div>
             </div>
+            <p class="subtitle" style="margin-top:1rem;text-align:left;">All districts in your province are shown. Yellow = no reports; darker red = more reports. Click a district to filter reports.</p>
         </section>
     </div>
 </div>
@@ -494,6 +653,13 @@ h2 {
     const reportsUrl = "{{ url('/provincial-admin/reports') }}";
     const panel = document.getElementById('districtHeatmapPanel');
     if (!panel) return;
+
+    function mergeHeatmapQueryParams(url) {
+        const params = new URLSearchParams(window.location.search);
+        ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(function (k) {
+            if (params.has(k)) url.searchParams.set(k, params.get(k));
+        });
+    }
 
     const viewBtns = panel.querySelectorAll('.heatmap-view-btn');
     const scaleCount = panel.querySelector('#districtHeatmapScaleCount');
@@ -526,14 +692,8 @@ h2 {
         cell.addEventListener('click', function () {
             const did = this.dataset.districtId;
             const aid = this.dataset.abuseTypeId;
-            const count = parseInt(this.dataset.count, 10);
-            if (count === 0) return;
-
             const url = new URL(reportsUrl, window.location.origin);
-            const params = new URLSearchParams(window.location.search);
-            ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(k => {
-                if (params.has(k)) url.searchParams.set(k, params.get(k));
-            });
+            mergeHeatmapQueryParams(url);
             if (did) url.searchParams.set('district', did);
             if (aid) url.searchParams.set('abuse_type', aid);
             window.location.href = url.toString();
@@ -553,9 +713,10 @@ h2 {
   const container = document.getElementById('district-map');
   if (!container) return;
 
+  const mapBase = @json(url('/geojson'));
   const provinceSlug = @json($mapProvinceSlug ?? '');
+  const provinceName = @json($province->province_name ?? '');
   const districtCounts = @json($heatmapRowTotals ?? []);
-  if (!provinceSlug) return;
 
   const reportsUrl = "{{ url('/provincial-admin/reports') }}";
   const districtsNameToId = @json($districts->pluck('id', 'name')->toArray());
@@ -563,6 +724,9 @@ h2 {
   const statusEl = document.getElementById('districtMapStatus');
   const keyEl = document.getElementById('districtMapKey');
   const keyRowsEl = document.getElementById('districtMapKeyRows');
+  const keyMetaEl = document.getElementById('districtMapKeyMeta');
+  const keySearchEl = document.getElementById('districtMapKeySearch');
+  const keySortBtns = document.querySelectorAll('.map-key-sort-btn');
   const tooltipEl = document.getElementById('districtMapTooltip');
   const tooltipTitleEl = document.getElementById('districtMapTooltipTitle');
   const tooltipSubEl = document.getElementById('districtMapTooltipSub');
@@ -583,9 +747,67 @@ h2 {
       .trim();
   }
 
+  function setMapStatus(message) {
+    if (!statusEl) return;
+    statusEl.style.display = 'grid';
+    statusEl.textContent = message;
+  }
+  function hideMapStatus() {
+    if (!statusEl) statusEl.style.display = 'none';
+  }
+  function compactProvinceKey(s) {
+    return String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, '');
+  }
+  function provinceKeysMatch(geoProvince, dbProvince) {
+    const g = compactProvinceKey(geoProvince);
+    const d = compactProvinceKey(dbProvince);
+    if (!g || !d) return false;
+    if (g === d) return true;
+    if (d.indexOf('kwazulu') !== -1 && g.indexOf('kwazulu') !== -1) return true;
+    if (g.length >= 6 && (g.includes(d) || d.includes(g))) return true;
+    return false;
+  }
+  function resolveDbDistrictName(geoName) {
+    const k = keyName(geoName);
+    if (!k) return null;
+    const candidates = Object.keys(districtsNameToId || {});
+    for (let i = 0; i < candidates.length; i++) {
+      if (keyName(candidates[i]) === k) return candidates[i];
+    }
+    for (let i = 0; i < candidates.length; i++) {
+      const dk = keyName(candidates[i]);
+      if (dk.length < 5) continue;
+      if (k.includes(dk) || dk.includes(k)) return candidates[i];
+    }
+    return null;
+  }
+  async function fetchJson(url) {
+    const response = await fetch(url, { credentials: 'same-origin' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  }
+  async function loadMapItems() {
+    if (provinceSlug) {
+      try {
+        const slugItems = await fetchJson(mapBase + '/' + provinceSlug);
+        if (slugItems.length) return slugItems;
+      } catch (e) { /* fallback */ }
+    }
+    const allItems = await fetchJson(mapBase + '/map_data');
+    const filtered = allItems.filter(function (it) {
+      const rawProvince = it && it.province ? String(it.province).trim() : '';
+      return rawProvince && provinceKeysMatch(rawProvince, provinceName);
+    });
+    return filtered.length ? filtered : allItems;
+  }
+
   const countsByKey = {};
   Object.entries(districtCounts || {}).forEach(([name, count]) => { countsByKey[keyName(name)] = Number(count) || 0; });
   const max = Math.max(1, ...Object.values(countsByKey));
+  const grandTotal = Object.values(districtCounts || {}).reduce((sum, c) => sum + (Number(c) || 0), 0);
+  let keyShapes = [];
+  let keySortMode = 'name';
 
   const districtIdByKey = {};
   Object.entries(districtsNameToId || {}).forEach(([name, id]) => {
@@ -626,10 +848,40 @@ h2 {
 
   function showTooltip(clientX, clientY, title, count) {
     if (!tooltipEl || !tooltipTitleEl || !tooltipSubEl) return;
+    const n = Number(count || 0);
+    const pct = grandTotal > 0 ? ((n / grandTotal) * 100).toFixed(1) : '0';
     tooltipTitleEl.textContent = String(title || '');
-    tooltipSubEl.textContent = `${Number(count || 0).toLocaleString()} report(s)`;
+    tooltipSubEl.textContent = n.toLocaleString() + ' report(s) · ' + pct + '% of filtered total';
     tooltipEl.style.display = 'block';
     moveTooltip(clientX, clientY);
+  }
+
+  function setKeyHover(pathEl, on) {
+    if (pathEl) pathEl.classList.toggle('is-key-hover', on);
+  }
+
+  function applyUrlSelection() {
+    const districtId = new URLSearchParams(window.location.search).get('district');
+    if (!districtId) return;
+    container.querySelectorAll('.district-map-shape').forEach((path) => {
+      path.classList.toggle('is-selected', path.getAttribute('data-district-id') === districtId);
+    });
+  }
+
+  function sortKeyShapes(list, mode) {
+    const copy = list.slice();
+    if (mode === 'count') {
+      copy.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0) || String(a.label).localeCompare(String(b.label)));
+    } else {
+      copy.sort((a, b) => String(a.label).localeCompare(String(b.label)));
+    }
+    return copy;
+  }
+
+  function filterKeyShapes(list, query) {
+    const q = String(query || '').trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((s) => String(s.label || '').toLowerCase().includes(q));
   }
 
   function hideTooltip() {
@@ -650,19 +902,20 @@ h2 {
     window.location.href = url.toString();
   }
 
-  function renderKey(ranked) {
+  function renderKey() {
     if (!keyEl || !keyRowsEl) return;
-    const top = ranked.slice(0, 12);
-    if (!top.length) {
+    const visible = filterKeyShapes(sortKeyShapes(keyShapes, keySortMode), keySearchEl ? keySearchEl.value : '');
+    if (keyMetaEl) keyMetaEl.textContent = visible.length ? '(' + visible.length + ')' : '';
+    if (!keyShapes.length) {
       keyEl.style.display = 'none';
       return;
     }
     keyEl.style.display = 'block';
     keyRowsEl.innerHTML = '';
 
-    top.forEach((s) => {
+    visible.forEach((s) => {
       const row = document.createElement('div');
-      row.className = 'district-map-key-row';
+      row.className = 'district-map-key-row' + (Number(s.count) > 0 ? '' : ' is-zero');
       row.tabIndex = 0;
       row.setAttribute('role', 'button');
       row.setAttribute('aria-label', `${s.label}: ${Number(s.count || 0).toLocaleString()} report(s)`);
@@ -683,25 +936,46 @@ h2 {
       row.appendChild(sw);
       row.appendChild(nm);
       row.appendChild(ct);
-      row.addEventListener('click', () => navigateToDistrict(s.key));
+      row.addEventListener('mouseenter', () => setKeyHover(s.pathEl, true));
+      row.addEventListener('mouseleave', () => setKeyHover(s.pathEl, false));
+      row.addEventListener('click', () => {
+        if (s.districtId) {
+          const url = new URL(reportsUrl, window.location.origin);
+          const params = new URLSearchParams(window.location.search);
+          ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(k => {
+            if (params.has(k)) url.searchParams.set(k, params.get(k));
+          });
+          url.searchParams.set('district', s.districtId);
+          window.location.href = url.toString();
+        } else {
+          navigateToDistrict(s.key);
+        }
+      });
       row.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToDistrict(s.key); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
       });
       keyRowsEl.appendChild(row);
     });
   }
 
-  const url = `https://raw.githubusercontent.com/datawizzards/zadmaps/master/geojson/${provinceSlug}.json`;
-  fetch(url)
-    .then((r) => r.text())
-    .then((text) => {
-      let items;
-      try { items = JSON.parse(text); } catch (e) { return null; }
-      return Array.isArray(items) ? items : null;
-    })
+  if (keySearchEl) keySearchEl.addEventListener('input', renderKey);
+  keySortBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      keySortMode = btn.dataset.sort || 'name';
+      keySortBtns.forEach((b) => b.classList.toggle('active', b === btn));
+      renderKey();
+    });
+  });
+
+  if (!provinceSlug && !provinceName) {
+    setMapStatus('Province map not configured.');
+    return;
+  }
+
+  loadMapItems()
     .then((items) => {
-      if (!items) {
-        if (statusEl) statusEl.textContent = 'Map unavailable';
+      if (!items || !items.length) {
+        setMapStatus('Map unavailable — no district shapes found.');
         return;
       }
       const svgNS = 'http://www.w3.org/2000/svg';
@@ -712,97 +986,88 @@ h2 {
       svg.appendChild(g);
 
       const shapes = [];
+      const pathsForLabels = [];
       items.forEach((it) => {
         const name = it?.name ?? '';
         const d = it?.path ?? '';
         if (!d) return;
 
-        const key = keyName(name);
-        const count = countsByKey[key] ?? 0;
+        const dbDistrict = resolveDbDistrictName(name);
+        const key = dbDistrict ? keyName(dbDistrict) : keyName(name);
+        const count = dbDistrict ? (Number(districtCounts[dbDistrict]) || 0) : (countsByKey[keyName(name)] ?? 0);
+        const displayLabel = dbDistrict ? cleanLabel(dbDistrict) : cleanLabel(name);
+        const districtId = dbDistrict ? (districtsNameToId[dbDistrict] || '') : (districtIdByKey[key] || '');
         const ratio = max > 0 ? count / max : 0;
 
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('d', d);
         path.setAttribute('class', 'district-map-shape');
         path.setAttribute('fill', heatColor(ratio));
-        path.setAttribute('fill-opacity', String(count > 0 ? (0.30 + 0.30 * Math.sqrt(ratio)) : 0.18));
-        path.dataset.districtKey = key;
-        path.dataset.districtLabel = cleanLabel(name);
-        path.dataset.districtCount = String(count);
-        path.style.cursor = districtIdByKey[key] ? 'pointer' : 'default';
+        path.setAttribute('fill-opacity', String(count > 0 ? (0.30 + 0.30 * Math.sqrt(ratio)) : 0.62));
+        path.setAttribute('data-district-key', key);
+        path.setAttribute('data-district-id', String(districtId));
+        path.setAttribute('data-district-label', displayLabel);
+        path.setAttribute('data-count', String(count));
+        path.style.cursor = districtId ? 'pointer' : 'default';
         g.appendChild(path);
+        pathsForLabels.push({ pathEl: path, label: displayLabel });
 
-        shapes.push({ key, name, label: cleanLabel(name), count, pathEl: path });
+        shapes.push({ key, label: displayLabel, count, districtId, pathEl: path });
       });
 
       const oldSvg = container.querySelector('svg.district-map-svg');
       if (oldSvg) oldSvg.remove();
       container.insertBefore(svg, container.firstChild);
 
+      if (!shapes.length) {
+        setMapStatus('Could not match district boundaries.');
+        return;
+      }
+
       requestAnimationFrame(() => {
+        let mapReady = false;
         try {
           const bb = g.getBBox();
-          svg.setAttribute('viewBox', `${bb.x - 12} ${bb.y - 12} ${bb.width + 24} ${bb.height + 24}`);
-        } catch (e) {}
+          if (bb.width > 0 && bb.height > 0) {
+            const pad = 12;
+            svg.setAttribute('viewBox', `${bb.x - pad} ${bb.y - pad} ${bb.width + pad * 2} ${bb.height + pad * 2}`);
+          }
 
-        const ranked = shapes
-          .filter((s) => Number(s.count || 0) > 0)
-          .sort((a, b) => (b.count || 0) - (a.count || 0));
+          keyShapes = shapes.slice();
+          renderKey();
+          applyUrlSelection();
 
-        renderKey(ranked);
+          const labelLayer = document.createElementNS(svgNS, 'g');
+          labelLayer.setAttribute('class', 'map-label-layer');
+          labelLayer.setAttribute('aria-hidden', 'true');
+          g.appendChild(labelLayer);
 
-        const defs = document.createElementNS(svgNS, 'defs');
-        const blur = document.createElementNS(svgNS, 'filter');
-        blur.setAttribute('id', 'heatBlur');
-        blur.setAttribute('x', '-60%');
-        blur.setAttribute('y', '-60%');
-        blur.setAttribute('width', '220%');
-        blur.setAttribute('height', '220%');
-        const feGaussian = document.createElementNS(svgNS, 'feGaussianBlur');
-        feGaussian.setAttribute('in', 'SourceGraphic');
-        feGaussian.setAttribute('stdDeviation', '22');
-        blur.appendChild(feGaussian);
-        defs.appendChild(blur);
-        svg.insertBefore(defs, svg.firstChild);
+          pathsForLabels.forEach((item) => {
+            let bb;
+            try { bb = item.pathEl.getBBox(); } catch (e) { return; }
+            const cx = bb.x + bb.width / 2;
+            const cy = bb.y + bb.height / 2;
+            const text = String(item.label || '');
+            if (!text) return;
+            const len = text.length;
+            const minSide = Math.min(bb.width, bb.height);
+            let fs = len > 22 ? 5.5 : (len > 16 ? 6.5 : (len > 12 ? 7.5 : 8.5));
+            if (minSide < 40) fs = Math.min(fs, 6.5);
+            if (minSide < 24) fs = Math.min(fs, 5.5);
+            const textEl = document.createElementNS(svgNS, 'text');
+            textEl.setAttribute('x', String(cx));
+            textEl.setAttribute('y', String(cy));
+            textEl.setAttribute('text-anchor', 'middle');
+            textEl.setAttribute('dominant-baseline', 'middle');
+            textEl.setAttribute('font-size', String(fs));
+            textEl.textContent = text;
+            labelLayer.appendChild(textEl);
+          });
 
-        const heatLayer = document.createElementNS(svgNS, 'g');
-        g.appendChild(heatLayer);
-
-        ranked.forEach((s) => {
-          let bb;
-          try { bb = s.pathEl.getBBox(); } catch (e) { return; }
-          const cx = bb.x + bb.width / 2;
-          const cy = bb.y + bb.height / 2;
-          const ratio = max > 0 ? (Number(s.count || 0) / max) : 0;
-          const color = heatColor(ratio);
-          const baseR = 22 + Math.sqrt(ratio) * 96;
-
-          const outer = document.createElementNS(svgNS, 'circle');
-          outer.setAttribute('cx', String(cx));
-          outer.setAttribute('cy', String(cy));
-          outer.setAttribute('r', String(baseR));
-          outer.setAttribute('fill', color);
-          outer.setAttribute('opacity', String(0.26 + 0.14 * Math.sqrt(ratio)));
-          outer.setAttribute('filter', 'url(#heatBlur)');
-          heatLayer.appendChild(outer);
-
-          const mid = document.createElementNS(svgNS, 'circle');
-          mid.setAttribute('cx', String(cx));
-          mid.setAttribute('cy', String(cy));
-          mid.setAttribute('r', String(baseR * 0.62));
-          mid.setAttribute('fill', color);
-          mid.setAttribute('opacity', String(0.40 + 0.18 * Math.sqrt(ratio)));
-          mid.setAttribute('filter', 'url(#heatBlur)');
-          heatLayer.appendChild(mid);
-
-          const dot = document.createElementNS(svgNS, 'circle');
-          dot.setAttribute('cx', String(cx));
-          dot.setAttribute('cy', String(cy));
-          dot.setAttribute('r', '2.8');
-          dot.setAttribute('fill', '#111827');
-          dot.setAttribute('opacity', '0.82');
-          heatLayer.appendChild(dot);
-        });
+          mapReady = true;
+        } catch (err) {
+          setMapStatus('Map could not be drawn.');
+        }
 
         let hovered = null;
         svg.addEventListener('mousemove', (e) => {
@@ -817,8 +1082,8 @@ h2 {
           hovered = target;
           hovered.classList.add('is-hover');
 
-          const label = target.dataset.districtLabel || '';
-          const count = Number(target.dataset.districtCount || 0);
+          const label = target.getAttribute('data-district-label') || '';
+          const count = Number(target.getAttribute('data-count') || 0);
           showTooltip(e.clientX, e.clientY, label, count);
         });
         svg.addEventListener('mouseleave', () => {
@@ -829,16 +1094,26 @@ h2 {
         svg.addEventListener('click', (e) => {
           const target = e.target;
           if (!(target instanceof SVGPathElement) || !target.classList.contains('district-map-shape')) return;
-          const key = target.dataset.districtKey || '';
-          if (!key) return;
-          navigateToDistrict(key);
+          const did = target.getAttribute('data-district-id') || '';
+          if (did) {
+            const url = new URL(reportsUrl, window.location.origin);
+            const params = new URLSearchParams(window.location.search);
+            ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(k => {
+              if (params.has(k)) url.searchParams.set(k, params.get(k));
+            });
+            url.searchParams.set('district', did);
+            window.location.href = url.toString();
+            return;
+          }
+          const key = target.getAttribute('data-district-key') || '';
+          if (key) navigateToDistrict(key);
         });
 
-        if (statusEl) statusEl.style.display = 'none';
+        if (mapReady) hideMapStatus();
       });
     })
     .catch(() => {
-      if (statusEl) statusEl.textContent = 'Map unavailable';
+      setMapStatus('Map unavailable — could not load map data.');
     });
 })();
 </script>
