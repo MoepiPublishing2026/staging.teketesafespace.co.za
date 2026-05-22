@@ -4,7 +4,7 @@
     <header
         class="md:hidden fixed top-0 left-0 w-full bg-white z-50 shadow-sm px-6 h-16 flex items-center font-[Montserrat]">
         <div class="flex justify-between items-center max-w-[1280px] mx-auto w-full">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[135px] h-auto flex-shrink-0">
+            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0"">
 
             <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -16,7 +16,7 @@
 
     <!-- Desktop Navbar -->
     <div class="hidden md:flex md:items-center md:justify-between px-6 lg:px-20 py-4 bg-white font-[Montserrat]">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[150px] h-auto">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
 
         <div class="flex gap-8 text-[17px] font-[Montserrat] text-black ml-auto">
             <a href="{{ url('/') }}" class="hover:text-[#c7da30] transition-colors">Home</a>

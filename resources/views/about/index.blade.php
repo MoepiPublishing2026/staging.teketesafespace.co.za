@@ -28,7 +28,7 @@
     <!-- ================= DESKTOP NAVBAR (UNCHANGED) ================= -->
     <div class="hidden md:flex justify-between items-center px-6 lg:px-20 py-4 bg-white shadow-sm">
         <div>
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[150px] h-auto">
+            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
         </div>
 
         <div class="flex gap-8 text-[17px] text-black">

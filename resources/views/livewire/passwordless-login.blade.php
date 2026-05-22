@@ -55,7 +55,7 @@
             style="max-width: 1280px; margin: 0 auto;">
             <!-- Logo -->
             <div>
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 90px; height: auto;">
+                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
             </div>
 
             <!-- Top Right Links (Desktop Only) -->
