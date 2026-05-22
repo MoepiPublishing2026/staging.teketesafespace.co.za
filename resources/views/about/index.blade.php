@@ -159,7 +159,7 @@
         </div>
     </section>
 
-    <div class="hidden lg:block absolute -left-48 top-[210%] -translate-y-1/2 w-[350px] h-[200px] overflow-hidden">
+    <div class="hidden lg:block absolute -left-48 top-[190%] -translate-y-1/2 w-[400px] h-[350px] overflow-hidden">
         <img src="{{ asset('images/futuristic digital frame tech.png') }}" alt="Tech Frame Half"
             class="w-full h-full object-cover object-left">
     </div>
