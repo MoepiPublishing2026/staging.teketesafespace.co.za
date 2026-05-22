@@ -6,7 +6,7 @@
             
             <!-- Logo -->
             <div>
-                <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace" style="width: 110px; height: auto;">
+                <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace" class="w-[143px] h-auto flex-shrink-0">
             </div>
 
             <!-- Desktop Links -->

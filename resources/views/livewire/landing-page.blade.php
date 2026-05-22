@@ -6,21 +6,21 @@
 
         <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
 
-        <div class="relative z-10 flex justify-between items-center w-full">
+        <div class="relative z-10 flex justify-between lg:top-[0vh] lg:right-[0vw] font-[Montserrat] items-center w-full">
 
             <nav class="hidden lg:flex gap-8 ml-auto">
                 <a href="{{ route('landing-page') }}"
-                    class="text-black text-[17px] transition-colors hover:text-[#c7da30]">
+                    class="text-black text-[17px] transition-colors font-[Montserrat] hover:text-[#c7da30]">
                     Home
                 </a>
 
                 <a href="{{ route('about-us') }}"
-                    class="text-black text-[17px] transition-colors hover:text-[#c7da30]">
+                    class="text-black text-[17px] transition-colors font-[Montserrat] hover:text-[#c7da30]">
                     About Us
                 </a>
 
                 <a href="{{ route('contact-us') }}"
-                    class="text-black text-[17px] transition-colors hover:text-[#c7da30]">
+                    class="text-black text-[17px] transition-colors font-[Montserrat] hover:text-[#c7da30]">
                     Contact Us
                 </a>
             </nav>
@@ -45,7 +45,7 @@
         <div x-show="menuOpen"
             x-transition
             @click.away="menuOpen = false"
-            class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg flex flex-col items-start p-6 z-50 lg:hidden">
+            class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg font-[Montserrat] flex flex-col items-start p-6 z-50 lg:hidden">
 
             <button @click="menuOpen = false" class="self-end mb-4 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -62,26 +62,26 @@
 
             <a href="{{ route('landing-page') }}"
                 @click="menuOpen = false"
-                class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">
+                class="text-black text-[17px] mb-4 hover:text-[#c7da30] font-[Montserrat] transition-colors">
                 Home
             </a>
 
             <a href="{{ route('about-us') }}"
                 @click="menuOpen = false"
-                class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">
+                class="text-black text-[17px] mb-4 hover:text-[#c7da30] font-[Montserrat] transition-colors">
                 About Us
             </a>
 
             <a href="{{ route('contact-us') }}"
                 @click="menuOpen = false"
-                class="text-black text-[17px] hover:text-[#c7da30] transition-colors">
+                class="text-black text-[17px] hover:text-[#c7da30] font-[Montserrat] transition-colors">
                 Contact Us
             </a>
 
         </div>
     </header>
 
-    <section class="relative flex-grow w-full pt-[14vh] pb-[12vh] lg:py-0 lg:h-full flex flex-col lg:block px-6 lg:px-0 overflow-hidden">
+    <section class="relative flex-grow w-full pt-[14vh] pb-[12vh] font-[Montserrat] lg:py-0 lg:h-full flex flex-col lg:block px-6 lg:px-0 overflow-hidden">
 
 <div class="circle-bg-line absolute top-[-95vh] left-[-46vw] w-[100vw] h-[320vh] pointer-events-none z-50">
                 <img src="{{ asset('images/circle6.png') }}"
@@ -91,9 +91,9 @@
 
         <img src="{{ asset('images/logo.png') }}"
             alt="Safe Space Logo"
-            class="relative mb-6 max-w-[220px] lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh] lg:left-[6vw] w-[70vw] lg:w-[28vw] z-0">
+            class="relative mb-6 max-w-[220px] lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh] lg:left-[0vw] w-[70vw] lg:w-[30vw] z-0">
 
-        <h1 class="relative mb-8 text-[#c7da30] font-bold leading-[0.95] text-[32px] sm:text-[40px] lg:absolute lg:mb-0 lg:top-[40vh] lg:left-[6vw] lg:text-[5vw] z-0">
+        <h1 class="relative mb-8 text-[#c7da30] font-bold leading-[0.95] font-[Montserrat] text-[32px] sm:text-[40px] lg:absolute lg:mb-0 lg:top-[50vh] lg:left-[2vw] lg:text-[5vw] z-0">
             Report Abuse<br>
             Safely and<br>
             Anonymously
@@ -101,31 +101,31 @@
 
         <img src="{{ asset('images/back-pc.png') }}"
             alt="Students"
-            class="relative mx-auto mb-8 w-full max-w-[340px] sm:max-w-[400px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[6vh] lg:right-[6vw] lg:w-[38vw] z-0">
+            class="relative mx-auto mb-8 w-full max-w-[340px] sm:max-w-[400px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[5vh] lg:right-[5vw] lg:h-[40vw] lg:w-[40vw] z-0">
 
-        <div class="relative w-full max-w-[340px] sm:max-w-[500px] mx-auto flex flex-col sm:flex-row lg:flex-row gap-3 sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[84vh] lg:right-[7vw] z-10">
+        <div class="relative w-full max-w-[340px] sm:max-w-[500px] mx-auto font-[Montserrat] flex flex-col sm:flex-row lg:flex-row gap-3 sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[84vh] lg:right-[8vw] z-10">
 
             <button wire:click="redirectToReportAbuse"
-                class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
+                class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] font-[Montserrat] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
                 Report Now
             </button>
 
             <button wire:click="redirectToStatusCheck"
-                class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
+                class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] font-[Montserrat] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
                 Check Status
             </button>
 
             <button wire:click="redirectToAdminLogin"
-                class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
+                class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] font-[Montserrat] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
                 Administrator
             </button>
         </div>
 
     </section>
 
-    <footer class="absolute bottom-0 left-0 w-full bg-[#808080] text-white px-6 py-4 lg:px-[5vw] lg:py-[1.5vh] flex flex-col md:flex-row lg:flex-row justify-between items-center gap-4 lg:gap-0 z-30">
+    <footer class="absolute bottom-0 left-0 w-full bg-[#808080] font-[Montserrat] text-white px-6 py-4 lg:px-[5vw] lg:py-[1.5vh] flex flex-col md:flex-row lg:flex-row justify-between items-center gap-4 lg:gap-0 z-30">
 
-        <p class="text-[13px] lg:text-[0.9vw] text-center lg:text-left">
+        <p class="text-[13px] lg:text-[0.9vw] lg:left-[0vw] text-center font-[Montserrat] lg:text-start">
             &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
         </p>
 

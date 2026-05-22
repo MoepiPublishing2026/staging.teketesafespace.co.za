@@ -5,7 +5,7 @@
     <!-- ================= HEADER ================= -->
     <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
         <div class="flex justify-between items-center px-4 sm:px-8 py-2 max-w-7xl mx-auto">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[110px] h-auto">
+            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
 
             <div class="flex items-center gap-4">
                 <!-- Desktop Nav -->
