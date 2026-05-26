@@ -65,7 +65,7 @@
 
                 <a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank">
                     <img src="{{ asset('images/Google Play Store.png') }}"
-                        class="w-[11vw] min-w-[140px] max-w-[180px] h-auto">
+                        class="w-[120px] h-[60px] object-contain scale-[1.15]">
                 </a>
 
                 <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank">
@@ -78,7 +78,7 @@
         </section>
 
         <!-- ================= PHONE (ENLARGED) ================= -->
-        <div class="fixed
+        <div class="absolute
             left-[48vw]
             top-[2vh]
             w-[32vw]
@@ -91,13 +91,30 @@
         </div>
 
         <!-- ================= FUTURISTIC ================= -->
-        <div class="fixed
-            right-[-18vw]
-            top-[18vh]
-            w-[34vw]
-            min-w-[340px]
-            max-w-[600px]
-            z-10 pointer-events-none">
+        <div class="
+    absolute
+
+    /* MOBILE */
+    right-[-45vw]
+    top-[22vh]
+    w-[75vw]
+
+    /* TABLET */
+    sm:right-[-30vw]
+    sm:w-[55vw]
+
+    /* DESKTOP */
+    md:right-[-18vw]
+    md:top-[18vh]
+    md:w-[34vw]
+
+    min-w-[260px]
+    md:min-w-[340px]
+    max-w-[600px]
+
+    z-10
+    pointer-events-none
+">
 
             <img src="{{ asset('images/futuristic digital frame tech.png') }}"
                 class="w-full h-auto object-contain">
