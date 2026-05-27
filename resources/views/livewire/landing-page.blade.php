@@ -4,13 +4,13 @@
     <header
         class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-6 lg:px-16 lg:pt-8">
 
-        <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
+        <!-- <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div> -->
 
         <div class="relative z-10 flex justify-between lg:top-[0vh] lg:right-[0vw] font-[Montserrat] items-center w-full">
 
             <nav class="hidden lg:flex gap-8 ml-auto">
                 <a href="{{ route('landing-page') }}"
-                    class="text-black text-[17px] transition-colors font-[Montserrat] hover:text-[#c7da30]">
+                    class="text-black text-[17px] transition-colors font-bold font-[Montserrat] hover:text-[#c7da30]">
                     Home
                 </a>
 
@@ -123,15 +123,15 @@
 
     </section>
 
-    <footer class="absolute bottom-0 left-0 w-full bg-[#808080] font-[Montserrat] text-white px-6 py-4 lg:px-[5vw] lg:py-[1.5vh] flex flex-col md:flex-row lg:flex-row justify-between items-center gap-4 lg:gap-0 z-30">
+   <footer class="w-full bg-[#808080] font-[Montserrat] text-white px-2 py-4 lg:px-[2vw] lg:py-[1.5vh] flex flex-col md:flex-row lg:flex-row justify-between items-center gap-4 lg:gap-0 z-30 lg:absolute lg:bottom-0 lg:left-0">
 
-        <p class="text-[13px] lg:text-[0.9vw] lg:left-[0vw] text-center font-[Montserrat] lg:text-start">
+        <p class="text-[13px] lg:text-[0.9vw] lg:left-[0vw] font-[Montserrat] lg:text-start">
             &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
         </p>
 
         <div class="flex items-center justify-center flex-wrap gap-4 lg:gap-[1vw]">
             <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
-                <img src="{{ asset('images/youtube.png') }}" alt="YouTube" class="w-5 h-5 lg:w-[1.7vw] lg:h-auto min-w-[20px]">
+                <img src="{{ asset('images/youtube.png') }}" alt="YouTube" class="w-7 h-7 lg:w-[2.2vw] lg:h-auto min-w-[28px]">
             </a>
             <a href="https://www.X.com/moepipublishing" target="_blank">
                 <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 lg:w-[1.7vw] lg:h-auto min-w-[20px]">
