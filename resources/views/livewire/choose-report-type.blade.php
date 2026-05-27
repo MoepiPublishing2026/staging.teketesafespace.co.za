@@ -85,8 +85,7 @@
 
     <!-- Main Section -->
 
-    <div class="min-h-screen bg-white flex flex-col font-[Montserrat] justify-center items-center"
-        style="padding-top: 60px; width: 100%;">
+    <div class="flex-grow bg-white flex flex-col font-[Montserrat] items-center justify-center px-10 sm:px-6">
         <h1 class="text-[20px] sm:text-[24px] font-bold text-black uppercase tracking-wide mb-10 sm:mb-12">
             Report Anonymously?
         </h1>
@@ -127,7 +126,7 @@
 
 
     <!-- Footer -->
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 4rem;">
+    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
             style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>

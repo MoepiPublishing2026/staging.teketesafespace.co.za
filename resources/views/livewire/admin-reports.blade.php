@@ -35,15 +35,51 @@
     text-decoration: none;
     transition: all 0.25s ease;
 }
+
 .sidebar-link:hover, .sidebar-link.active {
     background: linear-gradient(to right, #38b6ff, #38b6ff);
     color: #fff !important;
 }
-button:hover, .sidebar-link:hover, .sidebar-link.active {
+
+.main-panel button:hover,
+.sidebar-link:hover,
+.sidebar-link.active {
     color: #fff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
+
 .main-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; background: white; }
+/* ───────── Pagination Style ───────── */
+
+.pagination-btn{
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 9999px;
+    border: 1.5px solid #c7da30;
+    background: white;
+    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover{
+    background:#f5f9d7;
+    transform: translateY(-1px);
+}
+
+.pagination-btn.active{
+    background:#c7da30;
+    color:black;
+    font-weight:700;
+    border-color:#c7da30;
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+}
 
 /* ── Filter Panel ─────────────────────────────────────────────────── */
 .filter-panel {
@@ -187,17 +223,6 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
             @if ($filter === 'all') All Reports @else {{ ucfirst($filter) }} Reports @endif
         </h1>
 
-        @if(session()->has('success_message'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                {{ session('success_message') }}
-            </div>
-        @endif
-        @if(session()->has('error_message'))
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                {{ session('error_message') }}
-            </div>
-        @endif
-
         <!-- ════════════════════════════════════════════════════════ -->
         <!--  SEARCH BAR + FILTER PANEL                              -->
         <!-- ════════════════════════════════════════════════════════ -->
@@ -215,6 +240,14 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
 
             <!-- Filter Grid -->
             <div class="filter-grid">
+                <div>
+                    <label class="filter-label">Anonymous</label>
+                    <select class="filter-input" wire:model.live="filterAnonymous">
+                        <option value="">All Reports</option>
+                        <option value="1">Anonymous</option>
+                        <option value="0">Identified</option>
+                    </select>
+                </div>
 
                 <div>
                     <label class="filter-label">Name / Surname</label>
@@ -276,18 +309,11 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
                     </select>
                 </div>
 
-                <div>
-                    <label class="filter-label">Anonymous</label>
-                    <select class="filter-input" wire:model.live="filterAnonymous">
-                        <option value="">All Reports</option>
-                        <option value="1">Anonymous</option>
-                        <option value="0">Identified</option>
-                    </select>
-                </div>
+                
 
                 <div style="display:flex; align-items:flex-end;">
                     <button type="button" class="btn-clear-filters" wire:click="clearFilters">
-                        <i class="fas fa-times mr-1"></i> Clear Filters
+                        <i class="fas fa-times mr-1"></i> Clear 
                     </button>
                 </div>
 
@@ -358,7 +384,7 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
                                 {{ $report->grade ?? 'N/A' }}
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->created_at?->format('d M Y') ?? 'N/A' }}
+                                {{ $report->created_at?->format('Y M d') ?? 'N/A' }}
                             </td>
                             <td class="py-3 px-2 border-b text-center">
                                 <span class="px-2 py-1 rounded-full text-xs font-semibold
@@ -399,9 +425,49 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
         </div>
 
         <!-- Pagination -->
-        <div class="mt-4">
-            {{ $reports->links() }}
-        </div>
+<!-- Pagination -->
+@if ($reports->hasPages())
+<div class="flex justify-center items-center gap-3 mt-8 flex-wrap">
+
+    {{-- Previous --}}
+    @if ($reports->onFirstPage())
+        <span class="pagination-btn opacity-40 cursor-not-allowed">
+            ←
+        </span>
+    @else
+        <button wire:click="previousPage" class="pagination-btn">
+            ←
+        </button>
+    @endif
+
+    {{-- Page Numbers --}}
+    @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
+
+        @if ($page == $reports->currentPage())
+            <span class="pagination-btn active">
+                {{ $page }}
+            </span>
+        @else
+            <button wire:click="gotoPage({{ $page }})" class="pagination-btn">
+                {{ $page }}
+            </button>
+        @endif
+
+    @endforeach
+
+    {{-- Next --}}
+    @if ($reports->hasMorePages())
+        <button wire:click="nextPage" class="pagination-btn">
+            →
+        </button>
+    @else
+        <span class="pagination-btn opacity-40 cursor-not-allowed">
+            →
+        </span>
+    @endif
+
+</div>
+@endif
 
         <!-- ══════════════════════════════════════════════════════════ -->
         <!-- Report Details Modal                                       -->
@@ -419,7 +485,7 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
                                     <h3 class="text-white font-bold uppercase text-xs tracking-widest">Reporter Permanently Blocked</h3>
                                     <p class="text-gray-300 text-xs">
                                         Action taken by Admin: <span class="text-[#c7da30] font-bold">{{ $selectedReport->blocked_by_name }}</span>
-                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('M d, Y') }}
+                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y, M d') }}
                                     </p>
                                 </div>
                             </div>

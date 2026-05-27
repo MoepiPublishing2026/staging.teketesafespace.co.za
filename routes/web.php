@@ -79,6 +79,10 @@ Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::cl
 
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/geojson/{file}', [App\Http\Controllers\GeoJsonController::class, 'show'])
+        ->where('file', '[a-z_]+')
+        ->name('geojson.show');
+
     Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard')->middleware('auth');
 
     Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
