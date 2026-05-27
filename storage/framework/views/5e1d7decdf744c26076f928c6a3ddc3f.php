@@ -35,14 +35,19 @@
     text-decoration: none;
     transition: all 0.25s ease;
 }
+
 .sidebar-link:hover, .sidebar-link.active {
     background: linear-gradient(to right, #38b6ff, #38b6ff);
     color: #fff !important;
 }
-button:hover, .sidebar-link:hover, .sidebar-link.active {
+
+.main-panel button:hover,
+.sidebar-link:hover,
+.sidebar-link.active {
     color: #fff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
+
 .main-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; background: white; }
 
 /* ── Filter Panel ─────────────────────────────────────────────────── */
@@ -186,19 +191,6 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
         <h1 class="text-4xl font-bold text-black-800 mb-8 font-montserrat-black">
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($filter === 'all'): ?> All Reports <?php else: ?> <?php echo e(ucfirst($filter)); ?> Reports <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </h1>
-
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('success_message')): ?>
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                <?php echo e(session('success_message')); ?>
-
-            </div>
-        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session()->has('error_message')): ?>
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                <?php echo e(session('error_message')); ?>
-
-            </div>
-        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <!-- ════════════════════════════════════════════════════════ -->
         <!--  SEARCH BAR + FILTER PANEL                              -->

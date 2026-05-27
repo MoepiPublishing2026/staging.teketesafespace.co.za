@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class Report extends Model
 {
     use HasFactory;
@@ -45,6 +46,15 @@ protected $casts = [
     'suspended_until' => 'datetime',
     'updated_at' => 'datetime',
 ];
+
+
+    const PERMANENT_BLOCK_YEAR = 2037;
+
+    public function isPermanentlyBlocked(): bool
+    {
+        return $this->suspended_until?->year >= self::PERMANENT_BLOCK_YEAR;
+    }
+
     /**
      * Get the abuse type associated with the report.
      */
