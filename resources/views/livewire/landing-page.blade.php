@@ -103,7 +103,7 @@
             alt="Students"
             class="relative mx-auto mb-8 w-full max-w-[340px] sm:max-w-[400px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[5vh] lg:right-[5vw] lg:h-[40vw] lg:w-[40vw] z-0">
 
-        <div class="relative w-full max-w-[340px] sm:max-w-[500px] mx-auto font-[Montserrat] flex flex-col sm:flex-row lg:flex-row gap-3 sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[84vh] lg:right-[8vw] z-10">
+        <div class="relative w-full max-w-[340px] sm:max-w-[500px] mx-auto font-[Montserrat] flex flex-col sm:flex-row lg:flex-row gap-3 sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[82vh] lg:right-[8vw] z-10">
 
             <button wire:click="redirectToReportAbuse"
                 class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] font-[Montserrat] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
