@@ -235,13 +235,7 @@ tbody tr:last-child td { border-bottom: none; }
             {{-- Filter Grid --}}
             <div class="filter-grid">
 
-                <div>
-                    <label class="filter-label">Name / Surname</label>
-                    <input type="text" name="full_name" class="filter-input"
-                           value="{{ request('full_name') }}"
-                           placeholder="e.g. John Smith" />
-                </div>
-                <div>
+            <div>
                     <label class="filter-label">Anonymous</label>
                     <select name="is_anonymous" class="filter-input">
                         <option value="">All</option>
@@ -251,31 +245,14 @@ tbody tr:last-child td { border-bottom: none; }
                 </div>
 
                 <div>
-                    <label class="filter-label">Province</label>
-                 <select name="province_id" class="filter-input">
-                    <option value="">All Provinces</option>
-                    @foreach($provinceOptions as $province)
-                        <option value="{{ $province->province_id }}"
-                            {{ request('province_id') == $province->province_id ? 'selected' : '' }}>
-                            {{ $province->province_name }}
-                        </option>
-                    @endforeach
-                </select>
+                    <label class="filter-label">Name / Surname</label>
+                    <input type="text" name="full_name" class="filter-input"
+                           value="{{ request('full_name') }}"
+                           placeholder="e.g. John Smith" />
                 </div>
+                
 
-                <div>
-                    <label class="filter-label">School</label>
-                    <input type="text" name="school_name" class="filter-input"
-                           list="schoolList"
-                           value="{{ request('school_name') }}"
-                           placeholder="Type to search school…" autocomplete="off" />
-                    <datalist id="schoolList">
-                        @foreach($schoolOptions as $school)
-                            <option value="{{ $school->school_name }}">
-                        @endforeach
-                    </datalist>
-                </div>
-
+                
                 <div>
                     <label class="filter-label">Grade</label>
                     <select name="grade" class="filter-input">
@@ -336,6 +313,35 @@ tbody tr:last-child td { border-bottom: none; }
                         <option value="false-report"        {{ request('status') == 'false-report'        ? 'selected' : '' }}>False Report</option>
                     </select>
                 </div>
+
+                <div>
+                    <label class="filter-label">School</label>
+                    <input type="text" name="school_name" class="filter-input"
+                           list="schoolList"
+                           value="{{ request('school_name') }}"
+                           placeholder="Type to search school…" autocomplete="off" />
+                    <datalist id="schoolList">
+                        @foreach($schoolOptions as $school)
+                            <option value="{{ $school->school_name }}">
+                        @endforeach
+                    </datalist>
+                </div>
+
+
+                <div>
+                    <label class="filter-label">Province</label>
+                 <select name="province_id" class="filter-input">
+                    <option value="">All Provinces</option>
+                    @foreach($provinceOptions as $province)
+                        <option value="{{ $province->province_id }}"
+                            {{ request('province_id') == $province->province_id ? 'selected' : '' }}>
+                            {{ $province->province_name }}
+                        </option>
+                    @endforeach
+                </select>
+                </div>
+
+                
 
                 {{-- Apply + Clear --}}
                 <div style="display:flex; gap:6px; align-items:flex-end;">
@@ -434,6 +440,14 @@ tbody tr:last-child td { border-bottom: none; }
             @else
                 <a href="{{ $reports->previousPageUrl() }}&{{ http_build_query(request()->except('page')) }}" class="page-link" rel="prev">←</a>
             @endif
+
+            @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
+                @if ($page == $reports->currentPage())
+                    <span class="page-link" style="background:#cddc39; font-weight:bold;">{{ $page }}</span>
+                @else
+                    <a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}" class="page-link">{{ $page }}</a>
+                @endif
+            @endforeach
 
             @if ($reports->hasMorePages())
                 <a href="{{ $reports->nextPageUrl() }}&{{ http_build_query(request()->except('page')) }}" class="page-link" rel="next">→</a>

@@ -500,6 +500,7 @@ tbody tr:last-child td { border-bottom: none; }
                 />
             </div>
 
+
             {{-- Filter Grid --}}
             <div class="filter-grid">
                 <div>
@@ -511,23 +512,7 @@ tbody tr:last-child td { border-bottom: none; }
                     </select>
                 </div>
 
-               <div>
-                    <label class="filter-label">School</label>
-                    <div style="position:relative;">
-                        <input
-                            type="text"
-                            name="school_name"
-                            id="schoolSearch"
-                            class="filter-input"
-                            autocomplete="off"
-                            placeholder="Type to search school…"
-                            value="{{ $schoolName }}"
-                        />
-                        <input type="hidden" name="school_id" id="schoolId" value="{{ request('school_id') }}" />
-                        <div id="schoolDropdown"
-                             style="display:none; position:absolute; left:0; right:0; top:100%; background:#fff; border:1px solid #d1d5db; max-height:200px; overflow-y:auto; z-index:9999; font-size:13px;"></div>
-                    </div>
-                </div>
+            
 
                 <div>
                     <label class="filter-label">Name / Surname</label>
@@ -599,6 +584,24 @@ tbody tr:last-child td { border-bottom: none; }
                     </select>
                 </div>
 
+                <div>
+                    <label class="filter-label">School</label>
+                    <div style="position:relative;">
+                        <input
+                            type="text"
+                            name="school_name"
+                            id="schoolSearch"
+                            class="filter-input"
+                            autocomplete="off"
+                            placeholder="Type to search school…"
+                            value="{{ $schoolName }}"
+                        />
+                        <input type="hidden" name="school_id" id="schoolId" value="{{ request('school_id') }}" />
+                        <div id="schoolDropdown"
+                             style="display:none; position:absolute; left:0; right:0; top:100%; background:#fff; border:1px solid #d1d5db; max-height:200px; overflow-y:auto; z-index:9999; font-size:13px;"></div>
+                    </div>
+                </div>
+                
                 {{-- Apply + Clear --}}
                 <div style="display:flex; gap:6px; align-items:flex-end;">
                     <button type="submit" class="filter-btn filter-btn-apply" style="flex:1;">

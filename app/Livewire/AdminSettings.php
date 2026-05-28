@@ -155,7 +155,37 @@ public function updateSettings()
         return redirect()->back()->with('success_message', 'Settings updated successfully!');
     }
 }
+public function deleteProfilePicture()
+{
+    $user = Auth::user();
 
+    if (!$user) {
+        return;
+    }
+
+    try {
+
+        // Delete image from storage
+        if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+            Storage::disk('public')->delete($user->profile_picture);
+        }
+
+        // Remove image path from database
+        $user->profile_picture = null;
+        $user->save();
+
+        // Clear temporary upload
+        $this->profile_picture = null;
+
+        session()->flash('success_message', 'Profile picture deleted successfully!');
+
+    } catch (\Exception $e) {
+
+        Log::error('Delete profile picture error: ' . $e->getMessage());
+
+        $this->addError('profile_picture', 'Failed to delete profile picture.');
+    }
+}
 
 
     public function render()

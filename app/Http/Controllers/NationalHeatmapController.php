@@ -16,48 +16,6 @@ use Illuminate\Support\Facades\Schema;
 class NationalHeatmapController extends Controller
 {
     /**
-     * Tertile cutoffs so low / medium / high colors all appear when counts vary.
-     *
-     * @return array{0: int, 1: int} [lowMax, mediumMax] — count <= lowMax → low band, etc.
-     */
-    protected function heatBandThresholds(array $counts): array
-    {
-        $positive = array_values(array_filter(
-            array_map(fn ($c) => (int) $c, $counts),
-            fn ($c) => $c > 0
-        ));
-        sort($positive);
-        $n = count($positive);
-
-        if ($n === 0) {
-            return [0, 0];
-        }
-        if ($n === 1) {
-            return [0, $positive[0]];
-        }
-
-        $iLow = max(0, (int) floor($n / 3) - 1);
-        $iMed = max($iLow, (int) floor((2 * $n) / 3) - 1);
-
-        return [$positive[$iLow], $positive[$iMed]];
-    }
-
-    protected function heatBandIndex(int $count, int $lowMax, int $mediumMax): int
-    {
-        if ($count <= 0) {
-            return 0;
-        }
-        if ($count <= $lowMax) {
-            return 0;
-        }
-        if ($count <= $mediumMax) {
-            return 1;
-        }
-
-        return 2;
-    }
-
-    /**
      * Apply the same GET filters used on the national dashboard / reports list.
      */
     protected function applyHeatmapFilters(Builder $query, Request $request): void
@@ -264,9 +222,6 @@ class NationalHeatmapController extends Controller
         $provinceHeatmapGrandTotal = array_sum($provinceHeatmapColumnTotals);
         $provinceHeatmapMax = collect($provinceHeatmapMatrix)->flatten()->max() ?: 1;
 
-        $matrixCounts = collect($provinceHeatmapMatrix)->flatten()->map(fn ($c) => (int) $c)->all();
-        [$provinceHeatmapBandLowMax, $provinceHeatmapBandMediumMax] = $this->heatBandThresholds($matrixCounts);
-
         $provinceHeatmapProvinceNameToId = $provinces->pluck('id', 'name')->toArray();
         $provinceHeatmapProvinceNameToId[$unknownProvinceLabel] = null;
         $provinceHeatmapAbuseTypeNameToId = $abuseTypes->pluck('id', 'type_name')->toArray();
@@ -288,7 +243,7 @@ class NationalHeatmapController extends Controller
             $provinceHeatmapHotspots[$pName] = array_column(array_slice($withIndex, 0, 3), 'idx');
         }
 
-        /* District counts for national geographic map (per-province geojson files) */
+        /* District counts for national geographic map (map_data.json is district-level) */
         $allDistricts = District::orderBy('district_name')
             ->get(['district_id as id', 'district_name as name', 'province_id']);
 
@@ -307,7 +262,6 @@ class NationalHeatmapController extends Controller
 
         $mapDistrictMax = collect($mapDistrictCounts)->max() ?: 1;
         $mapDistrictNameToId = $allDistricts->pluck('id', 'name')->toArray();
-        [$mapDistrictBandLowMax, $mapDistrictBandMediumMax] = $this->heatBandThresholds(array_values($mapDistrictCounts));
 
         $filteredReportsTotal = (clone $baseQuery)
             ->tap($applySqlFilters)
@@ -348,8 +302,6 @@ class NationalHeatmapController extends Controller
             'provinceHeatmapAbuseTypes' => $provinceHeatmapAbuseTypes,
             'provinceHeatmapMatrix' => $provinceHeatmapMatrix,
             'provinceHeatmapMax' => $provinceHeatmapMax,
-            'provinceHeatmapBandLowMax' => $provinceHeatmapBandLowMax,
-            'provinceHeatmapBandMediumMax' => $provinceHeatmapBandMediumMax,
             'provinceHeatmapRowTotals' => $provinceHeatmapRowTotals,
             'provinceHeatmapColumnTotals' => $provinceHeatmapColumnTotals,
             'provinceHeatmapGrandTotal' => $provinceHeatmapGrandTotal,
@@ -361,8 +313,6 @@ class NationalHeatmapController extends Controller
 
             'mapDistrictCounts' => $mapDistrictCounts,
             'mapDistrictMax' => $mapDistrictMax,
-            'mapDistrictBandLowMax' => $mapDistrictBandLowMax,
-            'mapDistrictBandMediumMax' => $mapDistrictBandMediumMax,
             'mapDistrictNameToId' => $mapDistrictNameToId,
             'mappedReportsTotal' => $mappedReportsTotal,
             'unmappedReportsTotal' => $unmappedReportsTotal,
