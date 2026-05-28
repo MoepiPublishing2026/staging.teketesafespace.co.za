@@ -85,7 +85,7 @@ class AdminReports extends Component
         $report = Report::findOrFail($reportId);
 
         if ($user->role === 'school' && $report->school_name !== $user->school_name) {
-            session()->flash('error_message', 'You do not have permission to update this report.');
+            $this->dispatch('toast', type: 'danger', message: 'You do not have permission to update this report.');
             return;
         }
 
@@ -118,7 +118,7 @@ class AdminReports extends Component
             $report = $this->reportToUpdate;
 
             if ($user->role === 'school' && $report->school_name !== $user->school_name) {
-                session()->flash('error_message', 'Unauthorized action.');
+                $this->dispatch('toast', type: 'danger', message: 'Unauthorized action.');
                 $this->showReasonModal = false;
                 return;
             }
@@ -180,26 +180,29 @@ class AdminReports extends Component
                 }
             }
 
-            $this->showReasonModal = false;
-        $this->statusChangeReason = '';
+        
 
         // Determine the success message
-        $msg = 'Status updated successfully. Reporter notified.';
+        //$msg = 'Status updated successfully. Reporter notified.';
+
+        $this->showReasonModal    = false;
+        $this->statusChangeReason = '';
+
+        $msg = null;
 
         if ($this->newStatus === 'false-report') {
             if ($report->suspended_until) {
-                // If the year is 2037 or later, it's a permanent block
-                $isPermanent = $report->suspended_until->year >= 2037;
-                
-                $msg = $isPermanent 
-                    ? 'Reporter is permanently blocked (linked identifiers found).' 
+                $isPermanent = $report->suspended_until->year >= Report::PERMANENT_BLOCK_YEAR;
+                $msg = $isPermanent
+                    ? 'Reporter is permanently blocked (linked identifiers found).'
                     : 'Reporter has been suspended for 90 days.';
             } else {
                 $msg = 'Report marked as false.';
             }
         }
 
-        session()->flash('success_message', $msg);
+        $msg ??= 'Status updated successfully. Reporter notified.';
+        $this->dispatch('toast', type: 'success', message: $msg);
 
         // Refresh selected report if its detail view is open
         if ($this->selectedReport && $this->selectedReport->id === $report->id) {
@@ -216,7 +219,7 @@ class AdminReports extends Component
         $report = Report::with(['abuseType', 'subtype', 'user'])->find($reportId);
 
         if ($user->role === 'school' && $report && $report->school_name !== $user->school_name) {
-            session()->flash('error_message', 'You do not have permission to view this report.');
+            $this->dispatch('toast', type: 'danger', message: 'You do not have permission to view this report.');
             return;
         }
 
@@ -252,23 +255,23 @@ class AdminReports extends Component
     public function permanentBlock($email)
     {
         if (! $email) {
-            session()->flash('error_message', 'No email address found.');
+            $this->dispatch('toast', type: 'danger', message: 'No email address found.');
             return;
         }
 
         if (! in_array(Auth::user()->role, ['admin', 'school'])) {
-            session()->flash('error_message', 'Unauthorized action.');
+            $this->dispatch('toast', type: 'danger', message: 'Unauthorized action.');
             return;
         }
 
        $report = \App\Models\Report::where('reporter_email', $email)->first();
 
     if (!$report) {
-        session()->flash('error_message', 'Could not find a report record for this email.');
+        $this->dispatch('toast', type: 'danger', message: 'Could not find a report record for this email.');
         return;
     }
     
-    $permanentDate = \Carbon\Carbon::create(2037, 12, 31, 23, 59, 59);
+    $permanentDate = \Carbon\Carbon::create(Report::PERMANENT_BLOCK_YEAR, 12, 31, 23, 59, 59);
 
     \App\Models\Report::where(function($query) use ($report) {
         if ($report->reporter_email) $query->where('reporter_email', $report->reporter_email);
@@ -298,7 +301,7 @@ class AdminReports extends Component
         }
     }
 
-    session()->flash('success_message', "Reporter has been permanently blocked and notified via email.");
+    $this->dispatch('toast', type: 'success', message: "Reporter has been permanently blocked and notified via email.");
     
     $this->selectedReport = null; 
 

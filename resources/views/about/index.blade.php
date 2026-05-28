@@ -13,30 +13,33 @@
 
 <body class="bg-white text-gray-800 font-[Montserrat] overflow-x-hidden">
 
-    <!-- ================= MOBILE NAVBAR ================= -->
-    <header class="md:hidden fixed top-0 left-0 w-full bg-white z-50 shadow-sm px-6 h-16 flex items-center">
-        <div class="flex justify-between items-center max-w-[1280px] mx-auto w-full">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[135px] h-auto flex-shrink-0">
-            <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        </div>
-    </header>
-
-    <!-- ================= DESKTOP NAVBAR (UNCHANGED) ================= -->
-    <div class="hidden md:flex justify-between items-center px-6 lg:px-20 py-4 bg-white shadow-sm">
-        <div>
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[150px] h-auto">
-        </div>
-
-        <div class="flex gap-8 text-[17px] text-black">
-            <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30]">Home</a>
-            <a href="{{ route('about-us') }}" class="font-bold">About Us</a>
-            <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30]">Contact Us</a>
-        </div>
+  <!-- ================= MOBILE NAVBAR ================= -->
+<header class="md:hidden fixed top-0 left-0 w-full bg-white z-50 px-6 h-16 flex items-center"
+    style="box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+    <div class="flex justify-between items-center max-w-[1280px] mx-auto w-full">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[135px] h-auto flex-shrink-0">
+        <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
     </div>
+</header>
+
+<!-- ================= DESKTOP NAVBAR ================= -->
+<header class="hidden md:block fixed top-0 left-0 w-full bg-white z-50"
+    style="box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+    <div class="flex flex-row justify-between items-center px-8 py-2 max-w-[1280px] mx-auto">
+        <div>
+            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
+        </div>
+        <nav class="flex gap-8 text-[17px] text-black font-['Montserrat']">
+            <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
+            <a href="{{ route('about-us') }}" class="font-bold">About Us</a>
+            <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
+        </nav>
+    </div>
+</header>
 
     <!-- ================= MOBILE MENU OVERLAY ================= -->
     <div id="mobile-menu" class="fixed inset-0 z-[60] hidden md:hidden">
@@ -65,7 +68,7 @@
     </div>
 
     <!-- ================= ABOUT HEADER SECTION ================= -->
-    <section class="pt-24 md:pt-0 w-full bg-white px-6 lg:px-20 py-16">
+    <section class="pt-24 w-full bg-white px-6 lg:px-20 py-16">
         <div class="max-w-[1280px] mx-auto flex flex-col lg:flex-row items-center gap-12">
 
             <div class="flex justify-center lg:justify-start">
@@ -156,7 +159,7 @@
         </div>
     </section>
 
-    <div class="hidden lg:block absolute -left-48 top-[210%] -translate-y-1/2 w-[350px] h-[200px] overflow-hidden">
+    <div class="hidden lg:block absolute -left-48 top-[190%] -translate-y-1/2 w-[400px] h-[350px] overflow-hidden">
         <img src="{{ asset('images/futuristic digital frame tech.png') }}" alt="Tech Frame Half"
             class="w-full h-full object-cover object-left">
     </div>
