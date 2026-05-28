@@ -87,7 +87,7 @@
 
     <!-- Main Section -->
     <div class="min-h-screen bg-white flex flex-col font-[Montserrat] justify-center items-center"
-        style="padding-top: 60px; width: 100%;">
+        style="padding-top: 70px; width: 100%;">
 
         <!-- Main Content -->
         <div class="flex flex-col items-center justify-center text-center px-4">
@@ -110,7 +110,7 @@
                 class="w-full max-w-[698px] border-2 border-[#c7da30] rounded-xl bg-white p-6 sm:p-10 flex flex-col items-center justify-center">
                 <!-- Abuse Type Buttons -->
                 <div
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 sm:gap-x-16 gap-y-4 sm:gap-y-8 w-full justify-items-center">
+                    class="grid grid-cols-2 sm:grid-cols-2 gap-x-6 sm:gap-x-16 gap-y-4 sm:gap-y-8 w-full justify-items-center">
                     @foreach ($abuseTypes as $abuseType)
                         <button wire:click="selectAbuseType({{ $abuseType->id }})"
                             class="w-full sm:w-[245px] h-[55px] sm:h-[65px] 
