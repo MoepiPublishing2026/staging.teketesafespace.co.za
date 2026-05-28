@@ -947,10 +947,8 @@
 
     function showTooltip(clientX, clientY, title, count) {
         if (!tooltipEl || !tooltipTitleEl || !tooltipSubEl) return;
-        const n = Number(count || 0);
-        const pct = grandTotal > 0 ? ((n / grandTotal) * 100).toFixed(1) : '0';
         tooltipTitleEl.textContent = String(title || '');
-        tooltipSubEl.textContent = n.toLocaleString() + ' report(s) · ' + pct + '% of filtered total';
+        tooltipSubEl.textContent = '';
         tooltipEl.style.display = 'block';
         moveTooltip(clientX, clientY);
     }
