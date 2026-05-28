@@ -358,7 +358,7 @@
 
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                <?php echo e($report->created_at?->format('d M Y') ?? 'N/A'); ?>
+                                <?php echo e($report->created_at?->format('Y M d') ?? 'N/A'); ?>
 
                             </td>
                             <td class="py-3 px-2 border-b text-center">
@@ -422,7 +422,7 @@
                                     <h3 class="text-white font-bold uppercase text-xs tracking-widest">Reporter Permanently Blocked</h3>
                                     <p class="text-gray-300 text-xs">
                                         Action taken by Admin: <span class="text-[#c7da30] font-bold"><?php echo e($selectedReport->blocked_by_name); ?></span>
-                                        on <?php echo e(\Carbon\Carbon::parse($selectedReport->blocked_at)->format('M d, Y')); ?>
+                                        on <?php echo e(\Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y, M d')); ?>
 
                                     </p>
                                 </div>

@@ -352,7 +352,7 @@
                                 {{ $report->grade ?? 'N/A' }}
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->created_at?->format('d M Y') ?? 'N/A' }}
+                                {{ $report->created_at?->format('Y M d') ?? 'N/A' }}
                             </td>
                             <td class="py-3 px-2 border-b text-center">
                                 <span class="px-2 py-1 rounded-full text-xs font-semibold
@@ -413,7 +413,7 @@
                                     <h3 class="text-white font-bold uppercase text-xs tracking-widest">Reporter Permanently Blocked</h3>
                                     <p class="text-gray-300 text-xs">
                                         Action taken by Admin: <span class="text-[#c7da30] font-bold">{{ $selectedReport->blocked_by_name }}</span>
-                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('M d, Y') }}
+                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y, M d') }}
                                     </p>
                                 </div>
                             </div>
