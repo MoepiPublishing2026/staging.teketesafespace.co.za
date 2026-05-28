@@ -79,16 +79,10 @@
             </nav>
         </div>
     </div>
-<<<<<<< HEAD
-    <main class="flex-1 w-full pt-[120px] pb-10">
-        <div class="max-w-[1280px] mx-auto px-6 sm:px-8">
-        <!-- ALL your page content here -->
-=======
 
     {{-- ✅ FIX: changed min-height: 100vh to min-height: auto to remove the white gap above the footer --}}
     <div style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: auto; padding: 120px 1.5rem 40px; position: relative;">
         <div style="max-width: 1280px; margin: 0 auto; width: 100%;">
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
 
             <h1 class="text-center text-[20px] sm:text-[22px] font-[700] uppercase text-black mb-2">
                 Report a Case
@@ -213,23 +207,6 @@
                         <div>
                             <div class="relative">
                                 <label for="schoolSearch" class="text-[12px] text-black">Name of School</label>
-<<<<<<< HEAD
-
-                                <input type="text" id="schoolSearch" placeholder="Start typing school name..."
-                                    class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 text-[14.8px] text-black bg-white"
-                                    pattern="^[a-zA-Z\s.,\-&amp;']+$"
-                                    title="The School Name can only contain letters, spaces, hyphens (-), apostrophes ('), commas (,), periods (.), and the ampersand (&amp;)."
-                                    maxlength="100">
-                                <input type="hidden" id="schoolName" wire:model.lazy="schoolName" name="schoolName"
-                                    value="">
-                                <input type="hidden" id="schoolId" name="schoolId" value="">
-                                <input type="hidden" id="schoolProvince" wire:model.lazy="schoolProvince" name="schoolProvince">
-
-                                <div id="schoolDropdown"
-                                    class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
-                                    style="display:none;"></div>
-
-=======
                                 <div wire:ignore>
                                     <input type="text" id="schoolSearch" placeholder="Start typing school name..."
                                         class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 text-[14.8px] text-black bg-white"
@@ -242,7 +219,6 @@
                                         class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
                                         style="display:none;"></div>
                                 </div>
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
                                 @error('schoolName')
                                     <p class="text-red-600 text-[12px]">{{ $message }}</p>
                                 @enderror
@@ -438,25 +414,14 @@
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
             <div class="flex items-center gap-4 order-2">
-<<<<<<< HEAD
-                <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">
-                    <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon"
-                        style="width: 30px; height: 30px; left:1024.8; top: 701.8;">
-=======
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
                     <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px;">
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
                 </a>
                 <a href="https://www.X.com/moepipublishing" target="_blank">
                     <img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;">
                 </a>
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-<<<<<<< HEAD
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon"
-                        style="width: 30px; height: 30px;left: 1128.6; top:701.1;">
-=======
                     <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;">
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
                     <img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon" style="width: 30px; height: 30px;">
@@ -586,22 +551,7 @@
                 input.value = it.name;
                 hiddenName.value = it.name;
                 hiddenId.value = it.id ?? '';
-<<<<<<< HEAD
-
-                document.getElementById('schoolProvince').value = it.province ?? '';
-
-                // Dispatch an event to tell Livewire to update the 'schoolName' property
-                // This is essential for the wire:model.lazy="schoolName" binding to work with the selected value.
-                document.getElementById('schoolName').dispatchEvent(new Event('input', {
-                    bubbles: true
-                }));
-
-                document.getElementById('schoolProvince').dispatchEvent(
-                new Event('input', { bubbles: true }));
-
-=======
                 document.getElementById('schoolName').dispatchEvent(new Event('input', { bubbles: true }));
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
                 clearSuggestions();
             }
 
@@ -713,7 +663,4 @@
         window.addEventListener('restart-timer', () => { setTimeout(startCountdown, 100); });
     </script>
 
-<<<<<<< HEAD
-=======
 </div>
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
