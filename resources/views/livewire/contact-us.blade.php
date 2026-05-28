@@ -122,8 +122,12 @@
     <section class="pt-24 md:pt-12 pb-10 px-4 sm:px-10 lg:px-16 relative">
         <div class="relative max-w-[1280px] mx-auto min-h-[700px]">
 
-            <!-- LEFT CONTENT -->
+            <!-- LEFT CONTENT — relative so sun can be absolute inside -->
             <div class="relative z-20 max-w-[500px]">
+
+                <!-- Sun graphic: top-right of the contact info block, mobile only -->
+                <img src="{{ asset('images/futuristic digital frame tech.png') }}"
+                    class="lg:hidden absolute top-0 right-0 w-[110px] h-auto pointer-events-none z-0 opacity-90">
 
                 <h1 class="font-[Montserrat] font-bold text-[32px] sm:text-[50px] text-[#000000]">CONTACT US</h1>
                 <div class="w-[200px] sm:w-[345px] h-[7px] bg-[#c7da30] mt-2 mb-8"></div>
@@ -143,20 +147,13 @@
                     <a href="mailto:sales@teketesafespace.co.za" class="text-[16px] sm:text-xl text-[#000000] hover:text-[#c7da30]">sales@teketesafespace.co.za</a>
                 </div>
 
-                <!-- Heading + sun graphic inline -->
-                <div class="flex items-center gap-2 mb-4">
-                    <h2 class="font-[Montserrat] font-medium text-[18px] sm:text-[20px] text-[#000000]">
-                        Download the Tekete SafeSpace App
-                    </h2>
-                    <img src="{{ asset('images/futuristic digital frame tech.png') }}"
-                        class="lg:hidden w-[55px] h-auto pointer-events-none flex-shrink-0">
-                </div>
+                <h2 class="font-[Montserrat] font-medium text-[18px] sm:text-[20px] text-[#000000] mb-4">
+                    Download the Tekete SafeSpace App
+                </h2>
 
                 <!-- ===== MOBILE BUTTONS ===== -->
                 <div class="lg:hidden relative pb-4">
-
-                    <!-- All 3 buttons on ONE line -->
-                    <div class="relative z-10 flex flex-row gap-2">
+                    <div class="flex flex-row gap-2">
 
                         <!-- Apple -->
                         <a href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank" class="store-btn">
@@ -281,123 +278,12 @@
 
             </div>
 
-<<<<<<< HEAD
             <!-- Desktop Graphics -->
             <div class="hidden lg:block absolute right-0 top-10 z-10 pointer-events-none">
                 <img src="{{ asset('images/futuristic digital frame tech.png') }}" class="w-[400px] xl:w-[459px] h-auto">
             </div>
             <div class="hidden lg:block absolute right-[320px] top-0 z-20 pointer-events-none">
                 <img src="{{ asset('images/social media phone1.png') }}" class="w-[400px] xl:w-[540px] h-auto">
-=======
-            <!-- ================= APP DOWNLOAD SECTION ================= -->
-            <h2 class="mt-[5vh] text-[clamp(16px,1.6vw,26px)] mb-[3vh]">
-                Download the Tekete SafeSpace App
-            </h2>
-
-            <!-- APP STORE ICONS (RESTORED) -->
-            <div class="flex flex-wrap gap-[1.5vw] items-center">
-
-                <a href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank">
-                    <img src="{{ asset('images/Apple App store.png') }}"
-                        class="w-[9vw] min-w-[110px] max-w-[140px] h-auto">
-                </a>
-
-                <a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank">
-                    <img src="{{ asset('images/Google Play Store.png') }}"
-                        class="w-[120px] h-[60px] object-contain scale-[1.15]">
-                </a>
-
-                <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank">
-                    <img src="{{ asset('images/Huawei AppGallery.png') }}"
-                        class="w-[10vw] min-w-[120px] max-w-[160px] h-auto">
-                </a>
-
-            </div>
-
-        </section>
-
-        <!-- ================= PHONE (ENLARGED) ================= -->
-        <div class="absolute
-            left-[48vw]
-            top-[2vh]
-            w-[32vw]
-            min-w-[380px]
-            max-w-[560px]
-            z-30 pointer-events-none">
-
-            <img src="{{ asset('images/social media phone1.png') }}"
-                class="w-full h-auto object-contain">
-        </div>
-
-        <!-- ================= FUTURISTIC ================= -->
-        <div class="
-    absolute
-
-    /* MOBILE */
-    right-[-45vw]
-    top-[22vh]
-    w-[75vw]
-
-    /* TABLET */
-    sm:right-[-30vw]
-    sm:w-[55vw]
-
-    /* DESKTOP */
-    md:right-[-18vw]
-    md:top-[18vh]
-    md:w-[34vw]
-
-    min-w-[260px]
-    md:min-w-[340px]
-    max-w-[600px]
-
-    z-10
-    pointer-events-none
-">
-
-            <img src="{{ asset('images/futuristic digital frame tech.png') }}"
-                class="w-full h-auto object-contain">
-        </div>
-
-    </main>
-
-    <!-- ================= FOOTER (RESTORED + FIXED BOTTOM) ================= -->
-    <footer class="mt-auto w-full bg-[#808080] text-white py-[3vh]">
-
-        <div class="max-w-[1440px] mx-auto px-[4vw] flex justify-between items-center">
-
-            <p class="text-[clamp(12px,1vw,14px)]">
-                © {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
-            </p>
-
-            <!-- SOCIAL MEDIA ICONS (RESTORED) -->
-            <div class="flex items-center gap-[1vw]">
-
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
-                    <img src="{{ asset('images/youtube.png') }}" class="w-[2vw] min-w-[22px]">
-                </a>
-
-                <a href="https://x.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" class="w-[2vw] min-w-[22px]">
-                </a>
-
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" class="w-[2vw] min-w-[22px]">
-                </a>
-
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" class="w-[2.2vw] min-w-[24px]">
-                </a>
-
-                <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" class="w-[2.2vw] min-w-[24px]">
-                </a>
-
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" class="w-[2.2vw] min-w-[24px]">
-                </a>
-
->>>>>>> 72e4a0c774eede7d613c2176aee35605b32ca9f8
             </div>
 
         </div>
