@@ -4,13 +4,13 @@
     <header
         class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-6 lg:px-16 lg:pt-8">
 
-        <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div>
+        <!-- <div class="absolute inset-0 bg-white/40 backdrop-blur-sm"></div> -->
 
         <div class="relative z-10 flex justify-between lg:top-[0vh] lg:right-[0vw] font-[Montserrat] items-center w-full">
 
             <nav class="hidden lg:flex gap-8 ml-auto">
                 <a href="{{ route('landing-page') }}"
-                    class="text-black text-[17px] transition-colors font-[Montserrat] hover:text-[#c7da30]">
+                    class="text-black text-[17px] transition-colors font-bold font-[Montserrat] hover:text-[#c7da30]">
                     Home
                 </a>
 
@@ -103,7 +103,7 @@
             alt="Students"
             class="relative mx-auto mb-8 w-full max-w-[340px] sm:max-w-[400px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[5vh] lg:right-[5vw] lg:h-[40vw] lg:w-[40vw] z-0">
 
-        <div class="relative w-full max-w-[340px] sm:max-w-[500px] mx-auto font-[Montserrat] flex flex-col sm:flex-row lg:flex-row gap-3 sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[84vh] lg:right-[8vw] z-10">
+        <div class="relative w-full max-w-[340px] sm:max-w-[500px] mx-auto font-[Montserrat] flex flex-col sm:flex-row lg:flex-row gap-3 sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[82vh] lg:right-[8vw] z-10">
 
             <button wire:click="redirectToReportAbuse"
                 class="w-full sm:w-auto lg:w-[10vw] h-[54px] lg:h-[3.4vw] lg:min-w-[170px] font-[Montserrat] lg:min-h-[58px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-all cursor-pointer">
@@ -123,15 +123,15 @@
 
     </section>
 
-    <footer class="absolute bottom-0 left-0 w-full bg-[#808080] font-[Montserrat] text-white px-6 py-4 lg:px-[5vw] lg:py-[1.5vh] flex flex-col md:flex-row lg:flex-row justify-between items-center gap-4 lg:gap-0 z-30">
+   <footer class="w-full bg-[#808080] font-[Montserrat] text-white px-2 py-4 lg:px-[2vw] lg:py-[1.5vh] flex flex-col md:flex-row lg:flex-row justify-between items-center gap-4 lg:gap-0 z-30 lg:absolute lg:bottom-0 lg:left-0">
 
-        <p class="text-[13px] lg:text-[0.9vw] lg:left-[0vw] text-center font-[Montserrat] lg:text-start">
+        <p class="text-[13px] lg:text-[0.9vw] lg:left-[0vw] font-[Montserrat] lg:text-start">
             &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
         </p>
 
         <div class="flex items-center justify-center flex-wrap gap-4 lg:gap-[1vw]">
             <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
-                <img src="{{ asset('images/youtube.png') }}" alt="YouTube" class="w-5 h-5 lg:w-[1.7vw] lg:h-auto min-w-[20px]">
+                <img src="{{ asset('images/youtube.png') }}" alt="YouTube" class="w-7 h-7 lg:w-[2.2vw] lg:h-auto min-w-[28px]">
             </a>
             <a href="https://www.X.com/moepipublishing" target="_blank">
                 <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 lg:w-[1.7vw] lg:h-auto min-w-[20px]">

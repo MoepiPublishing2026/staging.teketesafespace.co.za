@@ -72,7 +72,7 @@
     </script>
 
     <!-- Main Section -->
-    <div class="min-h-screen bg-white flex flex-col font-[Montserrat]" style="padding-top: 140px; padding-bottom: 80px; width: 100%;">
+    <div class="flex-grow bg-white flex flex-col font-[Montserrat]" style="padding-top: 140px; padding-bottom: 80px; width: 100%;">
 
         <!-- Main Content -->
         <div class="w-full max-w-2xl px-4 mx-auto">
@@ -177,7 +177,7 @@
     </div>
 
     <!-- Footer -->
-            <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 4rem;">
+            <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
                      style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
                     <div>
