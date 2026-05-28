@@ -590,7 +590,7 @@
         <div class="heatmap-summary" aria-label="Summary">
             <div class="heatmap-summary-card">
                 <div class="label">Total reports</div>
-                <div class="value">{{ number_format($provinceHeatmapGrandTotal ?? 0) }}</div>
+                <div class="value">{{ number_format($filteredReportsTotal ?? ($provinceHeatmapGrandTotal ?? 0)) }}</div>
             </div>
             <div class="heatmap-summary-card">
                 <div class="label">Provinces with data</div>
@@ -726,7 +726,6 @@
                     <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
                 </div>
             </div>
-            <p class="subtitle" style="margin-top:1rem; text-align:left;">South Africa heat view: solid green (#b2cd16) is low; yellow and red circular glows show medium and high intensity. Province names are always shown; hover a district for its name. Click to filter reports.</p>
         </section>
     </div>
 </div>
@@ -779,7 +778,7 @@
             const url = new URL(reportsUrl, window.location.origin);
             mergeHeatmapQueryParams(url);
             if (pid) url.searchParams.set('province', pid);
-            if (aid) url.searchParams.set('abuse_type', aid);
+            if (aid && aid !== '0' && aid !== 'null' && aid !== 'undefined') url.searchParams.set('abuse_type', aid);
             window.location.href = url.toString();
         });
 
@@ -811,23 +810,34 @@
 })();
 </script>
 
+<script type="application/json" id="na-map-asset-base">@json(rtrim(asset('geojson'), '/'))</script>
+<script type="application/json" id="na-province-counts">@json($provinceHeatmapRowTotals ?? [])</script>
+<script type="application/json" id="na-province-name-to-id">@json($provinceHeatmapProvinceNameToId ?? [])</script>
+<script type="application/json" id="na-district-counts">@json($mapDistrictCounts ?? [])</script>
+<script type="application/json" id="na-district-name-to-id">@json($mapDistrictNameToId ?? [])</script>
+<script type="application/json" id="na-map-band-low-max">@json((int) ($mapDistrictBandLowMax ?? 0))</script>
+<script type="application/json" id="na-map-band-medium-max">@json((int) ($mapDistrictBandMediumMax ?? 0))</script>
+<script type="application/json" id="na-filtered-total">@json((int) ($filteredReportsTotal ?? 0))</script>
+
 <script>
 (function () {
     const container = document.getElementById('province-map');
     if (!container) return;
 
-    const mapAssetBase = @json(rtrim(asset('geojson'), '/'));
+    // Values are embedded as JSON (non-JS script tags) so this file stays valid JS for tooling.
+    const mapAssetBase = JSON.parse(document.getElementById('na-map-asset-base')?.textContent || '""');
     const PROVINCE_GEO_SLUGS = [
         'easterncape', 'freestate', 'gauteng', 'kwazulunatal', 'limpopo',
         'mpumalanga', 'northerncape', 'northwest', 'westerncape'
     ];
     const reportsUrl = "{{ url('/national-admin/reports') }}";
-    const provinceCounts = @json($provinceHeatmapRowTotals ?? []);
-    const provinceNameToId = @json($provinceHeatmapProvinceNameToId ?? []);
-    const districtCounts = @json($mapDistrictCounts ?? []);
-    const districtNameToId = @json($mapDistrictNameToId ?? []);
-    let mapBandLowMax = @json((int) ($mapDistrictBandLowMax ?? 0));
-    let mapBandMediumMax = @json((int) ($mapDistrictBandMediumMax ?? 0));
+    const provinceCounts = JSON.parse(document.getElementById('na-province-counts')?.textContent || '{}');
+    const provinceNameToId = JSON.parse(document.getElementById('na-province-name-to-id')?.textContent || '{}');
+    const districtCounts = JSON.parse(document.getElementById('na-district-counts')?.textContent || '{}');
+    const districtNameToId = JSON.parse(document.getElementById('na-district-name-to-id')?.textContent || '{}');
+    let mapBandLowMax = Number(JSON.parse(document.getElementById('na-map-band-low-max')?.textContent || '0')) || 0;
+    let mapBandMediumMax = Number(JSON.parse(document.getElementById('na-map-band-medium-max')?.textContent || '0')) || 0;
+    const filteredTotal = Number(JSON.parse(document.getElementById('na-filtered-total')?.textContent || '0')) || 0;
 
     const statusEl = document.getElementById('provinceMapStatus');
     const tooltipEl = document.getElementById('provinceMapTooltip');
@@ -994,7 +1004,9 @@
         return null;
     }
 
-    const grandTotal = Object.values(districtCounts || {}).reduce(function (sum, c) { return sum + (Number(c) || 0); }, 0);
+    // Percentages should reflect the same filtered dataset as the dashboard/heatmap totals.
+    const mappedTotal = Object.values(districtCounts || {}).reduce(function (sum, c) { return sum + (Number(c) || 0); }, 0);
+    const grandTotal = filteredTotal > 0 ? filteredTotal : mappedTotal;
 
     function cleanLabel(name) {
         return String(name || '').trim()
@@ -1029,89 +1041,7 @@
         return idx === 2 ? HEAT_HIGH : (idx === 1 ? HEAT_MEDIUM : HEAT_LOW);
     }
 
-    function ensureMapGlowDefs(svg, svgNS) {
-        if (svg.querySelector('#map-glow-defs')) return;
-
-        const defs = document.createElementNS(svgNS, 'defs');
-        defs.setAttribute('id', 'map-glow-defs');
-
-        const filter = document.createElementNS(svgNS, 'filter');
-        filter.setAttribute('id', 'map-glow-blur');
-        filter.setAttribute('x', '-100%');
-        filter.setAttribute('y', '-100%');
-        filter.setAttribute('width', '300%');
-        filter.setAttribute('height', '300%');
-        const blur = document.createElementNS(svgNS, 'feGaussianBlur');
-        blur.setAttribute('stdDeviation', '16');
-        blur.setAttribute('result', 'blur');
-        filter.appendChild(blur);
-        defs.appendChild(filter);
-
-        const mediumGrad = document.createElementNS(svgNS, 'radialGradient');
-        mediumGrad.setAttribute('id', 'glow-medium');
-        mediumGrad.setAttribute('cx', '50%');
-        mediumGrad.setAttribute('cy', '50%');
-        mediumGrad.setAttribute('r', '50%');
-        [
-            { offset: '0%', color: HEAT_MEDIUM, opacity: '1' },
-            { offset: '35%', color: HEAT_MEDIUM, opacity: '0.65' },
-            { offset: '60%', color: HEAT_LOW, opacity: '0.35' },
-            { offset: '100%', color: HEAT_LOW, opacity: '0' },
-        ].forEach(function (stop) {
-            const el = document.createElementNS(svgNS, 'stop');
-            el.setAttribute('offset', stop.offset);
-            el.setAttribute('stop-color', stop.color);
-            el.setAttribute('stop-opacity', stop.opacity);
-            mediumGrad.appendChild(el);
-        });
-        defs.appendChild(mediumGrad);
-
-        const highGrad = document.createElementNS(svgNS, 'radialGradient');
-        highGrad.setAttribute('id', 'glow-high');
-        highGrad.setAttribute('cx', '50%');
-        highGrad.setAttribute('cy', '50%');
-        highGrad.setAttribute('r', '50%');
-        [
-            { offset: '0%', color: HEAT_HIGH, opacity: '1' },
-            { offset: '25%', color: HEAT_HIGH, opacity: '0.9' },
-            { offset: '42%', color: HEAT_MEDIUM, opacity: '0.7' },
-            { offset: '62%', color: HEAT_MEDIUM, opacity: '0.4' },
-            { offset: '82%', color: HEAT_LOW, opacity: '0.2' },
-            { offset: '100%', color: HEAT_LOW, opacity: '0' },
-        ].forEach(function (stop) {
-            const el = document.createElementNS(svgNS, 'stop');
-            el.setAttribute('offset', stop.offset);
-            el.setAttribute('stop-color', stop.color);
-            el.setAttribute('stop-opacity', stop.opacity);
-            highGrad.appendChild(el);
-        });
-        defs.appendChild(highGrad);
-
-        svg.insertBefore(defs, svg.firstChild);
-    }
-
-    function glowFillForBand(bandIdx) {
-        return bandIdx === 2 ? 'url(#glow-high)' : 'url(#glow-medium)';
-    }
-
-    function glowRadiusForDistrict(bb, bandIdx) {
-        const dim = Math.max(bb.width, bb.height);
-        const scale = bandIdx === 2 ? 2.4 : 1.75;
-        return Math.max(32, dim * scale * 0.72);
-    }
-
-    function appendDistrictGlow(cx, cy, bb, bandIdx, glowLayer, svgNS) {
-        if (bandIdx === 0) return;
-
-        const circle = document.createElementNS(svgNS, 'circle');
-        circle.setAttribute('cx', String(cx));
-        circle.setAttribute('cy', String(cy));
-        circle.setAttribute('r', String(glowRadiusForDistrict(bb, bandIdx)));
-        circle.setAttribute('fill', glowFillForBand(bandIdx));
-        circle.setAttribute('filter', 'url(#map-glow-blur)');
-        circle.setAttribute('class', 'district-map-glow');
-        glowLayer.appendChild(circle);
-    }
+    // Glow intentionally disabled (districts are colored directly by band).
 
     function moveTooltip(clientX, clientY) {
         if (!tooltipEl) return;
@@ -1207,11 +1137,12 @@
         const districtId = primaryDistrictIdForGeo(rawName);
         const bandIdx = heatBandIndexFromCount(count);
         const isDark = bandIdx === 2;
+        const fillColor = heatColorForCount(count);
 
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('d', pathD);
         path.setAttribute('class', 'district-map-shape' + (isDark ? ' district-map-shape-dark' : ''));
-        path.setAttribute('fill', HEAT_LOW);
+        path.setAttribute('fill', fillColor);
         path.setAttribute('fill-opacity', '1');
         path.setAttribute('data-shape-kind', 'district');
         path.setAttribute('data-district-id', districtId ? String(districtId) : '');
@@ -1219,9 +1150,8 @@
         path.setAttribute('data-district-label', displayLabel);
         path.setAttribute('data-count', String(count));
         path.setAttribute('data-heat-band', String(bandIdx));
-        path.style.cursor = districtId ? 'pointer' : 'default';
+        path.style.cursor = 'default';
         districtLayer.appendChild(path);
-        pathsForLabels.push({ pathEl: path, label: displayLabel, kind: 'district' });
     }
 
     function appendProvinceBorder(it, borderLayer, svgNS, pathsForLabels) {
@@ -1264,14 +1194,10 @@
             const pathsForLabels = [];
             const districtLayer = document.createElementNS(svgNS, 'g');
             districtLayer.setAttribute('class', 'district-layer');
-            const glowLayer = document.createElementNS(svgNS, 'g');
-            glowLayer.setAttribute('class', 'district-glow-layer');
             const provinceBorderLayer = document.createElementNS(svgNS, 'g');
             provinceBorderLayer.setAttribute('class', 'province-border-layer');
             g.appendChild(districtLayer);
-            g.appendChild(glowLayer);
             g.appendChild(provinceBorderLayer);
-            ensureMapGlowDefs(svg, svgNS);
 
             const geoCounts = districtItems.map(function (it) {
                 return countForGeo(it.name);
@@ -1353,11 +1279,8 @@
                     const cx = bb.x + bb.width / 2;
                     const cy = bb.y + bb.height / 2;
 
-                    if (!isProvince && item.pathEl.classList.contains('district-map-shape')) {
-                        const bandIdx = parseInt(item.pathEl.getAttribute('data-heat-band') || '0', 10);
-                        appendDistrictGlow(cx, cy, bb, bandIdx, glowLayer, svgNS);
-                        return;
-                    }
+                    // Only show always-on labels for provinces.
+                    if (!isProvince) return;
 
                     const text = String(item.label || '');
                     if (!text) return;
@@ -1400,15 +1323,7 @@
                     hideDistrictHoverLabel();
                     hideTooltip();
                 });
-                svg.addEventListener('click', function (event) {
-                    const target = event.target;
-                    if (!(target instanceof SVGPathElement) || !target.classList.contains('district-map-shape')) return;
-                    const kind = target.getAttribute('data-shape-kind') || '';
-                    if (kind === 'district') {
-                        const did = target.getAttribute('data-district-id') || '';
-                        if (did) navigateToDistrict(did);
-                    }
-                });
+                // Map is hover-only (no click navigation).
 
                 if (statusEl) statusEl.style.display = 'none';
             });
