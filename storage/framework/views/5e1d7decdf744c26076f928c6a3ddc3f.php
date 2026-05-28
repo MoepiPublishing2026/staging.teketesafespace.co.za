@@ -49,37 +49,6 @@
 }
 
 .main-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100vh; background: white; }
-/* ───────── Pagination Style ───────── */
-
-.pagination-btn{
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
-    border-radius: 9999px;
-    border: 1.5px solid #c7da30;
-    background: white;
-    color: #222;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
-    font-weight: 500;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition: all 0.2s ease;
-}
-
-.pagination-btn:hover{
-    background:#f5f9d7;
-    transform: translateY(-1px);
-}
-
-.pagination-btn.active{
-    background:#c7da30;
-    color:black;
-    font-weight:700;
-    border-color:#c7da30;
-    box-shadow:0 2px 6px rgba(0,0,0,0.12);
-}
 
 /* ── Filter Panel ─────────────────────────────────────────────────── */
 .filter-panel {
@@ -192,10 +161,10 @@
     .filter-grid { grid-template-columns: 1fr; }
 }
 </style>
-@include('components.school-admin-styles')
+<?php echo $__env->make('components.school-admin-styles', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 <div class="flex min-h-screen m-0 p-0" style="min-height: 100vh;">
-    @include('components.school-admin-sidebar')
+    <?php echo $__env->make('components.school-admin-sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <div class="main-panel">
     <main id="main-content" class="flex-1 p-4 sm:p-6 lg:p-8 space-y-8 overflow-auto" style="background: white">
@@ -203,24 +172,24 @@
         <!-- Top right user info -->
         <div class="flex items-center gap-3 mb-4 justify-end flex-wrap">
             <div class="flex flex-col text-right">
-                <p class="font-montserrat-black font-bold text-[#38b6ff]" style="font-size: 16px;">{{ auth()->user()->name ?? 'Admin' }}</p>
+                <p class="font-montserrat-black font-bold text-[#38b6ff]" style="font-size: 16px;"><?php echo e(auth()->user()->name ?? 'Admin'); ?></p>
                 <p class="text-sm text-gray-500 font-montserrat-black" style="font-size: 15px;">Administrator</p>
             </div>
-             @php
+             <?php
                 $currentUser = auth()->user();
                 $currentUser = $currentUser ? $currentUser->fresh() : null;
-                @endphp
-            @if($currentUser && $currentUser->profile_picture)
-                <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300 shadow">
-            @else
+                ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentUser && $currentUser->profile_picture): ?>
+                <img src="<?php echo e($currentUser->profile_picture_url); ?>" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-gray-300 shadow">
+            <?php else: ?>
                 <div class="w-10 h-10 bg-gradient-to-r from-gray-400 to-gray-600 rounded-full flex items-center justify-center border-2 border-gray-300 shadow">
                     <i class="fas fa-user-circle text-white text-5xl"></i>
                 </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
 
         <h1 class="text-4xl font-bold text-black-800 mb-8 font-montserrat-black">
-            @if ($filter === 'all') All Reports @else {{ ucfirst($filter) }} Reports @endif
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($filter === 'all'): ?> All Reports <?php else: ?> <?php echo e(ucfirst($filter)); ?> Reports <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </h1>
 
         <!-- ════════════════════════════════════════════════════════ -->
@@ -240,14 +209,6 @@
 
             <!-- Filter Grid -->
             <div class="filter-grid">
-                <div>
-                    <label class="filter-label">Anonymous</label>
-                    <select class="filter-input" wire:model.live="filterAnonymous">
-                        <option value="">All Reports</option>
-                        <option value="1">Anonymous</option>
-                        <option value="0">Identified</option>
-                    </select>
-                </div>
 
                 <div>
                     <label class="filter-label">Name / Surname</label>
@@ -260,9 +221,9 @@
                     <label class="filter-label">Grade</label>
                     <select class="filter-input" wire:model.live="filterGrade">
                         <option value="">All Grades</option>
-                        @foreach($gradeOptions as $grade)
-                            <option value="{{ $grade }}">{{ $grade }}</option>
-                        @endforeach
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $gradeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $grade): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($grade); ?>"><?php echo e($grade); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -280,9 +241,9 @@
                     <label class="filter-label">Report Type</label>
                     <select class="filter-input" wire:model.live="filterType">
                         <option value="">All Types</option>
-                        @foreach($typeOptions as $type)
-                            <option value="{{ $type->id }}">{{ $type->type_name }}</option>
-                        @endforeach
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $typeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($type->id); ?>"><?php echo e($type->type_name); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -290,9 +251,9 @@
                     <label class="filter-label">Subtype</label>
                     <select class="filter-input" wire:model.live="filterSubtype">
                         <option value="">All Subtypes</option>
-                        @foreach($subtypeOptions as $sub)
-                            <option value="{{ $sub->id }}">{{ $sub->sub_type_name }}</option>
-                        @endforeach
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $subtypeOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($sub->id); ?>"><?php echo e($sub->sub_type_name); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -309,18 +270,25 @@
                     </select>
                 </div>
 
-                
+                <div>
+                    <label class="filter-label">Anonymous</label>
+                    <select class="filter-input" wire:model.live="filterAnonymous">
+                        <option value="">All Reports</option>
+                        <option value="1">Anonymous</option>
+                        <option value="0">Identified</option>
+                    </select>
+                </div>
 
                 <div style="display:flex; align-items:flex-end;">
                     <button type="button" class="btn-clear-filters" wire:click="clearFilters">
-                        <i class="fas fa-times mr-1"></i> Clear 
+                        <i class="fas fa-times mr-1"></i> Clear Filters
                     </button>
                 </div>
 
             </div>
 
             <!-- Active filter badges -->
-            @php
+            <?php
                 $_anon = $filterAnonymous ?? '';
                 $activeFilters = array_filter([
                     'Search'    => $search ?? '',
@@ -333,18 +301,19 @@
                     'Status'    => $filterStatus ?? '',
                     'Anonymous' => $_anon === '1' ? 'Yes' : ($_anon === '0' ? 'No' : null),
                 ]);
-            @endphp
-            @if(count($activeFilters))
+            ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($activeFilters)): ?>
                 <div class="mt-3 flex flex-wrap items-center">
-                    @foreach($activeFilters as $label => $val)
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $activeFilters; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <span class="active-filter-badge">
                             <i class="fas fa-filter mr-1" style="font-size:9px;"></i>
-                            {{ $label }}: {{ $val }}
+                            <?php echo e($label); ?>: <?php echo e($val); ?>
+
                         </span>
-                    @endforeach
-                    <span class="text-xs text-gray-400 ml-1">— {{ $reports->total() }} result(s)</span>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    <span class="text-xs text-gray-400 ml-1">— <?php echo e($reports->total()); ?> result(s)</span>
                 </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         </div>
         <!-- ═══════════════════════════ END FILTER PANEL ══════════ -->
@@ -365,42 +334,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($reports as $report)
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $report): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="hover:bg-blue-50 transition cursor-pointer align-top"
-                            wire:click="showReport({{ $report->id }})">
+                            wire:click="showReport(<?php echo e($report->id); ?>)">
                             <td class="py-3 px-2 border-b text-center font-mono truncate">
-                                {{ $report->case_number }}
+                                <?php echo e($report->case_number); ?>
+
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->reporter_email ?? 'Anonymous' }}
+                                <?php echo e($report->reporter_email ?? 'Anonymous'); ?>
+
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->abuseType->type_name ?? 'N/A' }}
+                                <?php echo e($report->abuseType->type_name ?? 'N/A'); ?>
+
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->subtype->sub_type_name ?? 'N/A' }}
+                                <?php echo e($report->subtype->sub_type_name ?? 'N/A'); ?>
+
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->grade ?? 'N/A' }}
+                                <?php echo e($report->grade ?? 'N/A'); ?>
+
                             </td>
                             <td class="py-3 px-2 border-b text-center truncate">
-                                {{ $report->created_at?->format('Y M d') ?? 'N/A' }}
+                                <?php echo e($report->created_at?->format('Y M d') ?? 'N/A'); ?>
+
                             </td>
                             <td class="py-3 px-2 border-b text-center">
                                 <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                    @if($report->status == 'awaiting-resolution') bg-yellow-100 text-yellow-800
-                                    @elseif($report->status == 'under-review')    bg-blue-100   text-blue-800
-                                    @elseif($report->status == 'forwarded')       bg-red-100    text-red-800
-                                    @elseif(in_array($report->status, ['closed','completed'])) bg-green-100 text-green-800
-                                    @elseif($report->status == 'unresolved')      bg-gray-100   text-gray-800
-                                    @elseif($report->status == 'false-report')    bg-purple-100 text-purple-800
-                                    @endif">
-                                    {{ ucfirst($report->status) }}
+                                    <?php if($report->status == 'awaiting-resolution'): ?> bg-yellow-100 text-yellow-800
+                                    <?php elseif($report->status == 'under-review'): ?>    bg-blue-100   text-blue-800
+                                    <?php elseif($report->status == 'forwarded'): ?>       bg-red-100    text-red-800
+                                    <?php elseif(in_array($report->status, ['closed','completed'])): ?> bg-green-100 text-green-800
+                                    <?php elseif($report->status == 'unresolved'): ?>      bg-gray-100   text-gray-800
+                                    <?php elseif($report->status == 'false-report'): ?>    bg-purple-100 text-purple-800
+                                    <?php endif; ?>">
+                                    <?php echo e(ucfirst($report->status)); ?>
+
                                 </span>
                             </td>
                             <td class="py-3 px-2 border-b text-center">
                                 <select
-                                    wire:change.stop="promptForStatusUpdate({{ $report->id }}, $event.target.value)"
+                                    wire:change.stop="promptForStatusUpdate(<?php echo e($report->id); ?>, $event.target.value)"
                                     onclick="event.stopPropagation()"
                                     class="rounded-md shadow-sm border-gray-300 w-full text-xs">
                                     <option value="">-- Update --</option>
@@ -413,206 +389,171 @@
                                 </select>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="8" class="py-12 text-center text-gray-400 font-montserrat-regular">
                                 <i class="fas fa-search mr-2"></i> No reports match your current filters.
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
-<!-- Pagination -->
-@if ($reports->hasPages())
-<div class="flex justify-center items-center gap-3 mt-8 flex-wrap">
+        <div class="mt-4">
+            <?php echo e($reports->links()); ?>
 
-    {{-- Previous --}}
-    @if ($reports->onFirstPage())
-        <span class="pagination-btn opacity-40 cursor-not-allowed">
-            ←
-        </span>
-    @else
-        <button wire:click="previousPage" class="pagination-btn">
-            ←
-        </button>
-    @endif
-
-    {{-- Page Numbers --}}
-    @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
-
-        @if ($page == $reports->currentPage())
-            <span class="pagination-btn active">
-                {{ $page }}
-            </span>
-        @else
-            <button wire:click="gotoPage({{ $page }})" class="pagination-btn">
-                {{ $page }}
-            </button>
-        @endif
-
-    @endforeach
-
-    {{-- Next --}}
-    @if ($reports->hasMorePages())
-        <button wire:click="nextPage" class="pagination-btn">
-            →
-        </button>
-    @else
-        <span class="pagination-btn opacity-40 cursor-not-allowed">
-            →
-        </span>
-    @endif
-
-</div>
-@endif
+        </div>
 
         <!-- ══════════════════════════════════════════════════════════ -->
         <!-- Report Details Modal                                       -->
         <!-- ══════════════════════════════════════════════════════════ -->
-        @if($selectedReport)
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport): ?>
             <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
                 <div class="bg-white p-6 rounded-lg border-[3px] border-[#c7da30] w-full max-w-4xl max-h-[90vh] overflow-auto shadow-2xl font-montserrat-regular">
-                    <h2 class="text-2xl font-montserrat-bold text-black mb-6">Case Details: {{ $selectedReport->case_number }}</h2>
+                    <h2 class="text-2xl font-montserrat-bold text-black mb-6">Case Details: <?php echo e($selectedReport->case_number); ?></h2>
 
-                    @if($selectedReport->blocked_at)
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport->blocked_at): ?>
                         <div class="mb-6 bg-black border-l-4 border-red-600 p-4 rounded shadow-md">
                             <div class="flex items-center">
                                 <i class="fas fa-user-slash text-red-600 mr-3 text-xl"></i>
                                 <div>
                                     <h3 class="text-white font-bold uppercase text-xs tracking-widest">Reporter Permanently Blocked</h3>
                                     <p class="text-gray-300 text-xs">
-                                        Action taken by Admin: <span class="text-[#c7da30] font-bold">{{ $selectedReport->blocked_by_name }}</span>
-                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y, M d') }}
+                                        Action taken by Admin: <span class="text-[#c7da30] font-bold"><?php echo e($selectedReport->blocked_by_name); ?></span>
+                                        on <?php echo e(\Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y, M d')); ?>
+
                                     </p>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                    @if($selectedReport->status === 'false-report')
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport->status === 'false-report'): ?>
                         <div class="mb-6 bg-red-50 border-l-4 border-red-600 p-4 rounded shadow-sm">
                             <div class="flex items-center">
                                 <i class="fas fa-exclamation-triangle text-red-600 mr-3 text-xl"></i>
                                 <div>
                                     <h3 class="text-red-800 font-bold uppercase text-sm">Attention: This Report is Flagged</h3>
-                                    <p class="text-red-700 text-xs font-semibold">Flag Reason: "{{ $selectedReport->latest_status_reason }}"</p>
+                                    <p class="text-red-700 text-xs font-semibold">Flag Reason: "<?php echo e($selectedReport->latest_status_reason); ?>"</p>
                                     <p class="text-red-700 text-xs">The reporter has been notified and asked to provide a clarification statement.</p>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-                    @if($selectedReport->reporter_clarification)
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport->reporter_clarification): ?>
                         <div class="mb-6 bg-purple-50 border-l-4 border-purple-600 p-4 rounded shadow-sm">
                             <h3 class="text-purple-800 font-bold text-sm mb-2">Reporter's Clarification Statement:</h3>
                             <div class="text-gray-800 text-sm italic leading-relaxed bg-white p-3 rounded border border-purple-200">
-                                "{{ $selectedReport->reporter_clarification }}"
+                                "<?php echo e($selectedReport->reporter_clarification); ?>"
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                     <div class="grid grid-cols-2 gap-4 text-sm text-black">
-                        <p><strong>Email:</strong> {{ $selectedReport->reporter_email ?? 'Anonymous' }}</p>
-                        <p><strong>Phone:</strong> {{ $selectedReport->phone_number ?? 'N/A' }}</p>
-                        <p><strong>Type:</strong> {{ $selectedReport->abuseType->type_name ?? 'N/A' }}</p>
-                        <p><strong>Subtype:</strong> {{ $selectedReport->subtype->sub_type_name ?? 'N/A' }}</p>
-                        <p><strong>School:</strong> {{ $selectedReport->schoolName ?? $selectedReport->school_name ?? 'N/A' }}</p>
-                        <p><strong>Grade:</strong> {{ $selectedReport->grade ?? 'N/A' }}</p>
-                        <p class="col-span-2"><strong>Current Status:</strong> <span class="font-semibold">{{ ucfirst($selectedReport->status) }}</span></p>
+                        <p><strong>Email:</strong> <?php echo e($selectedReport->reporter_email ?? 'Anonymous'); ?></p>
+                        <p><strong>Phone:</strong> <?php echo e($selectedReport->phone_number ?? 'N/A'); ?></p>
+                        <p><strong>Type:</strong> <?php echo e($selectedReport->abuseType->type_name ?? 'N/A'); ?></p>
+                        <p><strong>Subtype:</strong> <?php echo e($selectedReport->subtype->sub_type_name ?? 'N/A'); ?></p>
+                        <p><strong>School:</strong> <?php echo e($selectedReport->schoolName ?? $selectedReport->school_name ?? 'N/A'); ?></p>
+                        <p><strong>Grade:</strong> <?php echo e($selectedReport->grade ?? 'N/A'); ?></p>
+                        <p class="col-span-2"><strong>Current Status:</strong> <span class="font-semibold"><?php echo e(ucfirst($selectedReport->status)); ?></span></p>
 
-                        @if($selectedReport->status === 'false-report' || $selectedReport->reporter_clarification)
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport->status === 'false-report' || $selectedReport->reporter_clarification): ?>
                             <div class="col-span-2 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4">
                                 <div class="bg-gray-50 p-3 rounded-lg border-l-4 border-gray-400">
                                     <h4 class="text-xs font-bold text-gray-600 uppercase mb-1">Reason for Flagging:</h4>
-                                    <p class="text-sm leading-relaxed text-gray-800">{{ $selectedReport->latest_status_reason ?? 'No reason provided.' }}</p>
+                                    <p class="text-sm leading-relaxed text-gray-800"><?php echo e($selectedReport->latest_status_reason ?? 'No reason provided.'); ?></p>
                                 </div>
                                 <div class="bg-purple-50 p-3 rounded-lg border-l-4 border-purple-600">
                                     <h4 class="text-xs font-bold text-purple-800 uppercase mb-1">Reporter's Clarification:</h4>
-                                    @if($selectedReport->reporter_clarification)
-                                        <p class="text-sm italic leading-relaxed text-gray-800">"{{ $selectedReport->reporter_clarification }}"</p>
-                                    @else
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport->reporter_clarification): ?>
+                                        <p class="text-sm italic leading-relaxed text-gray-800">"<?php echo e($selectedReport->reporter_clarification); ?>"</p>
+                                    <?php else: ?>
                                         <p class="text-sm text-purple-400 italic">The reporter has not responded yet.</p>
-                                    @endif
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <p class="col-span-2 border-t pt-2">
-                                <strong>Latest Reason:</strong> {{ $selectedReport->latest_status_reason ?? 'No notes recorded.' }}
+                                <strong>Latest Reason:</strong> <?php echo e($selectedReport->latest_status_reason ?? 'No notes recorded.'); ?>
+
                             </p>
-                        @endif
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
 
                     <div class="mt-6">
                         <p class="font-semibold mb-2">Description:</p>
                         <div class="p-4 rounded border-[3px] border-[#c7da30] text-sm text-black leading-relaxed">
-                            {{ $selectedReport->description }}
+                            <?php echo e($selectedReport->description); ?>
+
                         </div>
                     </div>
 
-                    @php
+                    <?php
                         $attachments = $selectedReport->image_path ? json_decode($selectedReport->image_path, true) : [];
-                    @endphp
+                    ?>
 
-                    @if (!empty($attachments))
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($attachments)): ?>
                         <div class="mt-6">
                             <p class="font-semibold">Attachments:</p>
                             <div class="flex flex-wrap gap-4">
-                                @foreach ($attachments as $filePath)
-                                    @php
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $attachments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $filePath): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $ext       = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
                                         $publicUrl = asset('storage/' . ltrim($filePath, '/'));
                                         $isImage   = in_array($ext, ['jpg','jpeg','png','gif','bmp','webp','svg']);
                                         $isVideo   = in_array($ext, ['mp4','mov','avi','wmv']);
-                                    @endphp
-                                    @if ($isImage)
-                                        <img src="{{ $publicUrl }}" alt="Attachment"
+                                    ?>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isImage): ?>
+                                        <img src="<?php echo e($publicUrl); ?>" alt="Attachment"
                                              class="w-32 h-auto mt-2 border rounded shadow cursor-pointer"
-                                             wire:click="showImage('{{ $filePath }}')">
-                                    @elseif ($isVideo)
+                                             wire:click="showImage('<?php echo e($filePath); ?>')">
+                                    <?php elseif($isVideo): ?>
                                         <video controls class="w-48 h-auto mt-2 border rounded shadow">
-                                            <source src="{{ $publicUrl }}" type="video/{{ $ext }}">
+                                            <source src="<?php echo e($publicUrl); ?>" type="video/<?php echo e($ext); ?>">
                                         </video>
-                                    @else
-                                        <a href="{{ $publicUrl }}" target="_blank" class="text-blue-600 underline inline-block mt-2">
-                                            View {{ basename($filePath) }}
+                                    <?php else: ?>
+                                        <a href="<?php echo e($publicUrl); ?>" target="_blank" class="text-blue-600 underline inline-block mt-2">
+                                            View <?php echo e(basename($filePath)); ?>
+
                                         </a>
-                                    @endif
-                                @endforeach
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             </div>
                         </div>
-                    @else
+                    <?php else: ?>
                         <p class="mt-6"><strong>Attachment:</strong> N/A</p>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                     <div class="mt-6">
                         <label class="block text-sm font-medium mb-1">Update Status:</label>
-                        <select wire:change.stop="promptForStatusUpdate({{ $selectedReport->id }}, $event.target.value)"
+                        <select wire:change.stop="promptForStatusUpdate(<?php echo e($selectedReport->id); ?>, $event.target.value)"
                                 class="w-full sm:w-1/2 border-[3px] border-[#c7da30] p-2 rounded-md shadow-sm text-sm">
-                            <option value="awaiting-resolution" {{ $selectedReport->status == 'awaiting-resolution' ? 'selected' : '' }}>Awaiting Resolution</option>
-                            <option value="under-review"        {{ $selectedReport->status == 'under-review'        ? 'selected' : '' }}>Under Review</option>
-                            <option value="forwarded"           {{ $selectedReport->status == 'forwarded'           ? 'selected' : '' }}>Forwarded</option>
-                            <option value="closed"              {{ $selectedReport->status == 'closed'              ? 'selected' : '' }}>Closed</option>
-                            <option value="unresolved"          {{ $selectedReport->status == 'unresolved'          ? 'selected' : '' }}>Unresolved</option>
-                            <option value="false-report"        {{ $selectedReport->status == 'false-report'        ? 'selected' : '' }}>False Report</option>
+                            <option value="awaiting-resolution" <?php echo e($selectedReport->status == 'awaiting-resolution' ? 'selected' : ''); ?>>Awaiting Resolution</option>
+                            <option value="under-review"        <?php echo e($selectedReport->status == 'under-review'        ? 'selected' : ''); ?>>Under Review</option>
+                            <option value="forwarded"           <?php echo e($selectedReport->status == 'forwarded'           ? 'selected' : ''); ?>>Forwarded</option>
+                            <option value="closed"              <?php echo e($selectedReport->status == 'closed'              ? 'selected' : ''); ?>>Closed</option>
+                            <option value="unresolved"          <?php echo e($selectedReport->status == 'unresolved'          ? 'selected' : ''); ?>>Unresolved</option>
+                            <option value="false-report"        <?php echo e($selectedReport->status == 'false-report'        ? 'selected' : ''); ?>>False Report</option>
                         </select>
                     </div>
 
                     <div class="mt-6 flex justify-end items-end space-x-3">
-                        @if($selectedReport->reporter_email)
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedReport->reporter_email): ?>
                             <div class="flex flex-col items-center">
                                 <span class="text-[11px] font-bold text-red-600 mb-1 uppercase tracking-tighter">
-                                    {{ $falseReportsCount }} Total False Reports
+                                    <?php echo e($falseReportsCount); ?> Total False Reports
                                 </span>
-                                <button wire:click="permanentBlock('{{ $selectedReport->reporter_email }}')"
-                                        wire:confirm="Are you sure? This will permanently prevent this email ({{ $selectedReport->reporter_email }}) from making future reports."
+                                <button wire:click="permanentBlock('<?php echo e($selectedReport->reporter_email); ?>')"
+                                        wire:confirm="Are you sure? This will permanently prevent this email (<?php echo e($selectedReport->reporter_email); ?>) from making future reports."
                                         class="bg-gradient-to-r from-[#c7da30] to-[#d7e47a] px-5 py-2 rounded-full font-montserrat text-black shadow-md">
                                     <i class="fas fa-user-slash mr-2"></i> Block Reporter
                                 </button>
                             </div>
-                        @endif
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                         <button wire:click="closeReport"
                                 class="bg-gradient-to-r from-[#c7da30] to-[#d7e47a] px-5 py-2 rounded-full font-montserrat text-black shadow-md">
@@ -622,56 +563,64 @@
 
                 </div>
             </div>
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <!-- Image Modal -->
-        @if($modalImage)
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($modalImage): ?>
             <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-                <img src="{{ asset('storage/' . $modalImage) }}" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg">
+                <img src="<?php echo e(asset('storage/' . $modalImage)); ?>" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg">
                 <button wire:click="closeImage"
                         class="absolute bottom-8 bg-gradient-to-r from-[#c7da30] to-[#d7e47a] px-5 py-2 rounded-full font-montserrat text-black">
                     Close
                 </button>
             </div>
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <!-- Reason Capture Modal -->
-        @if($showReasonModal)
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showReasonModal): ?>
             <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
                 <div class="bg-white p-6 rounded-lg border-[4px] border-[#c7da30] w-full max-w-lg shadow-2xl font-montserrat-regular">
 
-                    @if($newStatus === 'false-report')
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($newStatus === 'false-report'): ?>
                         <h2 class="text-2xl font-montserrat-bold text-black mb-1">FLAGGING REPORT</h2>
                         <p class="mb-4 text-sm text-black">
-                            You are changing <strong>{{ $reportToUpdate->case_number }}</strong> status from
-                            <span class="font-semibold">{{ ucfirst($reportToUpdate->status) }}</span>
-                            to <span class="font-semibold text-[#c7da30]">{{ ucfirst($newStatus) }}</span>.
+                            You are changing <strong><?php echo e($reportToUpdate->case_number); ?></strong> status from
+                            <span class="font-semibold"><?php echo e(ucfirst($reportToUpdate->status)); ?></span>
+                            to <span class="font-semibold text-[#c7da30]"><?php echo e(ucfirst($newStatus)); ?></span>.
                         </p>
                         <p class="text-xs text-gray-500 mb-4 font-bold uppercase tracking-wider">Note: This action marks the report as fraudulent.</p>
                         <div class="bg-lime-50 p-3 rounded border border-[#c7da30] mb-4 text-sm text-black">
-                            <p><strong>Flagged By:</strong> {{ $adminName }}</p>
-                            <p><strong>Date/Time:</strong> {{ $timestamp }}</p>
+                            <p><strong>Flagged By:</strong> <?php echo e($adminName); ?></p>
+                            <p><strong>Date/Time:</strong> <?php echo e($timestamp); ?></p>
                         </div>
-                    @else
+                    <?php else: ?>
                         <p class="mb-4 text-sm text-black">
-                            You are changing <strong>{{ $reportToUpdate->case_number }}</strong> status from
-                            <span class="font-semibold">{{ ucfirst($reportToUpdate->status) }}</span>
-                            to <span class="font-semibold text-blue-700">{{ ucfirst($newStatus) }}</span>.
+                            You are changing <strong><?php echo e($reportToUpdate->case_number); ?></strong> status from
+                            <span class="font-semibold"><?php echo e(ucfirst($reportToUpdate->status)); ?></span>
+                            to <span class="font-semibold text-blue-700"><?php echo e(ucfirst($newStatus)); ?></span>.
                         </p>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                     <form wire:submit.prevent="finalizeStatusUpdate">
                         <div class="mb-5">
                             <label class="block text-sm font-semibold text-black mb-1">
-                                {{ $newStatus === 'false-report' ? 'Reason for Flagging:' : 'Reason for Update:' }}
+                                <?php echo e($newStatus === 'false-report' ? 'Reason for Flagging:' : 'Reason for Update:'); ?>
+
                             </label>
                             <textarea wire:model.defer="statusChangeReason"
                                       rows="5"
-                                      placeholder="{{ $newStatus === 'false-report' ? 'Provide evidence or reason why this report is false...' : 'Enter reason...' }}"
+                                      placeholder="<?php echo e($newStatus === 'false-report' ? 'Provide evidence or reason why this report is false...' : 'Enter reason...'); ?>"
                                       class="w-full border-[2px] border-[#c7da30] rounded-md p-3 text-sm text-black focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"></textarea>
-                            @error('statusChangeReason')
-                                <p class="mt-1 text-sm text-red-600 font-bold">{{ $message }}</p>
-                            @enderror
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['statusChangeReason'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <p class="mt-1 text-sm text-red-600 font-bold"><?php echo e($message); ?></p>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </div>
                         <div class="flex justify-end space-x-3">
                             <button type="button" wire:click="cancelUpdate"
@@ -680,20 +629,21 @@
                             </button>
                             <button type="submit"
                                     class="bg-gradient-to-r from-[#c7da30] to-[#d7e47a] text-black px-6 py-2 rounded-full font-bold shadow-md">
-                                {{ $newStatus === 'false-report' ? 'Confirm Flagging' : 'Confirm & Update' }}
+                                <?php echo e($newStatus === 'false-report' ? 'Confirm Flagging' : 'Confirm & Update'); ?>
+
                             </button>
                         </div>
                     </form>
 
                 </div>
             </div>
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
     </main>
     </div>
 </div>
 
-@include('components.school-admin-sidebar-script')
+<?php echo $__env->make('components.school-admin-sidebar-script', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
@@ -709,3 +659,4 @@
     }
 </script>
 </div>
+<?php /**PATH C:\xampp\htdocs\staging.teketesafespace.co.za\resources\views/livewire/admin-reports.blade.php ENDPATH**/ ?>
