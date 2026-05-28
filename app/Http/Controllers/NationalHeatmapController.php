@@ -16,6 +16,81 @@ use Illuminate\Support\Facades\Schema;
 class NationalHeatmapController extends Controller
 {
     /**
+     * Thresholds scaled to the full count range (0..max) so all counts are represented.
+     *
+     * @return array{0:int,1:int} [lowMax, mediumMax]
+     */
+    protected function rangeScaledBandThresholds(array $counts): array
+    {
+        $vals = array_map(fn ($c) => (int) $c, $counts);
+        $max = max(0, ...$vals);
+        if ($max <= 0) {
+            return [0, 0];
+        }
+        // Split the full range into 3 bands.
+        $lowMax = (int) floor($max / 3);
+        $mediumMax = (int) floor((2 * $max) / 3);
+        // Ensure medium is always >= low and both are at least 1 when there is data.
+        $lowMax = max(1, $lowMax);
+        $mediumMax = max($lowMax, $mediumMax);
+
+        return [$lowMax, $mediumMax];
+    }
+
+    /**
+     * Balanced thresholds (approx tertiles) so low/medium/high all appear when possible.
+     * Excludes zeros so "no reports" doesn't dominate the distribution.
+     *
+     * Guarantees:
+     * - If there are >= 3 distinct positive counts, low/medium/high will all have at least 1 item.
+     * - Otherwise falls back to range-scaled thresholds.
+     *
+     * @return array{0:int,1:int} [lowMax, mediumMax]
+     */
+    protected function balancedBandThresholds(array $counts): array
+    {
+        $positive = array_values(array_filter(
+            array_map(fn ($c) => (int) $c, $counts),
+            fn ($c) => $c > 0
+        ));
+
+        if (count($positive) < 3) {
+            return $this->rangeScaledBandThresholds($counts);
+        }
+
+        sort($positive);
+        $unique = array_values(array_unique($positive));
+        if (count($unique) < 3) {
+            return $this->rangeScaledBandThresholds($counts);
+        }
+
+        $n = count($positive);
+        $iLow = max(0, (int) floor($n / 3) - 1);
+        $iMed = max($iLow + 1, (int) floor((2 * $n) / 3) - 1);
+        $iMed = min($n - 1, $iMed);
+
+        $lowMax = $positive[$iLow];
+        $mediumMax = $positive[$iMed];
+
+        // If cutoffs collapse (skewed distribution), bump mediumMax to next distinct value.
+        if ($mediumMax <= $lowMax) {
+            foreach ($positive as $v) {
+                if ($v > $lowMax) {
+                    $mediumMax = $v;
+                    break;
+                }
+            }
+        }
+
+        // If still collapsed, fall back.
+        if ($mediumMax <= $lowMax) {
+            return $this->rangeScaledBandThresholds($counts);
+        }
+
+        return [(int) $lowMax, (int) $mediumMax];
+    }
+
+    /**
      * Apply the same GET filters used on the national dashboard / reports list.
      */
     protected function applyHeatmapFilters(Builder $query, Request $request): void
@@ -87,9 +162,6 @@ class NationalHeatmapController extends Controller
         $unknownAbuseTypeId = 0;
         $unknownAbuseTypeLabel = 'Unknown';
         $abuseTypeIds = array_values(array_merge($abuseTypes->pluck('id')->all(), [$unknownAbuseTypeId]));
-
-        $unknownProvinceId = 0;
-        $unknownProvinceLabel = 'Unknown';
 
         // Reports are sometimes missing province/district ids and only have `school_id`.
         // For heatmaps/maps we treat province/district as:
@@ -182,7 +254,8 @@ class NationalHeatmapController extends Controller
         ));
 
         $provinceTypeCounts = (clone $baseQuery)
-            ->selectRaw('COALESCE(COALESCE(reports.province_id, s.province_id, d.province_id), 0) as province_id, COALESCE(reports.abuse_type_id, 0) as abuse_type_id, COUNT(*) as count')
+            ->selectRaw('COALESCE(reports.province_id, s.province_id, d.province_id) as province_id, COALESCE(reports.abuse_type_id, 0) as abuse_type_id, COUNT(*) as count')
+            ->whereNotNull(DB::raw('COALESCE(reports.province_id, s.province_id, d.province_id)'))
             ->tap($applySqlFilters)
             ->groupBy('province_id', 'abuse_type_id')
             ->get();
@@ -201,13 +274,6 @@ class NationalHeatmapController extends Controller
             $provinceHeatmapMatrix[$province->name] = $row;
         }
 
-        // Add an "Unknown" province bucket so totals always match the filtered report count.
-        $unknownRow = [];
-        foreach ($abuseTypeIds as $abuseTypeId) {
-            $unknownRow[] = $provinceTypeLookup[$unknownProvinceId][(int) $abuseTypeId] ?? 0;
-        }
-        $provinceHeatmapMatrix[$unknownProvinceLabel] = $unknownRow;
-
         uasort($provinceHeatmapMatrix, fn ($a, $b) => array_sum($b) <=> array_sum($a));
 
         $provinceHeatmapRowTotals = [];
@@ -223,7 +289,6 @@ class NationalHeatmapController extends Controller
         $provinceHeatmapMax = collect($provinceHeatmapMatrix)->flatten()->max() ?: 1;
 
         $provinceHeatmapProvinceNameToId = $provinces->pluck('id', 'name')->toArray();
-        $provinceHeatmapProvinceNameToId[$unknownProvinceLabel] = null;
         $provinceHeatmapAbuseTypeNameToId = $abuseTypes->pluck('id', 'type_name')->toArray();
         $provinceHeatmapAbuseTypeNameToId[$unknownAbuseTypeLabel] = null;
 
@@ -262,6 +327,7 @@ class NationalHeatmapController extends Controller
 
         $mapDistrictMax = collect($mapDistrictCounts)->max() ?: 1;
         $mapDistrictNameToId = $allDistricts->pluck('id', 'name')->toArray();
+        [$mapDistrictBandLowMax, $mapDistrictBandMediumMax] = $this->balancedBandThresholds(array_values($mapDistrictCounts));
 
         $filteredReportsTotal = (clone $baseQuery)
             ->tap($applySqlFilters)
@@ -313,6 +379,8 @@ class NationalHeatmapController extends Controller
 
             'mapDistrictCounts' => $mapDistrictCounts,
             'mapDistrictMax' => $mapDistrictMax,
+            'mapDistrictBandLowMax' => $mapDistrictBandLowMax,
+            'mapDistrictBandMediumMax' => $mapDistrictBandMediumMax,
             'mapDistrictNameToId' => $mapDistrictNameToId,
             'mappedReportsTotal' => $mappedReportsTotal,
             'unmappedReportsTotal' => $unmappedReportsTotal,

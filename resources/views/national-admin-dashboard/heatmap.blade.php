@@ -332,6 +332,14 @@
         .district-map-shape.is-hover,
         .district-map-shape.is-key-hover { stroke: #111827; stroke-width: 2.2; }
         .district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 3; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
+        .district-map-province-border {
+            fill: none;
+            stroke: #111827;
+            stroke-width: 2.25;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            vector-effect: non-scaling-stroke;
+        }
         .heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
         .map-label-layer { pointer-events: none; user-select: none; }
         .map-label-layer text {
@@ -836,6 +844,7 @@
         'easterncape', 'freestate', 'gauteng', 'kwazulunatal', 'limpopo',
         'mpumalanga', 'northerncape', 'northwest', 'westerncape'
     ];
+    const provinceCounts = JSON.parse(document.getElementById('na-province-counts')?.textContent || '{}');
     const districtCounts = JSON.parse(document.getElementById('na-district-counts')?.textContent || '{}');
     const districtNameToId = JSON.parse(document.getElementById('na-district-name-to-id')?.textContent || '{}');
     let mapBandLowMax = Number(JSON.parse(document.getElementById('na-map-band-low-max')?.textContent || '0')) || 0;
@@ -977,15 +986,101 @@
         return { districts: districts, outlines: outlines };
     }
 
+    // Normalized lookups so geojson name → DB district is stable.
+    const countsByNorm = {};
+    Object.keys(districtCounts || {}).forEach(function (dbName) {
+        countsByNorm[keyName(dbName)] = Number(districtCounts[dbName]) || 0;
+    });
+    const districtIdByNorm = {};
+    Object.keys(districtNameToId || {}).forEach(function (dbName) {
+        districtIdByNorm[keyName(dbName)] = districtNameToId[dbName];
+    });
+
+    // Controlled alias/prefix matching for known district naming differences.
+    const GEO_DB_PREFIXES = {
+        'buffalo city': ['buffalo city'],
+        'amathole': ['amathole'],
+        'alfred nzo': ['alfred nzo'],
+        'or tambo': ['or tambo'],
+        'chris hani': ['chris hani'],
+        'joe gqabi': ['joe gqabi'],
+        'manguang': ['motheo', 'metro central'],
+        'motheo': ['motheo', 'metro central'],
+        'lejweleputswa': ['lejweleputswa', 'letjweleputswa'],
+        'thabo mofutsanyana': ['thabo mofutsanyana'],
+        'fezile dabi': ['fezile dabi'],
+        'xhariep': ['xhariep'],
+        'city of johannesburg': ['johannesburg', 'gauteng east'],
+        'city of ekhurhuleni': ['ekurhuleni', 'ekhurhuleni'],
+        'city of tshwane': ['tshwane'],
+        'sedibeng': ['sedibeng'],
+        'west rand': ['gauteng west', 'west rand'],
+        'ethekwini': ['ethekwini', 'pinetown', 'umlazi'],
+        'amajuba': ['amajuba'],
+        'harry gwala': ['harry gwala'],
+        'ilembe': ['ilembe'],
+        'king cetshwayo': ['king cetshwayo'],
+        'umgungundlovu': ['umgungundlovu'],
+        'umkhanyakude': ['umkhanyakude'],
+        'umzinyathi': ['umzinyathi'],
+        'uthukela': ['uthukela'],
+        'zululand': ['zululand'],
+        'ehlanzeni': ['ehlanzeni'],
+        'gert sibande': ['gert sibande'],
+        'nkangala': ['nkangala'],
+        'capricorn': ['capricorn'],
+        'mopani': ['mopani'],
+        'sekhukhune': ['sekhukhune'],
+        'vhembe': ['vhembe'],
+        'waterberg': ['waterberg'],
+        'cape winelands': ['cape winelands'],
+        'central karoo': ['eden and central karoo', 'central karoo'],
+        'eden': ['eden and central karoo', 'eden'],
+        'overberg': ['overberg'],
+        'west coast': ['west coast'],
+        'frances baard': ['frances baard'],
+        'john taolo gaetsewe': ['john taolo gaetsewe'],
+        'namakwa': ['namakwa'],
+        'pixley ka seme': ['pixley ka seme'],
+        'zf mgcawu': ['zf mgcawu'],
+        'ngaka modiri molema': ['ngaka modiri molema'],
+        'bojanala platinum': ['bojanala'],
+        'dr kenneth kaunda': ['dr kenneth kaunda'],
+        'dr ruth segomotsi mompati': ['dr ruth s mompati', 'dr ruth segomotsi mompati'],
+    };
+
+    function matchesGeoDistrict(geoNorm, dbNorm) {
+        if (!geoNorm || !dbNorm) return false;
+        if (geoNorm === dbNorm) return true;
+
+        const prefixes = GEO_DB_PREFIXES[geoNorm];
+        if (prefixes) {
+            for (let i = 0; i < prefixes.length; i++) {
+                const p = keyName(prefixes[i]);
+                if (dbNorm === p || dbNorm.indexOf(p + ' ') === 0) return true;
+            }
+        }
+        if (dbNorm.indexOf(geoNorm + ' ') === 0 || geoNorm.indexOf(dbNorm + ' ') === 0) return true;
+        if (geoNorm.length >= 5 && dbNorm.indexOf(geoNorm) !== -1) return true;
+        if (dbNorm.length >= 5 && geoNorm.indexOf(dbNorm) !== -1) return true;
+        return false;
+    }
+
     const geoCountCache = {};
     function countForGeo(rawGeoName) {
         const geoKey = keyName(rawGeoName);
         if (geoCountCache[geoKey] !== undefined) return geoCountCache[geoKey];
+
+        // Fast path: exact normalized match.
+        if (countsByNorm[geoKey] !== undefined) {
+            geoCountCache[geoKey] = Number(countsByNorm[geoKey]) || 0;
+            return geoCountCache[geoKey];
+        }
+
         let total = 0;
-        Object.keys(districtCounts || {}).forEach(function (dbName) {
-            const dk = keyName(dbName);
-            if (geoKey && dk && (dk === geoKey || dk.indexOf(geoKey + ' ') === 0 || geoKey.indexOf(dk + ' ') === 0 || (geoKey.length >= 5 && dk.indexOf(geoKey) !== -1) || (dk.length >= 5 && geoKey.indexOf(dk) !== -1))) {
-                total += Number(districtCounts[dbName]) || 0;
+        Object.keys(countsByNorm || {}).forEach(function (dbNorm) {
+            if (matchesGeoDistrict(geoKey, dbNorm)) {
+                total += Number(countsByNorm[dbNorm]) || 0;
             }
         });
         geoCountCache[geoKey] = total;
@@ -994,22 +1089,22 @@
 
     function primaryDistrictIdForGeo(rawGeoName) {
         const geoKey = keyName(rawGeoName);
-        const dbNames = Object.keys(districtNameToId || {});
-        for (let i = 0; i < dbNames.length; i++) {
-            const dk = keyName(dbNames[i]);
-            if (dk && geoKey && (dk === geoKey || dk.indexOf(geoKey) !== -1 || geoKey.indexOf(dk) !== -1)) return districtNameToId[dbNames[i]];
+        if (districtIdByNorm[geoKey]) return districtIdByNorm[geoKey];
+        const norms = Object.keys(districtIdByNorm || {});
+        for (let i = 0; i < norms.length; i++) {
+            if (matchesGeoDistrict(geoKey, norms[i])) return districtIdByNorm[norms[i]];
         }
         return null;
     }
 
     function resolveDbDistrictLabel(rawGeoName) {
         const geoKey = keyName(rawGeoName);
-        const matches = [];
-        Object.keys(districtCounts || {}).forEach(function (dbName) {
-            const dk = keyName(dbName);
-            if (dk && geoKey && (dk === geoKey || dk.indexOf(geoKey) !== -1 || geoKey.indexOf(dk) !== -1)) matches.push(cleanLabel(dbName));
-        });
-        if (matches.length === 1) return matches[0];
+        // If exact match exists, show the original DB district name casing where possible.
+        const dbNames = Object.keys(districtNameToId || {});
+        for (let i = 0; i < dbNames.length; i++) {
+            if (keyName(dbNames[i]) === geoKey) return cleanLabel(dbNames[i]);
+        }
+        // Otherwise, keep geo label (stable) rather than picking a possibly-wrong DB name.
         return cleanLabel(rawGeoName);
     }
 
@@ -1043,10 +1138,16 @@
 
         const dbProvince = resolveDbProvinceName(rawName);
         const displayLabel = dbProvince || cleanLabel(rawName);
+        const count = dbProvince ? (Number(provinceCounts[dbProvince]) || 0) : 0;
 
         const border = document.createElementNS(svgNS, 'path');
         border.setAttribute('d', pathD);
         border.setAttribute('class', 'district-map-province-border');
+        border.setAttribute('fill', 'none');
+        border.setAttribute('data-shape-kind', 'province');
+        border.setAttribute('data-db-province', dbProvince || '');
+        border.setAttribute('data-district-label', displayLabel);
+        border.setAttribute('data-count', String(count));
         borderLayer.appendChild(border);
 
         pathsForLabels.push({ pathEl: border, label: displayLabel, kind: 'province' });
@@ -1074,10 +1175,7 @@
             g.appendChild(districtLayer);
             g.appendChild(provinceBorderLayer);
 
-            const geoCounts = districtItems.map(function (it) { return countForGeo(it.name); });
-            const bands = computeHeatBandThresholds(geoCounts);
-            mapBandLowMax = bands.lowMax;
-            mapBandMediumMax = bands.mediumMax;
+            // Use backend-provided band thresholds (computed from the filtered dataset).
 
             districtItems.forEach(function (it) {
                 appendDistrictShape(it, districtLayer, svgNS);
@@ -1132,7 +1230,9 @@
                 let hovered = null;
                 svg.addEventListener('mousemove', function (event) {
                     const target = event.target;
-                    if (!(target instanceof SVGPathElement) || !target.classList.contains('district-map-shape')) {
+                    const isDistrict = (target instanceof SVGPathElement) && target.classList.contains('district-map-shape');
+                    const isProvince = (target instanceof SVGPathElement) && target.classList.contains('district-map-province-border');
+                    if (!isDistrict && !isProvince) {
                         if (hovered) hovered.classList.remove('is-hover');
                         hovered = null;
                         hideTooltip();
@@ -1140,7 +1240,7 @@
                     }
                     if (hovered && hovered !== target) hovered.classList.remove('is-hover');
                     hovered = target;
-                    hovered.classList.add('is-hover');
+                    if (isDistrict) hovered.classList.add('is-hover');
                     const lbl = target.getAttribute('data-district-label') || '';
                     const cnt = Number(target.getAttribute('data-count') || 0);
                     showTooltip(event.clientX, event.clientY, lbl, cnt);
