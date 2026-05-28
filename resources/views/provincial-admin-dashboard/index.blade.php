@@ -537,6 +537,56 @@ form.filters button {
     }
 }
 
+/* Small mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .menu-icon {
+        font-size: 24px;
+        padding: 6px 10px;
+    }
+    
+    .sidebar.open {
+        width: 220px;
+    }
+    
+    .metric-card {
+        padding: 10px;
+    }
+    
+    .metric-card .card-value {
+        font-size: 20px;
+    }
+    
+    .metric-card .card-title {
+        font-size: 12px;
+    }
+    
+    .dashboard-scroll {
+        padding: 0.75rem;
+    }
+    
+    .chart-container {
+        height: 200px !important;
+        padding: 5px;
+    }
+    
+    h1 {
+        font-size: 16px;
+    }
+    
+    .topbar {
+        padding: 0.5rem;
+    }
+    
+    .profile {
+        gap: 0.5rem;
+    }
+    
+    .profile-avatar {
+        width: 32px;
+        height: 32px;
+    }
+}
+
 .grid-two {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
