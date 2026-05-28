@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
+<div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <header
@@ -83,9 +83,9 @@
             </nav>
         </div>
     </div>
-    <div
-        style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: 100vh; padding: 120px 1.5rem 40px; position: relative;">
-        <div style="max-width: 1280px; margin: 0 auto; width: 100%;">
+    <main class="flex-1 w-full pt-[120px] pb-10">
+        <div class="max-w-[1280px] mx-auto px-6 sm:px-8">
+        <!-- ALL your page content here -->
 
             <h1 class="text-center text-[20px] sm:text-[22px] font-[700] uppercase text-black mb-2">
                 Report a Case
@@ -223,6 +223,7 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
                                 <input type="hidden" id="schoolName" wire:model.lazy="schoolName" name="schoolName"
                                     value="">
                                 <input type="hidden" id="schoolId" name="schoolId" value="">
+                                <input type="hidden" id="schoolProvince" wire:model.lazy="schoolProvince" name="schoolProvince">
 
                                 <div id="schoolDropdown"
                                     class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
@@ -257,7 +258,8 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
                         <div>
                             <label for="location" class="text-[12px] text-black">Address</label>
                             <input type="text" wire:model="location" id="location"
-                                class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 text-[14.8px] text-black">
+                                class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 text-[14.8px] text-black"
+                                placeholder="e.g. 123 street, Province">
                             @error('location')
                                 <p class="text-red-600 text-[12px]">{{ $message }}</p>
                             @enderror
@@ -443,11 +445,11 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
                 </form>
             </div>
         </div>
-    </div>
+</main>
 
     <!-- Footer -->
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 4rem;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
+    <footer class="w-full bg-[#808080] text-white py-6 mt-auto">
+        <div class="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6"
             style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
@@ -455,8 +457,7 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
             <div class="flex items-center gap-4 order-2">
                 <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">
                     <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon"
-                        style="width: 30px; height: 30px; left:1024.8; top: 701.8
-;">
+                        style="width: 30px; height: 30px; left:1024.8; top: 701.8;">
                 </a>
                 <a href="https://www.X.com/moepipublishing" target="_blank">
                     <img src="{{ asset('images/X.png') }}" alt="X Icon"
@@ -465,8 +466,7 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
 
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
                     <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon"
-                        style="width: 30px; height: 30px;left: 1128.6
-; top:701.1;">
+                        style="width: 30px; height: 30px;left: 1128.6; top:701.1;">
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
                     <img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon"
@@ -483,7 +483,7 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
             </div>
 
     </footer>
-
+</div>
     <script>
         // Mobile Menu Toggle Function (Needed since the button uses `onclick`)
         function toggleMobileMenu() {
@@ -627,11 +627,16 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
                 hiddenName.value = it.name;
                 hiddenId.value = it.id ?? '';
 
+                document.getElementById('schoolProvince').value = it.province ?? '';
+
                 // Dispatch an event to tell Livewire to update the 'schoolName' property
                 // This is essential for the wire:model.lazy="schoolName" binding to work with the selected value.
                 document.getElementById('schoolName').dispatchEvent(new Event('input', {
                     bubbles: true
                 }));
+
+                document.getElementById('schoolProvince').dispatchEvent(
+                new Event('input', { bubbles: true }));
 
                 clearSuggestions();
             }
@@ -803,4 +808,3 @@ $expiry = $latestReport->suspended_until ?? session('expiry_date');
         });
     </script>
 
-</div>

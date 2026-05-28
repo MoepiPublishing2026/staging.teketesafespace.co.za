@@ -41,6 +41,7 @@ class ReportForm extends Component
     public $location;
     public $grade;
     public $schoolName;
+    public $schoolProvince;
 
     public $schoolSearch = ''; 
     public $schoolSuggestions = [];
@@ -284,9 +285,30 @@ public function updatedGrade()
 }   
 
 
-public function submitReport()
-    {
- ini_set('max_execution_time', 500);
+public function submitReport(){
+  $this->validate([
+        'location' => 'required|string',
+    ]);
+
+    if ($this->schoolProvince) {
+
+        $address = strtolower($this->location);
+        $province = strtolower($this->schoolProvince);
+
+        if (!str_contains($address, $province)) {
+
+            $this->addError(
+                'location',
+                "The address must be in {$this->schoolProvince} because the selected school is located there."
+            );
+
+            return;
+        }
+    }
+
+
+
+        ini_set('max_execution_time', 500);
         if (isset($this->gradeAgeRanges[$this->grade])) {
     [$min, $max] = $this->gradeAgeRanges[$this->grade];
 
@@ -297,8 +319,6 @@ public function submitReport()
         return;
     }
 }
-
-
 
 
 $cleanEmail = trim(strtolower($this->reporterEmail));
