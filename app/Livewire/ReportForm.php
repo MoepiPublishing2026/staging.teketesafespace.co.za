@@ -41,12 +41,8 @@ class ReportForm extends Component
     public $location;
     public $grade;
     public $schoolName;
-<<<<<<< HEAD
-    public $schoolProvince;
-=======
     public $schoolId;
     public $schoolPhase;
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
 
     public $schoolSearch = ''; 
     public $schoolSuggestions = [];
@@ -343,42 +339,9 @@ protected array $phaseGrades = [
 }   
 
 
-<<<<<<< HEAD
-public function submitReport(){
-  $this->validate([
-        'location' => 'required|string',
-    ]);
-
-    if ($this->schoolProvince) {
-
-        $address = strtolower($this->location);
-        $province = strtolower($this->schoolProvince);
-
-        if (!str_contains($address, $province)) {
-
-            $this->addError(
-                'location',
-                "The address must be in {$this->schoolProvince} because the selected school is located there."
-            );
-
-            return;
-        }
-    }
-
-
-
-        ini_set('max_execution_time', 500);
-        if (isset($this->gradeAgeRanges[$this->grade])) {
-    [$min, $max] = $this->gradeAgeRanges[$this->grade];
-
-    if ($this->age < $min || $this->age > $max) {
-        $this->addError(    'age',
-    "Allowed age for {$this->grade} is {$min} & {$max}");
-=======
 public function submitReport()
     {
  ini_set('max_execution_time', 500);
->>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
 
  if (!empty($this->schoolPhase) && !empty($this->age)) {
     $applicableGrades = $this->getApplicableGradesProperty();
