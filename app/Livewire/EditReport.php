@@ -36,10 +36,12 @@ class EditReport extends Component
     public $fullName;
     public $age;
     public $isAnonymous;
+    public $schoolPhase;
 
-    public $schoolSearch = '';
+    public $schoolSearch = ''; 
     public $schoolSuggestions = [];
     public $showSchoolDropdown = false;
+    
     public $email = '';
     public $abuseTypes;
     public $standardSubtypes;
@@ -52,6 +54,7 @@ class EditReport extends Component
     public $newUploads = [];
     public $image = [];
 
+    // Updated Age ranges for grades - 5 grades per age range
     protected array $gradeAgeRanges = [
         'Creche'   => [0,  5],
         'Grade R'  => [4,  7],
@@ -69,6 +72,14 @@ class EditReport extends Component
         'Grade 12' => [16, 22],
     ];
 
+    protected array $phaseGrades = [
+        'PRIMARY SCHOOL' => ['Grade R', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7'],
+        'SECONDARY SCHOOL' => ['Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
+        'COMBINED SCHOOL' => ['Creche', 'Grade R', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
+        'INTERMEDIATE SCHOOL' => ['Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'],
+        'ECD' => ['Creche', 'Grade R'],
+    ];
+
     public function mount($caseNumber)
     {
         $this->caseNumber = $caseNumber;
@@ -83,6 +94,15 @@ class EditReport extends Component
         $this->grade = $this->report->grade;
         $this->schoolName = $this->report->school_name;
         $this->schoolSearch = $this->report->school_name;
+
+        // Try to find the school to set the phase
+        if ($this->schoolName) {
+            $school = \App\Models\School::where('school_name', $this->schoolName)->first();
+            if ($school) {
+                $this->schoolPhase = $school->phase_ped;
+            }
+        }
+
         $this->phoneNumber = $this->report->phone_number;
         $this->fullName = $this->report->full_name;
         $this->age = $this->report->age;
@@ -135,11 +155,51 @@ class EditReport extends Component
         if ($this->age === null || $this->age === '') return [];
         $age = (int) $this->age;
         $applicable = [];
+        
+        $phase = $this->schoolPhase;
+
+        // Fallback: If phase is empty but school name is provided, try to resolve it from the DB
+        if (empty($phase) && !empty($this->schoolName)) {
+            $school = \App\Models\School::where('school_name', $this->schoolName)->first();
+            if ($school) {
+                $this->schoolPhase = $school->phase_ped;
+                $phase = $this->schoolPhase;
+            }
+        }
+
+        $phase = !empty($phase) ? strtoupper(trim($phase)) : null;
+
         foreach ($this->gradeAgeRanges as $grade => [$min, $max]) {
-            if ($age >= $min && $age <= $max) $applicable[] = $grade;
+            if ($age >= $min && $age <= $max) {
+                 // Filter by school phase if it exists and is recognized
+                if ($phase && isset($this->phaseGrades[$phase])) {
+                    if (in_array($grade, $this->phaseGrades[$phase])) {
+                        $applicable[] = $grade;
+                    }
+                } else {
+                    $applicable[] = $grade;
+                }
+            }
         }
         return $applicable;
     }
+
+    /**
+     * Resolve school phase when school name is updated
+     */
+   public function updatedSchoolName($value)
+{
+    if (!empty($value)) {
+        $school = \App\Models\School::where('school_name', $value)->first();
+        if ($school) {
+            $this->schoolPhase = $school->phase_ped;
+        } else {
+            $this->schoolPhase = null; // reset if school not found
+        }
+        // Re-evaluate grade based on new phase
+        $this->updatedAge($this->age);
+    }
+}
 
    public function updatedAge($value)
 {
@@ -203,7 +263,7 @@ class EditReport extends Component
     {
         if (strlen($value) > 0) {
             $this->schoolSuggestions = \App\Models\School::where('school_name', 'LIKE', $value . '%')
-                ->orderBy('school_name')->limit(10)->pluck('school_name')->toArray();
+                ->orderBy('school_name')->limit(10)->get(['school_name', 'phase_ped'])->toArray();
             $this->showSchoolDropdown = count($this->schoolSuggestions) > 0;
         } else {
             $this->schoolSuggestions = [];
@@ -211,11 +271,14 @@ class EditReport extends Component
         }
     }
 
-    public function selectSchool($schoolName)
+    public function selectSchool($schoolName, $phase = null)
     {
         $this->schoolName = $schoolName;
         $this->schoolSearch = $schoolName;
+        $this->schoolPhase = $phase;
         $this->showSchoolDropdown = false;
+        
+        $this->updatedAge($this->age);
     }
 
     public function hideSchoolDropdown() { $this->showSchoolDropdown = false; }
@@ -233,6 +296,15 @@ class EditReport extends Component
 
     public function updateReport()
     {
+            // Block submission if age doesn't match school phase
+    if (!empty($this->schoolPhase) && $this->age !== null && $this->age !== '') {
+        $applicableGrades = $this->getApplicableGradesProperty();
+        if (empty($applicableGrades)) {
+            $this->addError('age', 'This age is not valid for the selected school type.');
+            return;
+        }
+    }
+
         if ($this->grade && $this->age !== null && $this->age !== '' && isset($this->gradeAgeRanges[$this->grade])) {
             [$min, $max] = $this->gradeAgeRanges[$this->grade];
             if ((int) $this->age < $min || (int) $this->age > $max) {

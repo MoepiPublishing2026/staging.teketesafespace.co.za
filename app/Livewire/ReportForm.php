@@ -41,11 +41,17 @@ class ReportForm extends Component
     public $location;
     public $grade;
     public $schoolName;
+<<<<<<< HEAD
     public $schoolProvince;
+=======
+    public $schoolId;
+    public $schoolPhase;
+>>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
 
     public $schoolSearch = ''; 
     public $schoolSuggestions = [];
     public $showSchoolDropdown = false;
+    public $latestReport;
     
      
    // Updated Age ranges for grades - 5 grades per age range
@@ -64,6 +70,14 @@ protected array $gradeAgeRanges = [
     'Grade 10' => [14, 18],
     'Grade 11' => [15, 19],
     'Grade 12' => [16, 22],
+];
+
+protected array $phaseGrades = [
+    'PRIMARY SCHOOL' => ['Grade R', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7'],
+    'SECONDARY SCHOOL' => ['Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
+    'COMBINED SCHOOL' => ['Creche', 'Grade R', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'],
+    'INTERMEDIATE SCHOOL' => ['Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9'],
+    'ECD' => ['Creche', 'Grade R'],
 ];
 
 
@@ -108,28 +122,43 @@ protected array $gradeAgeRanges = [
             $this->standardSubtypes = $allSubtypes->sortBy('sub_type_name');
         }
     }
-    // In app/Livewire/ReportForm.php
-
-    //<?php
-/**
- * Get grades applicable for the current age
- */
-public function getApplicableGradesProperty()
-{
-   // Use blank() to check for null/empty string, but it allows 0
-    if (blank($this->age)) {
-        return [];
-    }
-    $age = (int)$this->age;
-    $applicableGrades = [];
-    foreach ($this->gradeAgeRanges as $grade => $range) {
-        [$minAge, $maxAge] = $range;
-        if ($age >= $minAge && $age <= $maxAge) {
-            $applicableGrades[] = $grade;
+    public function getApplicableGradesProperty()
+    {
+        // Use blank() to check for null/empty string, but it allows 0
+        if (blank($this->age)) {
+            return [];
         }
+        $age = (int)$this->age;
+        $applicableGrades = [];
+
+        $phase = $this->schoolPhase;
+
+        // Fallback: If phase is empty but school name is provided, try to resolve it from the DB
+        if (empty($phase) && !empty($this->schoolName)) {
+            $school = School::where('school_name', $this->schoolName)->first();
+            if ($school) {
+                $this->schoolPhase = $school->phase_ped;
+                $phase = $this->schoolPhase;
+            }
+        }
+
+        $phase = !empty($phase) ? strtoupper(trim($phase)) : null;
+
+        foreach ($this->gradeAgeRanges as $grade => $range) {
+            [$minAge, $maxAge] = $range;
+            if ($age >= $minAge && $age <= $maxAge) {
+                // Filter by school phase if it exists and is recognized
+                if ($phase && isset($this->phaseGrades[$phase])) {
+                    if (in_array($grade, $this->phaseGrades[$phase])) {
+                        $applicableGrades[] = $grade;
+                    }
+                } else {
+                    $applicableGrades[] = $grade;
+                }
+            }
+        }
+        return $applicableGrades;
     }
-    return $applicableGrades;
-}
 
     public function updatedAbuseTypeID()
     {
@@ -137,42 +166,71 @@ public function getApplicableGradesProperty()
         $this->reset('subtypeID');
     }
 
-
-  //<?php
-/**
- * Reset grade when age changes to ensure valid grade selection
- */
-public function updatedAge($value)
+    /**
+     * Resolve school phase when school name is updated
+     */
+   public function updatedSchoolName($value)
 {
-   // Use blank() check - blank is true for null/empty string, but FALSE for 0.
-    // We only want to reset the grade if the age is truly empty.
-    if (blank($value)) {
-        $this->grade = '';
-        return;
-    }
-    $applicableGrades = $this->applicableGrades;
-
-   if (!empty($applicableGrades)) {
-        $this->resetErrorBag('age');
-
-        // Check if current grade is still valid for the new age
-        if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
-            // FORCE the selection to the first available grade
-            $this->grade = $applicableGrades[0];
+    if (!empty($value)) {
+        $school = \App\Models\School::where('school_name', $value)->first();
+        if ($school) {
+            $this->schoolPhase = $school->phase_ped;
+        } else {
+            $this->schoolPhase = null; // reset if school not found
         }
-    } else {
-        $this->grade = '';
-        $this->addError('age', 'No grade available for this age.');
-    }
-}
-
-
-public function updatedGrade()
-{
-   if (is_numeric($this->age)) {
+        // Re-evaluate grade based on new phase
         $this->updatedAge($this->age);
     }
 }
+
+    //<?php
+    /**
+     * Reset grade when age changes to ensure valid grade selection
+     */
+    public function updatedAge($value)
+    {
+        // Use blank() check - blank is true for null/empty string, but FALSE for 0.
+        // We only want to reset the grade if the age is truly empty.
+        if (blank($value)) {
+            $this->grade = '';
+            return;
+        }
+        $applicableGrades = $this->applicableGrades;
+
+        if (!empty($applicableGrades)) {
+            $this->resetErrorBag('age');
+
+            // Check if current grade is still valid for the new age
+            if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
+                // FORCE the selection to the first available grade
+                $this->grade = $applicableGrades[0];
+            }
+        } else {
+            $this->grade = '';
+            $this->addError('age', 'No grade available for this age.');
+        }
+    }
+
+
+    public function updatedSchoolPhase()
+    {
+        $applicableGrades = $this->applicableGrades;
+
+        if (!empty($applicableGrades)) {
+            if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
+                $this->grade = $applicableGrades[0];
+            }
+        } else {
+            $this->grade = '';
+        }
+    }
+
+    public function updatedGrade()
+    {
+        if (is_numeric($this->age)) {
+            $this->updatedAge($this->age);
+        }
+    }
 
     // ❌ The updatedReporterEmail method has been removed to stop live validation errors.
     // The cleaning logic is now only in submitReport().
@@ -285,6 +343,7 @@ public function updatedGrade()
 }   
 
 
+<<<<<<< HEAD
 public function submitReport(){
   $this->validate([
         'location' => 'required|string',
@@ -315,10 +374,36 @@ public function submitReport(){
     if ($this->age < $min || $this->age > $max) {
         $this->addError(    'age',
     "Allowed age for {$this->grade} is {$min} & {$max}");
+=======
+public function submitReport()
+    {
+ ini_set('max_execution_time', 500);
+>>>>>>> d386cc1540f57703fb8b5c4d2bd3ac6b07fff7d1
 
+ if (!empty($this->schoolPhase) && !empty($this->age)) {
+    $applicableGrades = $this->getApplicableGradesProperty();
+    if (empty($applicableGrades)) {
+        $this->addError('age', 'This age is not valid for the selected school type.');
         return;
     }
 }
+        if (isset($this->gradeAgeRanges[$this->grade])) {
+            [$min, $max] = $this->gradeAgeRanges[$this->grade];
+
+            if ($this->age < $min || $this->age > $max) {
+                $this->addError('age', "Allowed age for {$this->grade} is {$min} & {$max}");
+                return;
+            }
+
+            // Also validate grade against school phase on submission
+            $phase = !empty($this->schoolPhase) ? strtoupper(trim($this->schoolPhase)) : null;
+            if ($phase && isset($this->phaseGrades[$phase])) {
+                if (!in_array($this->grade, $this->phaseGrades[$phase])) {
+                    $this->addError('grade', "The selected grade is not applicable for a {$this->schoolPhase}.");
+                    return;
+                }
+            }
+        }
 
 
 $cleanEmail = trim(strtolower($this->reporterEmail));

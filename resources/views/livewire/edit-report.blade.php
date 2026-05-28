@@ -300,7 +300,7 @@
 
                             {{-- CHANGED: dynamic grade dropdown matching ReportForm exactly --}}
                              {{-- CHANGED: dynamic grade dropdown matching ReportForm exactly --}}
-                            <div  wire:key="grade-wrapper-{{ $age }}">
+                            <div wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
                                 <label for="grade" class="text-[11px] text-black">Grade <span
                                         class="text-red-500">*</span></label>
                                 <select wire:model.live="grade" id="grade"
@@ -354,15 +354,17 @@
 
                             <div class="relative">
                                 <label for="schoolSearch" class="text-[11px] text-black">Name of School</label>
-                                <input type="text" id="schoolSearch" placeholder="Start typing school name..."
-                                    value="{{ $schoolSearch }}"
-                                    class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black">
-                                <input type="hidden" id="schoolName" wire:model.live="schoolName"
-                                    name="schoolName">
-                                <input type="hidden" id="schoolId" name="schoolId" value="">
-                                <div id="schoolDropdown"
-                                    class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
-                                    style="display:none;"></div>
+                                <div wire:ignore>
+                                    <input type="text" id="schoolSearch" placeholder="Start typing school name..."
+                                        value="{{ $schoolSearch }}"
+                                        class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black">
+                                    <input type="hidden" id="schoolName" wire:model.live="schoolName"
+                                        name="schoolName">
+                                    <input type="hidden" id="schoolId" name="schoolId" value="">
+                                    <div id="schoolDropdown"
+                                        class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
+                                        style="display:none;"></div>
+                                </div>
                                 @error('schoolName')
                                     <p class="text-red-600 text-[12px]">{{ $message }}</p>
                                 @enderror
