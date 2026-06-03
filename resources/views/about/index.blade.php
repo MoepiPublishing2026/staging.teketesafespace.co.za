@@ -111,8 +111,8 @@
             @php
                 $issues = [
                     ['img' => 'Bullying.png', 'title' => 'Bullying'],
-['img' => 'Substance  Abuse.png', 'title' => 'Substance addiction'],
-['img' => 'Sexual Abuse.png', 'title' => 'Suspected sexual harassment'],
+['img' => 'Substance  Abuse.png', 'title' => 'Substance Addiction'],
+['img' => 'Sexual Abuse.png', 'title' => 'Suspected Sexual Harassment'],
                     ['img' => 'weapons.png', 'title' => 'Weapons'],
                     ['img' => 'pregnancy.png', 'title' => 'Teenage Pregnancy'],
                     ['img' => 'other issues.png', 'title' => 'Other Issues'],
