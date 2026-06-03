@@ -138,9 +138,14 @@
 
     <!-- ================= WHO WE SERVE ================= -->
     <section
-        class="bg-white w-full px-6 lg:px-20 pb-12 max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 items-start">
+        class="relative bg-white w-full px-6 lg:px-20 pb-12 max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 items-start">
 
-        <div class="pt-2">
+        <div class="hidden lg:block absolute -left-56 top-[100%] -translate-y-1/2 w-[450px] h-[400px] pointer-events-none z-0 opacity-40">
+    <img src="{{ asset('images/futuristic digital frame tech.png') }}" alt="Tech Frame Half"
+        class="w-full h-full object-contain object-left">
+</div>
+
+        <div class="pt-2 relative z-10">
             <h3 class="text-[#c7da30] text-[29.9px] font-bold mb-3">
                 Who we serve:
             </h3>
@@ -154,15 +159,10 @@
             </ul>
         </div>
 
-        <div class="flex justify-center md:justify-end">
+        <div class="flex justify-center md:justify-end relative z-10">
             <img src="{{ asset('images/Students holding phone.png') }}" class="w-[230px] h-auto rounded-lg shadow-md">
         </div>
     </section>
-
-    <div class="hidden lg:block absolute -left-48 top-[190%] -translate-y-1/2 w-[400px] h-[350px] overflow-hidden">
-        <img src="{{ asset('images/futuristic digital frame tech.png') }}" alt="Tech Frame Half"
-            class="w-full h-full object-cover object-left">
-    </div>
 
     <!-- ================= CORE VALUES ================= -->
     <section class="bg-white w-full px-6 lg:px-20 pt-4 pb-4">
