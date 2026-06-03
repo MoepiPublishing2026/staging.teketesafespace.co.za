@@ -105,13 +105,14 @@
 
                 <form wire:submit.prevent="updateReport" class="space-y-6">
 
-                    <!-- Abuse Type Selection -->
+                    <!-- Report Type Selection -->
+
                     <div>
-                        <label for="abuseTypeID" class="text-[11px] text-black">Abuse Type <span
+                        <label for="abuseTypeID" class="text-[11px] text-black">Report Type <span
                                 class="text-red-500">*</span></label>
                         <select wire:model.live="abuseTypeID" id="abuseTypeID"
                             class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black bg-white">
-                            <option value="">Select Abuse Type</option>
+                            <option value="">Select Report Type</option>
                             @foreach ($abuseTypes as $type)
                                 <option value="{{ $type->id }}">{{ $type->type_name }}</option>
                             @endforeach
