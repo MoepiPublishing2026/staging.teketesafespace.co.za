@@ -296,7 +296,7 @@
                 <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
             <div class="flex flex-wrap items-center gap-4">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank"><img src="{{ asset('images/youtube.png') }}" class="w-[30px]"></a>
+<a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" class="flex items-center justify-center"><img src="{{ asset('images/youtube.png') }}" class="w-[35px] h-[35px] object-contain"></a>
                 <a href="https://x.com/moepipublishing" target="_blank"><img src="{{ asset('images/X.png') }}" class="w-[30px]"></a>
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank"><img src="{{ asset('images/linkedIn.png') }}" class="w-[30px]"></a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank"><img src="{{ asset('images/facebook.png') }}" class="w-[35px]"></a>
