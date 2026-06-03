@@ -173,10 +173,10 @@
                                 </div>
                             </div>
 
-                            @if ($reportData['is_anonymous'])
-                                <p class="text-gray-700"><strong>Report Type:</strong> Anonymous</p>
+@if ($reportData['is_anonymous'])
+                                <p class="text-gray-700"><strong>Submission Type:</strong> Anonymous</p>
                             @else
-                                <p class="text-gray-700"><strong>Report Type:</strong> With Details</p>
+                                <p class="text-gray-700"><strong>Submission Type:</strong> With Details</p>
                                 @if (!empty($reportData['full_name']))
                                     <p class="text-gray-700"><strong>Full Name:</strong>
                                         {{ $reportData['full_name'] }}</p>
