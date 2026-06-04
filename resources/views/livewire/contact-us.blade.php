@@ -127,10 +127,11 @@
 
                 <!-- Sun graphic: top-right of the contact info block, mobile only -->
                 <img src="{{ asset('images/futuristic digital frame tech.png') }}"
-                    class="lg:hidden absolute top-0 right-0 w-[110px] h-auto pointer-events-none z-0 opacity-90">
+                    class="lg:hidden absolute top-[450px] right-[-150px] w-[250px] h-auto pointer-events-none z-0 opacity-90">
 
-                <h1 class="font-[Montserrat] font-bold text-[32px] sm:text-[50px] text-[#000000]">CONTACT US</h1>
+                <h1 class="font-[Montserrat] font-bold text-[40px] sm:text-[50px] text-[#000000]">CONTACT US</h1>
                 <div class="w-[200px] sm:w-[345px] h-[7px] bg-[#c7da30] mt-2 mb-8"></div>
+                <br>
 
                 <div class="flex items-center gap-4 mb-4">
                     <img src="{{ asset('images/phone icon.png') }}" class="w-[26px] h-[26px]">
@@ -147,6 +148,8 @@
                     <a href="mailto:sales@teketesafespace.co.za" class="text-[16px] sm:text-xl text-[#000000] hover:text-[#c7da30]">sales@teketesafespace.co.za</a>
                 </div>
 
+                <br>
+                <br>
                 <h2 class="font-[Montserrat] font-medium text-[18px] sm:text-[20px] text-[#000000] mb-4">
                     Download the Tekete SafeSpace App
                 </h2>
@@ -213,8 +216,9 @@
                 </div>
 
                 <!-- Mobile Phone image -->
-                <div class="lg:hidden flex justify-center mt-2 mb-2">
-                    <img src="{{ asset('images/social media phone1.png') }}" class="w-[360px] sm:w-[420px] h-auto">
+                <div class="lg:hidden flex mt-2 mb-2">
+                    <img src="{{ asset('images/social media phone1.png') }}" 
+                    class="relative left-0 top-[-100px] w-[320px] sm:w-[420px] h-auto">
                 </div>
 
                 <!-- ===== DESKTOP BUTTONS ===== -->
@@ -279,10 +283,10 @@
             </div>
 
             <!-- Desktop Graphics -->
-            <div class="hidden lg:block absolute right-0 top-10 z-10 pointer-events-none">
+            <div class="hidden lg:block absolute right-[-320px] top-20 z-10 pointer-events-none">
                 <img src="{{ asset('images/futuristic digital frame tech.png') }}" class="w-[400px] xl:w-[459px] h-auto">
             </div>
-            <div class="hidden lg:block absolute right-[320px] top-0 z-20 pointer-events-none">
+            <div class="hidden lg:block absolute right-[200px] -top-20 z-20 pointer-events-none">
                 <img src="{{ asset('images/social media phone1.png') }}" class="w-[400px] xl:w-[540px] h-auto">
             </div>
 

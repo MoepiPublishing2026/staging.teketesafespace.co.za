@@ -54,7 +54,7 @@
             <img src="{{ asset('images/back-pc.png') }}" alt="Students"
                 class="relative mx-auto mb-6 min-[520px]:mb-0 w-full max-w-[240px] sm:max-w-[300px] min-[520px]:max-w-[220px] md:max-w-[320px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[4vh] lg:right-[5vw] lg:h-[37vw] lg:w-[38vw] z-0 min-[520px]:col-start-2 min-[520px]:row-start-1 min-[520px]:row-span-2">
 
-            <div class="zoom-stabilize relative min-[520px]:justify-self-center w-full max-w-[300px] min-[520px]:max-w-[420px] md:max-w-[620px] mx-auto flex flex-col gap-3 min-[520px]:flex-row lg:flex-row min-[520px]:gap-2 md:gap-3 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[82vh] lg:right-[8vw] z-10 mb-8 min-[520px]:mb-0 lg:mb-0 min-[520px]:col-span-2 min-[520px]:row-start-3">
+            <div class="zoom-stabilize relative min-[520px]:justify-self-center w-full max-w-[300px] min-[520px]:max-w-[420px] md:max-w-[620px] mx-auto flex flex-col gap-3 min-[520px]:flex-row lg:flex-row min-[520px]:gap-2 md:gap-3 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[8vw] z-10 mb-8 min-[520px]:mb-0 lg:mb-0 min-[520px]:col-span-2 min-[520px]:row-start-3">
                 <button wire:click="redirectToReportAbuse"
                     class="zoom-stabilize w-full min-[520px]:w-[130px] md:w-[160px] lg:w-[10vw] h-[48px] min-[520px]:h-[28px] md:h-[48px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] min-[520px]:text-[10px] md:text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
                     Report Now
@@ -73,9 +73,9 @@
         </section>
 
         <footer class="custom-desktop-footer relative lg:absolute bottom-0 left-0 w-full bg-[#808080] text-white px-6 py-4 min-[520px]:px-3 min-[520px]:py-2 lg:pl-[2vw] lg:pr-[5vw] lg:py-[1.5vh] flex flex-col min-[520px]:flex-row justify-between items-center gap-4 min-[520px]:gap-2 lg:gap-0 z-30">
-            <p class="text-[13px] min-[520px]:text-[7px] lg:text-[0.9vw] text-center min-[520px]:text-left w-full min-[520px]:w-auto">
+           <p class="text-[13px] min-[520px]:text-[14px] lg:text-[16px] text-center min-[520px]:text-left w-full min-[520px]:w-auto">
                 &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
-            </p>
+           </p>
 
             <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
@@ -128,13 +128,15 @@
 
             @media (min-width: 1024px) {
                  #main-landing-container {
-        min-height: 100vh;
+                    min-height: 100vh;
                 }
 
                 .custom-desktop-footer {
                     position: absolute !important;
                     top: auto !important;
                     bottom: 0 !important;
+                    padding-top: 25px;
+                    padding-bottom: 25px;
                 }
                 
                 section {

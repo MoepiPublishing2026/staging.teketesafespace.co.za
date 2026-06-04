@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    {{-- ✅ FIX: changed min-height: 100vh to min-height: auto to remove the white gap above the footer --}}
+    <main class="flex-1">
     <div style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: auto; padding: 120px 1.5rem 40px; position: relative;">
         <div style="max-width: 1280px; margin: 0 auto; width: 100%;">
 
@@ -214,6 +214,7 @@
                                         title="The School Name can only contain letters, spaces, hyphens (-), apostrophes ('), commas (,), periods (.), and the ampersand (&amp;)."
                                         maxlength="100">
                                     <input type="hidden" id="schoolName" wire:model.lazy="schoolName" name="schoolName" value="">
+                                    <input type="hidden" id="schoolProvince" wire:model.lazy="schoolProvince">
                                     <input type="hidden" id="schoolId" name="schoolId" value="">
                                     <div id="schoolDropdown"
                                         class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
@@ -404,9 +405,11 @@
                 </form>
             </div>
         </div>
-</main>
+    </div>
+    </main
 
     <!-- Footer -->
+    
     <footer class="w-full bg-[#808080] text-white py-6 mt-auto">
         <div class="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6"
             style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
@@ -433,9 +436,9 @@
                     <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 30px; height: 30px;">
                 </a>
             </div>
-        </div> {{-- ✅ closing div for the flex container --}}
+        </div>
     </footer>
-</div>
+
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
@@ -551,7 +554,10 @@
                 input.value = it.name;
                 hiddenName.value = it.name;
                 hiddenId.value = it.id ?? '';
+                document.getElementById('schoolProvince').value = it.province ?? '';
+
                 document.getElementById('schoolName').dispatchEvent(new Event('input', { bubbles: true }));
+                document.getElementById('schoolProvince').dispatchEvent(new Event('input', { bubbles: true }));
                 clearSuggestions();
             }
 
