@@ -6,10 +6,10 @@
         <header class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[4vw] lg:pt-[1.5vh]">
             <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
             <div class="relative z-10 flex justify-between items-center w-full">
-                <nav class="hidden lg:flex gap-[2vw] lg:ml-[66vw]">
-                    <a href="{{ route('landing-page') }}" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">Home</a>
-                    <a href="{{ route('about-us') }}" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">About Us</a>
-                    <a href="{{ route('contact-us') }}" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">Contact Us</a>
+                 <nav class="hidden lg:flex gap-[2vw] lg:ml-[66vw]">
+                    <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
+                    <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
+                    <a href="{{ route('contact-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">Contact Us</a>
                 </nav>
 
                 <div class="lg:hidden ml-auto">
@@ -38,63 +38,63 @@
             </div>
         </header>
 
-        <section class="relative flex-grow w-full pt-[100px] pb-[40px] lg:py-0 lg:h-full flex flex-col justify-center lg:block px-6 lg:px-0 overflow-hidden">
+        <section class="relative flex-grow w-full pt-[50px] sm:pt-[50px] min-[520px]:pt-[50px] pb-6 min-[520px]:pb-8 lg:py-0 lg:h-full flex flex-col justify-start min-[520px]:grid min-[520px]:grid-cols-[minmax(260px,1fr)_minmax(180px,260px)] md:grid-cols-[minmax(360px,1fr)_minmax(240px,320px)] min-[520px]:items-center min-[520px]:gap-x-4 min-[520px]:gap-y-3 lg:block px-6 lg:px-0 overflow-hidden">
             
             <div class="circle-bg-line hidden lg:block absolute top-[-95vh] left-[-46vw] w-[100vw] h-[320vh] pointer-events-none z-50">
                 <img src="{{ asset('images/circle6.png') }}" alt="Circle Background" class="w-full h-full object-fill opacity-75 pointer-events-none">
             </div>
 
             <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo"
-                class="relative mb-6 max-w-[220px] lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh] lg:left-[0vw] w-[70vw] lg:w-[30vw] z-0">
+                class="relative mb-2 min-[520px]:mb-1 max-w-[220px] min-[520px]:max-w-[160px] md:max-w-[220px] lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh] lg:left-[0vw] w-[70vw] min-[520px]:col-start-1 min-[520px]:row-start-1 min-[520px]:self-end lg:w-[30vw] z-0">
 
-            <h1 class="relative mb-6 text-[#c7da30] font-bold leading-[0.95] text-[32px] sm:text-[40px] lg:absolute lg:mb-0 lg:top-[42vh] lg:left-[2vw] lg:text-[5vw] z-0">
+            <h1 class="relative mb-3 min-[520px]:mb-0 text-[#c7da30] font-bold leading-[0.95] text-[30px] sm:text-[38px] min-[520px]:text-[26px] md:text-[46px] lg:absolute lg:mb-0 lg:top-[42vh] lg:left-[2vw] lg:text-[5vw] z-0 min-[520px]:col-start-1 min-[520px]:row-start-2 min-[520px]:self-start">
                 Report Abuse<br>Safely and<br>Anonymously
             </h1>
 
             <img src="{{ asset('images/back-pc.png') }}" alt="Students"
-                class="relative mx-auto mb-6 w-full max-w-[280px] sm:max-w-[360px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[4vh] lg:right-[5vw] lg:h-[37vw] lg:w-[38vw] z-0">
+                class="relative mx-auto mb-6 min-[520px]:mb-0 w-full max-w-[240px] sm:max-w-[300px] min-[520px]:max-w-[220px] md:max-w-[320px] lg:max-w-none lg:absolute lg:mx-0 lg:mb-0 lg:top-[4vh] lg:right-[5vw] lg:h-[37vw] lg:w-[38vw] z-0 min-[520px]:col-start-2 min-[520px]:row-start-1 min-[520px]:row-span-2">
 
-            <div class="zoom-stabilize relative w-full max-w-[300px] sm:max-w-[400px] mx-auto flex flex-col gap-3 sm:flex-row lg:flex-row sm:gap-4 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[82vh] lg:right-[8vw] z-10 mb-8 lg:mb-0">
+            <div class="zoom-stabilize relative min-[520px]:justify-self-center w-full max-w-[300px] min-[520px]:max-w-[420px] md:max-w-[620px] mx-auto flex flex-col gap-3 min-[520px]:flex-row lg:flex-row min-[520px]:gap-2 md:gap-3 lg:gap-[1vw] lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[8vw] z-10 mb-8 min-[520px]:mb-0 lg:mb-0 min-[520px]:col-span-2 min-[520px]:row-start-3">
                 <button wire:click="redirectToReportAbuse"
-                    class="zoom-stabilize w-full sm:w-[160px] lg:w-[10vw] h-[52px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
+                    class="zoom-stabilize w-full min-[520px]:w-[130px] md:w-[160px] lg:w-[10vw] h-[48px] min-[520px]:h-[28px] md:h-[48px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] min-[520px]:text-[10px] md:text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
                     Report Now
                 </button>
 
                 <button wire:click="redirectToStatusCheck"
-                    class="zoom-stabilize w-full sm:w-[160px] lg:w-[10vw] h-[52px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
+                    class="zoom-stabilize w-full min-[520px]:w-[130px] md:w-[160px] lg:w-[10vw] h-[48px] min-[520px]:h-[28px] md:h-[48px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] min-[520px]:text-[10px] md:text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
                     Check Status
                 </button>
 
                 <button wire:click="redirectToAdminLogin"
-                    class="zoom-stabilize w-full sm:w-[160px] lg:w-[10vw] h-[52px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
+                    class="zoom-stabilize w-full min-[520px]:w-[130px] md:w-[160px] lg:w-[10vw] h-[48px] min-[520px]:h-[28px] md:h-[48px] lg:h-[3.4vw] border-2 lg:border-[0.27vw] border-[#c7da30] rounded-full text-[#38b6ff] font-semibold lg:font-medium text-[15px] min-[520px]:text-[10px] md:text-[15px] lg:text-[0.9vw] bg-white shadow-md hover:scale-105 transition-transform cursor-pointer">
                     Administrator
                 </button>
             </div>
         </section>
 
-        <footer class="custom-desktop-footer relative lg:absolute bottom-0 left-0 w-full bg-[#808080] text-white px-6 py-4 lg:pl-[2vw] lg:pr-[5vw] lg:py-[1.5vh] flex flex-col md:flex-row justify-between items-center gap-4 lg:gap-0 z-30">
-            <p class="text-[13px] lg:text-[0.9vw] text-center md:text-left w-full md:w-auto">
+        <footer class="custom-desktop-footer relative lg:absolute bottom-0 left-0 w-full bg-[#808080] text-white px-6 py-4 min-[520px]:px-3 min-[520px]:py-2 lg:pl-[2vw] lg:pr-[5vw] lg:py-[1.5vh] flex flex-col min-[520px]:flex-row justify-between items-center gap-4 min-[520px]:gap-2 lg:gap-0 z-30">
+           <p class="text-[13px] min-[520px]:text-[14px] lg:text-[16px] text-center min-[520px]:text-left w-full min-[520px]:w-auto">
                 &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
-            </p>
+           </p>
 
-            <div class="flex items-center justify-center flex-wrap gap-4 lg:gap-[1vw]">
+            <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/youtube.png') }}" class="w-9 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] hover:opacity-80 transition" alt="YouTube">
+                    <img src="{{ asset('images/youtube.png') }}" class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
                 </a>
                 <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 lg:w-[1.7vw] lg:h-auto min-w-[20px]">
+                    <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 lg:w-[1.7vw] lg:h-auto min-w-[20px]">
+                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 lg:w-[1.9vw] lg:h-auto min-w-[22px]">
+                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 lg:w-[1.9vw] lg:h-auto min-w-[22px]">
+                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 lg:w-[1.9vw] lg:h-auto min-w-[22px]">
+                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
             </div>
         </footer>
@@ -127,20 +127,20 @@
             }
 
             @media (min-width: 1024px) {
-                #main-landing-container {
-                    height: 100vh !important;
-                    min-height: 100vh !important;
-                    overflow-y: hidden !important;
+                 #main-landing-container {
+                    min-height: 100vh;
                 }
 
                 .custom-desktop-footer {
                     position: absolute !important;
                     top: auto !important;
                     bottom: 0 !important;
+                    padding-top: 25px;
+                    padding-bottom: 25px;
                 }
                 
                 section {
-                    height: calc(100vh - 60px) !important;
+                     min-height: calc(100vh - 60px);
                 }
             }
 

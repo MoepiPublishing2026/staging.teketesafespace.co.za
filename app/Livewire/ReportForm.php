@@ -39,6 +39,7 @@ class ReportForm extends Component
     public $fullName;
     public $age;
     public $location;
+    public $schoolProvince;
     public $grade;
     public $schoolName;
     public $schoolId;
