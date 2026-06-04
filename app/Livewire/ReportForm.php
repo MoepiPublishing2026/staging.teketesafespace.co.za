@@ -341,28 +341,8 @@ protected array $phaseGrades = [
 
 
 public function submitReport()
-{
+    {
  ini_set('max_execution_time', 500);
-
-   $this->validate([
-        'location' => 'required|string',
-    ]);
-
-    if ($this->schoolProvince) {
-
-        $address = strtolower($this->location);
-        $province = strtolower($this->schoolProvince);
-
-        if (!str_contains($address, $province)) {
-
-            $this->addError(
-                'location',
-                "The address must be in {$this->schoolProvince} because the selected school is located there."
-            );
-
-            return;
-        }
-    }
 
  if (!empty($this->schoolPhase) && !empty($this->age)) {
     $applicableGrades = $this->getApplicableGradesProperty();

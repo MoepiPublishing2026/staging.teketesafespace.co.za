@@ -554,10 +554,7 @@
                 input.value = it.name;
                 hiddenName.value = it.name;
                 hiddenId.value = it.id ?? '';
-                document.getElementById('schoolProvince').value = it.province ?? '';
-
                 document.getElementById('schoolName').dispatchEvent(new Event('input', { bubbles: true }));
-                document.getElementById('schoolProvince').dispatchEvent(new Event('input', { bubbles: true }));
                 clearSuggestions();
             }
 
