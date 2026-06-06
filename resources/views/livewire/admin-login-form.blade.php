@@ -183,34 +183,34 @@
                     <div>
                         <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
                     </div>
-                    <div class="flex items-center gap-4 order-2">
-                 <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">
-                 <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px; left:1024.8; top: 701.8
-;">   
-</a>
-                 <a href="https://www.X.com/moepipublishing" target="_blank">
-               <img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;left:1024.8 ; top:701.8; ">
-                 </a>
-               
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" >
-               <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;left: 1128.6
-; top:701.1;">
-                </a>
-               <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-               <img src="{{ asset('images/facebook.png') }}" 
-               alt="Facebook Icon" 
-               style="width: 35.2px; height: 30px;left: 1179.7;top: 701.1;">
-            </a>
-               
-               <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                <img src="{{ asset('images/instagram.png') }}" 
-                alt="Instagram Icon" 
-                style="width: 35.2px; height: 30px; left: 1225.7px; top: 701.1px;">
-               </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-               <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 35.2px; height: 30px;left:1271.7 ;top:700.1;"></a>
-            </div>
-                    
+                    <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
+                        <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
+                            <img src="{{ asset('images/youtube.png') }}"
+                                 class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition"
+                                 alt="YouTube">
+                        </a>
+                        <a href="https://www.X.com/moepipublishing" target="_blank">
+                            <img src="{{ asset('images/X.png') }}" alt="X"
+                                 class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
+                        </a>
+                        <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
+                            <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn"
+                                 class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
+                        </a>
+                        <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
+                            <img src="{{ asset('images/facebook.png') }}" alt="Facebook"
+                                 class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                        </a>
+                        <a href="https://www.instagram.com/moepipublishing" target="_blank">
+                            <img src="{{ asset('images/instagram.png') }}" alt="Instagram"
+                                 class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                        </a>
+                        <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
+                            <img src="{{ asset('images/tiktok.png') }}" alt="TikTok"
+                                 class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                        </a>
+                    </div>
+            
             </footer>
 
 </div>
