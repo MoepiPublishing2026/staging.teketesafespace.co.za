@@ -185,7 +185,7 @@
 
                             <p class="text-gray-700"><strong>Submitted on:</strong>
                                 {{ \Carbon\Carbon::parse($reportData['created_at'])->format('Y/m/d') }}</p>
-                            <p class="text-gray-700"><strong>Abuse Type:</strong>
+<p class="text-gray-700"><strong>Report Type:</strong>
                                 {{ $reportData['abuse_type'] ?? '' }}</p>
                             <p class="text-gray-700"><strong>Subtype:</strong> {{ $reportData['subtype'] ?? '' }}</p>
 
