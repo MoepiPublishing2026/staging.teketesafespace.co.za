@@ -294,8 +294,10 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="w-full bg-[#808080] text-white py-6 mt-12">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 max-w-[1280px] mx-auto text-[14px] sm:text-[16px]">
+<footer class="w-full bg-[#808080] text-white py-6 mt-12">
+
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-[14px] sm:text-[16px]"
+    style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
             <div>
                 <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>

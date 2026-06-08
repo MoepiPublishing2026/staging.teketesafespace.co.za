@@ -2,9 +2,9 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <header
-        style="position: fixed; top: 0; left: 0; width: 100vw; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-        <div class="flex flex-row justify-between items-center px-8 py-2" style="max-width: 1280px; margin: 0 auto;">
-            <div>
+       style="position: fixed; top: 0; left: 0; width: 100vw; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+    <div class="flex flex-row justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+        <div>
                 <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
             </div>
             <div class="flex gap-8" style="font-family: 'Montserrat', sans-serif; font-size: 17px; color: black;">
@@ -410,8 +410,8 @@
 
     <!-- Footer -->
     <footer class="w-full bg-[#808080] text-white py-6 mt-auto">
-        <div class="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6"
-            style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+       <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 lg:px-8 w-full"
+     style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>

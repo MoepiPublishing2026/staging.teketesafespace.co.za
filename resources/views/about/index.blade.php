@@ -13,31 +13,30 @@
 
 <body class="bg-white text-gray-800 font-[Montserrat] overflow-x-hidden">
 
-  <!-- ================= MOBILE NAVBAR ================= -->
-<header class="md:hidden fixed top-0 left-0 w-full bg-white z-50 px-6 h-16 flex items-center"
+ <!-- ================= HEADER ================= -->
+<header class="fixed top-0 left-0 w-full bg-white z-50"
     style="box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-    <div class="flex justify-between items-center max-w-[1280px] mx-auto w-full">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[135px] h-auto flex-shrink-0">
-        <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
-    </div>
-</header>
-
-<!-- ================= DESKTOP NAVBAR ================= -->
-<header class="hidden md:block fixed top-0 left-0 w-full bg-white z-50"
-    style="box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-    <div class="flex flex-row justify-between items-center px-8 py-2 max-w-[1280px] mx-auto">
+    <div class="flex flex-row justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
         <div>
             <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
         </div>
-        <nav class="flex gap-8 text-[17px] text-black font-['Montserrat']">
-            <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
-            <a href="{{ route('about-us') }}" class="font-bold">About Us</a>
-            <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
-        </nav>
+        <div class="flex items-center gap-8">
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex gap-8 text-[17px] text-black font-['Montserrat']">
+                <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
+                <a href="{{ route('about-us') }}" class="font-bold">About Us</a>
+                <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
 </header>
 
@@ -213,10 +212,11 @@
     <!-- ================= FOOTER ================= -->
     <footer class="w-full bg-[#808080] text-white py-6 mt-12">
         <div
-            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 max-w-[1280px] mx-auto text-[14px] sm:text-[16px]">
-            <div>
-                <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
-            </div>
+            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-[14px] sm:text-[16px]"
+style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+    <div>
+        <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+    </div>
             <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
                     <img src="{{ asset('images/youtube.png') }}" class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
