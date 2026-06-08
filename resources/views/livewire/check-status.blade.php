@@ -4,7 +4,7 @@
 
     <!-- ================= HEADER ================= -->
     <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
-        <div class="flex justify-between items-center px-4 sm:px-8 py-2 max-w-7xl mx-auto">
+        <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
             <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
 
             <div class="flex items-center gap-4">
@@ -357,9 +357,10 @@
 
 <!-- ================= FOOTER ================= -->
 <footer class="bg-[#808080] text-white py-6 sm:py-8 mt-8 sm:mt-12">
-    <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm sm:text-base font-[Montserrat]">
-        <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+   <div
+    class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm sm:text-base font-[Montserrat]"
+    style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+    <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
 
         <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
             <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
