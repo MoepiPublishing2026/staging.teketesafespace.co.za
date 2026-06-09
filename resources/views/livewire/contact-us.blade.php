@@ -1,4 +1,4 @@
-<div class="contact-page-livewire-container overflow-x-hidden w-full">
+<div class="contact-page-livewire-container overflow-x-hidden w-full min-h-screen flex flex-col">
 
     <style>
         .store-btn {
@@ -75,52 +75,55 @@
         .store-btn-lg .store-text .bottom-line { font-size: 14px; }
     </style>
 
-    <!-- Mobile Fixed Navbar -->
-    <header class="md:hidden fixed top-0 left-0 w-full bg-white z-50 shadow-sm px-6 h-16 flex items-center font-[Montserrat]">
-        <div class="flex justify-between items-center max-w-[1280px] mx-auto w-full">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[100px] h-auto flex-shrink-0">
-            <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-        </div>
-    </header>
+    <!-- Header -->
+<header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm font-[Montserrat]">
+    <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
 
-    <!-- Desktop Navbar -->
-    <div class="hidden md:flex md:items-center md:justify-between px-6 lg:px-20 py-4 bg-white font-[Montserrat]">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[150px] h-auto">
-        <div class="flex gap-8 text-[17px] font-[Montserrat] text-black ml-auto">
-            <a href="{{ url('/') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
-            <a href="{{ url('/about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
-            <a href="{{ url('/contact-us') }}" class="font-bold text-black">Contact Us</a>
-        </div>
-    </div>
+        <div class="flex items-center gap-8">
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
+                <a href="{{ url('/') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
+                <a href="{{ url('/about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
+                <a href="{{ url('/contact-us') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
+            </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="fixed inset-0 z-[60] hidden md:hidden">
-        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
-        <div id="mobile-menu-slide"
-            class="absolute top-0 right-0 h-full w-64 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out">
-            <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                <img src="{{ asset('images/logo.png') }}" class="h-8 w-auto">
-                <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded-full transition">
-                    <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <!-- Mobile Hamburger -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
             </div>
-            <nav class="mt-8 px-6 space-y-4 pb-8 text-[17px] font-[Montserrat]">
-                <a href="{{ url('/') }}" class="block py-3 text-black border-b border-gray-100">Home</a>
-                <a href="{{ url('/about-us') }}" class="block py-3 text-black border-b border-gray-100">About Us</a>
-                <a href="{{ url('/contact-us') }}" class="block py-3 font-bold text-black border-b border-gray-100">Contact Us</a>
-            </nav>
         </div>
     </div>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-0 z-[60] hidden md:hidden">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+    <div id="mobile-menu-slide"
+        class="absolute top-0 right-0 h-full w-64 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex justify-between items-center p-4 border-b">
+            <img src="{{ asset('images/logo.png') }}" class="h-8 w-auto">
+            <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded-full transition">
+                <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav class="mt-8 px-4 text-[17px] font-[Montserrat]">
+            <a href="{{ url('/') }}" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Home</a>
+            <a href="{{ url('/about-us') }}" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">About Us</a>
+            <a href="{{ url('/contact-us') }}" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Contact Us</a>
+        </nav>
+    </div>
+</div>
 
     <!-- PAGE CONTENT -->
-    <section class="pt-24 md:pt-12 pb-10 px-4 sm:px-10 lg:px-16 relative">
-        <div class="relative max-w-[1280px] mx-auto min-h-[700px]">
+<section class="pt-24 md:pt-20 pb-10 px-4 sm:px-10 lg:px-16 relative flex-1">      
+      <div class="relative max-w-[1280px] mx-auto min-h-[700px]">
 
             <!-- LEFT CONTENT — relative so sun can be absolute inside -->
             <div class="relative z-20 max-w-[500px]">
@@ -294,18 +297,32 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="w-full bg-[#808080] text-white py-6 mt-12">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6 max-w-[1280px] mx-auto text-[14px] sm:text-[16px]">
+<footer class="w-full bg-[#808080] text-white py-6 mt-12">
+
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-[14px] sm:text-[16px]"
+    style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
             <div>
                 <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
-            <div class="flex flex-wrap items-center gap-4">
-<a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" class="flex items-center justify-center"><img src="{{ asset('images/youtube.png') }}" class="w-[35px] h-[35px] object-contain"></a>
-                <a href="https://x.com/moepipublishing" target="_blank"><img src="{{ asset('images/X.png') }}" class="w-[30px]"></a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank"><img src="{{ asset('images/linkedIn.png') }}" class="w-[30px]"></a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank"><img src="{{ asset('images/facebook.png') }}" class="w-[35px]"></a>
-                <a href="https://www.instagram.com/moepipublishing" target="_blank"><img src="{{ asset('images/instagram.png') }}" class="w-[35px]"></a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank"><img src="{{ asset('images/tiktok.png') }}" class="w-[35px]"></a>
+            <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
+<a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
+                    <img src="{{ asset('images/youtube.png') }}" class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
+                </a>
+                <a href="https://www.X.com/moepipublishing" target="_blank">
+                    <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
+                </a>
+                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
+                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
+                </a>
+                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
+                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                </a>
+                <a href="https://www.instagram.com/moepipublishing" target="_blank">
+                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                </a>
+                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
+                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                </a>
             </div>
         </div>
     </footer>

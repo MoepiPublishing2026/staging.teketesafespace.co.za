@@ -2,9 +2,9 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <header
-        style="position: fixed; top: 0; left: 0; width: 100vw; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-        <div class="flex flex-row justify-between items-center px-8 py-2" style="max-width: 1280px; margin: 0 auto;">
-            <div>
+       style="position: fixed; top: 0; left: 0; width: 100vw; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+    <div class="flex flex-row justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+        <div>
                 <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
             </div>
             <div class="flex gap-8" style="font-family: 'Montserrat', sans-serif; font-size: 17px; color: black;">
@@ -409,35 +409,42 @@
     </main
 
     <!-- Footer -->
-    
     <footer class="w-full bg-[#808080] text-white py-6 mt-auto">
-        <div class="max-w-[1280px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6"
-            style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+       <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 lg:px-8 w-full"
+     style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
-            <div class="flex items-center gap-4 order-2">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
-                    <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px;">
+            <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
+                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
+                    <img src="{{ asset('images/youtube.png') }}"
+                        class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition"
+                        alt="YouTube">
                 </a>
                 <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;">
+                    <img src="{{ asset('images/X.png') }}" alt="X"
+                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;">
+                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn"
+                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon" style="width: 30px; height: 30px;">
+                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook"
+                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon" style="width: 30px; height: 30px;">
+                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram"
+                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 30px; height: 30px;">
+                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok"
+                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
             </div>
         </div>
     </footer>
+
 
     <script>
         function toggleMobileMenu() {

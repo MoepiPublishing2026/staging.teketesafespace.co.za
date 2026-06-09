@@ -40,7 +40,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-    ],
+    
+    // NEW NEWSLETTER GUARD (Must be INSIDE the guards array bracket!)
+        'newsletter' => [
+            'driver' => 'session',
+            'provider' => 'newsletter_admins',
+        ],
+    ], // The guards array ends here safely
 
     /*
     |--------------------------------------------------------------------------
@@ -69,7 +75,13 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+    
+    // NEW NEWSLETTER PROVIDER
+    'newsletter_admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\NewsletterAdmin::class,
     ],
+],
 
     /*
     |--------------------------------------------------------------------------

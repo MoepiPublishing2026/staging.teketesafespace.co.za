@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
+<script src="https://cdn.tailwindcss.com"></script>    <style>
         /* Apply Montserrat font globally */
         body {
             font-family: 'Montserrat', sans-serif;
@@ -38,7 +37,7 @@
 <!-- Header -->
 <header
     style="position: fixed; top: 0; left: 0; width: 100%; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-    <div class="flex flex-row justify-between items-center px-8 py-2" style="max-width: 1280px; margin: 0 auto;">
+    <div class="flex flex-row justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
         <!-- Logo -->
         <div>
             <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 110px; height: auto;">
@@ -168,36 +167,38 @@
 
     <!-- Footer (UNCHANGED) -->
     <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 4rem;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
-            style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+         <div class="flex flex-col md:flex-row justify-between items-center gap-6"
+    style="width: 100%; padding-left: 2vw; padding-right: 2vw; font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
-            <div class="flex items-center gap-4 order-2">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
-                    <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon"
-                        style="width: 30px; height: 30px;">
-                </a>
-                <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;">
-                </a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon"
-                        style="width: 30px; height: 30px;">
-                </a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon"
-                        style="width: 35.2px; height: 30px;">
-                </a>
-                <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon"
-                        style="width: 35.2px; height: 30px;">
-                </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon"
-                        style="width: 35.2px; height: 30px;">
-                </a>
-            </div>
+            <div class="flex items-center justify-center flex-wrap gap-4 lg:gap-[1vw]">
+    <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
+        <img src="{{ asset('images/youtube.png') }}"
+            class="w-9 h-auto lg:w-[2.3vw] lg:h-auto hover:opacity-80 transition"
+            alt="YouTube">
+    </a>
+    <a href="https://www.X.com/moepipublishing" target="_blank">
+        <img src="{{ asset('images/X.png') }}" alt="X"
+            class="w-7 h-7 lg:w-[1.7vw] lg:h-auto">
+    </a>
+    <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
+        <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn"
+            class="w-7 h-7 lg:w-[1.7vw] lg:h-auto">
+    </a>
+    <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
+        <img src="{{ asset('images/facebook.png') }}" alt="Facebook"
+            class="w-7 h-7 lg:w-[1.9vw] lg:h-auto">
+    </a>
+    <a href="https://www.instagram.com/moepipublishing" target="_blank">
+        <img src="{{ asset('images/instagram.png') }}" alt="Instagram"
+            class="w-7 h-7 lg:w-[1.9vw] lg:h-auto">
+    </a>
+    <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
+        <img src="{{ asset('images/tiktok.png') }}" alt="TikTok"
+            class="w-7 h-7 lg:w-[1.9vw] lg:h-auto">
+    </a>
+</div>
         </div>
     </footer>
 </body>

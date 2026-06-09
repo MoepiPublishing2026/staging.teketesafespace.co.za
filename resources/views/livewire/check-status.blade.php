@@ -4,7 +4,7 @@
 
     <!-- ================= HEADER ================= -->
     <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
-        <div class="flex justify-between items-center px-4 sm:px-8 py-2 max-w-7xl mx-auto">
+        <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
             <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
 
             <div class="flex items-center gap-4">
@@ -185,7 +185,7 @@
 
                             <p class="text-gray-700"><strong>Submitted on:</strong>
                                 {{ \Carbon\Carbon::parse($reportData['created_at'])->format('Y/m/d') }}</p>
-                            <p class="text-gray-700"><strong>Abuse Type:</strong>
+<p class="text-gray-700"><strong>Report Type:</strong>
                                 {{ $reportData['abuse_type'] ?? '' }}</p>
                             <p class="text-gray-700"><strong>Subtype:</strong> {{ $reportData['subtype'] ?? '' }}</p>
 
@@ -357,36 +357,38 @@
 
 <!-- ================= FOOTER ================= -->
 <footer class="bg-[#808080] text-white py-6 sm:py-8 mt-8 sm:mt-12">
-    <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm sm:text-base font-[Montserrat]">
-        <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+   <div
+    class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm sm:text-base font-[Montserrat]"
+    style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+    <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
 
-        <div class="flex items-center gap-3 sm:gap-4 flex-wrap justify-center md:justify-end">
+        <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
             <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
                 <img src="{{ asset('images/youtube.png') }}"
-                    class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="YouTube">
+                    class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
             </a>
-            <a href="https://x.com/moepipublishing" target="_blank" rel="noopener">
-                <img src="{{ asset('images/X.png') }}" class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition"
-                    alt="X">
+            <a href="https://www.X.com/moepipublishing" target="_blank">
+                <img src="{{ asset('images/X.png') }}" alt="X"
+                    class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
             </a>
-            <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" rel="noopener">
-                <img src="{{ asset('images/linkedIn.png') }}"
-                    class="w-7 h-7 sm:w-8 sm:h-8 hover:opacity-80 transition" alt="LinkedIn">
+            <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
+                <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn"
+                    class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
             </a>
-            <a href="https://www.facebook.com/MoepiPublishing" target="_blank" rel="noopener">
-                <img src="{{ asset('images/facebook.png') }}"
-                    class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Facebook">
+            <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
+                <img src="{{ asset('images/facebook.png') }}" alt="Facebook"
+                    class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
             </a>
-            <a href="https://www.instagram.com/moepipublishing" target="_blank" rel="noopener">
-                <img src="{{ asset('images/instagram.png') }}"
-                    class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Instagram">
+            <a href="https://www.instagram.com/moepipublishing" target="_blank">
+                <img src="{{ asset('images/instagram.png') }}" alt="Instagram"
+                    class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
             </a>
-            <a href="https://www.tiktok.com/@moepipublishing" target="_blank" rel="noopener">
-                <img src="{{ asset('images/tiktok.png') }}" class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition"
-                    alt="TikTok">
+            <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
+                <img src="{{ asset('images/tiktok.png') }}" alt="TikTok"
+                    class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
             </a>
         </div>
+
     </div>
 </footer>
 

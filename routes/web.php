@@ -11,6 +11,8 @@ use App\Livewire\PasswordlessLogin;
 use App\Livewire\AdminHome;
 use App\Livewire\CheckStatus;
 use App\Livewire\EditReport;
+use App\Livewire\NewsIndex;
+use App\Livewire\NewsFeed;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NationalAdminDashboardController;
@@ -163,8 +165,27 @@ Route::middleware(['auth', 'role:district'])->group(function () {
     // New Contact Us Route
 });
 
+// ==========================================
+// PUBLIC NEWSLETTER MANAGEMENT (TOTAL SEPARATE TABLE ADMIN)
+// ==========================================
+Route::get('/newsletter-manager/login', [App\Http\Controllers\NewsletterController::class, 'showLogin'])->name('newsletter.login');
+Route::post('/newsletter-manager/login', [App\Http\Controllers\NewsletterController::class, 'handleLogin'])->name('newsletter.login.submit');
+
+// Changed from 'auth' to 'auth:newsletter'
+Route::middleware(['auth:newsletter'])->prefix('admin/newsletter')->name('admin.newsletter.')->group(function () {
+    Route::get('/create', [App\Http\Controllers\NewsletterController::class, 'create'])->name('create');
+    Route::post('/store', [App\Http\Controllers\NewsletterController::class, 'store'])->name('store');
+});
+
 // ABOUT US PAGE
 Route::view('/about-us', 'about.index')->name('about-us');
+// LIVEWIRE NEWS PAGE
+Route::get('/news', NewsIndex::class)->name('news');
+
+
+Route::get('/news-feed', '\App\Livewire\NewsFeed')->name('news.feed');
+
+
 
 
 // // Subscription Card Page

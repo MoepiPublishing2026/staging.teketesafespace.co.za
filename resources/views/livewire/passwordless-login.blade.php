@@ -50,47 +50,66 @@
 
     <!-- Header -->
     <header
-        style="position: fixed; top: 0; left: 0; width: 100%; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-        <div class="flex flex-row justify-between items-center px-4 sm:px-8 py-2"
-            style="max-width: 1280px; margin: 0 auto;">
-            <!-- Logo -->
-            <div>
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
-            </div>
+    class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
 
-            <!-- Top Right Links (Desktop Only) -->
-            <div class="hidden md:flex gap-8"
-                style="font-family: 'Montserrat', sans-serif; font-size: 17px; color: black;">
-                <a href="javascript:void(0);" onclick="window.location.href = document.referrer;"
-                    class="transition-colors hover:!text-[#c7da30]" style="color: black; text-decoration: none;">
+    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
+
+        <!-- Logo -->
+        <div>
+            <img src="{{ asset('images/logo.png') }}"
+                alt="Safe Space Logo"
+                class="w-[143px] h-auto flex-shrink-0">
+        </div>
+
+        <!-- Top Right Links -->
+        <div class="flex items-center gap-4">
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-10"
+                style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+
+                <a href="javascript:void(0);"
+                    onclick="window.history.back();"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
                     Back
                 </a>
-                <a href="{{ route('landing-page') }}" class="transition-colors hover:!text-[#c7da30]"
-                    style="color: black; text-decoration: none;">
+
+                <a href="{{ route('landing-page') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
                 </a>
-                <a href="{{ route('about-us') }}#about" class="transition-colors hover:!text-[#c7da30]"
-                    style="color: black; text-decoration: none;">
+
+                <a href="{{ route('about-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
-                <a href="{{ route('contact-us') }}#section" class="transition-colors hover:!text-[#c7da30]"
-                    style="color: black; text-decoration: none;">
+
+                <a href="{{ route('contact-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
                     Contact Us
                 </a>
+
             </div>
 
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
-                <button id="mobile-menu-button" onclick="toggleMobileMenu()"
+                <button id="mobile-menu-button"
                     class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
+
                 </button>
             </div>
+
         </div>
-    </header>
+
+    </div>
+</header>
 
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu" class="fixed inset-0 z-50 hidden md:hidden">
@@ -188,39 +207,30 @@
 
     <!-- Footer -->
     <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 1.5rem;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
-            style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 lg:px-8 w-full"
+     style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
             <div class="flex items-center gap-4 order-2">
-                <a href=" https://www.youtube.com/@matauramapuputla6836"target="_blank">
-                    <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon"
-                        style="width: 30px; height: 30px; left:1024.8; top: 701.8
-;">
+                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
+                    <img src="{{ asset('images/youtube.png') }}" class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
                 </a>
                 <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X Icon"
-                        style="width: 30px; height: 30px;left:1024.8 ; top:701.8; ">
+                    <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
                 </a>
-
                 <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon"
-                        style="width: 30px; height: 30px;left: 1128.6
-; top:701.1;">
+                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon"
-                        style="width: 35.2px; height: 30px;left: 1179.7;top: 701.1;">
+                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
-
                 <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon"
-                        style="width: 35.2px; height: 30px; left: 1225.7px; top: 701.1px;">
+                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
                 </a>
                 <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon"
-                        style="width: 35.2px; height: 30px;left:1271.7 ;top:700.1;"></a>
+                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
+                </a>
             </div>
 
     </footer>
