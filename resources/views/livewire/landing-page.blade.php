@@ -3,40 +3,45 @@
     <div id="main-landing-container" x-data="{ menuOpen: false }"
         class="relative w-screen min-h-screen bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
 
-        <header class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[4vw] lg:pt-[1.5vh]">
-            <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
-            <div class="relative z-10 flex justify-between items-center w-full">
-                 <nav class="hidden lg:flex gap-[2vw] lg:ml-[66vw]">
-                    <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
-                    <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
-                    <a href="{{ route('contact-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">Contact Us</a>
-                </nav>
+       <header class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[4vw] lg:pt-[1.5vh]">
+    <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
+    
+    <div class="relative z-10 flex justify-end items-center w-full">
 
-                <div class="lg:hidden ml-auto">
-                    <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-black">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5m-16.5 6.5h16.5m-16.5 6.5h16.5" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+        <nav class="hidden lg:flex items-center gap-[2vw] font-medium" style="font-family: 'Montserrat', sans-serif;"> 
+            <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30] whitespace-nowrap">Home</a>
+            <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30] whitespace-nowrap">About Us</a>
+            <a href="{{ route('contact-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30] whitespace-nowrap">Contact Us</a>
+            <a href="{{ route('news') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30] whitespace-nowrap">News</a>
+        </nav>
 
-            <div x-show="menuOpen"
-                x-transition
-                @click.away="menuOpen = false"
-                class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg flex flex-col items-start p-6 z-50 lg:hidden">
+        <div class="lg:hidden">
+            <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50 block p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-black">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5m-16.5 6.5h16.5m-16.5 6.5h16.5" />
+                </svg>
+            </button>
+        </div>
+    </div>
 
-                <button @click="menuOpen = !menuOpen" class="self-end mb-4 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-black">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+    <div x-show="menuOpen"
+        x-transition
+        @click.away="menuOpen = false"
+        class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg flex flex-col items-start p-6 z-50 lg:hidden"
+        x-cloak>
 
-                <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="text-black text-[17px] hover:text-[#c7da30] transition-colors">Contact Us</a>
-            </div>
-        </header>
+        <button @click="menuOpen = !menuOpen" class="self-end mb-4 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-black">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
+        <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
+        <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Contact Us</a>
+        <a href="{{ route('news') }}"  @click="menuOpen = false" class="text-black text-[17px] hover:text-[#c7da30] transition-colors">News</a>
+    </div>
+</header>
 
         <section class="relative flex-grow w-full pt-[50px] sm:pt-[50px] min-[520px]:pt-[50px] pb-6 min-[520px]:pb-8 lg:py-0 lg:h-full flex flex-col justify-start min-[520px]:grid min-[520px]:grid-cols-[minmax(260px,1fr)_minmax(180px,260px)] md:grid-cols-[minmax(360px,1fr)_minmax(240px,320px)] min-[520px]:items-center min-[520px]:gap-x-4 min-[520px]:gap-y-3 lg:block px-6 lg:px-0 overflow-hidden">
             
