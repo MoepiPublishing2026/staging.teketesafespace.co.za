@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Report;
 use App\Models\Province;
@@ -116,9 +117,9 @@ class ReportController extends Controller
         }
         
         // Anonymous filter — use has() not filled() because '0' is falsy
-        if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
-            $query->where('is_anonymous', (int)$request->input('is_anonymous'));
-        }
+        //if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
+            //$query->where('is_anonymous', (int)$request->input('is_anonymous'));
+        //}
 
 
         // Date range (new field names: date_from/date_to — kept alongside old from_date/to_date)

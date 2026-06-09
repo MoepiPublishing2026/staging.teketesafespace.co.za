@@ -513,10 +513,19 @@ function openReportModal(reportId) {
                 const ext = filePath.split('.').pop().toLowerCase();
                 const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
                 let elem;
-                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
+               if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
                     elem = document.createElement('img');
-                    elem.src = publicUrl; elem.alt = 'Attachment';
-                    Object.assign(elem.style, { width:'80px', height:'80px', marginRight:'10px', border:'2px solid #c7da30', borderRadius:'8px', objectFit:'cover' });
+                    elem.src = publicUrl;
+                    elem.alt = 'Attachment';
+                    Object.assign(elem.style, {
+                        width:'80px', height:'80px', marginRight:'10px',
+                        border:'2px solid #c7da30', borderRadius:'8px',
+                        objectFit:'cover', cursor:'zoom-in'
+                    });
+                    elem.onclick = function(e) {
+                        e.stopPropagation();
+                        openLightbox(this.src);
+                    };
                 } else if (['mp4','mov','avi','wmv'].includes(ext)) {
                     elem = document.createElement('video');
                     elem.controls = true;
@@ -549,13 +558,20 @@ function closeReportModal() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key !== 'Escape') return;
-  const sb = document.querySelector('.sidebar');
-  if (sb && sb.classList.contains('open')) {
-    if (typeof toggleSidebar === 'function') toggleSidebar();
-    return;
-  }
-  closeReportModal();
+    if (e.key !== 'Escape') return;
+    
+    // Close lightbox first if open
+    if (document.getElementById('lightbox').style.display === 'flex') {
+        closeLightbox();
+        return;
+    }
+
+    const sb = document.querySelector('.sidebar');
+    if (sb && sb.classList.contains('open')) {
+        if (typeof toggleSidebar === 'function') toggleSidebar();
+        return;
+    }
+    closeReportModal();
 });
 </script>
 
@@ -934,6 +950,26 @@ function filterSubtypes() {
     filterSubtypes();
 });
 
+function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    const lb = document.getElementById('lightbox');
+    lb.style.display = 'flex';
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    lb.style.display = 'none';
+    document.getElementById('lightboxImg').src = '';
+}
+
 </script>
+
+    <div id="lightbox" onclick="closeLightbox()"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85);
+                z-index:9999; align-items:center; justify-content:center; cursor:zoom-out;">
+        <img id="lightboxImg" src="" alt="Full size attachment"
+            style="max-height:90vh; max-width:90vw; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+    </div>
+
 </body>
 </html>
