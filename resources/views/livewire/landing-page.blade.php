@@ -2,7 +2,6 @@
 
     <div id="main-landing-container" x-data="{ menuOpen: false }"
         class="relative w-screen min-h-screen bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
-
        <header class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[4vw] lg:pt-[1.5vh]">
     <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
     
@@ -49,10 +48,22 @@
                 <img src="{{ asset('images/circle6.png') }}" alt="Circle Background" class="w-full h-full object-fill opacity-75 pointer-events-none">
             </div>
 
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo"
-                class="relative mb-2 min-[520px]:mb-1 max-w-[220px] min-[520px]:max-w-[160px] md:max-w-[220px] lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh] lg:left-[0vw] w-[70vw] min-[520px]:col-start-1 min-[520px]:row-start-1 min-[520px]:self-end lg:w-[30vw] z-0">
+           <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo"
+                class="hidden lg:block relative mb-2 min-[520px]:mb-1 max-w-[220px]
+                min-[520px]:max-w-[160px] md:max-w-[220px]
+                lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh]
+                lg:left-[0vw] lg:w-[30vw] z-0">
 
-            <h1 class="relative mb-3 min-[520px]:mb-0 text-[#c7da30] font-bold leading-[0.95] text-[30px] sm:text-[38px] min-[520px]:text-[26px] md:text-[46px] lg:absolute lg:mb-0 lg:top-[42vh] lg:left-[2vw] lg:text-[5vw] z-0 min-[520px]:col-start-1 min-[520px]:row-start-2 min-[520px]:self-start">
+            <h1 class="relative mt-8 sm:mt-15 min-[520px]:mt-0
+                mb-3 min-[520px]:mb-0
+                text-[#c7da30] font-bold leading-[0.95]
+                text-[30px] sm:text-[38px]
+                min-[520px]:text-[26px] md:text-[46px]
+                lg:absolute lg:mb-0 lg:top-[42vh]
+                lg:left-[2vw] lg:text-[5vw] z-0
+                min-[520px]:col-start-1
+                min-[520px]:row-start-2
+                min-[520px]:self-start">
                 Report Abuse<br>Safely and<br>Anonymously
             </h1>
 
