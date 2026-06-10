@@ -6,13 +6,21 @@
         <header class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[4vw] lg:pt-[1.5vh]">
             <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
             <div class="relative z-10 flex justify-between items-center w-full">
-                 <nav class="hidden lg:flex gap-[2vw] lg:ml-[66vw]">
+
+                <!-- Logo -->
+                <a href="{{ route('landing-page') }}" class="lg:hidden">
+                    <img src="{{ asset('images/logo.png') }}"
+                        alt="Safe Space Logo"
+                        class="w-[140px] sm:w-[160px] md:w-[180px]">
+                </a>
+
+                <nav class="hidden lg:flex gap-[2vw] lg:ml-[66vw]">
                     <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
                     <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
                     <a href="{{ route('contact-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">Contact Us</a>
                 </nav>
 
-                <div class="lg:hidden ml-auto">
+                <div class="lg:hidden ml-auto -mt-8">
                     <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-black">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5m-16.5 6.5h16.5m-16.5 6.5h16.5" />
@@ -24,14 +32,19 @@
             <div x-show="menuOpen"
                 x-transition
                 @click.away="menuOpen = false"
-                class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg flex flex-col items-start p-6 z-50 lg:hidden">
+                class="fixed top-0 right-0 w-64 h-full bg-white shadow-lg flex flex-col items-start p-3 z-50 lg:hidden">
 
-                <button @click="menuOpen = !menuOpen" class="self-end mb-4 focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-black">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <div class="flex items-center justify-between w-full mb-4">
+    
+                    <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
 
+                    <button @click="menuOpen = !menuOpen" class="focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-black">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                </div>
                 <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
                 <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="text-black text-[17px] hover:text-[#c7da30] transition-colors">Contact Us</a>
@@ -44,10 +57,22 @@
                 <img src="{{ asset('images/circle6.png') }}" alt="Circle Background" class="w-full h-full object-fill opacity-75 pointer-events-none">
             </div>
 
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo"
-                class="relative mb-2 min-[520px]:mb-1 max-w-[220px] min-[520px]:max-w-[160px] md:max-w-[220px] lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh] lg:left-[0vw] w-[70vw] min-[520px]:col-start-1 min-[520px]:row-start-1 min-[520px]:self-end lg:w-[30vw] z-0">
+           <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo"
+                class="hidden lg:block relative mb-2 min-[520px]:mb-1 max-w-[220px]
+                min-[520px]:max-w-[160px] md:max-w-[220px]
+                lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh]
+                lg:left-[0vw] lg:w-[30vw] z-0">
 
-            <h1 class="relative mb-3 min-[520px]:mb-0 text-[#c7da30] font-bold leading-[0.95] text-[30px] sm:text-[38px] min-[520px]:text-[26px] md:text-[46px] lg:absolute lg:mb-0 lg:top-[42vh] lg:left-[2vw] lg:text-[5vw] z-0 min-[520px]:col-start-1 min-[520px]:row-start-2 min-[520px]:self-start">
+            <h1 class="relative mt-8 sm:mt-15 min-[520px]:mt-0
+                mb-3 min-[520px]:mb-0
+                text-[#c7da30] font-bold leading-[0.95]
+                text-[30px] sm:text-[38px]
+                min-[520px]:text-[26px] md:text-[46px]
+                lg:absolute lg:mb-0 lg:top-[42vh]
+                lg:left-[2vw] lg:text-[5vw] z-0
+                min-[520px]:col-start-1
+                min-[520px]:row-start-2
+                min-[520px]:self-start">
                 Report Abuse<br>Safely and<br>Anonymously
             </h1>
 
