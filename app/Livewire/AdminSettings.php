@@ -16,6 +16,7 @@ class AdminSettings extends Component
     public $name;
     public $email;
     public $phone;
+    public $Full_name;
     public $phone_number;
     public $profile_picture;
     public $current_password;
@@ -47,7 +48,7 @@ class AdminSettings extends Component
         $user = Auth::user()->fresh();
         $this->name = $user->name;
         $this->email = $user->email;
-        $this->phone = $user->phone;
+        $this->Full_name = $user->name;
         $this->phone_number = $user->phone_number;
     }
 
@@ -66,6 +67,7 @@ public function updateSettings()
     $this->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email,' . $user->id,
+        'Full_name' => 'required|string|max:255',
         'phone_number' => [
             'nullable',
             'string',
@@ -94,6 +96,10 @@ public function updateSettings()
             $user->phone_number = $cleanedPhone;
             $updated = true;
         }
+    }
+    if ($this->Full_name !== $user->name) {
+        $user->name = $this->Full_name;
+        $updated = true;
     }
 
     // Profile picture upload
