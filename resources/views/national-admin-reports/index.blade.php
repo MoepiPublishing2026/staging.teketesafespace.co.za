@@ -61,6 +61,56 @@ thead { background: #bbc93dff; color: black; text-transform: uppercase; letter-s
 th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--lime); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 tbody tr:hover { background: rgba(199,218,48,0.15); cursor: pointer; transition: background-color 0.3s ease; }
 tbody tr:last-child td { border-bottom: none; }
+
+/* ── Status Badge Styling ── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.status-awaiting-resolution {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.status-under-review {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.status-forwarded {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.status-closed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.status-unresolved {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.status-false-report {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+    border: 1px solid #e9d5ff;
+}
+
 .pagination { display: flex; justify-content: center; margin-top: 1rem; }
 .page-link { border: 1px solid #cddc39; color: black; border-radius: 50%; width: 35px; height: 35px; text-align: center; line-height: 32px; margin: 0 4px; transition: all 0.3s ease; display: inline-block; text-decoration: none; }
 .page-link:hover { background: #cddc39; color: white; }
@@ -420,7 +470,11 @@ tbody tr:last-child td { border-bottom: none; }
                             <td>{{ $report->school->school_name ?? $report->school_name ?? 'N/A' }}</td>
                             <td>{{ $report->grade ?? 'N/A' }}</td>
                             <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
-                            <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
+                            <td style="text-align: center;">
+                                <span class="status-badge status-{{ str_replace('_', '-', $report->status) }}">
+                                    {{ ucfirst(str_replace('-', ' ', $report->status)) }}
+                                </span>
+                            </td>
                             <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
                             <td>{{ $report->created_at->format('Y-m-d') }}</td>
                         </tr>
@@ -561,7 +615,7 @@ document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     
     // Close lightbox first if open
-    if (document.getElementById('lightbox').style.display === 'flex') {
+    if (document.getElementById('lightbox') && document.getElementById('lightbox').style.display === 'flex') {
         closeLightbox();
         return;
     }
