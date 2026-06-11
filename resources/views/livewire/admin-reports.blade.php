@@ -243,7 +243,7 @@
                 <div>
                     <label class="filter-label">Anonymous</label>
                     <select class="filter-input" wire:model.live="filterAnonymous">
-                        <option value="">All Reports</option>
+                        <option value="">All</option>
                         <option value="1">Anonymous</option>
                         <option value="0">Identified</option>
                     </select>
