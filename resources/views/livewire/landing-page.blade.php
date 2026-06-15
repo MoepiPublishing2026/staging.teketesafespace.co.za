@@ -17,7 +17,7 @@
                 <nav class="hidden lg:flex items-center gap-[2vw] font-medium" style="font-family: 'Montserrat', sans-serif;">                    
                     <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
                     <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
-                    <a href="http://bookingstaging.teketesafespace.co.za/" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
+                    <a href="http://bookingstaging.teketesafespace.co.za/" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">
 
                             Workshops
                     </a> 
