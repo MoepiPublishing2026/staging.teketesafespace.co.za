@@ -304,8 +304,8 @@
         .heatmap-table th, .heatmap-table td { border: 1px solid #111827; padding: 0.5rem 0.65rem; text-align: center; }
         .heatmap-corner { background: #d1d5db; font-weight: 700; text-align: left !important; min-width: 140px; }
         .heatmap-col { background: #d1d5db; font-weight: 700; white-space: nowrap; min-width: 90px; }
-        .heatmap-row { background: #d1d5db; font-weight: 600; text-align: left !important; padding-left: 0.75rem; min-width: 140px; }
-        .heatmap-cell { font-weight: 600; cursor: pointer; min-width: 50px; position: relative; }
+        .heatmap-row { background: #fff; font-weight: 600; text-align: left !important; padding-left: 0.75rem; min-width: 140px; }
+        .heatmap-cell {font-weight: 600; cursor: pointer; min-width: 50px; position: relative;color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.25);}
         .heatmap-cell.heatmap-cell-dark { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
         .heatmap-cell:hover { outline: 2px solid #38b6ff; z-index: 2; }
         .heatmap-cell.heat-band-0 { background-color: #d1cb23; }
@@ -909,9 +909,9 @@
             .trim();
     }
 
-    const HEAT_LOW = '#b2cd16';
-    const HEAT_MEDIUM = '#fbbf0f';
-    const HEAT_HIGH = '#ed1c24';
+    const HEAT_LOW = '#c9cf23';
+    const HEAT_MEDIUM = '#ffc107';
+    const HEAT_HIGH = '#ff1a1a';
 
     function computeHeatBandThresholds(counts) {
         const positive = (counts || []).map(function (c) { return Number(c) || 0; })

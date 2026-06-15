@@ -62,9 +62,7 @@
             <div style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                 
                 <div class="hidden md:flex gap-8">
-                    <a href="javascript:void(0);" onclick="window.history.back();" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">
-                        Back
-                    </a>
+                    
                     <a href="{{ route('landing-page') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">
                         Home
                     </a>
@@ -74,6 +72,9 @@
                     <a href="{{ route('contact-us') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">
                         Contact Us
                     </a>
+                      <a href="{{ route('news') }}" class="transition-colors hover:text-[#c7da30]"style="color: black; text-decoration: none;">News</a>
+
+
                 </div>
 
               <div class="md:hidden flex items-center relative z-[160]">
@@ -102,6 +103,8 @@
                     <a href="{{ route('landing-page') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none;">Home</a>
                     <a href="{{ route('about-us') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none;">About Us</a>
                     <a href="{{ route('contact-us') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none;">Contact Us</a>
+                   <a href="{{ route('news') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none">News</a>
+
                 </nav>
             </div>
 

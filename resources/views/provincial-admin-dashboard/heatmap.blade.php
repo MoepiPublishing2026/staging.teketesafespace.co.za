@@ -3,1133 +3,966 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Tekete SafeSpace Provincial Dashboard</title>
+    <title>Tekete SafeSpace – Heat-Map</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
-
+ 
     <style>
-       :root {
-   --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
-   --theme-dark: #0c8cb3ff;
-   --red: #ed1c24;
-   --yellow: #fbbf0f;
-   --blue: #3b82f6;
-   --orange: #f97316;
-   --gray: #2a2e32;
-   --green: #d1cb23;
-   --bg: white;
-   --text: #253f58ff;
-   --sidebar-bg: white;
-   --sidebar-hover: var(--theme-gradient);
-   --sidebar-active: linear-gradient(to right, #38b6ff, #38b6ff);
-   --sidebar-border: #c7da30;
-}
-
-* { box-sizing: border-box; }
-html { overflow-x: hidden; }
-html, body {
-  font-family: 'Montserrat', sans-serif !important;
-  color: #545454 !important;
-}
-body {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-    min-width: 0;
-    overflow-x: hidden;
-    overflow-y: hidden;
-}
-
-.sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-}
-.sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
-.sidebar-logo img { width: 115px; height: auto; display: block; }
-.sidebar-list { list-style: none; padding: 0 0 0 22px; }
-.sidebar-link {
-    display: block;
-    width: 92%;
-    font-size: 15px !important;
-    font-weight: 900 !important;
-    color: #545454 !important;
-    font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-.sidebar-link:hover, .sidebar-link.active {
-    background: var(--theme-gradient);
-    color: #000;
-}
-
-button {
- background-color: white !important;
-  color: #38b6ff !important;
-  border: 2px solid #c7da30 !important;
-  font-weight: 900 !important;
-  font-family: 'Montserrat', sans-serif !important;
-  padding: 0.75rem 1rem !important;
-  border-radius: 0.5rem !important;
-  cursor: pointer !important;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-button:hover, button:focus {
-  background-color: #c7da30 !important;
-  color: white !important;
-  border-color: #38b6ff !important;
-  outline: none;
-}
-button:hover, .sidebar-link:hover, .sidebar-link.active {
-  color: #fff !important;
-  background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
-}
-
-.topbar {
-    width: 100%;
-    background: white;
-    border-bottom: 1px solid white;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 1rem 2.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    min-height: 64px;
-}
-.profile { display: flex; align-items: center; gap: 0.8rem; }
-.profile-avatar {
-    width: 42px; height: 42px; border-radius: 50%; background: #ececec;
-    overflow: hidden; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 1px 6px rgba(51,51,63,0.08);
-}
-.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile .meta { text-align: right; }
-.profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
-.profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-.profile .meta .role { font-weight: 400; color: #333030ff; font-size: 0.9rem; }
-
-.main-panel {
-    flex: 1 1 0;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 100vh;
-    height: auto;
-    background: white;
-    overflow-x: hidden;
-}
-.dashboard-scroll {
-    flex: 1 1 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 2.5rem;
-    max-width: 1280px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-h1 {
-    margin: 0 0 0.5rem;
-    font-weight: 900 !important;
-    font-size: 32px !important;
-    font-family: 'Montserrat', sans-serif !important;
-    letter-spacing: 0.03em;
-    text-transform: uppercase !important;
-    color: #545454 !important;
-    text-align: center;
-}
-h2 {
-  color: #38b6ff !important;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
-  margin: 0 0 1rem;
-}
-.subtitle { margin-bottom: 2rem; color: #5f6b7b; text-align: center; }
-.panel { background: white; border-radius: 1rem; padding: 0; max-width: 100%; }
-.panel + .panel { margin-top: 1.8rem; }
-
-.filter-panel {
-  background: #fff;
-  border-radius: 10px;
-  padding: 1.25rem;
-  width: 100%;
-  border: 2px solid #c7da30;
-  margin-bottom: 1.8rem;
-}
-.filter-panel hr { border: none; border-top: 1px solid #eaeaea; margin: 0.75rem 0 1rem; }
-.filters { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
-.filters select, .filters input[type="date"] {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px; font-weight: 600;
-  padding: 0.5rem 0.65rem;
-  border: 1px solid #111827; border-radius: 6px;
-  background: #fff; color: #111827; min-width: 140px;
-}
-.filters label { display: flex; flex-direction: column; gap: 0.25rem; font-size: 12px; font-weight: 700; color: #4b5563; }
-.filter-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-.filter-chips span {
-  background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px;
-  padding: 0.35rem 0.75rem; font-size: 12px; font-weight: 700; color: #374151;
-}
-.filter-clear { font-size: 12px; font-weight: 700; color: #38b6ff; text-decoration: none; margin-left: auto; }
-.filter-clear:hover { text-decoration: underline; }
-
-.heatmap-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.8rem;
-}
-.heatmap-summary-card {
-  background: #fff;
-  border: 2px solid #c7da30;
-  border-radius: 10px;
-  padding: 1rem 1.15rem;
-}
-.heatmap-summary-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; margin-bottom: 0.35rem; }
-.heatmap-summary-card .value { font-size: 26px; font-weight: 900; color: #111827; line-height: 1.1; }
-.heatmap-total-row th, .heatmap-total-row td { background: #e5e7eb; font-weight: 800; }
-
-.menu-icon {
-    display: none;
-    position: fixed;
-    top: 12px; left: 12px;
-    width: 44px; height: 44px;
-    padding: 0;
-    border: 2px solid #e5e7eb;
-    background: white !important;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    cursor: pointer;
-    z-index: 1001;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: #38b6ff !important;
-}
-.menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
-.sidebar-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.3); z-index: 999;
-    opacity: 0; transition: opacity 0.2s ease;
-}
-.sidebar-overlay.active { display: block; opacity: 1; }
-@media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
-
-.heatmap-panel {
-  background: #fff;
-  border-radius: 10px;
-  padding: 1.25rem;
-  overflow-x: auto;
-  width: 100%;
-  border: 2px solid #c7da30;
-  margin-bottom: 2rem;
-}
-.heatmap-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-.heatmap-view-toggle { display: flex; gap: 0.5rem; }
-.heatmap-view-toggle button {
-  padding: 0.35rem 0.75rem;
-  border: 2px solid #c7da30;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 900;
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
-  background: #fff;
-  color: #545454;
-}
-.heatmap-view-toggle button:hover { background: #c7da30; color: #fff; }
-.heatmap-view-toggle button.active { background: #c7da30; color: #fff; }
-.heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.heatmap-table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
-.heatmap-table th, .heatmap-table td { border: 1px solid #111827; padding: 0.5rem 0.65rem; text-align: center; }
-.heatmap-corner { background: #d1d5db; font-weight: 700; text-align: left !important; min-width: 140px; }
-.heatmap-col { background: #d1d5db; font-weight: 700; white-space: nowrap; min-width: 90px; }
-.heatmap-row { background: #d1d5db; font-weight: 600; text-align: left !important; padding-left: 0.75rem; min-width: 140px; }
-.heatmap-cell { font-weight: 600; cursor: pointer; min-width: 50px; position: relative; }
-.heatmap-cell.heatmap-cell-dark { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
-.heatmap-cell:hover { outline: 2px solid #38b6ff; z-index: 2; }
-.heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
-.heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
-.heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%); border: 1px solid #111827; }
-
-.map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
-.district-map-container {
-  height: 520px;
-  width: 100%;
-  max-width: 100%;
-  min-height: 320px;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  position: relative;
-  background: #f6f7f2;
-}
-.district-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; z-index: 1; }
-.district-map-shape { stroke: rgba(255,255,255,0.9); stroke-width: 1.2; transition: stroke 0.15s ease, stroke-width 0.15s ease, filter 0.15s ease; }
-.district-map-shape.is-hover,
-.district-map-shape.is-key-hover { stroke: #111827; stroke-width: 2.2; }
-.district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 3; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
-.heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
-.map-label-layer { pointer-events: none; user-select: none; }
-.map-label-layer text {
-  font-family: 'Montserrat', system-ui, sans-serif; font-weight: 900;
-  paint-order: stroke fill; stroke: #fff; stroke-width: 0.45px; stroke-linejoin: round;
-  fill: #1f2937;
-}
-.district-map-status {
-  position: absolute; inset: 0;
-  display: grid; place-items: center;
-  font-weight: 800; color: #4b5563;
-  background: rgba(246, 247, 242, 0.65);
-  z-index: 5;
-}
-.district-map-tooltip {
-  position: absolute; left: 0; top: 0;
-  transform: translate(-9999px, -9999px);
-  background: rgba(255,255,255,0.98);
-  border: 1px solid rgba(17,24,39,0.2);
-  border-radius: 10px;
-  padding: 8px 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  font-size: 12px;
-  color: #111827;
-  pointer-events: none;
-  z-index: 25;
-  max-width: 260px;
-  line-height: 1.2;
-}
-.district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
-.district-map-tooltip .tt-sub { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
-.district-map-key {
-  position: absolute; top: 12px; left: 12px; z-index: 20;
-  background: rgba(255,255,255,0.96);
-  border: 1px solid rgba(17,24,39,0.2);
-  border-radius: 10px;
-  padding: 10px 10px 8px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  max-height: calc(100% - 24px);
-  overflow: auto;
-  min-width: 210px;
-}
-.district-map-key-title {
-  font-weight: 900;
-  font-size: 11px;
-  color: #111827;
-  margin-bottom: 6px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-.district-map-key-title .map-key-meta { font-weight: 700; color: #6b7280; text-transform: none; letter-spacing: 0; }
-.map-key-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-.map-key-search {
-  width: 100%;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 5px 8px;
-  border: 1px solid rgba(17,24,39,0.25);
-  border-radius: 6px;
-  background: #fff;
-}
-.map-key-sort { display: flex; gap: 4px; }
-.map-key-sort-btn {
-  flex: 1;
-  padding: 4px 6px !important;
-  font-size: 10px !important;
-  border-radius: 5px !important;
-  min-height: 0 !important;
-}
-.map-key-sort-btn.active { background: #c7da30 !important; color: #fff !important; }
-.district-map-key-rows { max-height: 340px; overflow-y: auto; }
-.district-map-key-row.is-zero .district-map-key-name { color: #9ca3af; }
-.district-map-key-row.is-zero .district-map-key-count { color: #9ca3af; font-weight: 700; }
-.district-map-key-row {
-  display: grid;
-  grid-template-columns: 14px 1fr auto;
-  gap: 8px;
-  align-items: center;
-  font-size: 11px;
-  color: #111827;
-  padding: 4px 0;
-  border-top: 1px solid rgba(17,24,39,0.08);
-  cursor: pointer;
-  user-select: none;
-}
-.district-map-key-row:first-of-type { border-top: none; }
-.district-map-key-row:hover { background: rgba(56,182,255,0.10); border-radius: 6px; }
-.district-map-key-swatch { width: 14px; height: 10px; border: 1px solid rgba(17,24,39,0.35); border-radius: 3px; }
-.district-map-key-name { font-weight: 800; color: #111827; }
-.district-map-key-count { font-weight: 900; color: #4b5563; white-space: nowrap; }
-.map-legend {
-  position: absolute;
-  bottom: 18px;
-  right: 18px;
-  z-index: 20;
-  background: rgba(255,255,255,0.96);
-  padding: 10px 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-  font-size: 12px;
-  font-family: 'Montserrat', sans-serif;
-}
-.map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
-.map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-.map-legend-swatch.none { background: #d1cb23; opacity: 0.85; }
-.map-legend-swatch.low { background: #d1cb23; }
-.map-legend-swatch.medium { background: #fbbf0f; }
-.map-legend-swatch.high { background: #ed1c24; }
-
-@media (max-width: 900px) {
-    .menu-icon { display: flex !important; }
-    .sidebar {
-        position: fixed; top: 0; left: 0; width: 0; height: 100vh;
-        background: white; overflow-x: hidden; overflow-y: auto;
-        transition: width 0.3s ease; z-index: 1000;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.15); padding-top: 0;
-    }
-    .sidebar.open { width: 240px; }
-    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-    .sidebar.open .sidebar-logo { display: flex; }
-    .main-panel { margin-left: 0 !important; width: 100%; }
-    .dashboard-scroll { padding: 1rem; }
-    .district-map-container { height: 320px; min-height: 280px; }
-    h1 { font-size: 22px !important; padding: 0 0.5rem; }
-    .heatmap-wrap { -webkit-overflow-scrolling: touch; overflow-x: auto; }
-    .heatmap-table { font-size: 11px; }
-    .heatmap-table th, .heatmap-table td { padding: 0.35rem 0.45rem; }
-}
+        :root {
+            --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
+            --theme-dark: #0c8cb3;
+            --blue:       #38b6ff;
+            --green:      #d1cb23;
+            --yellow:     #fbbf0f;
+            --red:        #ed1c24;
+            --sidebar-border: #c7da30;
+            --bg:         white;
+            --card:       #ffffff;
+            --border:     #eaeaea;
+            --text:       #545454;
+            --muted:      #6b7280;
+            --sidebar-w:  235px;
+        }
+ 
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { overflow-x: hidden; scroll-behavior: smooth; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+ 
+        /* ══ SIDEBAR ══ */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #ffffff;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding-top: 120px;
+            flex-shrink: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        .sidebar-logo { position: fixed; top: 40px; left: 40px; z-index: 200; }
+        .sidebar-logo img { width: 115px; height: auto; display: block; }
+        .sidebar-list { list-style: none; padding: 0 0 0 22px; margin: 0; }
+        .sidebar-link {
+            display: block; width: 92%;
+            font-size: 15px; font-weight: 900; color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            padding: 11px 18px; margin-bottom: 17px;
+            border-radius: 8px; text-decoration: none;
+            transition: all 0.25s ease;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--theme-gradient);
+            color: #fff !important;
+        }
+ 
+        /* ══ MAIN PANEL ══ */
+        .main-panel {
+            flex: 1 1 0; display: flex; flex-direction: column;
+            min-width: 0; min-height: 100vh;
+            background: white; overflow-x: hidden;
+            margin-left: var(--sidebar-w); /* clear the fixed sidebar */
+        }
+ 
+        /* ── Top bar ── */
+        .topbar {
+            background: #fff; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 50;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-height: 64px;
+        }
+        .topbar-left {
+            font-size: 13px; font-weight: 700; color: var(--blue);
+            cursor: pointer; letter-spacing: 0.03em; text-decoration: none;
+        }
+        .topbar-left:hover { text-decoration: underline; }
+        .profile { display: flex; align-items: center; gap: 0.8rem; }
+        .profile-meta { text-align: right; }
+        .profile-meta .name { font-weight: 700; font-size: 18px; color: var(--blue); display: block; }
+        .profile-meta .role { font-weight: 400; color: #333; font-size: 0.9rem; display: block; }
+        .profile-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: #ececec; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #c7da30;
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+ 
+        /* ── Scroll area ── */
+        .dashboard-scroll {
+            flex: 1; overflow-y: auto; overflow-x: hidden;
+            padding: 1.5rem; max-width: 1280px; margin: 0 auto; width: 100%;
+        }
+ 
+        /* ── Page title ── */
+        .page-header {
+            margin-bottom: 1.75rem; display: flex;
+            align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 1rem;
+        }
+        .page-title {
+            font-size: 22px; font-weight: 900; color: var(--text);
+            letter-spacing: 0.02em; text-transform: uppercase;
+        }
+        .page-title span { color: var(--blue); }
+        h2 { color: #38b6ff; font-family: 'Montserrat', sans-serif; font-weight: 900; margin: 0 0 1rem; }
+ 
+        /* ══ CARD ══ */
+        .card {
+            background: var(--card); border-radius: 10px;
+            border: 2px solid #c7da30; margin-bottom: 2rem; overflow: hidden;
+        }
+        .card-header {
+            padding: 1.1rem 1.5rem 0.8rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 0.5rem;
+        }
+        .card-title {
+            font-size: 14px; font-weight: 900; color: var(--blue);
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .card-body { padding: 1.25rem 1.5rem; }
+ 
+        /* ══ FILTERS ══ */
+        .filters-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 4px; min-width: 150px; }
+        .filter-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.07em; color: var(--muted);
+        }
+        .filter-control {
+            padding: 8px 12px; border: 1.5px solid var(--border);
+            border-radius: 8px; font-family: 'Montserrat', sans-serif;
+            font-size: 12px; font-weight: 600; color: var(--text);
+            background: #fff; cursor: pointer; transition: border-color 0.2s; outline: none;
+        }
+        .filter-control:focus { border-color: var(--blue); }
+        .btn {
+            padding: 8px 18px; border-radius: 8px;
+            font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700;
+            cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.03em;
+        }
+        .btn-primary { background: var(--blue); color: #fff; }
+        .btn-primary:hover { background: #1a9fe0; }
+        .btn-outline { background: #fff; color: var(--muted); border: 1.5px solid var(--border); }
+        .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+        .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .chip {
+            background: rgba(56,182,255,0.1); color: var(--blue);
+            border: 1px solid rgba(56,182,255,0.25); border-radius: 999px;
+            padding: 3px 12px; font-size: 11px; font-weight: 700;
+        }
+ 
+        /* ══ HEATMAP TABLE ══ */
+        .heatmap-toolbar { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .toggle-btn {
+            padding: 0.35rem 0.75rem; border-radius: 6px;
+            font-size: 11px; font-weight: 900; font-family: 'Montserrat', sans-serif;
+            border: 2px solid #c7da30; background: #fff; color: var(--text);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .toggle-btn.active, .toggle-btn:hover { background: #c7da30; color: #fff; }
+        .heatmap-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .heatmap-table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
+        .heatmap-table th, .heatmap-table td {
+            border: 1px solid #111827; padding: 0.5rem 0.65rem;
+            text-align: center; white-space: nowrap;
+        }
+        .heatmap-corner { background: #d1d5db; font-weight: 700; font-size: 13px; text-align: left !important; min-width: 140px; }
+        .heatmap-col { background: #d1d5db; font-weight: 700; white-space: nowrap; min-width: 90px; }
+        .heatmap-row { background: #fff; font-weight: 600; text-align: left !important; padding-left: 0.75rem; min-width: 140px; }
+        .heatmap-cell {font-weight: 600; cursor: pointer; min-width: 50px; position: relative;color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.25);}
+        .heatmap-cell.heatmap-cell-dark { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+        .heatmap-cell:hover { outline: 2px solid var(--blue); z-index: 2; }
+        .heatmap-scale-wrap { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; font-size: 12px; color: var(--muted); font-weight: 700; }
+        .heatmap-scale-bar {
+            height: 14px; width: 180px; border-radius: 7px;
+            background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%);
+            border: 1px solid #111827;
+        }
+ 
+        /* ══ GEOGRAPHIC MAP ══ */
+        .map-outer {
+            position: relative; width: 100%;
+            background: #f1f5f9; border-radius: 8px;
+            overflow: hidden; min-height: 460px;
+        }
+        .district-map-container { height: 480px; width: 100%; position: relative; }
+        .district-map-svg { width: 100%; height: 100%; display: block; }
+ 
+        /* ── THINNER borders between districts (key change from v1) ── */
+        .district-map-shape {
+            stroke: rgba(255,255,255,0.55);   /* soft white seam instead of lime */
+            stroke-width: 0.6;                 /* was 1.2 — half as thick */
+            transition: stroke 0.15s, stroke-width 0.15s, opacity 0.2s;
+        }
+        .district-map-shape:hover {
+            stroke: #38b6ff;
+            stroke-width: 1.8;
+            opacity: 0.82;
+        }
+ 
+        /* Tooltip */
+        .map-tooltip {
+            position: absolute; pointer-events: none; z-index: 200;
+            background: rgba(255,255,255,0.97); border: 1px solid #e5e7eb;
+            border-radius: 8px; padding: 12px 14px;
+            min-width: 220px; max-width: 280px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15); display: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .tt-district {
+            font-size: 13px; font-weight: 900; color: #1f2937;
+            border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 8px;
+        }
+        .tt-total { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+        .tt-row {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 10px; padding: 3px 0; font-size: 11px; border-bottom: 1px solid #f0f0f0;
+        }
+        .tt-row:last-child { border-bottom: none; }
+        .tt-type { color: var(--text); font-weight: 600; }
+        .tt-count {
+            font-weight: 900; color: #1f2937; background: #f3f4f6;
+            border-radius: 4px; padding: 1px 7px; font-size: 11px;
+        }
+        .tt-bar { height: 3px; border-radius: 2px; margin-top: 2px; }
+ 
+        /* Legend */
+        .map-legend {
+            position: absolute; bottom: 20px; right: 20px; z-index: 100;
+            background: rgba(255,255,255,0.97); border: 1px solid #e5e7eb;
+            border-radius: 8px; padding: 10px 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-family: 'Montserrat', sans-serif; font-size: 12px;
+        }
+        .legend-title { font-size: 10px; font-weight: 900; color: #1f2937; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+        .legend-row { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: #111827; margin-bottom: 5px; }
+        .legend-row:last-child { margin-bottom: 0; }
+        .legend-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid #111827; flex-shrink: 0; }
+        .legend-dot.high   { background: #ed1c24; }
+        .legend-dot.medium { background: #fbbf0f; }
+        .legend-dot.low    { background: #d1cb23; }
+ 
+        /* Key panel */
+        .map-key {
+            position: absolute; top: 16px; left: 16px; z-index: 100;
+            background: rgba(255,255,255,0.97); border: 1px solid #e5e7eb;
+            border-radius: 8px; padding: 12px;
+            max-height: calc(100% - 32px); overflow-y: auto;
+            min-width: 190px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); display: none;
+        }
+        .map-key-title { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
+        .key-row {
+            display: grid; grid-template-columns: 12px 20px 1fr auto;
+            gap: 6px; align-items: center; padding: 4px 0;
+            border-top: 1px solid #f0f0f0; font-size: 10px; color: var(--text);
+        }
+        .key-row:first-of-type { border-top: none; }
+        .key-swatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #aaa; }
+        .key-num  { font-weight: 900; color: var(--muted); }
+        .key-name { font-weight: 700; }
+        .key-cnt  { font-weight: 900; color: var(--blue); white-space: nowrap; }
+ 
+        /* ── Mobile ── */
+        .menu-icon {
+            display: none; position: fixed; top: 12px; left: 12px;
+            width: 44px; height: 44px; padding: 0;
+            border: 2px solid #e5e7eb; background: white;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            cursor: pointer; z-index: 1001;
+            align-items: center; justify-content: center;
+            font-size: 22px; color: var(--blue);
+        }
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); z-index: 999;
+        }
+        .sidebar-overlay.active { display: block; }
+ 
+        @media (max-width: 900px) {
+            .menu-icon { display: flex !important; }
+            .sidebar {
+                position: fixed; top: 0; left: 0; width: 0; height: 100vh;
+                overflow: hidden; transition: width 0.3s; z-index: 1000;
+                box-shadow: 2px 0 12px rgba(0,0,0,0.15); padding-top: 70px;
+            }
+            .sidebar.open { width: 240px; }
+            .sidebar-logo { display: none; }
+            .sidebar.open .sidebar-logo { display: block; position: static; padding: 0 12px 12px; }
+            .main-panel { margin-left: 0; } /* no offset — sidebar overlays on mobile */
+            .dashboard-scroll { padding: 1rem; }
+            .filters-grid { flex-direction: column; }
+            .filter-group { min-width: 100%; }
+            .district-map-container { height: 320px; }
+            .map-key { display: none !important; }
+        }
+        @media (max-width: 600px) {
+            .sidebar.open { width: 100%; max-width: 280px; }
+            .district-map-container { height: 260px; }
+        }
     </style>
 </head>
 <body>
-
+ 
+{{-- ══ SIDEBAR ══ --}}
 <aside class="sidebar" id="provincialSidebar">
     <div class="sidebar-logo">
         <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
     <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}" class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial/heatmap') }}"  class="sidebar-link {{ request()->is('provincial/heatmap') ? 'active' : '' }}">Heat-Map</a>
-        <a href="{{ url('/provincial-admin/settings') }}" class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
+        <a href="{{ url('/provincial-admin/dashboard') }}"
+           class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
+        <a href="{{ url('/provincial-admin/reports') }}"
+           class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
+        <a href="{{ url()->current() }}"
+           class="sidebar-link active">Heat-Map</a>
+        <a href="{{ url('/provincial-admin/settings') }}"
+           class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
         <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
+        <a href="{{ route('logout') }}"
+           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+           class="sidebar-link">Sign Out</a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
     </ul>
 </aside>
-
+ 
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
-
+ 
+{{-- ══ MAIN PANEL ══ --}}
 <div class="main-panel">
+ 
     <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
-
+ 
+    {{-- Top bar --}}
     <div class="topbar">
+        <a class="topbar-left" href="#" onclick="event.preventDefault(); exportPDF();">Export PDF</a>
         <div class="profile">
-            <div class="meta">
+            <div class="profile-meta">
                 @php
                     $currentUser = auth()->user()->fresh();
-                    $fullName = $currentUser->name ?? 'Administrator';
-                    $nameParts = explode(' ', $fullName, 2);
-                    $firstName = $nameParts[0] ?? '';
-                    $surname = $nameParts[1] ?? '';
+                    $fullName    = $currentUser->name ?? 'Administrator';
+                    $nameParts   = explode(' ', $fullName, 2);
                 @endphp
-                <span>{{ $firstName }} {{ $surname }}</span>
+                <span class="name">{{ $fullName }}</span>
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
                 @if($currentUser && $currentUser->profile_picture)
-                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture"
-                         onerror="this.style.display='none'; this.parentElement.style.background='#ececec';">
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile"
+                         onerror="this.style.display='none'">
                 @else
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color: #999;">
+                    <svg width="22" height="22" fill="#94a3b8" viewBox="0 0 24 24">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
                 @endif
             </div>
         </div>
     </div>
-
+ 
     <div class="dashboard-scroll" id="main-content">
-        <h1>
-            Tekete SafeSpace Provincial Dashboard -
-            <span class="province-name">{{ $province->province_name }}</span>
-        </h1>
-        <p class="subtitle">Provincial case intelligence and live report monitoring.</p>
-
-        <section class="filter-panel" aria-label="Filters">
-            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-                <h2 style="margin:0;">Filters</h2>
+ 
+        {{-- ── Filters ── --}}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Filters</div>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url()->current() }}" class="filters-grid" id="filtersForm">
+                    <div class="filter-group">
+                        <label class="filter-label">District</label>
+                        <select name="district" class="filter-control" onchange="this.form.submit()">
+                            <option value="">All Districts</option>
+                            @foreach ($districts as $district)
+                                <option value="{{ $district->id }}"
+                                    {{ $districtFilter == $district->id ? 'selected' : '' }}>
+                                    {{ $district->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">School</label>
+                        <select name="school" class="filter-control" onchange="this.form.submit()">
+                            <option value="">All Schools</option>
+                            @foreach ($schools as $school)
+                                <option value="{{ $school->school_id }}"
+                                    {{ $schoolFilter == $school->school_id ? 'selected' : '' }}>
+                                    {{ $school->school_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Report Type</label>
+                        <select name="abuse_type" class="filter-control" onchange="this.form.submit()">
+                            <option value="">Any Report Type</option>
+                            @foreach ($abuseTypes as $type)
+                                <option value="{{ $type->id }}"
+                                    {{ $abuseTypeFilter == $type->id ? 'selected' : '' }}>
+                                    {{ $type->type_name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Age Range</label>
+                        <select name="age_range" class="filter-control" onchange="this.form.submit()">
+                            <option value="">Any Age</option>
+                            @foreach (['0-10','11-15','16-20','21-22','30+'] as $range)
+                                <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>
+                                    {{ $range }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">From</label>
+                        <input type="date" name="from_date" class="filter-control"
+                               value="{{ $fromDate }}" onchange="this.form.submit()">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">To</label>
+                        <input type="date" name="to_date" class="filter-control"
+                               value="{{ $toDate }}" onchange="this.form.submit()">
+                    </div>
+                    <div class="filter-group" style="justify-content:flex-end;">
+                        <label class="filter-label">&nbsp;</label>
+                        <button type="button" class="btn btn-outline"
+                                onclick="window.location='{{ url()->current() }}'">
+                            Reset Filters
+                        </button>
+                    </div>
+                </form>
                 @if(!empty($activeFilters))
-                    <a href="{{ url('/provincial/heatmap') }}" class="filter-clear">Clear all filters</a>
+                    <div class="filter-chips" style="margin-top:12px;">
+                        @foreach ($activeFilters as $chip)
+                            <span class="chip">{{ $chip }}</span>
+                        @endforeach
+                    </div>
                 @endif
             </div>
-            <hr>
-            <form method="GET" action="{{ url('/provincial/heatmap') }}" class="filters">
-                <select name="district" onchange="this.form.submit()">
-                    <option value="">All Districts</option>
-                    @foreach ($districts as $district)
-                        <option value="{{ $district->id }}" {{ (string) $districtFilter === (string) $district->id ? 'selected' : '' }}>{{ $district->name }}</option>
-                    @endforeach
-                </select>
-                <select name="school" onchange="this.form.submit()" {{ $districtFilter ? '' : 'disabled' }}>
-                    <option value="">All Schools</option>
-                    @foreach ($schools as $school)
-                        <option value="{{ $school->school_id }}" {{ (string) $schoolFilter === (string) $school->school_id ? 'selected' : '' }}>{{ $school->school_name }}</option>
-                    @endforeach
-                </select>
-                <select name="abuse_type" onchange="this.form.submit()">
-                    <option value="">Any Report Type</option>
-                    @foreach ($abuseTypes as $type)
-                        <option value="{{ $type->id }}" {{ (string) $abuseTypeFilter === (string) $type->id ? 'selected' : '' }}>{{ $type->type_name }}</option>
-                    @endforeach
-                </select>
-                <select name="age_range" onchange="this.form.submit()">
-                    <option value="">Any Age</option>
-                    @foreach (['0-10','11-15','16-20','21-22','30+'] as $range)
-                        <option value="{{ $range }}" {{ $ageRange === $range ? 'selected' : '' }}>{{ $range }}</option>
-                    @endforeach
-                </select>
-                <label>From <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()"></label>
-                <label>To <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()"></label>
-            </form>
-            @if(!empty($activeFilters))
-                <div class="filter-chips" aria-label="Active filters">
-                    @foreach ($activeFilters as $chip)<span>{{ $chip }}</span>@endforeach
-                </div>
-            @endif
-        </section>
-
-        <div class="heatmap-summary" aria-label="Summary">
-            <div class="heatmap-summary-card">
-                <div class="label">Total reports</div>
-                <div class="value">{{ number_format($heatmapGrandTotal ?? 0) }}</div>
-            </div>
-            <div class="heatmap-summary-card">
-                <div class="label">Districts with data</div>
-                <div class="value">{{ $districtsWithReports ?? 0 }} <span style="font-size:14px;font-weight:700;color:#6b7280;">/ {{ count($districts ?? []) }}</span></div>
-            </div>
-            <div class="heatmap-summary-card">
-                <div class="label">Report types</div>
-                <div class="value">{{ count($heatmapAbuseTypes ?? []) }}</div>
-            </div>
         </div>
-
-        <section class="heatmap-panel" id="districtHeatmapPanel" aria-label="Reports by District and Type">
-            <h2>Reports by District &amp; Report Type</h2>
-            <div class="heatmap-toolbar">
-                <div class="heatmap-view-toggle" role="group" aria-label="View mode">
-                    <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">COUNTS</button>
-                    <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">ROW%</button>
+ 
+        {{-- ── Heatmap table ── --}}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Reports by District &amp; Report Type</div>
+                <div class="heatmap-toolbar">
+                    <button type="button" class="toggle-btn active" data-view="count">COUNTS</button>
+                    <button type="button" class="toggle-btn"        data-view="percent">ROWS%</button>
                 </div>
             </div>
-
-            <div class="heatmap-wrap">
-                <table class="heatmap-table" role="table">
-                    <thead>
-                        <tr>
-                            <th class="heatmap-corner">District</th>
-                            @foreach($heatmapAbuseTypes ?? [] as $atype)
-                                <th class="heatmap-col">{{ $atype }}</th>
-                            @endforeach
-                            <th class="heatmap-col">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($heatmapMatrix ?? [] as $district => $row)
-                            @php
-                                $rowIdx = $loop->index;
-                                $rowDistrictId = $heatmapDistrictNameToId[$district] ?? null;
-                                $isActiveDistrict = $districtFilter && (string) $rowDistrictId === (string) $districtFilter;
-                            @endphp
-                            <tr class="{{ $isActiveDistrict ? 'heatmap-row-active' : '' }}">
-                                <th class="heatmap-row">{{ $district }}</th>
-                                @foreach($row as $colIdx => $count)
-                                    @php
-                                        $atype = $heatmapAbuseTypes[$colIdx] ?? '';
-                                        $districtId = $heatmapDistrictNameToId[$district] ?? null;
-                                        $abuseTypeId = $heatmapAbuseTypeNameToId[$atype] ?? null;
-                                        $pct = $heatmapPercentages[$district][$colIdx] ?? 0;
-                                        $intensity = ($heatmapMax ?? 1) > 0 ? min(1, $count / ($heatmapMax ?? 1)) : 0;
-                                        $colors = ['#d1cb23', '#fbbf0f', '#ed1c24'];
-                                        $colorIdx = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
-                                        $bgColor = $colors[$colorIdx];
-                                        $isDark = $colorIdx === 2;
-                                        $isHotspot = in_array($colIdx, $heatmapHotspots[$district] ?? []);
-                                        $animDelay = ($rowIdx * count($row) + $colIdx) * 0.02;
-                                    @endphp
-                                    <td class="heatmap-cell {{ $isDark ? 'heatmap-cell-dark' : '' }} {{ $isHotspot ? 'heatmap-hotspot' : '' }}"
-                                        style="background-color: {{ $bgColor }}; animation-delay: {{ $animDelay }}s;"
-                                        data-count="{{ $count }}"
-                                        data-percent="{{ $pct }}"
-                                        data-district="{{ $district }}"
-                                        data-abuse-type="{{ $atype }}"
-                                        data-district-id="{{ $districtId }}"
-                                        data-abuse-type-id="{{ $abuseTypeId }}"
-                                        role="button"
-                                        tabindex="0"
-                                        title="{{ $district }} × {{ $atype }}: {{ $count }} reports ({{ $pct }}% of district) — Click to view reports">
-                                        <span class="heatmap-cell-count">{{ $count }}</span>
-                                        <span class="heatmap-cell-pct" style="display:none;">{{ $pct }}%</span>
-                                    </td>
-                                @endforeach
-                                <td class="heatmap-row" style="font-weight:800;">{{ number_format($heatmapRowTotals[$district] ?? 0) }}</td>
-                            </tr>
-                        @empty
+            <div class="card-body" style="padding:1rem 1rem 1.25rem;">
+                <div class="heatmap-wrap">
+                    <table class="heatmap-table">
+                        <thead>
                             <tr>
-                                <td colspan="{{ count($heatmapAbuseTypes ?? []) + 1 }}" style="text-align:center; padding:2rem; color:#6b7280;">No report data for the selected filters.</td>
+                                <th class="heatmap-corner">District</th>
+                                @foreach($heatmapAbuseTypes as $atype)
+                                    <th class="heatmap-col">{{ $atype }}</th>
+                                @endforeach
                             </tr>
-                        @endforelse
-                    </tbody>
-                    @if(!empty($heatmapMatrix))
-                    <tfoot>
-                        <tr class="heatmap-total-row">
-                            <th class="heatmap-row">Total</th>
-                            @foreach($heatmapColumnTotals ?? [] as $colTotal)
-                                <td>{{ number_format($colTotal) }}</td>
-                            @endforeach
-                            <td>{{ number_format($heatmapGrandTotal ?? 0) }}</td>
-                        </tr>
-                    </tfoot>
-                    @endif
-                </table>
-            </div>
-
-            <div class="heatmap-scale-wrap">
-                <div class="heatmap-scale" id="districtHeatmapScaleCount">
+                        </thead>
+                        <tbody>
+                            @forelse($heatmapMatrix as $district => $row)
+                                <tr>
+                                    <th class="heatmap-row">{{ $district }}</th>
+                                    @foreach($row as $colIdx => $count)
+                                        @php
+                                            $intensity   = ($heatmapMax > 0) ? min(1, $count / $heatmapMax) : 0;
+                                            $pct         = $heatmapPercentages[$district][$colIdx] ?? 0;
+                                            $atype       = $heatmapAbuseTypes[$colIdx] ?? '';
+                                            $districtId  = $heatmapDistrictNameToId[$district] ?? null;
+                                            $abuseTypeId = $heatmapAbuseTypeNameToId[$atype] ?? null;
+                                            if ($intensity >= 0.67) {
+                                                $bg = '#ed1c24'; $textClass = 'heatmap-cell-dark';
+                                            } elseif ($intensity >= 0.34) {
+                                                $bg = '#fbbf0f'; $textClass = 'heatmap-cell-dark';
+                                            } elseif ($intensity > 0) {
+                                                $bg = '#d1cb23'; $textClass = 'heatmap-cell-dark';
+                                            } else {
+                                                $bg = '#d1cb23'; $textClass = '';
+                                            }
+                                        @endphp
+                                        <td class="heatmap-cell {{ $textClass }}"
+                                            style="background-color:{{ $bg }};"
+                                            data-count="{{ $count }}"
+                                            data-percent="{{ $pct }}"
+                                            data-district="{{ $district }}"
+                                            data-abuse-type="{{ $atype }}"
+                                            data-district-id="{{ $districtId }}"
+                                            data-abuse-type-id="{{ $abuseTypeId }}"
+                                            role="button" tabindex="0"
+                                            title="{{ $district }} — {{ $atype }}: {{ $count }} ({{ $pct }}%)">
+                                            <span class="cell-count">{{ $count }}</span>
+                                            <span class="cell-pct"  style="display:none;">{{ $pct }}%</span>
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="{{ count($heatmapAbuseTypes) + 1 }}"
+                                        style="text-align:center;padding:2rem;color:#6b7280;">
+                                        No report data for the selected filters.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="heatmap-scale-wrap">
                     <span>LOW</span>
-                    <div class="heatmap-scale-bar" aria-hidden="true"></div>
+                    <div class="heatmap-scale-bar"></div>
                     <span>HIGH</span>
                 </div>
-                <div class="heatmap-scale" id="districtHeatmapScalePct" style="display:none;">
-                    <span>0%</span>
-                    <div class="heatmap-scale-bar" aria-hidden="true"></div>
-                    <span>100%</span>
-                </div>
             </div>
-        </section>
-
-        <section class="panel map-panel" aria-label="Reports by District Geographic Heatmap">
-            <h2>Reports by District (Geographic)</h2>
-            <div id="district-map" class="district-map-container">
-                <div class="district-map-status" id="districtMapStatus">Loading map…</div>
-                <div class="district-map-key" id="districtMapKey" style="display:none;">
-                    <div class="district-map-key-title">Districts <span class="map-key-meta" id="districtMapKeyMeta"></span></div>
-                    <div class="map-key-tools">
-                        <input type="search" class="map-key-search" id="districtMapKeySearch" placeholder="Search districts…" aria-label="Search districts">
-                        <div class="map-key-sort">
-                            <button type="button" class="map-key-sort-btn active" data-sort="name">A–Z</button>
-                            <button type="button" class="map-key-sort-btn" data-sort="count">By reports</button>
+        </div>
+ 
+        {{-- ── Geographic map ── --}}
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Geographic Distribution — {{ $province->province_name }}</div>
+            </div>
+            <div class="card-body" style="padding:0;">
+                <div class="map-outer">
+                    <div id="district-map" class="district-map-container">
+ 
+                        <div id="map-key" class="map-key">
+                            <div class="map-key-title">Districts</div>
+                            <div id="map-key-rows"></div>
                         </div>
+ 
+                        <div class="map-legend">
+                            <div class="legend-title">Legend</div>
+                            <div class="legend-row"><span class="legend-dot high"></span>High</div>
+                            <div class="legend-row"><span class="legend-dot medium"></span>Medium</div>
+                            <div class="legend-row"><span class="legend-dot low"></span>Low</div>
+                        </div>
+ 
+                        <div id="map-tooltip" class="map-tooltip">
+                            <div class="tt-district" id="tt-district"></div>
+                            <div class="tt-total"    id="tt-total"></div>
+                            <div id="tt-breakdown"></div>
+                        </div>
+ 
                     </div>
-                    <div class="district-map-key-rows" id="districtMapKeyRows"></div>
-                </div>
-                <div class="district-map-tooltip" id="districtMapTooltip" style="display:none;">
-                    <div class="tt-title" id="districtMapTooltipTitle"></div>
-                    <div class="tt-sub" id="districtMapTooltipSub"></div>
-                </div>
-                <div class="map-legend" aria-label="Heatmap legend">
-                    <div class="map-legend-row"><span class="map-legend-swatch none" aria-hidden="true"></span><span>No reports</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low</span></div>
                 </div>
             </div>
-            <p class="subtitle" style="margin-top:1rem;text-align:left;">All districts in your province are shown. Yellow = no reports; darker red = more reports. Click a district to filter reports.</p>
-        </section>
-    </div>
-</div>
-
-<script>
-(function () {
-    const reportsUrl = "{{ url('/provincial-admin/reports') }}";
-    const panel = document.getElementById('districtHeatmapPanel');
-    if (!panel) return;
-
-    function mergeHeatmapQueryParams(url) {
-        const params = new URLSearchParams(window.location.search);
-        ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(function (k) {
-            if (params.has(k)) url.searchParams.set(k, params.get(k));
-        });
-    }
-
-    const viewBtns = panel.querySelectorAll('.heatmap-view-btn');
-    const scaleCount = panel.querySelector('#districtHeatmapScaleCount');
-    const scalePct = panel.querySelector('#districtHeatmapScalePct');
-
-    viewBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const view = this.dataset.view;
-            viewBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
-            this.classList.add('active');
-            this.setAttribute('aria-pressed', 'true');
-
-            panel.querySelectorAll('.heatmap-cell').forEach(cell => {
-                const countEl = cell.querySelector('.heatmap-cell-count');
-                const pctEl = cell.querySelector('.heatmap-cell-pct');
-                if (countEl && pctEl) {
-                    countEl.style.display = view === 'percent' ? 'none' : '';
-                    pctEl.style.display = view === 'percent' ? '' : 'none';
-                }
-            });
-
-            if (scaleCount && scalePct) {
-                scaleCount.style.display = view === 'count' ? 'flex' : 'none';
-                scalePct.style.display = view === 'percent' ? 'flex' : 'none';
-            }
-        });
-    });
-
-    panel.querySelectorAll('.heatmap-cell[data-district-id]').forEach(cell => {
-        cell.addEventListener('click', function () {
-            const did = this.dataset.districtId;
-            const aid = this.dataset.abuseTypeId;
-            const url = new URL(reportsUrl, window.location.origin);
-            mergeHeatmapQueryParams(url);
-            if (did) url.searchParams.set('district', did);
-            if (aid) url.searchParams.set('abuse_type', aid);
-            window.location.href = url.toString();
-        });
-
-        cell.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
-        });
-    });
-})();
-</script>
-
-@include('components.provincial-admin-sidebar-script')
-
-<script>
-(function () {
-  const container = document.getElementById('district-map');
-  if (!container) return;
-
-  const mapBase = @json(url('/geojson'));
-  const provinceSlug = @json($mapProvinceSlug ?? '');
-  const provinceName = @json($province->province_name ?? '');
-  const districtCounts = @json($heatmapRowTotals ?? []);
-
-  const reportsUrl = "{{ url('/provincial-admin/reports') }}";
-  const districtsNameToId = @json($districts->pluck('id', 'name')->toArray());
-
-  const statusEl = document.getElementById('districtMapStatus');
-  const keyEl = document.getElementById('districtMapKey');
-  const keyRowsEl = document.getElementById('districtMapKeyRows');
-  const keyMetaEl = document.getElementById('districtMapKeyMeta');
-  const keySearchEl = document.getElementById('districtMapKeySearch');
-  const keySortBtns = document.querySelectorAll('.map-key-sort-btn');
-  const tooltipEl = document.getElementById('districtMapTooltip');
-  const tooltipTitleEl = document.getElementById('districtMapTooltipTitle');
-  const tooltipSubEl = document.getElementById('districtMapTooltipSub');
-
-  function normalizeName(name) {
-    return String(name || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
-  }
-  function keyName(name) {
-    return normalizeName(name)
-      .replace(/^city of\s+/, '')
-      .replace(/\s+district municipality$/, '')
-      .replace(/\s+metropolitan municipality$/, '');
-  }
-  function cleanLabel(name) {
-    return String(name || '').trim()
-      .replace(/\s+District Municipality$/i, '')
-      .replace(/\s+Metropolitan Municipality$/i, '')
-      .trim();
-  }
-
-  function setMapStatus(message) {
-    if (!statusEl) return;
-    statusEl.style.display = 'grid';
-    statusEl.textContent = message;
-  }
-  function hideMapStatus() {
-    if (!statusEl) statusEl.style.display = 'none';
-  }
-  function compactProvinceKey(s) {
-    return String(s || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, '');
-  }
-  function provinceKeysMatch(geoProvince, dbProvince) {
-    const g = compactProvinceKey(geoProvince);
-    const d = compactProvinceKey(dbProvince);
-    if (!g || !d) return false;
-    if (g === d) return true;
-    if (d.indexOf('kwazulu') !== -1 && g.indexOf('kwazulu') !== -1) return true;
-    if (g.length >= 6 && (g.includes(d) || d.includes(g))) return true;
-    return false;
-  }
-  function resolveDbDistrictName(geoName) {
-    const k = keyName(geoName);
-    if (!k) return null;
-    const candidates = Object.keys(districtsNameToId || {});
-    for (let i = 0; i < candidates.length; i++) {
-      if (keyName(candidates[i]) === k) return candidates[i];
-    }
-    for (let i = 0; i < candidates.length; i++) {
-      const dk = keyName(candidates[i]);
-      if (dk.length < 5) continue;
-      if (k.includes(dk) || dk.includes(k)) return candidates[i];
-    }
-    return null;
-  }
-  async function fetchJson(url) {
-    const response = await fetch(url, { credentials: 'same-origin' });
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    const data = await response.json();
-    return Array.isArray(data) ? data : [];
-  }
-  async function loadMapItems() {
-    if (provinceSlug) {
-      try {
-        const slugItems = await fetchJson(mapBase + '/' + provinceSlug);
-        if (slugItems.length) return slugItems;
-      } catch (e) { /* fallback */ }
-    }
-    const allItems = await fetchJson(mapBase + '/map_data');
-    const filtered = allItems.filter(function (it) {
-      const rawProvince = it && it.province ? String(it.province).trim() : '';
-      return rawProvince && provinceKeysMatch(rawProvince, provinceName);
-    });
-    return filtered.length ? filtered : allItems;
-  }
-
-  const countsByKey = {};
-  Object.entries(districtCounts || {}).forEach(([name, count]) => { countsByKey[keyName(name)] = Number(count) || 0; });
-  const max = Math.max(1, ...Object.values(countsByKey));
-  const grandTotal = Object.values(districtCounts || {}).reduce((sum, c) => sum + (Number(c) || 0), 0);
-  let keyShapes = [];
-  let keySortMode = 'name';
-
-  const districtIdByKey = {};
-  Object.entries(districtsNameToId || {}).forEach(([name, id]) => {
-    districtIdByKey[keyName(name)] = id;
-  });
-
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function clamp01(v) { return Math.max(0, Math.min(1, v)); }
-  function hexToRgb(hex) {
-    const h = String(hex || '').replace('#', '');
-    const v = h.length === 3 ? h.split('').map((c) => c + c).join('') : h;
-    const n = parseInt(v, 16);
-    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
-  }
-  function rgbToHex(r, g, b) {
-    const toHex = (x) => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0');
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-  }
-  function mixHex(a, b, t) {
-    const A = hexToRgb(a);
-    const B = hexToRgb(b);
-    return rgbToHex(lerp(A.r, B.r, t), lerp(A.g, B.g, t), lerp(A.b, B.b, t));
-  }
-  function heatColor(ratio) {
-    const t = clamp01(ratio);
-    if (t <= 0.5) return mixHex('#d1cb23', '#fbbf0f', t / 0.5);
-    return mixHex('#fbbf0f', '#ed1c24', (t - 0.5) / 0.5);
-  }
-
-  function moveTooltip(clientX, clientY) {
-    if (!tooltipEl) return;
-    const rect = container.getBoundingClientRect();
-    const pad = 12;
-    const x = Math.min(rect.width - pad, Math.max(pad, clientX - rect.left + 12));
-    const y = Math.min(rect.height - pad, Math.max(pad, clientY - rect.top + 12));
-    tooltipEl.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
-  }
-
-  function showTooltip(clientX, clientY, title, count) {
-    if (!tooltipEl || !tooltipTitleEl || !tooltipSubEl) return;
-    const n = Number(count || 0);
-    const pct = grandTotal > 0 ? ((n / grandTotal) * 100).toFixed(1) : '0';
-    tooltipTitleEl.textContent = String(title || '');
-    tooltipSubEl.textContent = n.toLocaleString() + ' report(s) · ' + pct + '% of filtered total';
-    tooltipEl.style.display = 'block';
-    moveTooltip(clientX, clientY);
-  }
-
-  function setKeyHover(pathEl, on) {
-    if (pathEl) pathEl.classList.toggle('is-key-hover', on);
-  }
-
-  function applyUrlSelection() {
-    const districtId = new URLSearchParams(window.location.search).get('district');
-    if (!districtId) return;
-    container.querySelectorAll('.district-map-shape').forEach((path) => {
-      path.classList.toggle('is-selected', path.getAttribute('data-district-id') === districtId);
-    });
-  }
-
-  function sortKeyShapes(list, mode) {
-    const copy = list.slice();
-    if (mode === 'count') {
-      copy.sort((a, b) => (Number(b.count) || 0) - (Number(a.count) || 0) || String(a.label).localeCompare(String(b.label)));
-    } else {
-      copy.sort((a, b) => String(a.label).localeCompare(String(b.label)));
-    }
-    return copy;
-  }
-
-  function filterKeyShapes(list, query) {
-    const q = String(query || '').trim().toLowerCase();
-    if (!q) return list;
-    return list.filter((s) => String(s.label || '').toLowerCase().includes(q));
-  }
-
-  function hideTooltip() {
-    if (!tooltipEl) return;
-    tooltipEl.style.display = 'none';
-    tooltipEl.style.transform = 'translate(-9999px, -9999px)';
-  }
-
-  function navigateToDistrict(key) {
-    const did = districtIdByKey[key];
-    if (!did) return;
-    const url = new URL(reportsUrl, window.location.origin);
-    const params = new URLSearchParams(window.location.search);
-    ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(k => {
-      if (params.has(k)) url.searchParams.set(k, params.get(k));
-    });
-    url.searchParams.set('district', did);
-    window.location.href = url.toString();
-  }
-
-  function renderKey() {
-    if (!keyEl || !keyRowsEl) return;
-    const visible = filterKeyShapes(sortKeyShapes(keyShapes, keySortMode), keySearchEl ? keySearchEl.value : '');
-    if (keyMetaEl) keyMetaEl.textContent = visible.length ? '(' + visible.length + ')' : '';
-    if (!keyShapes.length) {
-      keyEl.style.display = 'none';
-      return;
-    }
-    keyEl.style.display = 'block';
-    keyRowsEl.innerHTML = '';
-
-    visible.forEach((s) => {
-      const row = document.createElement('div');
-      row.className = 'district-map-key-row' + (Number(s.count) > 0 ? '' : ' is-zero');
-      row.tabIndex = 0;
-      row.setAttribute('role', 'button');
-      row.setAttribute('aria-label', `${s.label}: ${Number(s.count || 0).toLocaleString()} report(s)`);
-
-      const sw = document.createElement('span');
-      sw.className = 'district-map-key-swatch';
-      const ratio = max > 0 ? (Number(s.count || 0) / max) : 0;
-      sw.style.background = heatColor(ratio);
-
-      const nm = document.createElement('span');
-      nm.className = 'district-map-key-name';
-      nm.textContent = s.label;
-
-      const ct = document.createElement('span');
-      ct.className = 'district-map-key-count';
-      ct.textContent = Number(s.count || 0).toLocaleString();
-
-      row.appendChild(sw);
-      row.appendChild(nm);
-      row.appendChild(ct);
-      row.addEventListener('mouseenter', () => setKeyHover(s.pathEl, true));
-      row.addEventListener('mouseleave', () => setKeyHover(s.pathEl, false));
-      row.addEventListener('click', () => {
-        if (s.districtId) {
-          const url = new URL(reportsUrl, window.location.origin);
-          const params = new URLSearchParams(window.location.search);
-          ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(k => {
-            if (params.has(k)) url.searchParams.set(k, params.get(k));
-          });
-          url.searchParams.set('district', s.districtId);
-          window.location.href = url.toString();
-        } else {
-          navigateToDistrict(s.key);
-        }
-      });
-      row.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
-      });
-      keyRowsEl.appendChild(row);
-    });
-  }
-
-  if (keySearchEl) keySearchEl.addEventListener('input', renderKey);
-  keySortBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      keySortMode = btn.dataset.sort || 'name';
-      keySortBtns.forEach((b) => b.classList.toggle('active', b === btn));
-      renderKey();
-    });
-  });
-
-  if (!provinceSlug && !provinceName) {
-    setMapStatus('Province map not configured.');
-    return;
-  }
-
-  loadMapItems()
-    .then((items) => {
-      if (!items || !items.length) {
-        setMapStatus('Map unavailable — no district shapes found.');
-        return;
-      }
-      const svgNS = 'http://www.w3.org/2000/svg';
-      const svg = document.createElementNS(svgNS, 'svg');
-      svg.setAttribute('class', 'district-map-svg');
-      svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      const g = document.createElementNS(svgNS, 'g');
-      svg.appendChild(g);
-
-      const shapes = [];
-      const pathsForLabels = [];
-      items.forEach((it) => {
-        const name = it?.name ?? '';
-        const d = it?.path ?? '';
-        if (!d) return;
-
-        const dbDistrict = resolveDbDistrictName(name);
-        const key = dbDistrict ? keyName(dbDistrict) : keyName(name);
-        const count = dbDistrict ? (Number(districtCounts[dbDistrict]) || 0) : (countsByKey[keyName(name)] ?? 0);
-        const displayLabel = dbDistrict ? cleanLabel(dbDistrict) : cleanLabel(name);
-        const districtId = dbDistrict ? (districtsNameToId[dbDistrict] || '') : (districtIdByKey[key] || '');
-        const ratio = max > 0 ? count / max : 0;
-
-        const path = document.createElementNS(svgNS, 'path');
-        path.setAttribute('d', d);
-        path.setAttribute('class', 'district-map-shape');
-        path.setAttribute('fill', heatColor(ratio));
-        path.setAttribute('fill-opacity', String(count > 0 ? (0.30 + 0.30 * Math.sqrt(ratio)) : 0.62));
-        path.setAttribute('data-district-key', key);
-        path.setAttribute('data-district-id', String(districtId));
-        path.setAttribute('data-district-label', displayLabel);
-        path.setAttribute('data-count', String(count));
-        path.style.cursor = districtId ? 'pointer' : 'default';
-        g.appendChild(path);
-        pathsForLabels.push({ pathEl: path, label: displayLabel });
-
-        shapes.push({ key, label: displayLabel, count, districtId, pathEl: path });
-      });
-
-      const oldSvg = container.querySelector('svg.district-map-svg');
-      if (oldSvg) oldSvg.remove();
-      container.insertBefore(svg, container.firstChild);
-
-      if (!shapes.length) {
-        setMapStatus('Could not match district boundaries.');
-        return;
-      }
-
-      requestAnimationFrame(() => {
-        let mapReady = false;
-        try {
-          const bb = g.getBBox();
-          if (bb.width > 0 && bb.height > 0) {
-            const pad = 12;
-            svg.setAttribute('viewBox', `${bb.x - pad} ${bb.y - pad} ${bb.width + pad * 2} ${bb.height + pad * 2}`);
-          }
-
-          keyShapes = shapes.slice();
-          renderKey();
-          applyUrlSelection();
-
-          const labelLayer = document.createElementNS(svgNS, 'g');
-          labelLayer.setAttribute('class', 'map-label-layer');
-          labelLayer.setAttribute('aria-hidden', 'true');
-          g.appendChild(labelLayer);
-
-          pathsForLabels.forEach((item) => {
-            let bb;
-            try { bb = item.pathEl.getBBox(); } catch (e) { return; }
-            const cx = bb.x + bb.width / 2;
-            const cy = bb.y + bb.height / 2;
-            const text = String(item.label || '');
-            if (!text) return;
-            const len = text.length;
-            const minSide = Math.min(bb.width, bb.height);
-            let fs = len > 22 ? 5.5 : (len > 16 ? 6.5 : (len > 12 ? 7.5 : 8.5));
-            if (minSide < 40) fs = Math.min(fs, 6.5);
-            if (minSide < 24) fs = Math.min(fs, 5.5);
-            const textEl = document.createElementNS(svgNS, 'text');
-            textEl.setAttribute('x', String(cx));
-            textEl.setAttribute('y', String(cy));
-            textEl.setAttribute('text-anchor', 'middle');
-            textEl.setAttribute('dominant-baseline', 'middle');
-            textEl.setAttribute('font-size', String(fs));
-            textEl.textContent = text;
-            labelLayer.appendChild(textEl);
-          });
-
-          mapReady = true;
-        } catch (err) {
-          setMapStatus('Map could not be drawn.');
-        }
-
-        let hovered = null;
-        svg.addEventListener('mousemove', (e) => {
-          const target = e.target;
-          if (!(target instanceof SVGPathElement) || !target.classList.contains('district-map-shape')) {
-            if (hovered) hovered.classList.remove('is-hover');
-            hovered = null;
-            hideTooltip();
-            return;
-          }
-          if (hovered && hovered !== target) hovered.classList.remove('is-hover');
-          hovered = target;
-          hovered.classList.add('is-hover');
-
-          const label = target.getAttribute('data-district-label') || '';
-          const count = Number(target.getAttribute('data-count') || 0);
-          showTooltip(e.clientX, e.clientY, label, count);
-        });
-        svg.addEventListener('mouseleave', () => {
-          if (hovered) hovered.classList.remove('is-hover');
-          hovered = null;
-          hideTooltip();
-        });
-        svg.addEventListener('click', (e) => {
-          const target = e.target;
-          if (!(target instanceof SVGPathElement) || !target.classList.contains('district-map-shape')) return;
-          const did = target.getAttribute('data-district-id') || '';
-          if (did) {
-            const url = new URL(reportsUrl, window.location.origin);
-            const params = new URLSearchParams(window.location.search);
-            ['district', 'school', 'abuse_type', 'from_date', 'to_date', 'age_range'].forEach(k => {
-              if (params.has(k)) url.searchParams.set(k, params.get(k));
-            });
-            url.searchParams.set('district', did);
-            window.location.href = url.toString();
-            return;
-          }
-          const key = target.getAttribute('data-district-key') || '';
-          if (key) navigateToDistrict(key);
-        });
-
-        if (mapReady) hideMapStatus();
-      });
-    })
-    .catch(() => {
-      setMapStatus('Map unavailable — could not load map data.');
-    });
-})();
-</script>
-
+        </div>
+ 
+    </div>{{-- /.dashboard-scroll --}}
+</div>{{-- /.main-panel --}}
+ 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+ 
 <script>
+/* ════════════════════════════════════════
+   PDF export
+════════════════════════════════════════ */
 function exportPDF() {
-    const element = document.getElementById('main-content');
-    if (!element) { alert("Main content not found!"); return; }
-    html2pdf().from(element).set({
-        margin: 10, filename: 'provincial-admin-dashboard.pdf',
+    const el = document.getElementById('main-content');
+    if (!el) return;
+    html2pdf().from(el).set({
+        margin: 10,
+        filename: 'heatmap-{{ Str::slug($province->province_name ?? "province") }}.pdf',
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
     }).save();
 }
+ 
+/* ════════════════════════════════════════
+   Sidebar toggle
+════════════════════════════════════════ */
+(function () {
+    const toggle  = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('provincialSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (!toggle || !sidebar) return;
+    function open()  { sidebar.classList.add('open');    overlay.classList.add('active'); }
+    function close() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
+    toggle.addEventListener('click',  () => sidebar.classList.contains('open') ? close() : open());
+    overlay.addEventListener('click', close);
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) close(); });
+})();
+ 
+/* ════════════════════════════════════════
+   Heatmap view toggle
+════════════════════════════════════════ */
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const view = this.dataset.view;
+        document.querySelectorAll('.cell-count').forEach(el => el.style.display = view === 'count'   ? '' : 'none');
+        document.querySelectorAll('.cell-pct')  .forEach(el => el.style.display = view === 'percent' ? '' : 'none');
+    });
+});
+ 
+/* ════════════════════════════════════════
+   Geographic map  ← upgraded from v2
+════════════════════════════════════════ */
+(function () {
+    const container  = document.getElementById('district-map');
+    const tooltipEl  = document.getElementById('map-tooltip');
+    const ttDistrict = document.getElementById('tt-district');
+    const ttTotal    = document.getElementById('tt-total');
+    const ttBreak    = document.getElementById('tt-breakdown');
+    const keyEl      = document.getElementById('map-key');
+    const keyRowsEl  = document.getElementById('map-key-rows');
+    if (!container) return;
+ 
+    /* PHP → JS data */
+    const provinceSlug      = @json($mapProvinceSlug ?? '');
+    const districtCounts    = @json($mapDistrictCounts ?? []);
+    const heatmapTotals     = @json($heatmapRowTotals ?? []);
+    const heatmapMatrix     = @json($heatmapMatrix ?? []);
+    const heatmapAbuseTypes = @json($heatmapAbuseTypes ?? []);
+    const tableNames        = @json(array_keys($heatmapMatrix ?? []));
+ 
+    /* ── Name normalisation ── */
+    function norm(name) {
+        return String(name || '').toLowerCase()
+            .replace(/&/g, 'and').replace(/[^a-z0-9\s]/g, ' ')
+            .replace(/\s+/g, ' ').trim()
+            .replace(/^city of\s+/, '')
+            .replace(/\s+district municipality$/, '')
+            .replace(/\s+metropolitan municipality$/, '')
+            .replace(/\s+local municipality$/, '');
+    }
+    function resolveKey(name) {
+        const n = norm(name);
+        const mappings = [
+            ['tshwane','tshwane'], ['johannesburg','johannesburg'],
+            ['ekurhuleni','ekurhuleni'], ['sedibeng','sedibeng'],
+            ['gauteng east','gauteng east'], ['gauteng north','gauteng north'],
+            ['gauteng west','gauteng west'],
+        ];
+        for (const [kw, key] of mappings) if (n.includes(kw)) return key;
+        return n;
+    }
+    function fmtName(name) {
+        return String(name || '').trim()
+            .replace(/\s+District Municipality$/i, '')
+            .replace(/\s+Metropolitan Municipality$/i, '')
+            .replace(/\s+Local Municipality$/i, '').trim();
+    }
+ 
+    /* ── Aggregate totals ── */
+    const countByKey = {};
+    Object.entries(districtCounts || {}).forEach(([n, c]) => {
+        const k = resolveKey(n);
+        countByKey[k] = (countByKey[k] || 0) + (Number(c) || 0);
+    });
+    Object.entries(heatmapTotals || {}).forEach(([n, c]) => {
+        const k = resolveKey(n);
+        if (!countByKey[k]) countByKey[k] = 0;
+        if ((Number(c) || 0) > countByKey[k]) countByKey[k] = Number(c) || 0;
+    });
+ 
+    const max = Math.max(1, ...Object.values(countByKey));
+ 
+    /* ── Heat colour: lime-yellow → amber → red ── */
+    function heatColor(count) {
+        if (!count || count <= 0) return '#d1cb23';
+        const t = Math.min(1, count / max);
+        if (t < 0.34) return '#d1cb23';
+        if (t < 0.67) return '#fbbf0f';
+        return '#ed1c24';
+    }
+    function legendColor(count) {
+        if (!count || count <= 0) return '#d1cb23';
+        const t = count / max;
+        if (t <= 0.33) return '#d1cb23';
+        if (t <= 0.66) return '#fbbf0f';
+        return '#ed1c24';
+    }
+    function barColor(count) {
+        const t = count / max;
+        if (t <= 0.33) return '#d1cb23';
+        if (t <= 0.66) return '#fbbf0f';
+        return '#ed1c24';
+    }
+ 
+    /* ── Rich tooltip (v1 style: per-type breakdown) ── */
+    function showTooltip(cx, cy, rawName, count) {
+        ttDistrict.textContent = fmtName(rawName);
+        const matchKey = Object.keys(heatmapMatrix).find(k =>
+            resolveKey(k) === resolveKey(rawName)
+        );
+        ttBreak.innerHTML = '';
+        if (matchKey && heatmapMatrix[matchKey]) {
+            const row   = heatmapMatrix[matchKey];
+            const total = row.reduce((a, b) => a + b, 0);
+            ttTotal.textContent = `Total: ${total.toLocaleString()} report(s)`;
+            const rowMax = Math.max(1, ...row);
+            heatmapAbuseTypes.forEach((type, i) => {
+                const c = row[i] || 0;
+                if (c === 0) return;
+                const pct = Math.round(c / rowMax * 100);
+                const div = document.createElement('div');
+                div.className = 'tt-row';
+                div.innerHTML = `
+                    <div style="flex:1;">
+                        <div class="tt-type">${type}</div>
+                        <div class="tt-bar" style="width:${pct}%;background:${barColor(c)};"></div>
+                    </div>
+                    <span class="tt-count">${c.toLocaleString()}</span>`;
+                ttBreak.appendChild(div);
+            });
+            if (!ttBreak.children.length) ttTotal.textContent = 'No reports recorded.';
+        } else {
+            ttTotal.textContent = `${Number(count).toLocaleString()} report(s)`;
+        }
+        tooltipEl.style.display = 'block';
+        const rect = container.getBoundingClientRect();
+        const tx = Math.min(rect.width  - 300, Math.max(12, cx - rect.left + 18));
+        const ty = Math.min(rect.height - 200, Math.max(12, cy - rect.top  + 12));
+        tooltipEl.style.left = tx + 'px';
+        tooltipEl.style.top  = ty + 'px';
+    }
+    function hideTooltip() { tooltipEl.style.display = 'none'; }
+ 
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const urls  = [
+        `https://raw.githubusercontent.com/datawizzards/zadmaps/master/geojson/${provinceSlug}.json`,
+        `https://raw.githubusercontent.com/datawizzards/zadmaps/main/geojson/${provinceSlug}.json`,
+    ];
+ 
+    function tryFetch(arr, idx) {
+        if (idx >= arr.length) {
+            container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#6b7280;font-size:13px;font-family:Montserrat,sans-serif;">Map data unavailable for "${provinceSlug}".</div>`;
+            return;
+        }
+        fetch(arr[idx])
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(items => renderMap(items))
+            .catch(() => tryFetch(arr, idx + 1));
+    }
+ 
+    function renderMap(items) {
+        if (!items || !items.length) {
+            container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#6b7280;">No shapes found.</div>`;
+            return;
+        }
+ 
+        /* Build SVG */
+        const svg  = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('class', 'district-map-svg');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+ 
+        /* Defs: arrow marker + drop-shadow filter */
+        const defs = document.createElementNS(svgNS, 'defs');
+        const filt = document.createElementNS(svgNS, 'filter');
+        filt.setAttribute('id', 'map-shadow');
+        filt.innerHTML = '<feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.15)"/>';
+        defs.appendChild(filt);
+        svg.appendChild(defs);
+ 
+        const gShapes = document.createElementNS(svgNS, 'g');     /* layer 1: shapes */
+        const gGlows  = document.createElementNS(svgNS, 'g');     /* layer 2: radial glows */
+        const gLabels = document.createElementNS(svgNS, 'g');     /* layer 3: city names */
+        gGlows.style.pointerEvents  = 'none';
+        gLabels.style.pointerEvents = 'none';
+        svg.append(gShapes, gGlows, gLabels);
+ 
+        container.querySelector('svg.district-map-svg')?.remove();
+        container.insertBefore(svg, container.firstChild);
+ 
+        const shapeByKey = {};
+ 
+        items.forEach(it => {
+            const rawName = it?.name ?? '';
+            const key     = resolveKey(rawName);
+            const count   = countByKey[key] ?? 0;
+ 
+            const path = document.createElementNS(svgNS, 'path');
+            path.setAttribute('d',     it?.path ?? '');
+            path.setAttribute('class', 'district-map-shape');
+            path.setAttribute('fill',  heatColor(count));
+            path.setAttribute('aria-label', `${fmtName(rawName)}: ${count.toLocaleString()} reports`);
+ 
+            path.addEventListener('mouseenter', e => {
+                showTooltip(e.clientX, e.clientY, rawName, count);
+            });
+            path.addEventListener('mousemove',  e => showTooltip(e.clientX, e.clientY, rawName, count));
+            path.addEventListener('mouseleave', () => hideTooltip());
+            gShapes.appendChild(path);
+ 
+            if (!shapeByKey[key] || count > (shapeByKey[key].count || 0)) {
+                shapeByKey[key] = { rawName, path, count };
+            }
+        });
+ 
+        /* Post-render: viewBox + city labels + radial glows + key */
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+ 
+                /* Set viewBox */
+                try {
+                    const bb = gShapes.getBBox();
+                    if (bb.width > 0) {
+                        svg.setAttribute('viewBox',
+                            `${bb.x - 8} ${bb.y - 8} ${bb.width + 16} ${bb.height + 16}`);
+                    }
+                } catch (e) {}
+ 
+                /* Collect centres */
+                const centers = {};
+                Object.entries(shapeByKey).forEach(([key, val]) => {
+                    try {
+                        const bb = val.path.getBBox();
+                        centers[key] = { x: bb.x + bb.width / 2, y: bb.y + bb.height / 2 };
+                    } catch {}
+                });
+ 
+                /* ── Radial glow (from v2) ── */
+                Object.entries(shapeByKey).forEach(([key, val]) => {
+                    const c     = centers[key];
+                    const count = val.count;
+                    if (!c || !count) return;
+ 
+                    const t      = Math.min(1, count / max);
+                    const gradId = `glow-${key.replace(/[^a-z0-9]/g, '-')}`;
+                    const radius = Math.max(20, 45 * t);
+                    const color  = legendColor(count);
+ 
+                    const grad  = document.createElementNS(svgNS, 'radialGradient');
+                    grad.setAttribute('id', gradId);
+                    grad.setAttribute('gradientUnits', 'userSpaceOnUse');
+                    grad.setAttribute('cx', c.x); grad.setAttribute('cy', c.y);
+                    grad.setAttribute('r',  radius);
+ 
+                    const s1 = document.createElementNS(svgNS, 'stop');
+                    s1.setAttribute('offset', '0%');
+                    s1.setAttribute('stop-color', color);
+                    s1.setAttribute('stop-opacity', '0.52');
+ 
+                    const s2 = document.createElementNS(svgNS, 'stop');
+                    s2.setAttribute('offset', '100%');
+                    s2.setAttribute('stop-color', color);
+                    s2.setAttribute('stop-opacity', '0');
+ 
+                    grad.append(s1, s2);
+                    defs.appendChild(grad);
+ 
+                    const glow = document.createElementNS(svgNS, 'circle');
+                    glow.setAttribute('cx', c.x); glow.setAttribute('cy', c.y);
+                    glow.setAttribute('r',  radius);
+                    glow.setAttribute('fill', `url(#${gradId})`);
+                    gGlows.appendChild(glow);
+                });
+ 
+                /* ── City name labels — white pill badge style ── */
+                Object.entries(shapeByKey).forEach(([key, val]) => {
+                    const c = centers[key];
+                    if (!c) return;
+                    const title = fmtName(val.rawName);
+                    const fs    = 2.4;   /* SVG user-unit font size */
+ 
+                    /* Estimate text width to size the pill.
+                       Approx 1.28 user-units per character at fs=2.4 */
+                    const charW   = fs * 0.62;
+                    const textW   = title.length * charW;
+                    const padX    = 1.8;
+                    const padY    = 0.9;
+                    const pillW   = textW + padX * 2;
+                    const pillH   = fs + padY * 2;
+                    const pillX   = c.x - pillW / 2;
+                    /* Offset pill upward slightly from centre dot */
+                    const pillY   = c.y - pillH - 1.2;
+ 
+                    /* White rounded pill background */
+                    const pill = document.createElementNS(svgNS, 'rect');
+                    pill.setAttribute('x',      pillX);
+                    pill.setAttribute('y',      pillY);
+                    pill.setAttribute('width',  pillW);
+                    pill.setAttribute('height', pillH);
+                    pill.setAttribute('rx',     pillH / 2);  /* fully rounded ends */
+                    pill.setAttribute('fill',   'rgba(255,255,255,0.92)');
+                    pill.setAttribute('stroke', 'rgba(200,200,200,0.5)');
+                    pill.setAttribute('stroke-width', '0.3');
+                    /* Subtle drop shadow via filter */
+                    pill.setAttribute('filter', 'url(#map-shadow)');
+ 
+                    /* Label text centred in pill */
+                    const textEl = document.createElementNS(svgNS, 'text');
+                    textEl.setAttribute('x',                c.x);
+                    textEl.setAttribute('y',                pillY + pillH / 2);
+                    textEl.setAttribute('text-anchor',      'middle');
+                    textEl.setAttribute('dominant-baseline','middle');
+                    textEl.setAttribute('font-size',        fs);
+                    textEl.setAttribute('font-weight',      '700');
+                    textEl.setAttribute('font-family',      'Montserrat, sans-serif');
+                    textEl.setAttribute('fill',             '#1f2937');
+                    textEl.textContent = title;
+ 
+                    /* Small black centre dot marker */
+                    const dot = document.createElementNS(svgNS, 'circle');
+                    dot.setAttribute('cx',   c.x);
+                    dot.setAttribute('cy',   c.y);
+                    dot.setAttribute('r',    '0.7');
+                    dot.setAttribute('fill', 'rgba(0,0,0,0.6)');
+ 
+                    gLabels.append(pill, textEl, dot);
+                });
+ 
+                /* ── Key panel ── */
+                buildKey(shapeByKey);
+ 
+            }, 140);
+        });
+    }
+ 
+    function buildKey(shapeByKey) {
+        const dedup = new Map();
+        tableNames.forEach(n => {
+            const k = resolveKey(n);
+            if (!dedup.has(k)) dedup.set(k, n);
+        });
+        Object.entries(shapeByKey).forEach(([k, v]) => {
+            if (!dedup.has(k)) dedup.set(k, v.rawName);
+        });
+ 
+        const data = Array.from(dedup.entries()).map(([k, orig]) => ({
+            key:   k,
+            label: fmtName(shapeByKey[k]?.rawName ?? orig),
+            count: Number(shapeByKey[k]?.count ?? countByKey[k] ?? 0),
+        }));
+        data.sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+ 
+        if (!keyEl || !keyRowsEl) return;
+        keyRowsEl.innerHTML = '';
+        keyEl.style.display = 'block';
+        data.forEach((d, idx) => {
+            const row = document.createElement('div');
+            row.className = 'key-row';
+            const swatch = document.createElement('span');
+            swatch.className = 'key-swatch';
+            swatch.style.background = legendColor(d.count);
+            row.innerHTML = `
+                <span class="key-num">${idx + 1}</span>
+                <span class="key-name">${d.label}</span>
+                <span class="key-cnt">${d.count.toLocaleString()}</span>`;
+            row.insertAdjacentElement('afterbegin', swatch);
+            keyRowsEl.appendChild(row);
+        });
+    }
+ 
+    tryFetch(urls, 0);
+})();
 </script>
-
+ 
 </body>
 </html>
+ 
