@@ -52,6 +52,6 @@ class NewsIndex extends Component
 
         return view('livewire.news-index', [
             'newsletters' => $newsletters
-        ])->layout('layouts.app'); 
+        ])->layout('components.layouts.app'); 
     }
 }
