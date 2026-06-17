@@ -48,9 +48,7 @@
                 </button>
             </div>
             <nav class="mt-8 px-4">
-                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-                    Back
-                </a>
+                
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Home
                 </a>
@@ -69,6 +67,26 @@
         <style>
             .no-scrollbar::-webkit-scrollbar { display: none !important; }
             .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
+            #custom-scrollbar-track {
+                width: 12px;
+                background-color: #f0f0f0;
+                border-radius: 9999px;
+            }
+
+            #custom-scroll-thumb {
+                width: 12px;
+                background-color: #c7da30;
+                border-radius: 9999px;
+                min-height: 56px;
+            }
+
+            .news-scroll-arrow {
+                color: #c7da30;
+                line-height: 1;
+                font-size: 12px;
+                font-weight: 900;
+            }
         </style>
         
        <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-1 my-0 w-full px-4">
@@ -81,9 +99,11 @@
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-[#2f343e] tracking-wide flex items-end" style="font-family: 'Montserrat', sans-serif;">
             <span class="relative inline-block">
                 New
-                <span class="absolute left-0 bottom-[-4px] md:bottom-[-6px] w-full h-[4px] md:h-[5px] bg-[#c7da30]"></span>
+
+                <span class="absolute left-0 bottom-[-4px] md:bottom-[-6px] w-full h-[4px] md:h-[8px] bg-[#c7da30]"></span>
+
             </span>
-            <span>s.</span>
+            <span>s</span>
         </h1>
     </div>
 
@@ -94,17 +114,17 @@
             <div class="w-full flex justify-end items-center gap-5 mb-6 pr-6">
                 <span class="font-[Montserrat] text-[16px] text-[#2f343e] tracking-wider self-start mt-2">Search</span>
                 
-                <div class="relative w-60">
-                    <input type="text" 
-                           wire:model.live="search" 
-                           placeholder="News, Article and Event" 
-                           class="font-[Montserrat] w-full px-6 py-2 pr-8 text-xs border border-[#c7da30] rounded-full focus:outline-none focus:ring-1 focus:ring-[#c7da30] text-gray-600">
-                    
-                    <div class="absolute right-3 top-2 text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.603Z" />
-                        </svg>
-                    </div>
+               <div class="relative w-60">
+    <input type="text" 
+           wire:model.live="search" 
+           placeholder="News, Article and Event" 
+           class="font-[Montserrat] w-full px-6 py-2 pr-8 text-xs border-2 border-[#c7da30] rounded-full focus:outline-none focus:ring-1 focus:ring-[#c7da30] text-gray-600">
+    
+    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-black">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.603Z" />
+        </svg>
+    </div>
 
                     @if(!empty($suggestions))
                         <div class="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
@@ -214,69 +234,50 @@
                     @endforelse
 
                 </div>
-
-                <div class="w-4 h-full flex flex-col justify-between items-center py-0 flex-shrink-0 select-none bg-white relative">
-                    <button type="button" 
-                            onclick="document.getElementById('news-scroll-viewport').scrollTop -= 180;" 
-                            class="text-[#c7da30] hover:text-black transition-colors focus:outline-none p-1 cursor-pointer bg-transparent border-0 z-20 -mt-2.5">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 pointer-events-none">
-                            <path fill-rule="evenodd" d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                    
-                    <div id="custom-scrollbar-track" class="w-2 flex-grow bg-gray-100 rounded-full my-4 min-h-[40px] relative w-full max-w-[6px] cursor-pointer">
-                        <div id="custom-scroll-thumb" 
-                             class="w-full bg-[#c7da30] rounded-full absolute top-0 transition-all duration-75 cursor-grab active:cursor-grabbing" 
-                             style="height: 30%; top: 0%;"></div>
-                    </div>
-                    
-                    <button type="button" 
-                            onclick="document.getElementById('news-scroll-viewport').scrollTop += 180;" 
-                            class="text-[#c7da30] hover:text-black transition-colors focus:outline-none p-1 cursor-pointer bg-transparent border-0 z-20">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 pointer-events-none">
-                            <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                    
-                </div>
-                    <div class="absolute right-9 bottom-2 z-30">
-        <a href="{{ route('news.feed') }}" class="font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors flex items-center gap-2" style="text-decoration: underline;">
-            Next 
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black inline-block">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-            </svg>
-        </a>
+<div class="w-3 h-full flex flex-col justify-between items-center pt-0 pb-16 flex-shrink-0 select-none relative self-stretch">
+    
+    <button type="button" 
+            onclick="document.getElementById('news-scroll-viewport').scrollTop -= 180;" 
+            class="news-scroll-arrow hover:text-black transition-colors focus:outline-none p-0 cursor-pointer bg-transparent border-0 z-20"
+            aria-label="Scroll up">
+        ▲
+    </button>
+    
+    <div id="custom-scrollbar-track" class="flex-grow my-2 min-h-[40px] relative cursor-pointer">
+        <div id="custom-scroll-thumb" 
+             class="absolute top-0 left-0 transition-all duration-75 cursor-grab active:cursor-grabbing" 
+             style="height: 30%; top: 0%;"></div>
     </div>
+    
+    <button type="button" 
+            onclick="document.getElementById('news-scroll-viewport').scrollTop += 180;" 
+            class="news-scroll-arrow hover:text-black transition-colors focus:outline-none p-0 cursor-pointer bg-transparent border-0 z-20"
+            aria-label="Scroll down">
+        ▼
+    </button>
+</div>
+                 <div class="absolute right-9 bottom-2 z-30">
+    <a href="{{ route('news.feed') }}" class="font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors flex items-center gap-0" style="text-decoration: underline;">
+        Next 
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block"style="width: 30px; height: 24px;">
+            <path d="M14 5l7 7-7 7v-4H3v-6h11z"/>
+        </svg>
+    </a>
+</div>
+
             </div>
         </div>
     </div>
 
     <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6"
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-0"
             style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank">
-                    <img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px;">
-                </a>
-                <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;">
-                </a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;">
-                </a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon" style="width: 35.2px; height: 30px;">
-                </a>
-                <a href="https://www.instagram.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon" style="width: 35.2px; height: 30px;">
-                </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 35.2px; height: 30px;">
-                </a>
-            </div>
+           
+
         </div>
     </footer>
 </div>
@@ -326,7 +327,7 @@
         }
 
         const visibleRatio = view.clientHeight / view.scrollHeight;
-        const thumbHeightPercentage = Math.max(visibleRatio * 100, 15);
+        const thumbHeightPercentage = Math.max(visibleRatio * 100, 28);
         const currentScrollPercent = (view.scrollTop / totalScrollableHeight) * (100 - thumbHeightPercentage);
 
         thumb.style.height = `${thumbHeightPercentage}%`;
@@ -373,7 +374,7 @@
             thumb.style.top = `${newTopPercent}%`;
 
             const totalScrollableHeight = view.scrollHeight - view.clientHeight;
-            const scrollRatio = newTopPercent / maxTopPercent;
+            const scrollRatio = maxTopPercent > 0 ? newTopPercent / maxTopPercent : 0;
             view.scrollTop = scrollRatio * totalScrollableHeight;
         }
 
@@ -404,7 +405,8 @@
             targetTopPercent = Math.max(0, Math.min(targetTopPercent, 100 - thumbHeightPercent));
             
             const totalScrollableHeight = view.scrollHeight - view.clientHeight;
-            view.scrollTop = (targetTopPercent / (100 - thumbHeightPercent)) * totalScrollableHeight;
+            const maxTopPercent = 100 - thumbHeightPercent;
+            view.scrollTop = maxTopPercent > 0 ? (targetTopPercent / maxTopPercent) * totalScrollableHeight : 0;
         });
     });
 </script>
