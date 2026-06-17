@@ -38,7 +38,6 @@
                 </button>
             </div>
             <nav class="mt-8 px-4">
-                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Back</a>
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Home</a>
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">About Us</a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Contact Us</a>
@@ -95,23 +94,27 @@
                 </p>
             </div>
 
-            <div class="mb-4">
-                <a href="{{ route('news') }}" class="font-[Montserrat] text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0" style="text-decoration: underline;">
-                    <span class="inline-flex items-center shrink-0 mr-0.5" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 12" class="inline-block w-5 h-3">
-                            <path fill="#000000" d="M0 6l7-6v3.5h13v5H7v3.5L0 6z"/>
-                        </svg>
-                    </span>
-                    Back
-                </a>
-            </div>
+
+         <div class="mb-4">
+    <a href="{{ route('news') }}" class="-ml-2 font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0 underline">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block"style="width: 30px; height: 24px;">
+            <path d="M10 5l-7 7 7 7v-4h11v-6h-11z"/>
+        </svg>
+        Back
+    </a>
+</div>
         </div>
 
     </main>
 
     <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
-        <div class="px-6" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
-            <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-0" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+            <div>
+                <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+            </div>
+            
+
         </div>
     </footer>
 
