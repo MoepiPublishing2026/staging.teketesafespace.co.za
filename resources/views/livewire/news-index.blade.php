@@ -136,14 +136,14 @@
 
                             <div class="flex-1 text-center md:text-left w-full min-w-0">
                                 <h2 class="text-[19px] font-bold text-[#2f343e] text-slate-800 leading-snug mb-1 break-words">
-                                  Tekete Safe Space App Receives Proudly South African Approval, StrengthTekete Safe Space App Receives Proudly South African Approval, Strengthening Support for School Safety and Wellbeing
+                                  Tekete Safe Space App Receives Proudly South African Approval, Strengthening Support for School Safety and Wellbeing
                                 </h2>
                                 
                                 <div class="text-[14px] text-[#2f343e] text-slate-800 mb-2">
                                     <span>FOR IMMEDIATE RELEASE: 04/02/2026</span> 
                                 </div>
 
-                                <button type="button" wire:click="toggleExpand('psa-static')" class="text-[20px] font-bold text-[#c7da30] underline transition-colors focus:outline-none">
+                                <button type="button" wire:click="toggleExpand('psa-static')" class="text-[20px] font-medium text-[#c7da30] underline transition-colors focus:outline-none">
                                     {{ $expandedNewsletterId === 'psa-static' ? 'Show Less' : 'Read More' }}
                                 </button>
                             </div>
@@ -192,7 +192,7 @@
                                         @endif
                                     </div>
 
-                                    <button type="button" wire:click="toggleExpand('{{ $item->id }}')" class="text-[20px] font-bold text-[#c7da30] underline transition-colors focus:outline-none">
+                                    <button type="button" wire:click="toggleExpand('{{ $item->id }}')" class="text-[20px] font-medium text-[#c7da30] underline transition-colors focus:outline-none">
                                         {{ (string)$expandedNewsletterId === (string)$item->id ? 'Show Less' : 'Read More' }}
                                     </button>
                                 </div>
