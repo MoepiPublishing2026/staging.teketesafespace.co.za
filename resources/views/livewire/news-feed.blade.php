@@ -58,8 +58,11 @@
         </div>
 
 <div class="text-center mb-8 px-4">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-[#2f343e] font-[Montserrat] leading-relaxed md:leading-loose">
-        <span class="border-b-4 border-[#c7da30] pb-1 md:pb-2">Tekete Safe Space </span><span class="whitespace-nowrap"><span class="border-b-4 border-[#c7da30] pb-1 md:pb-2">New</span>s.</span>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-[#2f343e] tracking-wide font-[Montserrat] leading-tight">
+        <span class="relative inline-block">
+            Tekete Safe Space New
+            <span class="absolute left-0 bottom-[-5px] md:bottom-[-7px] w-full h-[7px] md:h-[8px] bg-[#c7da30]"></span>
+        </span><span>s.</span>
     </h1>
 </div>
 
@@ -93,10 +96,12 @@
             </div>
 
             <div class="mb-4">
-                <a href="{{ route('news') }}" class="font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-1 underline">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black inline-block">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
+                <a href="{{ route('news') }}" class="font-[Montserrat] text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0" style="text-decoration: underline;">
+                    <span class="inline-flex items-center shrink-0 mr-0.5" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 12" class="inline-block w-5 h-3">
+                            <path fill="#000000" d="M0 6l7-6v3.5h13v5H7v3.5L0 6z"/>
+                        </svg>
+                    </span>
                     Back
                 </a>
             </div>
@@ -105,18 +110,8 @@
     </main>
 
     <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
-            <div>
-                <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
-            </div>
-            <div class="flex items-center gap-4">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank"><img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px;"></a>
-                <a href="https://www.X.com/moepipublishing" target="_blank"><img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;"></a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank"><img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;"></a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank"><img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon" style="width: 35.2px; height: 30px;"></a>
-                <a href="https://www.instagram.com/moepipublishing" target="_blank"><img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon" style="width: 35.2px; height: 30px;"></a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank"><img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 35.2px; height: 30px;"></a>
-            </div>
+        <div class="px-6" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+            <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
         </div>
     </footer>
 
