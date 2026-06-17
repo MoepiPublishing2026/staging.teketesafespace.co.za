@@ -1,3 +1,5 @@
+@php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
+
 <div>
 
     <div id="main-landing-container" x-data="{ menuOpen: false }"
@@ -17,7 +19,7 @@
                 <nav class="hidden lg:flex items-center gap-[2vw] font-medium" style="font-family: 'Montserrat', sans-serif;">                    
                     <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
                     <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
-                    <a href="http://bookingstaging.teketesafespace.co.za/" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
+                    <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">
 
                             Workshops
                     </a> 
@@ -53,7 +55,7 @@
                 </div>
                 <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="http://bookingstaging.teketesafespace.co.za/" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
+                <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
 
                         Workshops
                 </a>
