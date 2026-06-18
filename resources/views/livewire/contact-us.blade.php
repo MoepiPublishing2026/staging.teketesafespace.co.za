@@ -1,3 +1,4 @@
+@php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
 <div class="contact-page-livewire-container overflow-x-hidden w-full min-h-screen flex flex-col">
 
     <style>
@@ -85,6 +86,10 @@
             <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
                 <a href="{{ url('/') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ url('/about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
+                 <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">
+
+                            Workshops
+                    </a>
                 <a href="{{ url('/contact-us') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
             </nav>
 
@@ -116,6 +121,8 @@
         <nav class="mt-8 px-4 text-[17px] font-[Montserrat]">
             <a href="{{ url('/') }}" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Home</a>
             <a href="{{ url('/about-us') }}" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">About Us</a>
+             <a href="{{ $workshopBookingUrl }}/workshops" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Workshops</a>
+
             <a href="{{ url('/contact-us') }}" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Contact Us</a>
         </nav>
     </div>
