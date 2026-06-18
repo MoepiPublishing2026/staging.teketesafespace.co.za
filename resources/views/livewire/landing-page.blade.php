@@ -55,10 +55,11 @@
                 </div>
                 <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
+                <!-- <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
 
                         Workshops
-                </a>
+                </a> -->
+                <a href="{{ $workshopBookingUrl }}/workshops" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Workshops</a>
                 <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Contact Us</a>
                 <a href="{{ route('news') }}"  @click="menuOpen = false" class="text-black text-[17px] hover:text-[#c7da30] transition-colors">News</a>
 
