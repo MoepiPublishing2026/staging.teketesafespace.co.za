@@ -267,20 +267,27 @@
     let startY = 0;
     let startTop = 0;
 
-    function toggleMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (!mobileMenu) return;
-        
-        const isHidden = mobileMenu.classList.contains('hidden');
-
-        if (isHidden) {
-            mobileMenu.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; 
-        } else {
-            mobileMenu.classList.add('hidden');
-            document.body.style.overflow = 'auto'; 
+     function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu) return;
+            const isHidden = mobileMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                mobileMenu.classList.add('hidden');
+                document.body.style.overflow = 'auto'; 
+            }
         }
-    }
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                });
+            }
+        });
 
     function updateCustomScrollbar() {
         const view = document.getElementById('news-scroll-viewport');
