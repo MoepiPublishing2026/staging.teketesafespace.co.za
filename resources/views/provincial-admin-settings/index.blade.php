@@ -564,7 +564,11 @@ button.submit-btn {
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Enter your full name">
+                    <input id="name" name="name" 
+                    pattern="[A-Za-z ]+"
+                    title="Only letters and spaces are allowed"
+                    type="text" value="{{ old('name', $user->name) }}" 
+                    placeholder="Enter your full name">
                     @error('name')
                         <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
                     @enderror

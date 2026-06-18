@@ -570,7 +570,12 @@ button.submit-btn {
 
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input id="name" name="name" type="text" value="{{ old('name', $user->name) }}" placeholder="Enter your full name">
+                    <input id="name"
+                     name="name" type="text" 
+                     pattern="[A-Za-z ]+"
+                     title="Only letters and spaces are allowed"
+                     value="{{ old('name', $user->name) }}" 
+                     placeholder="Enter your full name">
                     @error('name')
                         <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
                     @enderror
@@ -583,7 +588,10 @@ button.submit-btn {
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input id="phone_number" name="phone_number" type="text" value="{{ old('phone', $user->phone_number ?  $user->phone_number : '') }}" placeholder="0821234567">
+                    <input id="phone_number" 
+                    name="phone_number" type="text" 
+                    value="{{ old('phone', $user->phone_number ?  
+                    $user->phone_number : '') }}" placeholder="0821234567">
                     @error('phone')
                         <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
                     @enderror

@@ -171,6 +171,8 @@
                     <label class="block font-bold mb-3 font-montserrat-black" style="font-size: 16px;">Full name</label>
                     <input type="text" wire:model.defer="Full_name"
                            placeholder="Your full name"
+                           pattern="[A-Za-z ]+"
+                           title="Only letters and spaces are allowed"
                            class="w-full rounded-lg px-4 py-4 focus:outline-none font-montserrat-regular"
                            style="border: 3px solid #c7da30; font-size: 15px;">
                     @error('Full_name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
