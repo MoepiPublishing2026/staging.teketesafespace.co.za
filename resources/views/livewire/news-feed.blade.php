@@ -1,21 +1,19 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    <header style="position: fixed; top: 0; left: 0; width: 100%; background-color: #ffffff; z-index: 150; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
-        <div class="flex flex-row justify-between items-center px-8 py-2" style="max-width: 1280px; margin: 0 auto;">
-            <div>
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
-            </div>
-            
-            <div style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-                <div class="hidden md:flex gap-8">
-                    <a href="{{ route('landing-page') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">Home</a>
-                    <a href="{{ route('about-us') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">About Us</a>
-                    <a href="{{ route('contact-us') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">Contact Us</a>
-                     <a href="{{ route('news') }}" class="font-bold transition-colors hover:text-[#c7da30]"style="color: black; text-decoration: none;">News</a>
-                </div>
+ <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm font-[Montserrat]">
+        <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
 
-                <div class="md:hidden flex items-center relative z-[160]">
+            <div class="flex items-center gap-8">
+                <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
+                    <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
+                    <a href="{{ route('about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
+                    <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
+                    <a href="{{ route('news') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">News</a>
+                </nav>
+
+                <div class="md:hidden">
                     <button id="mobile-menu-button" type="button" class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30] cursor-pointer">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -37,11 +35,11 @@
                     </svg>
                 </button>
             </div>
-            <nav class="mt-8 px-4">
-                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Back</a>
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Home</a>
-                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">About Us</a>
-                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Contact Us</a>
+            <nav class="mt-8 px-4 text-[17px] font-[Montserrat]">
+                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Home</a>
+                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">About Us</a>
+                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Contact Us</a>
+                <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
             </nav>
         </div>
     </div>
@@ -58,8 +56,11 @@
         </div>
 
 <div class="text-center mb-8 px-4">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-[#2f343e] font-[Montserrat] leading-relaxed md:leading-loose">
-        <span class="border-b-4 border-[#c7da30] pb-1 md:pb-2">Tekete Safe Space </span><span class="whitespace-nowrap"><span class="border-b-4 border-[#c7da30] pb-1 md:pb-2">New</span>s.</span>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-[#2f343e] tracking-wide font-[Montserrat] leading-tight">
+        <span class="relative inline-block">
+            Tekete Safe Space New
+            <span class="absolute left-0 bottom-[-5px] md:bottom-[-7px] w-full h-[7px] md:h-[8px] bg-[#c7da30]"></span>
+        </span><span>s.</span>
     </h1>
 </div>
 
@@ -92,31 +93,27 @@
                 </p>
             </div>
 
-            <div class="mb-4">
-                <a href="{{ route('news') }}" class="font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-1 underline">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-black inline-block">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
-                    Back
-                </a>
-            </div>
+
+         <div class="mb-4">
+    <a href="{{ route('news') }}" class="-ml-2 font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0 underline">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block"style="width: 30px; height: 24px;">
+            <path d="M10 5l-7 7 7 7v-4h11v-6h-11z"/>
+        </svg>
+        Back
+    </a>
+</div>
         </div>
 
     </main>
 
     <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-6" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-0" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
                 <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank"><img src="{{ asset('images/youtube.png') }}" alt="YouTube Icon" style="width: 30px; height: 30px;"></a>
-                <a href="https://www.X.com/moepipublishing" target="_blank"><img src="{{ asset('images/X.png') }}" alt="X Icon" style="width: 30px; height: 30px;"></a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank"><img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn Icon" style="width: 30px; height: 30px;"></a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank"><img src="{{ asset('images/facebook.png') }}" alt="Facebook Icon" style="width: 35.2px; height: 30px;"></a>
-                <a href="https://www.instagram.com/moepipublishing" target="_blank"><img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon" style="width: 35.2px; height: 30px;"></a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank"><img src="{{ asset('images/tiktok.png') }}" alt="TikTok Icon" style="width: 35.2px; height: 30px;"></a>
-            </div>
+            
+
         </div>
     </footer>
 

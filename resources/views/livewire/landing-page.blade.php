@@ -1,3 +1,5 @@
+@php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
+
 <div>
 
     <div id="main-landing-container" x-data="{ menuOpen: false }"
@@ -14,8 +16,13 @@
                         class="w-[140px] sm:w-[160px] md:w-[180px]">
                 </a>
 
-                <nav class="hidden lg:flex items-center gap-[2vw] font-medium" style="font-family: 'Montserrat', sans-serif;">                    <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
+                <nav class="hidden lg:flex items-center gap-[2vw] font-medium" style="font-family: 'Montserrat', sans-serif;">                    
+                    <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
                     <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
+                    <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">
+
+                            Workshops
+                    </a> 
                     <a href="{{ route('contact-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">Contact Us</a>
                   <a href="{{ route('news') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30] whitespace-nowrap">News</a>
 
@@ -48,6 +55,10 @@
                 </div>
                 <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
+                <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
+
+                        Workshops
+                </a>
                 <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Contact Us</a>
                 <a href="{{ route('news') }}"  @click="menuOpen = false" class="text-black text-[17px] hover:text-[#c7da30] transition-colors">News</a>
 
