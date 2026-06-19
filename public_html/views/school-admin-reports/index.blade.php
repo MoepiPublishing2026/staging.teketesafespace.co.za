@@ -530,7 +530,7 @@ tbody tr:last-child td {
                 <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                 <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
                 <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
-                <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                <td>{{ $report->created_at->format('Y M d') }}</td>
             </tr>
             @empty
             <tr>
