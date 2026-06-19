@@ -143,7 +143,7 @@
                     <div class="text-left lg:text-right">
                         <h2 class="text-2xl font-bold mb-1 font-montserrat-black">{{ Auth::user()->name }}</h2>
                         <p class="text-gray-600 text-base font-montserrat-black">Administrator</p>
-                        <p class="text-gray-600 text-base font-montserrat-black">Member Since {{ optional(Auth::user()->created_at)->format('M Y') ?? 'N/A' }}</p>
+                        <p class="text-gray-600 text-base font-montserrat-black">Member Since {{ optional(Auth::user()->created_at)->format('Y M') ?? 'N/A' }}</p>
                     </div>
                 </div>
 

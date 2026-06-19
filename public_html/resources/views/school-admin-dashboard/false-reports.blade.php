@@ -538,7 +538,7 @@ us
                                                     <td>{{ $report->phone_number ?? 'N/A' }}</td>
                                                     <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                                                     <td class="desc-cell" title="{{ $report->description ?? '' }}">{{ \Illuminate\Support\Str::limit($report->description ?? 'N/A', 60) }}</td>
-                                                    <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                                                    <td>{{ $report->created_at->format('Y M d') }}</td>
                                                     <td>{{ $report->latest_status_reason ?? 'N/A' }}</td>
                                                 </tr>
                                             @endforeach
@@ -591,7 +591,7 @@ us
                                                     <td>{{ $report->phone_number ?? 'N/A' }}</td>
                                                     <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                                                     <td class="desc-cell" title="{{ $report->description ?? '' }}">{{ \Illuminate\Support\Str::limit($report->description ?? 'N/A', 60) }}</td>
-                                                    <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                                                    <td>{{ $report->created_at->format('Y M d') }}</td>
                                                     <td>{{ $report->latest_status_reason ?? 'N/A' }}</td>
                                                 </tr>
                                             @endforeach
@@ -644,7 +644,7 @@ us
                                                     <td>{{ $report->reporter_email ?? 'N/A' }}</td>
                                                     <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                                                     <td class="desc-cell" title="{{ $report->description ?? '' }}">{{ \Illuminate\Support\Str::limit($report->description ?? 'N/A', 60) }}</td>
-                                                    <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                                                    <td>{{ $report->created_at->format('Y M d') }}</td>
                                                     <td>{{ $report->latest_status_reason ?? 'N/A' }}</td>
                                                 </tr>
                                             @endforeach
@@ -693,7 +693,7 @@ us
                                             <td>{{ $report->phone_number ?? 'N/A' }}</td>
                                             <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                                             <td class="desc-cell" title="{{ $report->description ?? '' }}">{{ \Illuminate\Support\Str::limit($report->description ?? 'N/A', 60) }}</td>
-                                            <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                                            <td>{{ $report->created_at->format('Y M d') }}</td>
                                             <td>{{ $report->latest_status_reason ?? 'N/A' }}</td>
                                         </tr>
                                     @endforeach

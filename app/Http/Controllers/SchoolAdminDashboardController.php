@@ -206,7 +206,7 @@ class SchoolAdminDashboardController extends Controller
                 'case_number' => $report->case_number,
                 'status' => $report->status,
                 'abuse_type' => optional($report->abuseType)->type_name,
-                'created_at' => optional($report->created_at)->format('Y-m-d'),
+                'created_at' => optional($report->created_at)->format('Y M d'),
             ])->values()
         )->toArray();
 
@@ -215,7 +215,7 @@ class SchoolAdminDashboardController extends Controller
             'case_number' => $report->case_number,
             'status' => $report->status,
             'abuse_type' => optional($report->abuseType)->type_name,
-            'created_at' => optional($report->created_at)->format('Y-m-d'),
+            'created_at' => optional($report->created_at)->format('Y M d'),
         ])->values()->toArray();
 
         // Prepare anonymous reports payload for modal
@@ -223,7 +223,7 @@ class SchoolAdminDashboardController extends Controller
             'case_number' => $report->case_number,
             'status' => $report->status,
             'abuse_type' => optional($report->abuseType)->type_name,
-            'created_at' => optional($report->created_at)->format('Y-m-d'),
+            'created_at' => optional($report->created_at)->format('Y M d'),
         ])->values()->toArray();
 
         // Prepare identified reports payload for modal
@@ -231,7 +231,7 @@ class SchoolAdminDashboardController extends Controller
             'case_number' => $report->case_number,
             'status' => $report->status,
             'abuse_type' => optional($report->abuseType)->type_name,
-            'created_at' => optional($report->created_at)->format('Y-m-d'),
+            'created_at' => optional($report->created_at)->format('Y M d'),
         ])->values()->toArray();
 
         // False reports summary for dashboard card (identify repeat reporters)

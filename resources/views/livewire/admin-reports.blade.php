@@ -485,7 +485,7 @@
                                     <h3 class="text-white font-bold uppercase text-xs tracking-widest">Reporter Permanently Blocked</h3>
                                     <p class="text-gray-300 text-xs">
                                         Action taken by Admin: <span class="text-[#c7da30] font-bold">{{ $selectedReport->blocked_by_name }}</span>
-                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y, M d') }}
+                                        on {{ \Carbon\Carbon::parse($selectedReport->blocked_at)->format('Y M d') }}
                                     </p>
                                 </div>
                             </div>

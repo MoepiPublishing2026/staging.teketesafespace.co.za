@@ -179,7 +179,7 @@ class SchoolAdminReportsController extends Controller
                 'subtype'              => $report->subtype->sub_type_name ?? 'N/A',
                 'status'               => $report->status,
                 'is_anonymous'         => $report->is_anonymous,
-                'created_at'           => $report->created_at->format('Y-m-d'),
+                'created_at'           => $report->created_at->format('Y M d'),
                 'reporter_email'       => $report->reporter_email ?? 'Anonymous',
                 'phone_number'         => $report->phone_number ?? 'N/A',
                 'grade'                => $report->grade ?? 'N/A',
