@@ -103,7 +103,7 @@
 
     <!-- Main Section -->
     <div class="min-h-screen bg-white flex flex-col font-[Montserrat] justify-center items-center"
-        style="padding-top: 70px; width: 100%;">
+        style="padding-top: 90px; width: 100%;">
 
         <!-- Main Content -->
         <div class="flex flex-col items-center justify-center text-center px-4">
