@@ -155,7 +155,7 @@
                 <img src="{{ asset('images/facebook.png') }}"
                     class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Facebook">
             </a>
-            <a href="https://www.instagram.com/moepipublishing" target="_blank" rel="noopener">
+            <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank" rel="noopener">
                 <img src="{{ asset('images/instagram.png') }}"
                     class="w-8 h-7 sm:w-9 sm:h-8 hover:opacity-80 transition" alt="Instagram">
             </a>
