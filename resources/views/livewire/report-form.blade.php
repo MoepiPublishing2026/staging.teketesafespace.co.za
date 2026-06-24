@@ -208,7 +208,7 @@
                             <div class="relative">
                                 <label for="schoolSearch" class="text-[12px] text-black">Name of School</label>
                                 <div wire:ignore>
-                                    <input type="text" id="schoolSearch" placeholder="Start typing school name..."
+                                    <input type="text" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" id="schoolSearch" placeholder="Start typing school name..."
                                         class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 text-[14.8px] text-black bg-white"
                                         pattern="^[a-zA-Z\s.,\-&amp;']+$"
                                         title="The School Name can only contain letters, spaces, hyphens (-), apostrophes ('), commas (,), periods (.), and the ampersand (&amp;)."
@@ -252,7 +252,10 @@
                             <label for="location" class="text-[12px] text-black">Address</label>
                             <input type="text" wire:model="location" id="location"
                                 class="w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 text-[14.8px] text-black"
-                                placeholder="e.g. 123 street, Province">
+                                placeholder="e.g. 123 street name, Province"
+                                pattern="^\d+\s+[A-Za-z\s\-']+,\s*[A-Za-z\s\-']+$"
+                                title="Format: StreetNumber Street Name, Province (e.g. 123 Main Street, Gauteng)"
+                                maxlength="100">
                             @error('location')
                                 <p class="text-red-600 text-[12px]">{{ $message }}</p>
                             @enderror
