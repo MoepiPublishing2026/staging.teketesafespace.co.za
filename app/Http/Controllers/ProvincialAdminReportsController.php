@@ -68,16 +68,13 @@ class ProvincialAdminReportsController extends Controller
             }
         }
 
-        // ── Global search bar ────────────────────────────────────────
+        // Global search bar: case number, email, full name, description
         if ($s = trim($request->input('search', ''))) {
             $query->where(function ($q) use ($s) {
                 $q->where('case_number',      'like', "%{$s}%")
                   ->orWhere('reporter_email', 'like', "%{$s}%")
                   ->orWhere('full_name',      'like', "%{$s}%")
-                  ->orWhere('description',    'like', "%{$s}%")
-                  ->orWhereHas('school', fn ($sq) =>
-                      $sq->where('school_name', 'like', "%{$s}%")
-                  );
+                  ->orWhere('description',    'like', "%{$s}%");
             });
         }
 
@@ -97,9 +94,9 @@ class ProvincialAdminReportsController extends Controller
         // ── School filter ────────────────────────────────────────────
         if ($request->filled('school_id')) {
             $query->where('school_id', $request->input('school_id'));
-        } elseif ($s = trim($request->input('school_name', ''))) {
+        } elseif ($sc = trim($request->input('school_name', ''))) {
             $query->whereHas('school', fn ($sq) =>
-                $sq->where('school_name', 'like', "%{$s}%")
+                $sq->where('school_name', 'like', "%{$sc}%")
             );
         }
 
