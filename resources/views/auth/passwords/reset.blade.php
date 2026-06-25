@@ -225,7 +225,7 @@
                         style="width: 35.2px; height: 30px;left: 1179.7;top: 701.1;">
                 </a>
 
-                <a href="https://www.instagram.com/moepipublishing" target="_blank">
+                <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank">
                     <img src="{{ asset('images/instagram.png') }}" alt="Instagram Icon"
                         style="width: 35.2px; height: 30px; left: 1225.7px; top: 701.1px;">
                 </a>

@@ -1,3 +1,4 @@
+
 <div class="min-h-screen bg-white flex flex-col w-full overflow-x-hidden" style="font-family: 'Montserrat', sans-serif;">
     <script src="//unpkg.com/alpinejs" defer></script>
 
@@ -74,7 +75,7 @@
         </style>
         
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-1 my-0 w-full px-4">
-            <div class="w-full max-w-[400px] sm:max-w-[400px] md:w-[400px] h-auto md:h-[400px] flex-shrink-0">
+            <div class="w-full max-w-[500px] sm:max-w-[500px] md:w-[500px] h-auto md:h-[500px] flex-shrink-0">
                 <img src="{{ asset('images/news-illustration.jpeg') }}" alt="News Icon" class="w-full h-full object-contain">
             </div>
 
@@ -89,19 +90,17 @@
             </div>
         </div>
 
-        <div class="w-full max-w-5xl mt-18 border-[3px] border-[#c7da30] rounded-[4px] p-8 bg-white shadow-sm relative flex flex-col">
+        <div class="w-full max-w-6xl mt-18 border-[5px] border-[#c7da30] rounded-[4px] p-8 bg-white shadow-sm relative flex flex-col">
             
             <div class="w-full flex justify-end items-center gap-5 mb-6 pr-6">
-                <span class="text-[16px] text-[#2f343e] tracking-wider self-start mt-2">Search</span>
-                
-                <div class="relative w-60">
+<span class="text-[17px] font-normal text-black subpixel-antialiased  tracking-wider translate-y-[10px]">Search</span>                
+                <div class="relative w-96">
                     <input type="text" 
                            wire:model.live="search" 
                            placeholder="News, Article and Event" 
-                           class="w-full px-6 py-2 pr-8 text-xs border-2 border-[#c7da30] rounded-full focus:outline-none focus:ring-1 focus:ring-[#c7da30] text-gray-600">
-                    
+class="w-full pl-10 pr-12 py-3 text-xs placeholder:text-base focus:placeholder-transparent border-4 border-[#c7da30] rounded-full focus:outline-none focus:ring-1 focus:ring-[#c7da30] text-bold">
                     <div class="absolute right-3 top-1/2 -translate-y-1/2 text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.603Z" />
                         </svg>
                     </div>
@@ -215,34 +214,34 @@
 
                 </div>
 
-           <div class="w-3 h-full flex flex-col justify-between items-center pt-0 pb-10 flex-shrink-0 select-none relative self-stretch">
+           <div class="w-10 h-full flex flex-col justify-between items-center pt-0 pb-10 flex-shrink-0 select-none relative self-stretch">
     
     <button type="button" 
             onclick="document.getElementById('news-scroll-viewport').scrollTop -= 180;" 
-            class="news-scroll-arrow hover:text-black transition-colors focus:outline-none p-0 cursor-pointer bg-transparent border-0 z-20"
+            class="news-scroll-arrow text-xl hover:text-black transition-colors focus:outline-none p-0 cursor-pointer bg-transparent border-0 z-20"
             aria-label="Scroll up">
         ▲
     </button>
     
-    <div id="custom-scrollbar-track" class="flex-grow my-2 min-h-[40px] relative cursor-pointer">
+    <div id="custom-scrollbar-track" class="flex-grow my-4 min-h-[40px] relative cursor-pointer">
         <div id="custom-scroll-thumb" 
-             class="absolute top-0 left-0 transition-all duration-75 cursor-grab active:cursor-grabbing" 
-             style="height: 30%; top: 0%;"></div>
+             class="w-full absolute top-0 left-0 transition-all duration-75 cursor-grab active:cursor-grabbing" 
+             style="height: 30%; top: 0%;"  style="height: 30%; top: 0%;width: 34px;"></div>
     </div>
     
     <button type="button" 
             onclick="document.getElementById('news-scroll-viewport').scrollTop += 180;" 
-            class="news-scroll-arrow hover:text-black transition-colors focus:outline-none p-0 cursor-pointer bg-transparent border-0 z-20"
+            class="news-scroll-arrow text-xl hover:text-black transition-colors focus:outline-none p-0 cursor-pointer bg-transparent border-0 z-20"
             aria-label="Scroll down">
         ▼
     </button>
 </div>
 
-                <div class="absolute right-9 bottom-0 z-30">
+                <div class="absolute right-16 bottom-0 z-30">
                     <a href="{{ route('news.feed') }}" 
-                       class="font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-1 underline">
+                       class="font-medium text-[18px] text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-1 underline">
                         Next 
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block" style="width: 30px; height: 24px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block" style="width: 30px; height: 30px;">
                             <path d="M14 5l7 7-7 7v-4H3v-6h11z"/>
                         </svg>
                     </a>

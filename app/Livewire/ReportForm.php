@@ -296,6 +296,7 @@ protected array $phaseGrades = [
             'string',
             'max:100',
             'min:5',
+            'regex:/^\d+\s+[A-Za-z0-9\s\-]+,\s*[A-Za-z\s\-]+$/',
             
             function ($attribute, $value, $fail) {
                
@@ -329,7 +330,8 @@ protected array $phaseGrades = [
         return [
             'description.max' => 'Words exceeding limit of 500 ',
             'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
-             'schoolName.required' => 'Please select or enter the Name of School.', // Recommended to keep a friendly required message too
+            'schoolName.required' => 'Please select or enter the Name of School.', 
+            'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
 
         ];
     }

@@ -47,10 +47,10 @@
     <main class="max-w-[1280px] w-full mx-auto px-14 py-12 flex-grow mt-8">
         
         <div class="flex justify-center items-center gap-1 my-6">
-            <div class="w-48 h-auto flex-shrink-0 md:w-[200px] mt-12">
+            <div class="w-48 h-auto flex-shrink-0 md:w-[300px] mt-12">
                 <img src="{{ asset('images/news-element.jpeg') }}" alt="News Icon" class="w-full h-full object-contain">
             </div>
-            <div class="w-48 h-auto flex-shrink-0 md:w-[400px] ml-[-2px]">
+            <div class="w-48 h-auto flex-shrink-0 md:w-[500px] ml-[-2px]">
                 <img src="{{ asset('images/news-illustration.jpeg') }}" alt="News Icon" class="w-full h-full object-contain">
             </div>
         </div>
@@ -74,20 +74,20 @@
 </div>
 
         <div class="w-full text-left py-0 mt-50">
-            <h2 class="text-[16px] font-bold text-[#2f343e] text-slate-800 mb-6 leading-snug font-[Montserrat] max-w-4xl">
+            <h2 class="text-[16px] font-bold text-black mb-6 leading-snug font-[Montserrat] max-w-4xl">
                 Tekete Safe Space App Receives Proudly South African Approval, Strengthening Support for School Safety and Wellbeing
             </h2>
 
-            <div class="text-[16px] text-[#2f343e] text-slate-800 leading-relaxed space-y-0.5 mb-10 pr-2">
-                <p><span class="text-[16px] text-[#2f343e] text-slate-800">FOR IMMEDIATE RELEASE:</span> 04/02/2026</p>
-                <p><span class="text-[16px] text-[#2f343e] text-slate-800">Article by</span></p>
+            <div class="text-[16px] font-medium text-black leading-relaxed space-y-0.5 mb-10 pr-2">
+                <p><span class="text-[16px] text-black">FOR IMMEDIATE RELEASE:</span> 04/02/2026</p>
+                <p><span class="text-[16px] text-black">Article by</span></p>
                 <p>Tshepiso Smous & Priscilla Masiu</p>
                 <p>Public Relations Manager & Business Development Manager</p>
-                <p><span class="text-[16px] text-[#2f343e] text-slate-800">Email:</span> pr@moepipublishing.co.za | <span>Email:</span> comm@moepipubling.co.za</p>
+                <p><span class="text-[16px] text-black ">Email:</span> pr@moepipublishing.co.za | <span>Email:</span> comm@moepipubling.co.za</p>
                 <p>Pretoria, South Africa</p>
             </div>
 
-            <div class="text-[16px] text-[#2f343e] text-slate-800 leading-relaxed space-y-4 mb-10 text-justify max-w-4xl">
+            <div class="text-[16px] font-medium text-black leading-relaxed space-y-4 mb-10 text-justify max-w-4xl">
                 <p>
                     Tekete Safe Space is proud to announce that its digital reporting and learner wellbeing application has been officially approved by Proudly South African, marking a significant milestone in its mission to support safer, more inclusive learning environments across the country.
                 </p>
@@ -95,8 +95,8 @@
 
 
          <div class="mb-4">
-    <a href="{{ route('news') }}" class="-ml-2 font-[Montserrat] font-bold text-sm text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0 underline">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block"style="width: 30px; height: 24px;">
+    <a href="{{ route('news') }}" class="-ml-2 font-[Montserrat] font-medium text-[18px] text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0 underline">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block"style="width: 30px; height: 30px;">
             <path d="M10 5l-7 7 7 7v-4h11v-6h-11z"/>
         </svg>
         Back
