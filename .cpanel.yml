@@ -1,12 +1,33 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/teketeq9v8o0/training.teketesafespace.co.za
-    - /bin/rsync -av --delete --exclude='.env' --exclude='storage/app/public' --exclude='public/storage' ./ $DEPLOYPATH
-    - cd $DEPLOYPATH
+
+    # 1. Put application into maintenance mode BEFORE any changes
     - /usr/local/bin/php artisan down
+
+    # 2. Sync files safely (avoid accidental deletion risks)
+    - /bin/rsync -av \
+        --exclude='.env' \
+        --exclude='storage/' \
+        --exclude='public/storage' \
+        ./ $DEPLOYPATH
+
+    # 3. Move into deployment directory
+    - cd $DEPLOYPATH
+
+    # 4. Install/update dependencies (important for fresh deploys)
+    - /usr/local/bin/php composer.phar install --no-dev --optimize-autoloader
+
+    # 5. Run database migrations safely
     - /usr/local/bin/php artisan migrate --force
-    - /usr/local/bin/php artisan cache:clear
+
+    # 6. Clear all caches before rebuilding
+    - /usr/local/bin/php artisan optimize:clear
+
+    # 7. Rebuild optimized caches
     - /usr/local/bin/php artisan config:cache
     - /usr/local/bin/php artisan route:cache
     - /usr/local/bin/php artisan view:cache
-    - /usr/local/bin/php artisan up
+
+    # 8. Bring application back online
+    - /usr/local/bin/php artisan up || true
