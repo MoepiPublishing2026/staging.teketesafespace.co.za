@@ -1,4 +1,12 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketeq9v8o0/staging.teketesafespace.co.za
-    - /bin/cp -R . $DEPLOYPATH
+    - export DEPLOYPATH=/home/teketeq9v8o0/training.teketesafespace.co.za
+    - /bin/rsync -av --delete --exclude='.env' --exclude='storage/app/public' --exclude='public/storage' ./ $DEPLOYPATH
+    - cd $DEPLOYPATH
+    - /usr/local/bin/php artisan down
+    - /usr/local/bin/php artisan migrate --force
+    - /usr/local/bin/php artisan cache:clear
+    - /usr/local/bin/php artisan config:cache
+    - /usr/local/bin/php artisan route:cache
+    - /usr/local/bin/php artisan view:cache
+    - /usr/local/bin/php artisan up
