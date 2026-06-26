@@ -1,4 +1,4 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketibk/staging.leavemanagement.tekete.co.za
+    - export DEPLOYPATH=/home/teketibk/training.teketesafespace.co.za
     - /bin/cp -R . $DEPLOYPATH
