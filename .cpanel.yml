@@ -1,16 +1,13 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketeq9v8o0/repositories/training.teketesafespace.co.za
+    # UPDATE THIS to your actual live website folder (e.g., public_html or subdomain folder)
+    - export DEPLOYPATH=/home/teketeq9v8o0/training.teketesafespace.co.za
 
-    # 1. Sync only changed files (fast + safe)
-    - /bin/rsync -av --delete \
-        --exclude='.env' \
-        --exclude='storage/' \
-        --exclude='bootstrap/cache/' \
-        ./ $DEPLOYPATH
+    # 1. Sync files to the live web directory
+    - /bin/rsync -av --delete --exclude='.env' --exclude='storage/' --exclude='bootstrap/cache/' ./ $DEPLOYPATH
 
-    # 2. Go to project directory
+    # 2. Move into the live website directory to run commands
     - cd $DEPLOYPATH
 
-    # 3. Clear old caches (lightweight)
+    # 3. Clear and optimize caches safely
     - /usr/local/bin/php artisan optimize:clear || true
