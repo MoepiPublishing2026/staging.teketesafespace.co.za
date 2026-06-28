@@ -1,4 +1,8 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketibk/training.teketesafespace.co.za
+    - export DEPLOYPATH=/home/teketeq9v8o0/staging.teketesafespace.co.za
+    - export PHP=/opt/cpanel/ea-php82/root/usr/bin/php
+    - if [ ! -x "$PHP" ]; then export PHP=$(command -v php); fi
     - /bin/cp -R . $DEPLOYPATH
+    - cd $DEPLOYPATH && $PHP artisan migrate --force
+    - cd $DEPLOYPATH && $PHP artisan optimize:clear
