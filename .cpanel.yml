@@ -1,8 +1,7 @@
 
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketibk/staging.teketesafespace.co.za
+    - export DEPLOYPATH=/home/teketeq9v8o0/staging.teketesafespace.co.za
     - /bin/cp -R . $DEPLOYPATH
-    - cd $DEPLOYPATH && $PHP artisan migrate --force
-    - cd $DEPLOYPATH && $PHP artisan optimize:clear
+  
     
