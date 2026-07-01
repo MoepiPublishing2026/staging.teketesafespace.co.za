@@ -384,15 +384,20 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">School</label>
-                    <input type="text" name="school_name" class="filter-input"
-                           list="schoolList"
-                           value="{{ request('school_name') }}"
-                           placeholder="Type to search school…" autocomplete="off" />
-                    <datalist id="schoolList">
-                        @foreach($schoolOptions as $school)
-                            <option value="{{ $school->school_name }}">
-                        @endforeach
-                    </datalist>
+                    <div style="position:relative;">
+                        <input
+                            type="text"
+                            name="school_name"
+                            id="schoolSearch"
+                            class="filter-input"
+                            autocomplete="off"
+                            placeholder="Type to search school…"
+                            value="{{ $schoolName }}"
+                        />
+                        <input type="hidden" name="school_id" id="schoolId" value="{{ request('school_id') }}" />
+                        <div id="schoolDropdown"
+                             style="display:none; position:absolute; left:0; right:0; top:100%; background:#fff; border:1px solid #d1d5db; max-height:200px; overflow-y:auto; z-index:9999; font-size:13px;"></div>
+                    </div>
                 </div>
 
 
@@ -754,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (refreshBtn) {
             refreshBtn.addEventListener('click', function () {
                 filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
-                filterForm.querySelectorAll('input[type="text"], input[type="date"]').forEach(function (input) { input.value = ''; });
+                filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
                 if (typeof filterSubtypes === 'function') filterSubtypes();
                 filterForm.submit();
             });
@@ -884,6 +889,7 @@ document.addEventListener('DOMContentLoaded', function () {
             input.value = it.name;
             hiddenId.value = it.id ?? '';
             clearSuggestions();
+            filterForm.submit();
         }
 
         function render(arr) {
