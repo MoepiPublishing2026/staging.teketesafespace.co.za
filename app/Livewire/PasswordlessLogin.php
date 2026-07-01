@@ -4,31 +4,35 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginOtpMail;
-use App\Models\User;
+use App\Support\OtpSession;
 
 class PasswordlessLogin extends Component
 {
     public $email;
+
     public $otp;
+
     public $showOtpForm = false;
+
     public $role;
-    // public $showSubscriptionModal = false;
 
     public function mount()
     {
-        // Get role from session (set in AdminLoginForm)
         $this->role = session('admin_role');
 
-        // Pre-fill email with logged-in user's email if available
         if (Auth::check()) {
             $this->email = Auth::user()->email;
         }
 
-        $this->showOtpForm = false;
+        if (OtpSession::isVerified()) {
+            return $this->handleFinalRedirect();
+        }
+
+        $this->showOtpForm = OtpSession::hasPendingOtp();
     }
-    
 
     public function sendOtp()
     {
@@ -36,20 +40,25 @@ class PasswordlessLogin extends Component
 
         $user = Auth::user();
 
-        // Verify the email belongs to the logged-in admin
-        if (!$user || $user->email !== $this->email) {
+        if (! $user || $user->email !== $this->email) {
             $this->addError('email', 'The provided email does not match the logged-in user.');
             return;
         }
 
-        // Generate OTP
+        if (! OtpSession::canResend()) {
+            $seconds = OtpSession::resendCooldownRemaining();
+            $this->addError('email', "Please wait {$seconds} seconds before requesting another OTP.");
+            return;
+        }
+
         $otp = random_int(100000, 999999);
-        session(['login_otp' => $otp]);
+        OtpSession::markSent($otp);
 
         try {
             Mail::to($user->email)->send(new LoginOtpMail($otp));
         } catch (\Throwable $e) {
-            \Log::error('Failed to send OTP', [
+            OtpSession::clearPending();
+            Log::error('Failed to send OTP', [
                 'email' => $user->email,
                 'error' => $e->getMessage(),
             ]);
@@ -59,69 +68,40 @@ class PasswordlessLogin extends Component
 
         $this->showOtpForm = true;
     }
+
     public function login()
-{
-    $this->validate(['otp' => 'required']);
+    {
+        $this->validate(['otp' => 'required|digits:6']);
 
-    if ($this->otp == session('login_otp')) {
+        if (OtpSession::isExpired()) {
+            OtpSession::clearPending();
+            $this->showOtpForm = false;
+            $this->addError('otp', 'This OTP has expired. Please request a new one.');
+            return;
+        }
 
-        session(['otp_verified' => true]);
+        if (OtpSession::verify($this->otp)) {
+            OtpSession::markVerified();
 
-        // Only show subscription modal for SCHOOL admin
-        // if (session('admin_role') === 'school') {
-        //     $this->showSubscriptionModal = true;
-        //     $this->showOtpForm = false;
-        // } else {
             return $this->handleFinalRedirect();
-        // }
+        }
 
-    } else {
         $this->addError('otp', 'The provided OTP is incorrect.');
     }
-}
 
+    private function handleFinalRedirect()
+    {
+        $role = session('admin_role');
 
-// This function is called when they click "Continue with Limited Access" in the modal
-
-
-// This function is called when they click "Upgrade" in the modal
-// public function redirectToSubscribe()
-// {
-//     session()->put('has_full_access', true);
-//     return redirect()->route('admin.subscribe'); // Redirects to the new route
-// }
-
-// Centralized redirect logic
-// public function skipSubscription()
-// {
-//     // 1. Force the session value to false
-//     session(['has_full_access' => false]);
-    
-//     // 2. Explicitly save to ensure the redirect doesn't lose it
-//     session()->save();
-
-//     return $this->handleFinalRedirect();
-// }
-
-private function handleFinalRedirect()
-{
-    // Get the role we stored during the initial login step
-    $role = session('admin_role');
-
-    switch ($role) {
-        case 'school':
-            return redirect()->route('admin.dashboard');
-        case 'district':
-            return redirect()->route('district.admin.dashboard');
-        case 'provincial':
-            return redirect()->route('provincial.admin.dashboard');
-        case 'national':
-            return redirect()->route('national.admin.dashboard');
-        default:
-            return redirect()->route('admin.dashboard');
+        return match ($role) {
+            'school' => redirect()->route('admin.dashboard'),
+            'district' => redirect()->route('district.admin.dashboard'),
+            'provincial' => redirect()->route('provincial.admin.dashboard'),
+            'national' => redirect()->route('national.admin.dashboard'),
+            default => redirect()->route('admin.dashboard'),
+        };
     }
-}
-   
+
     public function render()
     {
         return view('livewire.passwordless-login');

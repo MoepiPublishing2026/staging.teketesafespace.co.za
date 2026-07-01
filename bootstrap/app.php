@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register the subscription middleware alias
         $middleware->alias([
             'subscribed' => \App\Http\Middleware\EnsureSchoolSubscribed::class,
+            'otp.verified' => \App\Http\Middleware\EnsureOtpVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
