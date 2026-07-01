@@ -12,12 +12,22 @@ class NewsIndex extends Component
     public $expandedNewsletterId = null;
     public $nextArticleUrl = '#';
 
+
+    // NEW METHOD: This matches the wire:click="executeSearch" from your layout
+    public function executeSearch()
+    {
+        $this->activeSearch = trim($this->search);
+    }
+
     // Livewire lifecycle hook: Runs automatically whenever $search changes
     public function updatedSearch()
     {
-        if (strlen($this->search) >= 2) { // Only suggest after typing 2+ characters
-            $this->suggestions = Newsletter::where('title', 'like', '%' . $this->search . '%')
-                ->take(5) // Limit to top 5 suggestions for cleaner UI
+        $trimmedSearch = trim($this->search);
+
+        if (strlen($trimmedSearch) >= 2) { 
+            // Limit to top 5 suggestions for cleaner UI
+            $this->suggestions = Newsletter::where('title', 'like', '%' . $trimmedSearch . '%')
+                ->take(5) 
                 ->pluck('title')
                 ->toArray();
         } else {
@@ -43,9 +53,12 @@ class NewsIndex extends Component
 
     public function render()
     {
+        // Safe query optimization using a trimmed string variable
+        $searchQuery = trim($this->search);
+
         $newsletters = Newsletter::query()
-            ->when($this->search, function ($query) {
-                $query->where('title', 'like', '%' . $this->search . '%');
+            ->when($searchQuery !== '', function ($query) use ($searchQuery) {
+                $query->where('title', 'like', '%' . $searchQuery . '%');
             })
             ->orderBy('created_at', 'desc')
             ->get();

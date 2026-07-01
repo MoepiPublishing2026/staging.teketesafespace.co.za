@@ -92,33 +92,41 @@
 
         <div class="w-full max-w-6xl mt-18 border-[5px] border-[#c7da30] rounded-[4px] p-8 bg-white shadow-sm relative flex flex-col">
             
-            <div class="w-full flex justify-end items-center gap-5 mb-6 pr-6">
-<span class="text-[17px] font-normal text-black subpixel-antialiased  tracking-wider translate-y-[10px]">Search</span>                
-                <div class="relative w-96">
-                    <input type="text" 
-                           wire:model.live="search" 
-                           placeholder="News, Article and Event" 
-class="w-full pl-10 pr-12 py-3 text-xs placeholder:text-base focus:placeholder-transparent border-4 border-[#c7da30] rounded-full focus:outline-none focus:ring-1 focus:ring-[#c7da30] text-bold">
-                    <div class="absolute right-3 top-1/2 -translate-y-1/2 text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.603Z" />
-                        </svg>
-                    </div>
+<div class="w-full flex justify-end items-center gap-5 mb-6 pr-6" wire:key="news-search-container">
+<span wire:click="executeSearch"
+      class="text-[17px] font-normal text-black subpixel-antialiased tracking-wider self-center cursor-pointer select-none hover:text-[#c7da30] transition-colors duration-150">
+    Search
+</span>   
+    <div class="relative w-96 flex items-center z-40">
+        
+        <input type="text" 
+               wire:model="search" 
+               wire:keydown.enter="executeSearch"
+               placeholder="News, Article and Event" 
+               class="w-full pl-10 pr-14 py-3 text-xs placeholder:text-base focus:placeholder-transparent border-4 border-[#c7da30] rounded-full focus:outline-none focus:ring-1 focus:ring-[#c7da30] text-bold relative z-10">
+        
+        <button type="button"
+                wire:click="executeSearch"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-black hover:text-[#c7da30] transition-colors duration-150 focus:outline-none cursor-pointer z-30"
+                aria-label="Submit Search">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 pointer-events-none">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.603 10.603Z" />
+            </svg>
+        </button>
 
-                    @if(!empty($suggestions))
-                        <div class="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
-                            @foreach($suggestions as $suggestion)
-                                <button type="button"
-                                        wire:click="selectSuggestion('{{ addslashes($suggestion) }}')"
-                                        class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-[#c7da30] hover:text-white transition-colors duration-150 block truncate">
-                                    {{ $suggestion }}
-                                </button>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
+        @if(!empty($suggestions))
+            <div class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
+                @foreach($suggestions as $suggestion)
+                    <button type="button"
+                            wire:click="selectSuggestion('{{ addslashes($suggestion) }}')"
+                            class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-[#c7da30] hover:text-white transition-colors duration-150 block truncate">
+                        {{ $suggestion }}
+                    </button>
+                @endforeach
             </div>
-
+        @endif
+    </div>
+</div>
             <div class="relative w-full h-[450px] flex gap-4 items-stretch overflow-hidden pb-8">
             
                 <div id="news-scroll-viewport" 
@@ -251,12 +259,14 @@ class="w-full pl-10 pr-12 py-3 text-xs placeholder:text-base focus:placeholder-t
         </div>
     </div>
 
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-0"
-             style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
-            <div>
-                <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
-            </div>
+      <!-- ================= FOOTER ================= -->
+    <footer class="w-full bg-[#808080] text-white py-6 mt-12">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-[14px] sm:text-[16px]"
+style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+    <div>
+        <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+    </div>
         </div>
     </footer>
 </div>
