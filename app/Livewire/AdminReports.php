@@ -63,10 +63,11 @@ class AdminReports extends Component
     {
         $this->filter = $filter;
     }
-    public function updatingFilterAnonymous(): void {
+    public function updatingFilterAnonymous($value): void {
         $this->resetPage();
-        
-        
+        if ($value === '1') {
+            $this->filterName = '';
+        } 
     }
     // Clear all filters
     public function clearFilters(): void
