@@ -188,14 +188,18 @@ class ReportController extends Controller
             ->values()
             ->toArray();
 
-            
+        $schoolName = $request->filled('school_id')
+            ? School::find($request->input('school_id'))?->school_name ?? ''
+            : $request->input('school_name', '');
+
         return view('national-admin-reports.index', compact(
             'reports',
             'provinceOptions',
             'schoolOptions',
             'typeOptions',
             'subtypeOptions',
-            'gradeOptions'
+            'gradeOptions',
+            'schoolName'
         ));
     }
 
