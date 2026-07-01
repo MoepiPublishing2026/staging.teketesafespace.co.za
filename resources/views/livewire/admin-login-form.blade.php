@@ -134,38 +134,8 @@
 
             <!-- Outer Container -->
             <div class="border-4 border-[#c7da30] rounded-2xl p-8 bg-white">
-
-                @if ($showOtpForm)
-                    <!-- OTP Verification Form -->
-                    <div class="w-full">
-                        <h2 class="text-xl font-bold text-black uppercase mb-4 text-center" style="font-family: 'Montserrat', sans-serif;">Enter OTP</h2>
-                        <p class="text-gray-600 text-sm mb-6 text-center" style="font-family: 'Montserrat', sans-serif;">
-                            An OTP has been sent to your email address.
-                        </p>
-
-                        <form wire:submit.prevent="sendOtp" class="flex flex-col gap-5">
-                            <input type="text" id="otp" wire:model.live="otp" placeholder="ENTER OTP"
-                                   class="w-full py-4 px-4 text-gray-400 rounded-lg focus:outline-none uppercase"
-                                   style="border: 3px solid #c7da30; font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: white;" required>
-                            @error('otp') 
-                                <span class="text-red-500 text-sm block mt-1" style="font-family: 'Montserrat', sans-serif;">{{ $message }}</span> 
-                            @enderror
-
-                            <button type="submit"
-    class="w-full py-4 px-4
-           border-4 border-solid border-[#c7da30]
-           rounded-[100px] text-lg text-[#38b6ff]
-           transition duration-150 ease-in-out hover:opacity-90
-           font-[Montserrat]">
-    Verify
-</button>
-
-                        </form>
-                    </div>
-                @else
-                    <!-- Login Form -->
-                    <div class="w-full">
-                        <form wire:submit.prevent="login" class="flex flex-col gap-5">
+                <div class="w-full">
+                    <form wire:submit.prevent="login" class="flex flex-col gap-5">
                             <input type="text" id="username" wire:model.live="username" placeholder="Username"
                                    class="w-full py-4 px-4 text-gray-700 rounded-lg focus:outline-none"
                                    style="border: 3px solid #c7da30; font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: white;">
@@ -199,8 +169,7 @@
 </button>
 
                         </form>
-                    </div>
-                @endif
+                </div>
             </div>
         </div>
     </div>

@@ -5,28 +5,20 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Support\OtpSession;
 
 class AdminLoginForm extends Component
 {
     public $username = '';
     public $password = '';
-    public $role = ''; // added for selected role
-    public $showOtpForm = false;
+    public $role = '';
 
     // Defined rules for Livewire validation
     // These will be used when the wire:model.live directives update
     protected $rules = [
         'role' => 'required',
         'username' => 'required',
-        'password' => [
-            'required',
-            'string',
-            'min:8', 
-            'max:50',
-            'regex:/[A-Z]/',                 // Must contain at least one uppercase letter
-            'regex:/[0-9]/',                 // Must contain at least one digit
-            'regex:/[\W_]/',                 // Must contain at least one special character
-        ],
+        'password' => ['required', 'string'],
     ];
 
     // Custom messages for validation
@@ -34,9 +26,6 @@ class AdminLoginForm extends Component
     {
         return [
             'role.required' => 'Please select your role before logging in.',
-            'password.min' => 'The password must be a minimum of 8 characters.',
-             'password.max' => 'The password may not be greater than 50 characters.', // <--- ADDED: Custom message
-            'password.regex' => 'The password must contain at least one uppercase letter, one number, and one special character.',
         ];
     }
 
@@ -61,7 +50,8 @@ class AdminLoginForm extends Component
 
         // Attempt login
         if (Auth::attempt(['username' => $this->username, 'password' => $this->password])) {
-            session(['admin_role' => $this->role]); // store role for next page
+            OtpSession::clearPending();
+            session(['admin_role' => $this->role]);
             return redirect()->route('email.verification');
         }
 
@@ -76,7 +66,7 @@ class AdminLoginForm extends Component
     public function resetForm()
     {
         // Reset the input fields when role changes
-        $this->reset(['username', 'password', 'showOtpForm']);
+        $this->reset(['username', 'password']);
         
         // Optionally clear validation errors
         $this->resetErrorBag();

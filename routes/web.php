@@ -14,6 +14,7 @@ use App\Livewire\EditReport;
 use App\Livewire\NewsIndex;
 use App\Livewire\NewsFeed;
 use Illuminate\Support\Facades\Auth;
+use App\Support\OtpSession;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NationalAdminDashboardController;
 use App\Http\Controllers\ReportController;
@@ -64,8 +65,8 @@ Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-dis
 // Step 2: The email and OTP verification form
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
 
-// Step 3: School admin dashboard — protected only by auth
-Route::middleware(['auth'])->group(function () {
+// Step 3: School admin dashboard — protected by auth + OTP verification
+Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('/admin/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
     Route::post('/admin/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
@@ -75,17 +76,17 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // District Admin Dashboard
-Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard')->middleware('auth');
+Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard')->middleware(['auth', 'otp.verified']);
 
 //provincial Admin Report Pages
 
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('/geojson/{file}', [App\Http\Controllers\GeoJsonController::class, 'show'])
         ->where('file', '[a-z_]+')
         ->name('geojson.show');
 
-    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard')->middleware('auth');
+    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard');
 
     Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
     Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)->name('provincial.reports.index');
@@ -108,7 +109,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Provincial Admin Settings and Reports
-Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')->group(function () {
+Route::prefix('provincial-admin')->name('provincial-admin.')->middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('settings', [ProvincialAdminSettingsController::class, 'index'])->name('settings');
     Route::put('settings', [ProvincialAdminSettingsController::class, 'update'])->name('settings.update');
     Route::get('reports', [ProvincialAdminReportsController::class, 'index'])->name('reports');
@@ -121,15 +122,15 @@ Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')
 
 Route::get('/national-admin/dashboard', [NationalAdminDashboardController::class, 'index'])
     ->name('national.admin.dashboard')
-    ->middleware('auth');
+    ->middleware(['auth', 'otp.verified']);
 Route::get('/national-admin/heatmap', [NationalHeatmapController::class, 'index'])
     ->name('national-admin.heatmap')
-    ->middleware('auth');
-Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports');
-Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
+    ->middleware(['auth', 'otp.verified']);
+Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports')->middleware(['auth', 'otp.verified']);
+Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show')->middleware(['auth', 'otp.verified']);
 
 
-Route::prefix('national-admin')->name('national-admin.')->group(function () {
+Route::prefix('national-admin')->name('national-admin.')->middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])
@@ -145,6 +146,10 @@ Route::prefix('national-admin')->name('national-admin.')->group(function () {
 // Admin Logout
 Route::post('/logout', function () {
     Auth::logout();
+    OtpSession::clear();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
     return redirect('/');
 })->name('logout');
 Auth::routes(['verify' => true]);
@@ -153,14 +158,14 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Routing for filtering data on dashboard
-Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData');
+Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData')->middleware(['auth', 'otp.verified']);
 
 Route::get('/district/profile', \App\Livewire\DistrictAdminSettings::class)
     ->name('district.profile')
-    ->middleware(['auth']);
+    ->middleware(['auth', 'otp.verified']);
 
 
-Route::middleware(['auth', 'role:district'])->group(function () {
+Route::middleware(['auth', 'otp.verified', 'role:district'])->group(function () {
     Route::get('/district/settings', DistrictAdminSettings::class)->name('district.settings');
     // New Contact Us Route
 });
