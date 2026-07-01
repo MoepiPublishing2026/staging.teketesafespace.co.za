@@ -905,10 +905,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const refreshBtn = document.getElementById('refreshBtn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', function () {
-                filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
-                filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
-                if (typeof filterSubtypes === 'function') filterSubtypes();
-                filterForm.submit();
+                // Hard redirect with no params — cleanest way to guarantee all filters clear
+                window.location.href = '{{ url('/provincial-admin/reports') }}';
             });
         }
     }
@@ -928,7 +926,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isAnon) nameInput.value = '';
     }
 
-    anonSelect?.addEventListener('change', syncAnonNameState);
+    if (anonSelect) anonSelect.addEventListener('change', syncAnonNameState);
     syncAnonNameState();
 
 
@@ -1199,28 +1197,6 @@ function filterSubtypes() {
     filterSubtypes();
 });
 
-</script>
-<script>
-    document.addEventListener('livewire:navigated', syncOnLivewire);
-    document.addEventListener('DOMContentLoaded', syncOnLivewire);
-
-    function syncOnLivewire() {
-        const anonSelect = document.querySelector('select[name="filterAnonymous"], select[wire\\:model\\.live="filterAnonymous"]');
-        const nameInput  = document.querySelector('input[wire\\:model\\.live\\.debounce\\.350ms="filterName"]');
-
-        function sync() {
-            if (!anonSelect || !nameInput) return;
-            const isAnon = anonSelect.value === '1';
-            nameInput.disabled         = isAnon;
-            nameInput.title            = isAnon ? 'Not available for anonymous reports' : '';
-            nameInput.style.opacity    = isAnon ? '0.4' : '1';
-            nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
-            nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
-        }
-
-        if (anonSelect) anonSelect.addEventListener('change', sync);
-        sync();
-    }
 </script>
 </body>
 </html>
