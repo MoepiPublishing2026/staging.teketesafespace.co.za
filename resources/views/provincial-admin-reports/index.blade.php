@@ -213,7 +213,7 @@ tbody tr:last-child td { border-bottom: none; }
     position: fixed; inset: 0;
     background: rgba(0,12,12,0.42);
     display: none; align-items: center; justify-content: center;
-    z-index: 50; border: 3px solid #38b6ff !important;
+    z-index: 1100; border: 3px solid #38b6ff !important;
 }
 .modal-card {
     background: #fff; border: 2.5px solid #d7e47a; border-radius: 16px;
@@ -385,13 +385,15 @@ tbody tr:last-child td { border-bottom: none; }
     color: white !important;
     border: none !important;
     border-radius: 8px !important;
-    padding: 8px 14px !important;
+    padding: 0px 14px !important;
     font-size: 12px !important;
     font-family: 'Montserrat', sans-serif !important;
     font-weight: 700 !important;
     cursor: pointer;
     height: 36px;
     transition: background-color 0.2s;
+    margin: 0 !important;        /* ← add this */
+    display: block !important;   /* ← add this */
 }
 #refreshBtn:hover { background: #1a9fe0 !important; color: white !important; }
 
@@ -461,6 +463,29 @@ tbody tr:last-child td { border-bottom: none; }
     </style>
 </head>
 <body>
+
+{{-- Report Details Modal --}}
+<div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+        <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">&times;</button>
+        <div class="modal-content">
+            <h3 id="modalTitle" style="margin-bottom:1rem;">Report Details: <span id="modalCaseNumber"></span></h3>
+            <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+            <p><strong>Email:</strong>     <span id="modalEmail"></span></p>
+            <p><strong>Phone:</strong>     <span id="modalPhone"></span></p>
+            <p><strong>Type:</strong>      <span id="modalType"></span></p>
+            <p><strong>Subtype:</strong>   <span id="modalSubtype"></span></p>
+            <p><strong>School:</strong>    <span id="modalSchool"></span></p>
+            <p><strong>Grade:</strong>     <span id="modalGrade"></span></p>
+            <p><strong>Status:</strong>    <span id="modalStatus"></span></p>
+            <p><strong>Latest Reason:</strong> <span id="modalReason"></span></p>
+            <p><strong>Description:</strong></p>
+            <div id="modalDescription" style="margin-bottom:1rem;"></div>
+            <p><strong>Attachments:</strong> <span id="modalAttachments"></span></p>
+            <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">Close</button>
+        </div>
+    </div>
+</div>
 
 <aside class="sidebar" id="sidebarPanel">
     <div class="sidebar-logo">
@@ -618,8 +643,11 @@ tbody tr:last-child td { border-bottom: none; }
                     </div>
                 </div>
                 
-                <div style="display:flex; align-items:flex-end;">
-                    <button type="button" id="refreshBtn">Refresh Table</button>
+                <div style="display:flex; flex-direction:column; justify-content:flex-end; height:100%;">
+                    <label class="filter-label" style="visibility:hidden; margin-bottom:5px;">Refresh</label>
+                    <button type="button" id="refreshBtn" style="margin:0 !important; display:block !important;">
+                        Refresh Table
+                    </button>
                 </div>
 
             </div>{{-- end .filter-grid --}}
@@ -727,29 +755,6 @@ tbody tr:last-child td { border-bottom: none; }
 
     </main>
 </div>{{-- end .main-panel --}}
-
-{{-- Report Details Modal --}}
-<div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
-        <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">&times;</button>
-        <div class="modal-content">
-            <h3 id="modalTitle" style="margin-bottom:1rem;">Report Details: <span id="modalCaseNumber"></span></h3>
-            <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
-            <p><strong>Email:</strong>     <span id="modalEmail"></span></p>
-            <p><strong>Phone:</strong>     <span id="modalPhone"></span></p>
-            <p><strong>Type:</strong>      <span id="modalType"></span></p>
-            <p><strong>Subtype:</strong>   <span id="modalSubtype"></span></p>
-            <p><strong>School:</strong>    <span id="modalSchool"></span></p>
-            <p><strong>Grade:</strong>     <span id="modalGrade"></span></p>
-            <p><strong>Status:</strong>    <span id="modalStatus"></span></p>
-            <p><strong>Latest Reason:</strong> <span id="modalReason"></span></p>
-            <p><strong>Description:</strong></p>
-            <div id="modalDescription" style="margin-bottom:1rem;"></div>
-            <p><strong>Attachments:</strong> <span id="modalAttachments"></span></p>
-            <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">Close</button>
-        </div>
-    </div>
-</div>
 
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
@@ -907,6 +912,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
+
+
+    const anonSelect = document.querySelector('select[name="is_anonymous"]');
+    const nameInput  = document.querySelector('input[name="full_name"]');
+
+    function syncAnonNameState() {
+        if (!anonSelect || !nameInput) return;
+        const isAnon = anonSelect.value === '1';
+        nameInput.disabled  = isAnon;
+        nameInput.title     = isAnon ? 'Not available for anonymous reports' : '';
+        nameInput.style.opacity    = isAnon ? '0.4' : '1';
+        nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
+        nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
+        if (isAnon) nameInput.value = '';
+    }
+
+    anonSelect?.addEventListener('change', syncAnonNameState);
+    syncAnonNameState();
+
 
     // Sidebar toggle
     var toggle    = document.getElementById('sidebarToggle');
@@ -1175,6 +1199,28 @@ function filterSubtypes() {
     filterSubtypes();
 });
 
+</script>
+<script>
+    document.addEventListener('livewire:navigated', syncOnLivewire);
+    document.addEventListener('DOMContentLoaded', syncOnLivewire);
+
+    function syncOnLivewire() {
+        const anonSelect = document.querySelector('select[name="filterAnonymous"], select[wire\\:model\\.live="filterAnonymous"]');
+        const nameInput  = document.querySelector('input[wire\\:model\\.live\\.debounce\\.350ms="filterName"]');
+
+        function sync() {
+            if (!anonSelect || !nameInput) return;
+            const isAnon = anonSelect.value === '1';
+            nameInput.disabled         = isAnon;
+            nameInput.title            = isAnon ? 'Not available for anonymous reports' : '';
+            nameInput.style.opacity    = isAnon ? '0.4' : '1';
+            nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
+            nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
+        }
+
+        if (anonSelect) anonSelect.addEventListener('change', sync);
+        sync();
+    }
 </script>
 </body>
 </html>
