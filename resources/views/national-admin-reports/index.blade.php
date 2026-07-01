@@ -222,6 +222,21 @@ tbody tr:last-child td { border-bottom: none; }
 .filter-btn-clear { background: white !important; border: 2px solid #e5e7eb !important; color: #6b7280 !important; }
 .filter-btn-apply:hover { background: #1a9fe0 !important; color: white !important; border: none !important; }
 .filter-btn-clear:hover { border-color: #c7da30 !important; color: #000 !important; background: #f7fcd4 !important; }
+#refreshBtn {
+    width: 100%;
+    background: #38b6ff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    height: 36px;
+    transition: background-color 0.2s;
+}
+#refreshBtn:hover { background: #1a9fe0 !important; color: white !important; }
 .active-filter-badge { display: inline-flex; align-items: center; background: #f0f9d4; border: 1px solid #c7da30; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #4a5e00; margin-right: 6px; margin-bottom: 6px; }
     </style>
     <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
@@ -288,7 +303,7 @@ tbody tr:last-child td { border-bottom: none; }
 
             <div>
                     <label class="filter-label">Anonymous</label>
-                    <select name="is_anonymous" class="filter-input">
+                    <select name="is_anonymous" class="filter-input" onchange="this.form.submit()">
                         <option value="">All</option>
                         <option value="1" {{ request('is_anonymous') === '1' ? 'selected' : '' }}>Anonymous</option>
                         <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Identified</option>
@@ -306,7 +321,7 @@ tbody tr:last-child td { border-bottom: none; }
                 
                 <div>
                     <label class="filter-label">Grade</label>
-                    <select name="grade" class="filter-input">
+                    <select name="grade" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Grades</option>
                         @foreach($gradeOptions as $grade)
                             <option value="{{ $grade }}" {{ request('grade') == $grade ? 'selected' : '' }}>
@@ -319,18 +334,18 @@ tbody tr:last-child td { border-bottom: none; }
                 <div>
                     <label class="filter-label">Date From</label>
                     <input type="date" name="date_from" class="filter-input"
-                           value="{{ request('date_from') }}" />
+                           value="{{ request('date_from') }}" onchange="this.form.submit()" />
                 </div>
 
                 <div>
                     <label class="filter-label">Date To</label>
                     <input type="date" name="date_to" class="filter-input"
-                           value="{{ request('date_to') }}" />
+                           value="{{ request('date_to') }}" onchange="this.form.submit()" />
                 </div>
 
                 <div>
                     <label class="filter-label">Report Type</label>
-                    <select name="type_id" class="filter-input">
+                    <select name="type_id" class="filter-input" onchange="document.getElementById('subtypeSelect').value=''; if(typeof filterSubtypes==='function') filterSubtypes(); this.form.submit();">
                         <option value="">All Types</option>
                         @foreach($typeOptions as $type)
                             <option value="{{ $type->id }}" {{ request('type_id') == $type->id ? 'selected' : '' }}>
@@ -342,7 +357,7 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">Subtype</label>
-                    <select name="subtype_id" id="subtypeSelect" class="filter-input">
+                    <select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Subtypes</option>
                         @foreach($subtypeOptions as $sub)
                             <option value="{{ $sub->id }}"
@@ -356,7 +371,7 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">Status</label>
-                    <select name="status" class="filter-input">
+                    <select name="status" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Statuses</option>
                         <option value="awaiting-resolution" {{ request('status') == 'awaiting-resolution' ? 'selected' : '' }}>Awaiting Resolution</option>
                         <option value="under-review"        {{ request('status') == 'under-review'        ? 'selected' : '' }}>Under Review</option>
@@ -383,7 +398,7 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">Province</label>
-                 <select name="province_id" class="filter-input">
+                 <select name="province_id" class="filter-input" onchange="this.form.submit()">
                     <option value="">All Provinces</option>
                     @foreach($provinceOptions as $province)
                         <option value="{{ $province->province_id }}"
@@ -396,14 +411,8 @@ tbody tr:last-child td { border-bottom: none; }
 
                 
 
-                {{-- Apply + Clear --}}
-                <div style="display:flex; gap:6px; align-items:flex-end;">
-                    <button type="submit" class="filter-btn filter-btn-apply" style="flex:1;">
-                        <i class="fas fa-filter" style="margin-right:4px;"></i> Apply
-                    </button>
-                    <button type="button" class="filter-btn filter-btn-clear" style="flex:1;" onclick="clearFilters()">
-                        <i class="fas fa-times" style="margin-right:4px;"></i> Clear
-                    </button>
+                <div style="display:flex; align-items:flex-end;">
+                    <button type="button" id="refreshBtn">Refresh Table</button>
                 </div>
 
             </div>{{-- end .filter-grid --}}
@@ -541,10 +550,6 @@ tbody tr:last-child td { border-bottom: none; }
 </div>
 
 <script>
-function clearFilters() {
-    window.location.href = '{{ url('/national-admin/reports') }}';
-}
-
 function openReportModal(reportId) {
     fetch(`/reports/${reportId}`, { headers: { 'Accept': 'application/json' } })
     .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
@@ -709,9 +714,6 @@ function filterSubtypes() {
 // Run on page load (in case filters are already active)
 document.addEventListener('DOMContentLoaded', filterSubtypes);
 
-// Run when type changes
-document.querySelector('[name="type_id"]').addEventListener('change', filterSubtypes);
-
 const menuIcon = document.querySelector('.menu-icon');
 const sidebar = document.querySelector('.sidebar');
 const mainPanel = document.querySelector('.main-panel');
@@ -737,6 +739,27 @@ if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
 if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 
 document.addEventListener('DOMContentLoaded', function () {
+    const filterForm = document.getElementById('filterForm');
+    let filterDebounce = null;
+
+    if (filterForm) {
+        filterForm.querySelectorAll('input[name="search"], input[name="full_name"], input[name="school_name"]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                clearTimeout(filterDebounce);
+                filterDebounce = setTimeout(function () { filterForm.submit(); }, 500);
+            });
+        });
+
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function () {
+                filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
+                filterForm.querySelectorAll('input[type="text"], input[type="date"]').forEach(function (input) { input.value = ''; });
+                if (typeof filterSubtypes === 'function') filterSubtypes();
+                filterForm.submit();
+            });
+        }
+    }
 
     // Sidebar toggle
     var toggle    = document.getElementById('sidebarToggle');
