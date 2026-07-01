@@ -146,24 +146,23 @@
     gap: 12px;
     align-items: end;
 }
-.btn-clear-filters {
-    background: white;
-    border: 2px solid #e5e7eb;
+#refreshBtn {
+    background: #38b6ff !important;
+    color: white !important;
+    border: none !important;
     border-radius: 8px;
     padding: 7px 14px;
     font-size: 12px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
-    color: #6b7280;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s;
     width: 100%;
     height: 36px;
 }
-.btn-clear-filters:hover {
-    border-color: #c7da30 !important;
-    color: #000 !important;
-    background: #f7fcd4 !important;
+#refreshBtn:hover {
+    background: #1a9fe0 !important;
+    color: white !important;
 }
 .active-filter-badge {
     display: inline-flex;
@@ -312,9 +311,7 @@
                 
 
                 <div style="display:flex; align-items:flex-end;">
-                    <button type="button" class="btn-clear-filters" wire:click="clearFilters">
-                        <i class="fas fa-times mr-1"></i> Clear 
-                    </button>
+                    <button type="button" id="refreshBtn" wire:click="clearFilters">Refresh Table</button>
                 </div>
 
             </div>

@@ -50,7 +50,12 @@ class AdminReports extends Component
     public function updatingFilterGrade():    void { $this->resetPage(); }
     public function updatingFilterDateFrom(): void { $this->resetPage(); }
     public function updatingFilterDateTo():   void { $this->resetPage(); }
-    public function updatingFilterType():     void { $this->resetPage(); }
+    public function updatingFilterType(): void
+    {
+        $this->filterSubtype = '';
+        $this->resetPage();
+    }
+
     public function updatingFilterSubtype():  void { $this->resetPage(); }
     public function updatingFilterStatus():   void { $this->resetPage(); }
 

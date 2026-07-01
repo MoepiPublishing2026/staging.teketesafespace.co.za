@@ -379,6 +379,21 @@ tbody tr:last-child td { border-bottom: none; }
 .filter-btn-clear { background: white !important; border: 2px solid #e5e7eb !important; color: #6b7280 !important; }
 .filter-btn-apply:hover { background: #1a9fe0 !important; color: white !important; border: none !important; }
 .filter-btn-clear:hover { border-color: #c7da30 !important; color: #000 !important; background: #f7fcd4 !important; }
+#refreshBtn {
+    width: 100%;
+    background: #38b6ff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    height: 36px;
+    transition: background-color 0.2s;
+}
+#refreshBtn:hover { background: #1a9fe0 !important; color: white !important; }
 
 .active-filter-badge {
     display: inline-flex; align-items: center;
@@ -506,7 +521,7 @@ tbody tr:last-child td { border-bottom: none; }
             <div class="filter-grid">
                 <div>
                     <label class="filter-label">Anonymous</label>
-                    <select name="is_anonymous" class="filter-input">
+                    <select name="is_anonymous" class="filter-input" onchange="this.form.submit()">
                         <option value="">All</option>
                         <option value="1" {{ request('is_anonymous') === '1' ? 'selected' : '' }}>Anonymous</option>
                         <option value="0" {{ request('is_anonymous') === '0' ? 'selected' : '' }}>Identified</option>
@@ -524,7 +539,7 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">Grade</label>
-                    <select name="grade" class="filter-input">
+                    <select name="grade" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Grades</option>
                         @foreach($gradeOptions as $grade)
                             <option value="{{ $grade }}" {{ request('grade') == $grade ? 'selected' : '' }}>
@@ -537,18 +552,18 @@ tbody tr:last-child td { border-bottom: none; }
                 <div>
                     <label class="filter-label">Date From</label>
                     <input type="date" name="date_from" class="filter-input"
-                           value="{{ request('date_from') }}" />
+                           value="{{ request('date_from') }}" onchange="this.form.submit()" />
                 </div>
 
                 <div>
                     <label class="filter-label">Date To</label>
                     <input type="date" name="date_to" class="filter-input"
-                           value="{{ request('date_to') }}" />
+                           value="{{ request('date_to') }}" onchange="this.form.submit()" />
                 </div>
 
                 <div>
                     <label class="filter-label">Report Type</label>
-                    <select name="type_id" class="filter-input">
+                    <select name="type_id" class="filter-input" onchange="document.getElementById('subtypeSelect').value=''; if(typeof filterSubtypes==='function') filterSubtypes(); this.form.submit();">
                         <option value="">All Types</option>
                         @foreach($typeOptions as $type)
                             <option value="{{ $type->id }}" {{ request('type_id') == $type->id ? 'selected' : '' }}>
@@ -560,7 +575,7 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">Subtype</label>
-                    <select name="subtype_id" id="subtypeSelect" class="filter-input">
+                    <select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Subtypes</option>
                         @foreach($subtypeOptions as $sub)
                             <option value="{{ $sub->id }}"
@@ -574,7 +589,7 @@ tbody tr:last-child td { border-bottom: none; }
 
                 <div>
                     <label class="filter-label">Status</label>
-                    <select name="status" class="filter-input">
+                    <select name="status" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Statuses</option>
                         <option value="awaiting-resolution" {{ request('status') == 'awaiting-resolution' ? 'selected' : '' }}>Awaiting Resolution</option>
                         <option value="under-review"        {{ request('status') == 'under-review'        ? 'selected' : '' }}>Under Review</option>
@@ -603,18 +618,8 @@ tbody tr:last-child td { border-bottom: none; }
                     </div>
                 </div>
                 
-                {{-- Apply + Clear --}}
-                <div style="display:flex; gap:6px; align-items:flex-end;">
-                    <button type="submit" class="filter-btn filter-btn-apply" style="flex:1;">
-                        <i class="fas fa-filter" style="margin-right:4px;"></i> Apply
-                    </button>
-                    <button 
-                        type="button" 
-                        class="filter-btn filter-btn-clear" 
-                        style="flex:1;" 
-                        onclick="event.preventDefault(); event.stopPropagation(); clearFilters();">
-                        <i class="fas fa-times" style="margin-right:4px;"></i> Clear
-                    </button>
+                <div style="display:flex; align-items:flex-end;">
+                    <button type="button" id="refreshBtn">Refresh Table</button>
                 </div>
 
             </div>{{-- end .filter-grid --}}
@@ -763,12 +768,6 @@ function exportPDF() {
     }).save();
 }
 
-// ── Clear all filters ────────────────────────────────────────────
-function clearFilters() {
-    document.getElementById('filterForm').reset();
-    window.location.href = '{{ url('/provincial-admin/reports') }}';
-}
-
 // ── Report detail modal ──────────────────────────────────────────
 function openReportModal(reportId) {
     fetch(`/provincial-admin/reports/${reportId}`, {
@@ -887,6 +886,27 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeReportM
 
 // ── DOMContentLoaded ─────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
+    const filterForm = document.getElementById('filterForm');
+    let filterDebounce = null;
+
+    if (filterForm) {
+        filterForm.querySelectorAll('input[name="search"], input[name="full_name"], input[name="school_name"]').forEach(function (input) {
+            input.addEventListener('input', function () {
+                clearTimeout(filterDebounce);
+                filterDebounce = setTimeout(function () { filterForm.submit(); }, 500);
+            });
+        });
+
+        const refreshBtn = document.getElementById('refreshBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function () {
+                filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
+                filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
+                if (typeof filterSubtypes === 'function') filterSubtypes();
+                filterForm.submit();
+            });
+        }
+    }
 
     // Sidebar toggle
     var toggle    = document.getElementById('sidebarToggle');
@@ -1011,6 +1031,7 @@ document.addEventListener('DOMContentLoaded', function () {
             input.value = it.name;
             hiddenId.value = it.id ?? '';
             clearSuggestions();
+            filterForm.submit();
         }
 
         function render(arr) {
@@ -1151,7 +1172,6 @@ function filterSubtypes() {
                 });
 }
 
-    typeSelect.addEventListener('change', filterSubtypes);
     filterSubtypes();
 });
 
