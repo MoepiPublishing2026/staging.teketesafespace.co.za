@@ -329,7 +329,7 @@
         }
         .district-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; z-index: 1; }
         .heat-glow-layer { pointer-events: none; overflow: visible; }
-        .district-map-shape { stroke: rgba(255,255,255,0.9); stroke-width: 1.2; transition: stroke 0.15s ease, stroke-width 0.15s ease; }
+        .district-map-shape { stroke: rgba(255,255,255,0.95); stroke-width: 1.5; stroke-linejoin: round; transition: stroke 0.15s ease, stroke-width 0.15s ease; }
         .district-map-shape.is-hover,
         .district-map-shape.is-key-hover { stroke: #111827; stroke-width: 2.2; }
         .district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 3; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
@@ -457,9 +457,9 @@
         }
         .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
         .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-        .map-legend-swatch.low { background: #d1cb23; }
-        .map-legend-swatch.medium { background: #fbbf0f; }
-        .map-legend-swatch.high { background: #ed1c24; }
+        .map-legend-swatch.low { background: radial-gradient(circle, #a8d05f 0%, #a8d05f 100%); }
+        .map-legend-swatch.medium { background: radial-gradient(circle, #f9c80e 0%, #f9c80e 70%, #a8d05f 100%); }
+        .map-legend-swatch.high { background: radial-gradient(circle, #d80f18 0%, #ef2b2d 35%, #f26a21 52%, #f9c80e 78%, #a8d05f 100%); }
 
         @media (max-width: 900px) {
             .menu-icon { display: flex !important; }
@@ -908,9 +908,79 @@
             .trim();
     }
 
-    const HEAT_LOW = '#c9cf23';
-    const HEAT_MEDIUM = '#ffc107';
-    const HEAT_HIGH = '#ff1a1a';
+    function heatGradientStops(bandIdx) {
+        if (bandIdx === 2) {
+            return [
+                { offset: '0%', color: '#d80f18' },
+                { offset: '35%', color: '#ef2b2d' },
+                { offset: '52%', color: '#f26a21' },
+                { offset: '78%', color: '#f9c80e' },
+                { offset: '100%', color: '#a8d05f' },
+            ];
+        }
+        if (bandIdx === 1) {
+            return [
+                { offset: '0%', color: '#f9c80e' },
+                { offset: '80%', color: '#f9c80e' },
+                { offset: '100%', color: '#a8d05f' },
+            ];
+        }
+        return [
+            { offset: '0%', color: '#a8d05f' },
+            { offset: '100%', color: '#a8d05f' },
+        ];
+    }
+
+    function districtGradientRadius(bb) {
+        const cx = bb.x + bb.width / 2;
+        const cy = bb.y + bb.height / 2;
+        const corners = [
+            [bb.x, bb.y],
+            [bb.x + bb.width, bb.y],
+            [bb.x, bb.y + bb.height],
+            [bb.x + bb.width, bb.y + bb.height],
+        ];
+        let maxDist = 0;
+        corners.forEach(function (pt) {
+            const d = Math.hypot(pt[0] - cx, pt[1] - cy);
+            if (d > maxDist) maxDist = d;
+        });
+        return Math.max(maxDist * 1.12, 8);
+    }
+
+    function applyDistrictRadialFill(path, bandIdx, defs, svgNS, gradSeq) {
+        let bb;
+        try {
+            bb = path.getBBox();
+        } catch (e) {
+            path.setAttribute('fill', bandIdx === 2 ? '#d80f18' : (bandIdx === 1 ? '#f9c80e' : '#a8d05f'));
+            return gradSeq;
+        }
+
+        const cx = bb.x + bb.width / 2;
+        const cy = bb.y + bb.height / 2;
+        const r = districtGradientRadius(bb);
+        const gradId = 'na-dg-' + gradSeq;
+
+        const grad = document.createElementNS(svgNS, 'radialGradient');
+        grad.setAttribute('id', gradId);
+        grad.setAttribute('gradientUnits', 'userSpaceOnUse');
+        grad.setAttribute('cx', String(cx));
+        grad.setAttribute('cy', String(cy));
+        grad.setAttribute('r', String(r));
+        grad.setAttribute('spreadMethod', 'pad');
+
+        heatGradientStops(bandIdx).forEach(function (stopDef) {
+            const stop = document.createElementNS(svgNS, 'stop');
+            stop.setAttribute('offset', stopDef.offset);
+            stop.setAttribute('stop-color', stopDef.color);
+            grad.appendChild(stop);
+        });
+        defs.appendChild(grad);
+        path.setAttribute('fill', 'url(#' + gradId + ')');
+
+        return gradSeq + 1;
+    }
 
     function computeHeatBandThresholds(counts) {
         const positive = (counts || []).map(function (c) { return Number(c) || 0; })
@@ -929,10 +999,6 @@
         if (c <= 0 || c <= mapBandLowMax) return 0;
         if (c <= mapBandMediumMax) return 1;
         return 2;
-    }
-
-    function heatColorForBand(bandIdx) {
-        return bandIdx === 2 ? HEAT_HIGH : (bandIdx === 1 ? HEAT_MEDIUM : HEAT_LOW);
     }
 
     function moveTooltip(clientX, clientY) {
@@ -1113,12 +1179,12 @@
         const count = countForGeo(rawName);
         const displayLabel = resolveDbDistrictLabel(rawName);
         const bandIdx = heatBandIndexFromCount(count);
-        const fillColor = heatColorForBand(bandIdx);
 
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('d', pathD);
         path.setAttribute('class', 'district-map-shape' + (bandIdx === 2 ? ' district-map-shape-dark' : ''));
-        path.setAttribute('fill', fillColor);
+        path.setAttribute('data-heat-band', String(bandIdx));
+        path.setAttribute('fill', '#a8d05f');
         path.setAttribute('fill-opacity', '1');
         path.setAttribute('data-shape-kind', 'district');
         path.setAttribute('data-district-id', primaryDistrictIdForGeo(rawName) ? String(primaryDistrictIdForGeo(rawName)) : '');
@@ -1160,6 +1226,8 @@
             const svg = document.createElementNS(svgNS, 'svg');
             svg.setAttribute('class', 'district-map-svg');
             svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            const defs = document.createElementNS(svgNS, 'defs');
+            svg.appendChild(defs);
             const g = document.createElementNS(svgNS, 'g');
             g.setAttribute('class', 'za-map-root');
             svg.appendChild(g);
@@ -1193,6 +1261,12 @@
                         (mapBb.x - pad) + ' ' + (mapBb.y - pad) + ' ' +
                         (mapBb.width + pad * 2) + ' ' + (mapBb.height + pad * 2));
                 } catch (e) {}
+
+                let gradSeq = 0;
+                districtLayer.querySelectorAll('.district-map-shape').forEach(function (path) {
+                    const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
+                    gradSeq = applyDistrictRadialFill(path, bandIdx, defs, svgNS, gradSeq);
+                });
 
                 const labelLayer = document.createElementNS(svgNS, 'g');
                 labelLayer.setAttribute('class', 'map-label-layer');

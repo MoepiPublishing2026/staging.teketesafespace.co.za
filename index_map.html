@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>South Africa District Heatmap</title>
+ 
+<style>
+  body {
+    margin: 0;
+    background: #f7f6f2;
+    font-family: Arial, sans-serif;
+  }
+ 
+  .map-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 760px;
+    margin: 30px auto;
+    background: #faf9f5;
+    border-radius: 18px;
+    overflow: hidden;
+  }
+ 
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+ 
+  .province-border {
+    fill: none;
+    stroke: #111;
+    stroke-width: 4;
+    stroke-linejoin: round;
+  }
+ 
+  .district {
+    stroke: #fff;
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+ 
+  .label {
+    font-size: 18px;
+    font-weight: 700;
+    fill: #111;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 4px;
+  }
+ 
+  .legend {
+    position: absolute;
+    right: 45px;
+    bottom: 45px;
+    background: white;
+    padding: 22px 28px;
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px #ddd;
+    font-size: 24px;
+  }
+ 
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin: 15px 0;
+  }
+ 
+  .legend-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 4px;
+  }
+ 
+  .high { background: #ef2b2d; }
+  .medium { background: #f9c80e; }
+  .low { background: #a8d05f; }
+</style>
+</head>
+ 
+<body>
+ 
+<div class="map-container">
+<svg viewBox="0 0 1200 760">
+ 
+    <defs>
+<radialGradient id="highGradient">
+<stop offset="0%" stop-color="#ef2b2d"/>
+<stop offset="45%" stop-color="#f26a21"/>
+<stop offset="75%" stop-color="#f9c80e"/>
+<stop offset="100%" stop-color="#a8d05f"/>
+</radialGradient>
+ 
+      <radialGradient id="mediumGradient">
+<stop offset="0%" stop-color="#f9c80e"/>
+<stop offset="70%" stop-color="#f9c80e"/>
+<stop offset="100%" stop-color="#a8d05f"/>
+</radialGradient>
+ 
+      <radialGradient id="lowGradient">
+<stop offset="0%" stop-color="#a8d05f"/>
+<stop offset="100%" stop-color="#a8d05f"/>
+</radialGradient>
+</defs>
+ 
+    <!-- Demo South Africa outline -->
+<path class="district" fill="url(#lowGradient)"
+      d="M150,420 L230,380 L260,300 L330,250 L420,270 L500,230 L600,260 L690,210 L800,150 L940,90 L1010,160 L1000,260 L1100,300 L1040,420 L980,520 L880,620 L710,670 L560,640 L450,690 L300,650 L240,570 L150,520 Z" />
+ 
+    <!-- Demo district areas -->
+<path class="district" fill="url(#lowGradient)"
+      d="M230,380 L330,250 L420,270 L390,390 L280,430 Z" />
+ 
+    <path class="district" fill="url(#lowGradient)"
+      d="M390,390 L420,270 L500,230 L570,330 L520,430 Z" />
+ 
+    <path class="district" fill="url(#mediumGradient)"
+      d="M570,330 L500,230 L600,260 L690,210 L700,350 L620,430 Z" />
+ 
+    <path class="district" fill="url(#highGradient)"
+      d="M700,350 L690,210 L800,150 L880,230 L840,350 Z" />
+ 
+    <path class="district" fill="url(#lowGradient)"
+      d="M800,150 L940,90 L1010,160 L960,260 L880,230 Z" />
+ 
+    <path class="district" fill="url(#mediumGradient)"
+      d="M840,350 L880,230 L960,260 L1100,300 L1040,420 L900,430 Z" />
+ 
+    <path class="district" fill="url(#mediumGradient)"
+      d="M620,430 L700,350 L840,350 L900,430 L820,530 L690,520 Z" />
+ 
+    <path class="district" fill="url(#lowGradient)"
+      d="M520,430 L620,430 L690,520 L650,620 L560,640 L450,560 Z" />
+ 
+    <path class="district" fill="url(#mediumGradient)"
+      d="M650,620 L690,520 L820,530 L880,620 L710,670 Z" />
+ 
+    <path class="district" fill="url(#lowGradient)"
+      d="M280,430 L390,390 L520,430 L450,560 L300,650 L240,570 L150,520 L150,420 Z" />
+ 
+    <path class="district" fill="url(#lowGradient)"
+      d="M450,560 L560,640 L450,690 L300,650 Z" />
+ 
+    <!-- Outer South Africa border -->
+<path class="province-border"
+      d="M150,420 L230,380 L260,300 L330,250 L420,270 L500,230 L600,260 L690,210 L800,150 L940,90 L1010,160 L1000,260 L1100,300 L1040,420 L980,520 L880,620 L710,670 L560,640 L450,690 L300,650 L240,570 L150,520 Z" />
+ 
+    <!-- Province-style borders -->
+<path class="province-border" d="M690,210 L700,350 L620,430 L520,430" />
+<path class="province-border" d="M840,350 L900,430 L820,530" />
+<path class="province-border" d="M450,560 L560,640" />
+ 
+    <!-- Labels -->
+<text class="label" x="380" y="470">Northern Cape</text>
+<text class="label" x="470" y="635">Western Cape</text>
+<text class="label" x="580" y="350">North West</text>
+<text class="label" x="735" y="405">Free State</text>
+<text class="label" x="780" y="585">Eastern Cape</text>
+<text class="label" x="975" y="380">KwaZulu-Natal</text>
+<text class="label" x="810" y="260">Gauteng</text>
+<text class="label" x="910" y="225">Mpumalanga</text>
+<text class="label" x="900" y="150">Limpopo</text>
+ 
+  </svg>
+ 
+  <div class="legend">
+<div class="legend-row">
+<span class="legend-box high"></span>
+<span>High</span>
+</div>
+<div class="legend-row">
+<span class="legend-box medium"></span>
+<span>Medium</span>
+</div>
+<div class="legend-row">
+<span class="legend-box low"></span>
+<span>Low</span>
+</div>
+</div>
+</div>
+ 
+</body>
+</html>
