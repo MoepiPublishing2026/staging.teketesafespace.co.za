@@ -45,8 +45,9 @@
 
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
-                <button id="mobile-menu-button"
-                    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+              <button id="mobile-menu-button"
+                        onclick="toggleMobileMenu()"
+                        class="p-2 rounded-md text-black hover:bg-gray-100">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -86,7 +87,7 @@
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">About Us</a>
                 <a href="{{ route('download.nomination') }}" 
                            @click="menuOpen = false" 
-                           class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">
+                           class="text-black text-[17px] hover:text-[#c7da30] transition-colors">
                            Nomination Form
                  </a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Contact Us</a>
