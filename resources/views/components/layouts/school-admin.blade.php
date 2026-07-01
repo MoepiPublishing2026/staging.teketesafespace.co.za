@@ -85,6 +85,5 @@
     @endif
 
     @livewireScripts
-    <script src="{{ asset('js/auto-logout.js') }}"></script>
 </body>
 </html>

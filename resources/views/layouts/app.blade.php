@@ -84,6 +84,6 @@
 
     @livewireScripts
 
-    <script src="{{ asset('js/auto-logout.js') }}"></script>
+    <x-admin-auto-logout />
 </body>
 </html>

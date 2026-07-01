@@ -107,6 +107,13 @@
         <div class="w-full max-w-2xl px-4 mx-auto">
             <h1 class="text-3xl font-bold text-black mb-8 text-center uppercase" style="font-family: 'Montserrat', sans-serif; letter-spacing: 2px;">LOGIN PAGE</h1>
 
+            @if(request()->boolean('session_expired'))
+                <div class="mb-6 rounded-lg border-2 border-[#c7da30] bg-[#f7fcd4] px-4 py-3 text-center text-sm text-[#4a5e00]"
+                     style="font-family: 'Montserrat', sans-serif;">
+                    Your session ended due to inactivity. Please sign in again.
+                </div>
+            @endif
+
             <!-- Role Selection -->
            <div class="w-full px-2 md:px-0 md:justify-center justify-start items-start gap-4 md:gap-8 mt-2 mb-8 text-black text-[15px] flex flex-col sm:flex-row"
                  style="font-family: 'Montserrat', sans-serif;">

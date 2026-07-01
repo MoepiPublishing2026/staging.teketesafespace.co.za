@@ -37,4 +37,14 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    /**
+     * Admin login uses the Livewire form at /school-admin, not the legacy Blade view.
+     */
+    public function showLoginForm()
+    {
+        $params = request()->boolean('session_expired') ? ['session_expired' => 1] : [];
+
+        return redirect()->route('school-admin', $params);
+    }
 }

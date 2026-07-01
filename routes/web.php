@@ -150,7 +150,13 @@ Route::post('/logout', function () {
     request()->session()->invalidate();
     request()->session()->regenerateToken();
 
-    return redirect('/');
+    $loginUrl = route('school-admin', ['session_expired' => 1]);
+
+    if (request()->expectsJson()) {
+        return response()->json(['redirect' => $loginUrl]);
+    }
+
+    return redirect($loginUrl);
 })->name('logout');
 Auth::routes(['verify' => true]);
 Auth::routes();
