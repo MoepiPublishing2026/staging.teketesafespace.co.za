@@ -250,9 +250,14 @@
 
                 <div>
                     <label class="filter-label">Name / Surname</label>
-                    <input type="text" class="filter-input"
-                           wire:model.live.debounce.350ms="filterName"
-                           placeholder="e.g. John Smith" />
+                    <input type="text"
+                        class="filter-input"
+                        wire:model.live.debounce.350ms="filterName"
+                        placeholder="e.g. John Smith"
+                        @if($filterAnonymous === '1') disabled @endif
+                        title="{{ $filterAnonymous === '1' ? 'Not available for anonymous reports' : '' }}"
+                        style="{{ $filterAnonymous === '1' ? 'opacity:0.4; cursor:not-allowed; background:#f3f4f6;' : '' }}"
+                    />
                 </div>
 
                 <div>
