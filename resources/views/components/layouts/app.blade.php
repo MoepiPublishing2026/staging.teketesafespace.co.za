@@ -16,6 +16,8 @@
 
         <!-- Tailwind CSS CDN -->
         <script src="https://cdn.tailwindcss.com"></script>
+
+        @livewireStyles
     </head>
     <body class="bg-white font-[Montserrat]">
 
@@ -24,5 +26,6 @@
             {{ $slot }}
         </main>
 
+        @livewireScripts
     </body>
 </html>

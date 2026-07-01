@@ -56,7 +56,8 @@ class DistrictLoginForm extends Component
 
     public function render()
     {
-        return view('livewire.admin-login-form');
+        return view('livewire.admin-login-form')
+            ->layout('components.layouts.app', ['title' => 'District Admin Login | Tekete SafeSpace']);
     }
     
     public function resetForm()

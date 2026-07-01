@@ -60,7 +60,8 @@ class AdminLoginForm extends Component
 
     public function render()
     {
-        return view('livewire.admin-login-form');
+        return view('livewire.admin-login-form')
+            ->layout('components.layouts.app', ['title' => 'Admin Login | Tekete SafeSpace']);
     }
     
     public function resetForm()

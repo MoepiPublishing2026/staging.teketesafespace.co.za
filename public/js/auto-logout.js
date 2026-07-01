@@ -1,49 +1,77 @@
-// Set the inactivity timeout to 30 minutes (30 minutes * 60 seconds * 1000 ms)
-const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000; 
-let timeoutTimer;
-
-/**
- * Resets the timer whenever user activity is detected (mouse, keypress, scroll, touch).
- */
-function resetTimer() {
-    clearTimeout(timeoutTimer);
-    
-    // Set a new timer
-    timeoutTimer = setTimeout(() => {
-        // Only proceed if a session cookie exists, indicating the user is likely logged in
-        if (document.cookie.includes('laravel_session')) {
-            console.log('30 minutes of inactivity detected. Logging out.');
-            
-           
-            alert('You have been logged out due to 30 minutes of inactivity.');
-            
-            
-            window.location.href = '/logout'; 
-        }
-    }, INACTIVITY_TIMEOUT_MS);
-}
-
-
-function setupInactivityTracking() {
-    // Events to monitor for activity
-    const activityEvents = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'];
-    activityEvents.forEach(event => document.addEventListener(event, resetTimer, false));
-    
-    
-    resetTimer();
-    console.log(`Auto-logout timer started for 30 minutes.`);
-}
-
-// Start tracking once the window is fully loaded
-window.onload = setupInactivityTracking;
-
-// Handle browser tab focus/blur to pause/resume the timer
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'visible') {
-        // Resume/reset timer when the tab becomes active again
-        resetTimer(); 
-    } else {
-        // Pause timer when the tab is inactive
-        clearTimeout(timeoutTimer);
+(function () {
+    if (window.__adminAutoLogoutStarted) {
+        return;
     }
-});
+
+    const config = window.AdminAutoLogout;
+    if (!config || !config.timeoutMinutes) {
+        return;
+    }
+
+    window.__adminAutoLogoutStarted = true;
+
+    const INACTIVITY_TIMEOUT_MS = config.timeoutMinutes * 60 * 1000;
+    let timeoutTimer = null;
+
+    function csrfToken() {
+        return config.csrfToken
+            || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+            || '';
+    }
+
+    function performLogout() {
+        const token = csrfToken();
+        const body = new URLSearchParams();
+        if (token) {
+            body.set('_token', token);
+        }
+
+        fetch(config.logoutUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': token,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+            credentials: 'same-origin',
+            body: body.toString(),
+        }).finally(function () {
+            var loginUrl = config.loginUrl || '/school-admin';
+            window.location.replace(loginUrl + (loginUrl.indexOf('?') >= 0 ? '&' : '?') + 'session_expired=1');
+        });
+    }
+
+    function resetTimer() {
+        clearTimeout(timeoutTimer);
+        timeoutTimer = setTimeout(function () {
+            performLogout();
+        }, INACTIVITY_TIMEOUT_MS);
+    }
+
+    function setupInactivityTracking() {
+        const activityEvents = [
+            'mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click',
+        ];
+
+        activityEvents.forEach(function (eventName) {
+            document.addEventListener(eventName, resetTimer, { passive: true });
+        });
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') {
+                resetTimer();
+            } else {
+                clearTimeout(timeoutTimer);
+            }
+        });
+
+        resetTimer();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupInactivityTracking);
+    } else {
+        setupInactivityTracking();
+    }
+})();

@@ -11,6 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->redirectGuestsTo('/school-admin');
+
         // Exclude PayFast ITN callback from CSRF verification
         $middleware->validateCsrfTokens(except: [
             'payment/notify',

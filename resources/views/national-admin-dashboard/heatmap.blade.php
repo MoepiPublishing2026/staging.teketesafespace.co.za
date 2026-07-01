@@ -457,7 +457,6 @@
         }
         .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
         .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-        .map-legend-swatch.none { background: #d1cb23; opacity: 0.85; }
         .map-legend-swatch.low { background: #d1cb23; }
         .map-legend-swatch.medium { background: #fbbf0f; }
         .map-legend-swatch.high { background: #ed1c24; }
@@ -735,10 +734,9 @@
                     <div class="tt-sub" id="provinceMapTooltipSub"></div>
                 </div>
                 <div class="map-legend" aria-label="Heatmap legend">
-                    <div class="map-legend-row"><span class="map-legend-swatch none" aria-hidden="true"></span><span>No reports</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
                     <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
                 </div>
             </div>
         </section>
