@@ -8,6 +8,10 @@ use App\Models\Report;
 use App\Models\School;
 use App\Models\AbuseType;
 use App\Models\Subtype;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReportStatusChangedNotification;
+use App\Mail\ReporterBlockedNotification;
+use App\Notifications\CaseStatusChanged;
 
 class SchoolAdminReportsController extends Controller
 {
@@ -92,9 +96,11 @@ class SchoolAdminReportsController extends Controller
             $query->where('grade', $request->input('grade'));
         }
 
-        // Report type filter
+        // Report type filter (dashboard may pass abuse_type_id)
         if ($request->filled('type_id')) {
             $query->where('abuse_type_id', $request->input('type_id'));
+        } elseif ($request->filled('abuse_type_id')) {
+            $query->where('abuse_type_id', $request->input('abuse_type_id'));
         }
 
         // Subtype filter
@@ -170,6 +176,7 @@ class SchoolAdminReportsController extends Controller
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
+                'id'                   => $report->id,
                 'case_number'          => $report->case_number,
                 'full_name'            => $report->full_name ?? 'Anonymous',
                 'province'             => $report->province->province_name ?? 'N/A',
@@ -184,11 +191,184 @@ class SchoolAdminReportsController extends Controller
                 'phone_number'         => $report->phone_number ?? 'N/A',
                 'grade'                => $report->grade ?? 'N/A',
                 'latest_status_reason' => $report->latest_status_reason ?? 'No status history recorded.',
+                'reporter_clarification' => $report->reporter_clarification,
+                'blocked_at'           => $report->blocked_at?->format('Y M d'),
+                'blocked_by_name'      => $report->blocked_by_name,
+                'false_reports_count'  => $this->falseReportsCountFor($report),
                 'description'          => $report->description,
                 'attachments'          => $report->image_path ? json_decode($report->image_path, true) : [],
             ]);
         }
 
         abort(404, 'Not Found');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        if (!$user || $user->role !== 'school') {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'status' => 'required|string|in:awaiting-resolution,under-review,forwarded,closed,unresolved,false-report',
+            'reason' => 'required|string|min:10|max:500',
+        ], [
+            'reason.required' => 'You must provide a reason for this status change.',
+            'reason.min'      => 'Please provide a more detailed justification (at least 10 characters).',
+        ]);
+
+        $report = Report::with('user')
+            ->where('school_name', $user->school_name)
+            ->findOrFail($id);
+
+        $newStatus = $request->input('status');
+        $reason    = $request->input('reason');
+
+        $report->status               = $newStatus;
+        $report->latest_status_reason = $reason;
+        $report->save();
+        $report->refresh();
+
+        if ($newStatus === 'false-report') {
+            $falseCount = Report::where('status', 'false-report')
+                ->where(function ($query) use ($report) {
+                    if (!empty($report->reporter_email)) {
+                        $query->where('reporter_email', $report->reporter_email);
+                    } elseif (!empty($report->phone_number)) {
+                        $query->where('phone_number', $report->phone_number);
+                    } elseif (!empty($report->full_name)) {
+                        $query->where('full_name', $report->full_name);
+                    } else {
+                        $query->whereRaw('1 = 0');
+                    }
+                })->count();
+
+            if ($falseCount >= 2) {
+                Report::where(function ($query) use ($report) {
+                    if (!empty($report->reporter_email)) {
+                        $query->where('reporter_email', $report->reporter_email);
+                    } elseif (!empty($report->phone_number)) {
+                        $query->where('phone_number', $report->phone_number);
+                    } elseif (!empty($report->full_name)) {
+                        $query->where('full_name', $report->full_name);
+                    }
+                })->update(['suspended_until' => now()->addDays(90)]);
+
+                $report->refresh();
+            }
+        }
+
+        if ($report->reporter_email && $report->reporter_email !== $user->email) {
+            try {
+                Mail::to($report->reporter_email)->send(
+                    new ReportStatusChangedNotification($report, $reason)
+                );
+            } catch (\Exception $e) {
+                \Log::error('School admin status email failed: ' . $e->getMessage());
+            }
+        }
+
+        if ($report->user && $report->user->id !== $user->id) {
+            try {
+                $report->user->notify(new CaseStatusChanged($report));
+            } catch (\Exception $e) {
+                \Log::error('School admin in-app notification failed: ' . $e->getMessage());
+            }
+        }
+
+        $message = 'Status updated successfully. Reporter notified.';
+        if ($newStatus === 'false-report') {
+            if ($report->suspended_until) {
+                $isPermanent = $report->suspended_until->year >= Report::PERMANENT_BLOCK_YEAR;
+                $message = $isPermanent
+                    ? 'Reporter is permanently blocked (linked identifiers found).'
+                    : 'Reporter has been suspended for 90 days.';
+            } else {
+                $message = 'Report marked as false.';
+            }
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'status'  => $report->status,
+            ]);
+        }
+
+        return redirect()->back()->with('success_message', $message);
+    }
+
+    public function permanentBlock(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user || $user->role !== 'school') {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'report_id' => 'required|integer',
+        ]);
+
+        $report = Report::where('school_name', $user->school_name)
+            ->findOrFail($request->input('report_id'));
+
+        if (!$report->reporter_email) {
+            return response()->json(['success' => false, 'message' => 'No email address found.'], 422);
+        }
+
+        $permanentDate = \Carbon\Carbon::create(Report::PERMANENT_BLOCK_YEAR, 12, 31, 23, 59, 59);
+
+        Report::where(function ($query) use ($report) {
+            if ($report->reporter_email) {
+                $query->where('reporter_email', $report->reporter_email);
+            }
+            if ($report->phone_number) {
+                $query->orWhere('phone_number', $report->phone_number);
+            }
+            if ($report->full_name) {
+                $query->orWhere('full_name', $report->full_name);
+            }
+        })->update([
+            'suspended_until' => $permanentDate,
+            'blocked_by_id'   => $user->id,
+            'blocked_by_name' => $user->name,
+            'blocked_at'      => now(),
+        ]);
+
+        $report->refresh();
+
+        try {
+            Mail::to($report->reporter_email)->send(
+                new ReporterBlockedNotification($report, true)
+            );
+        } catch (\Exception $e) {
+            \Log::error('School admin block email failed: ' . $e->getMessage());
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reporter has been permanently blocked and notified via email.',
+        ]);
+    }
+
+    private function falseReportsCountFor(Report $report): int
+    {
+        return Report::where('status', 'false-report')
+            ->where(function ($query) use ($report) {
+                if (!empty($report->reporter_email)) {
+                    $query->where('reporter_email', trim(strtolower($report->reporter_email)));
+                } elseif (!empty($report->phone_number)) {
+                    $query->where('phone_number', trim($report->phone_number));
+                } elseif (!empty($report->full_name)) {
+                    $query->where('full_name', trim($report->full_name));
+                } else {
+                    $query->whereRaw('1 = 0');
+                }
+            })
+            ->count();
     }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="sa-app-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -711,15 +711,15 @@ canvas {
 }
 
     </style>
-    @include('components.school-admin-styles')
-    <link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
+    <x-school-admin-styles />
 </head>
 <body class="sa-app">
-@include('components.school-admin-sidebar')
+<x-school-admin-sidebar />
 
 
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
+        <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sa-sidebar" type="button">&#9776;</button>
         <!-- Top bar with profile only (sticky) -->
         <div class="topbar">
             <div class="profile">
@@ -1665,7 +1665,7 @@ function navigateToTopAbuseTypes() {
 }
 
     </script>
-    @include('components.school-admin-sidebar-script')
+    <x-school-admin-sidebar-script />
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 

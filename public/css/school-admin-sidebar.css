@@ -1,11 +1,16 @@
-{{-- Shared School Admin sidebar styles — include last in <head> on Dashboard, Reports, False Reports, Settings --}}
-<link rel="stylesheet" href="{{ asset('css/school-admin-sidebar.css') }}">
-<link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
-<style>
-/* Inline block loads after linked CSS so these rules always win */
-body.sa-app #sa-sidebar.school-admin-sidebar,
-body.sa-app .school-admin-sidebar.sidebar {
-    width: 235px !important;
+/**
+ * School Admin sidebar — shared across dashboard, reports, false reports, settings.
+ * Scoped to #sa-sidebar so page-level .sidebar-link rules cannot bleed in.
+ */
+
+html.sa-app-root,
+body.sa-app {
+    background-color: #ffffff;
+    color-scheme: light;
+}
+
+body.sa-app #sa-sidebar.school-admin-sidebar {
+    width: 235px;
     background-color: #ffffff !important;
     border-right: 1px solid #eaeaea;
     display: flex;
@@ -13,6 +18,7 @@ body.sa-app .school-admin-sidebar.sidebar {
     padding-top: 120px;
     flex-shrink: 0;
 }
+
 body.sa-app #sa-sidebar .sidebar-logo {
     position: fixed;
     top: 40px;
@@ -21,44 +27,52 @@ body.sa-app #sa-sidebar .sidebar-logo {
     height: auto;
     z-index: 1001;
 }
+
 body.sa-app #sa-sidebar .sidebar-logo img {
     width: 115px;
     height: auto;
     display: block;
 }
+
 body.sa-app #sa-sidebar .sidebar-list {
     list-style: none;
     padding: 0 0 0 22px;
     margin: 0;
 }
+
 body.sa-app #sa-sidebar .sidebar-list li {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-body.sa-app #sa-sidebar .sidebar-link,
-body.sa-app .school-admin-sidebar .sidebar-link {
-    display: block !important;
-    width: 92% !important;
+
+body.sa-app #sa-sidebar .sidebar-link {
+    display: block;
+    width: 92%;
     font-size: 15px !important;
     font-weight: 900 !important;
     color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px !important;
-    margin-bottom: 17px !important;
-    border-radius: 8px !important;
-    text-decoration: none !important;
+    padding: 11px 18px;
+    margin-bottom: 17px;
+    border-radius: 8px;
+    text-decoration: none;
     transition: all 0.25s ease;
     box-sizing: border-box;
     background: transparent !important;
 }
+
+body.sa-app #sa-sidebar .sidebar-link:not(.active):not(:hover) {
+    color: #545454 !important;
+    background: transparent !important;
+}
+
 body.sa-app #sa-sidebar .sidebar-link:hover,
-body.sa-app #sa-sidebar .sidebar-link.active,
-body.sa-app .school-admin-sidebar .sidebar-link:hover,
-body.sa-app .school-admin-sidebar .sidebar-link.active {
+body.sa-app #sa-sidebar .sidebar-link.active {
     color: #ffffff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
+
 body.sa-app .menu-icon {
     display: none;
     position: fixed;
@@ -70,7 +84,7 @@ body.sa-app .menu-icon {
     border: 2px solid #e5e7eb;
     background: #ffffff !important;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     z-index: 1002;
     align-items: center;
@@ -78,27 +92,35 @@ body.sa-app .menu-icon {
     font-size: 22px;
     color: #38b6ff !important;
 }
+
 body.sa-app .menu-icon:hover {
     background: #f3f4f6 !important;
     border-color: #38b6ff !important;
 }
+
 body.sa-app .sidebar-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 999;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
+
 body.sa-app .sidebar-overlay.active {
     display: block;
     opacity: 1;
 }
+
 @media (min-width: 901px) {
-    body.sa-app .sidebar-overlay { display: none !important; }
+    body.sa-app .sidebar-overlay {
+        display: none !important;
+    }
 }
+
 @media (max-width: 900px) {
-    body.sa-app .menu-icon { display: flex !important; }
+    body.sa-app .menu-icon {
+        display: flex !important;
+    }
 }
-</style>

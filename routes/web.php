@@ -27,6 +27,7 @@ use App\Http\Controllers\ProvincialAdminSettingsController;
 use App\Http\Controllers\ProvincialAdminReportsController;
 use App\Http\Controllers\SchoolAdminDashboardController;
 use App\Http\Controllers\SchoolAdminReportsController;
+use App\Http\Controllers\SchoolAdminSettingsController;
 use App\Livewire\ContactUs;
 // use App\Http\Controllers\SubscriptionController;
 use App\Livewire\ClarificationModal;
@@ -70,9 +71,13 @@ Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('/admin/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
     Route::post('/admin/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
-    Route::get('/admin/reports', \App\Livewire\AdminReports::class)->name('admin.reports');
-    Route::get('/admin/reports/{filter?}', \App\Livewire\AdminReports::class)->name('admin.reports.index');
-    Route::get('/admin/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
+    Route::get('/admin/reports', [SchoolAdminReportsController::class, 'index'])->name('admin.reports');
+    Route::get('/admin/reports/{id}', [SchoolAdminReportsController::class, 'show'])->name('admin.reports.show')->where('id', '[0-9]+');
+    Route::post('/admin/reports/{id}/status', [SchoolAdminReportsController::class, 'updateStatus'])->name('admin.reports.update-status');
+    Route::post('/admin/reports/block-reporter', [SchoolAdminReportsController::class, 'permanentBlock'])->name('admin.reports.block-reporter');
+    Route::get('/admin/settings', [SchoolAdminSettingsController::class, 'index'])->name('admin.settings');
+    Route::put('/admin/settings', [SchoolAdminSettingsController::class, 'update'])->name('admin.settings.update');
+    Route::delete('/admin/settings/delete-picture', [SchoolAdminSettingsController::class, 'deleteProfilePicture'])->name('admin.settings.delete-picture');
 });
 
 // District Admin Dashboard
@@ -137,11 +142,8 @@ Route::prefix('national-admin')->name('national-admin.')->middleware(['auth', 'o
         ->name('settings.delete-picture');
 });
 
-// School Admin Reports Page (Controller-based, matching Provincial Admin)
-// Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-//     Route::get('reports', [SchoolAdminReportsController::class, 'index'])->name('reports');
-//     Route::get('reports/{id}', [SchoolAdminReportsController::class, 'show'])->name('reports.show')->where('id', '[0-9]+');
-// });
+// School Admin Reports (controller-based, matching Provincial/National Admin)
+// Routes defined in auth group above.
 
 // Admin Logout
 Route::post('/logout', function () {
