@@ -1,4 +1,5 @@
 {{-- Shared School Admin Sidebar — Dashboard, Reports, False Reports, Settings --}}
+<x-admin-flash-messages />
 @php
     $currentRoute = request()->route()?->getName() ?? '';
     $isDashboard = $currentRoute === 'admin.dashboard';

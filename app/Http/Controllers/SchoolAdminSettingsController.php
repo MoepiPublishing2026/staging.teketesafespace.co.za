@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class SchoolAdminSettingsController extends Controller
+class SchoolAdminSettingsController extends AdminController
 {
     public function index()
     {
@@ -22,6 +22,13 @@ class SchoolAdminSettingsController extends Controller
     }
 
     public function update(Request $request)
+    {
+        return $this->safeAdmin(function () use ($request) {
+            return $this->performUpdate($request);
+        }, $request);
+    }
+
+    private function performUpdate(Request $request)
     {
         $user = Auth::user();
 
@@ -127,6 +134,13 @@ class SchoolAdminSettingsController extends Controller
     }
 
     public function deleteProfilePicture()
+    {
+        return $this->safeAdmin(function () {
+            return $this->performDeleteProfilePicture();
+        }, request());
+    }
+
+    private function performDeleteProfilePicture()
     {
         $user = Auth::user();
 

@@ -1,14 +1,5 @@
 @php
-    $adminRoutePatterns = [
-        'admin/*',
-        'national-admin/*',
-        'provincial-admin/*',
-        'provincial/*',
-        'district-admin/*',
-        'district/*',
-        'email-verification',
-    ];
-    $isAdminArea = auth()->check() && request()->is(...$adminRoutePatterns);
+    $isAdminArea = auth()->check() && \App\Support\AdminRoutes::matches(request());
 @endphp
 
 @if($isAdminArea)
