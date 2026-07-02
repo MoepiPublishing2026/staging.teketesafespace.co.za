@@ -21,50 +21,6 @@
         a { text-decoration: none; }
         h2,h3 { font-family: 'Poppins', sans-serif; color: #000; margin-bottom: 1rem; }
 
-        /* Sidebar */
-        .sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 100;
-    flex-shrink: 0;
-}
-        .sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
-        .sidebar-logo img { width: 115px; height: auto; display: block; }
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: 75px;
-            right: 0;
-            width: 1px;
-            height: calc(100% - 75px);
-            background: #eaeaea;
-            z-index: 1;
-        }
-        .sidebar-list { list-style: none; padding: 0 0 0 22px; }
-        .sidebar-link {
-            display: block;
-            width: 92%;
-            padding: 11px 18px;
-            margin-bottom: 17px;
-            font-size: 15px;
-            font-weight: 900;
-            color: #545454;
-            border-radius: 8px;
-            transition: all 0.25s ease;
-        }
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: var(--theme-gradient);
-            color: #000;
-        }
        button:not(.menu-icon):not(.submit-btn):not(.delete-btn){
             background-color: white !important;
             color: #38b6ff !important;
@@ -86,32 +42,6 @@
             outline: none;
         }
 
-        /* Hide menu icon on desktop */
-        .menu-icon {
-            display: none;
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
-        @media (min-width: 901px) {
-            .sidebar-overlay {
-                display: none !important;
-            }
-        }
-
         /* Responsive sidebar and elements */
         /* Tablet breakpoint (768px - 1024px) */
         @media (max-width: 1024px) {
@@ -129,51 +59,7 @@
             body {
                 overflow-x: hidden;
             }
-            
-            .menu-icon {
-                display: flex !important;
-                position: fixed;
-                top: 12px;
-                left: 12px;
-                width: 44px;
-                height: 44px;
-                padding: 0;
-                border: 2px solid #e5e7eb;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                cursor: pointer;
-                z-index: 1001;
-                align-items: center;
-                justify-content: center;
-                font-size: 22px;
-                color: #38b6ff;
-            }
-            
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 0;
-                height: 100vh;
-                background: white;
-                overflow-x: hidden;
-                overflow-y: auto;
-                transition: width 0.3s ease;
-                z-index: 1000;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-                padding-top: 0;
-                border-right: 1px solid #eaeaea;
-            }
-            
-            .sidebar.open {
-                width: 240px;
-            }
 
-            .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-            .sidebar.open .sidebar-logo { display: flex; }
-            .sidebar-logo img { width: 95px; height: auto; }
-            
             .main-panel {
                 margin-left: 0 !important;
                 transition: margin-left 0.3s ease;
@@ -273,20 +159,6 @@
 }
         /* Small mobile (max-width: 480px) */
         @media (max-width: 480px) {
-            .menu-icon {
-                top: 10px;
-                left: 10px;
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
-            }
-
-            .sidebar-logo img { width: 85px; height: auto; }
-            
-            .sidebar.open {
-                width: 220px;
-            }
-
             .main-panel.shifted {
                 margin-left: 0;
             }
@@ -460,28 +332,14 @@ button.submit-btn {
         }
     </style>
     <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
+    <x-national-admin-styles />
 </head>
 <body class="na-app">
 
-<aside class="sidebar" id="na-sidebar">
-      <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-      </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/national/heatmap') }}"  class="sidebar-link {{ request()->is('national/heatmap') ? 'active' : '' }}">Heat-Map</a>
-        <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </ul>
-</aside>
+<x-national-admin-sidebar />
 
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
-
-    <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
-        <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
+        <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
         <div class="topbar">
             <div class="profile">
                 <div class="meta">
@@ -635,51 +493,7 @@ button.submit-btn {
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 
 <script>
-    // Mobile menu toggle
-    const menuIcon = document.querySelector('.menu-icon');
-    const sidebar = document.querySelector('.sidebar');
-    const mainPanel = document.querySelector('.main-panel');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-    function toggleSidebar() {
-        if (!sidebar || !mainPanel) return;
-        sidebar.classList.toggle('open');
-        mainPanel.classList.toggle('shifted');
-        const isOpen = sidebar.classList.contains('open');
-        document.body.classList.toggle('na-sidebar-open', isOpen);
-        if (menuIcon) {
-            menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
-        }
-        if (sidebarOverlay) {
-            sidebarOverlay.setAttribute('aria-hidden', !isOpen);
-            sidebarOverlay.classList.toggle('active', isOpen);
-        }
-    }
-
-    if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
-    if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) toggleSidebar();
-    });
-
-    if (sidebar) {
-        const sidebarLinks = sidebar.querySelectorAll('.sidebar-link');
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
-            });
-        });
-
-        const logoutButton = sidebar.querySelector('button[type="submit"]');
-        if (logoutButton) {
-            logoutButton.addEventListener('click', () => {
-                if (window.innerWidth <= 900 && sidebar.classList.contains('open')) toggleSidebar();
-            });
-        }
-    }
-
-  // Profile picture preview functionality
+    // Profile picture preview functionality
     const profilePictureInput = document.getElementById('profile-picture-input');
     const profilePicturePreview = document.getElementById('profile-picture-preview');
     const profilePicturePlaceholder = document.getElementById('profile-picture-placeholder');
@@ -806,7 +620,8 @@ button.submit-btn {
         }
     }
 </script>
-</script>
+
+<x-national-admin-sidebar-script />
 
 </body>
 </html>

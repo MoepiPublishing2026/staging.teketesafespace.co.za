@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="na-app-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -34,59 +34,11 @@ html, body {
   color: #545454 !important;
 }
 
-.sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-}
-
-.sidebar-logo {
-    position: fixed;
-    top: 40px;
-    left: 40px;
-    width: 100px;
-    height: auto;
-}
-
-.sidebar-logo img {
-    width: 115px;
-    height: auto;
-    display: block;
-}
-
 .sidebar-link, button, select, input, label {
   font-size: 15px !important;
   font-weight: 900 !important;
   color: #545454 !important;
   font-family: 'Montserrat', sans-serif !important;
-}
-
-.sidebar-list {
-    list-style: none;
-    padding: 0 0 0 22px;
-}
-
-.sidebar-link {
-    display: block;
-    width: 92%;
-    font-size: 15px !important;
-    font-weight: 900 !important;
-    color: #545454 !important;
-    font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-    background: var(--theme-gradient);
-    color: #000;
 }
 
 button {
@@ -106,11 +58,6 @@ button:hover, button:focus {
   color: white !important;
   border-color: #38b6ff !important;
   outline: none;
-}
-
-button:hover, .sidebar-link:hover, .sidebar-link.active {
-  color: #fff !important;
-  background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
 
 .metric-card .card-value {
@@ -139,6 +86,68 @@ body {
     min-width: 0;
     overflow-x: hidden;
     overflow-y: hidden;
+}
+
+.sidebar {
+    width: 235px;
+    background-color: white;
+    border-right: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+    padding-top: 120px;
+    flex-shrink: 0;
+}
+
+.sidebar-logo {
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    width: 100px;
+    height: auto;
+    z-index: 1001;
+}
+
+.sidebar-logo img {
+    width: 115px;
+    height: auto;
+    display: block;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0 0 0 22px;
+    margin: 0;
+}
+
+.sidebar-list li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-link {
+    display: block;
+    width: 92%;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    color: #545454 !important;
+    font-family: 'Montserrat', sans-serif !important;
+    padding: 11px 18px;
+    margin-bottom: 17px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+    background: var(--theme-gradient);
+    color: #000;
+}
+
+button:hover, .sidebar-link:hover, .sidebar-link.active {
+  color: #fff !important;
+  background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
 
 .topbar {
@@ -660,49 +669,12 @@ form.filters button {
 }
 .filters button#refreshBtn:hover { background: linear-gradient(to right, #38b6ff, #38b6ff); }
 
-.menu-icon {
-    display: none; position: fixed; top: 12px; left: 12px;
-    width: 44px; height: 44px; padding: 0;
-    border: 2px solid #e5e7eb; background: white !important;
-    border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    cursor: pointer; z-index: 1001; align-items: center; justify-content: center;
-    font-size: 22px; color: #38b6ff !important;
-}
-.menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
-.sidebar-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.3); z-index: 999; opacity: 0; transition: opacity 0.2s ease;
-}
-.sidebar-overlay.active { display: block; opacity: 1; }
-@media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
-
 @media (max-width: 1200px) {
     .metrics-row > .metric-card { flex: 1 1 calc(25% - 1rem); min-width: 90px; max-width: none; }
     .chart-grid { gap: 1rem; }
 }
 
 @media (max-width: 900px) {
-    .menu-icon { display: flex !important; }
-    .sidebar {
-        position: fixed; top: 0; left: 0; width: 0; height: 100vh;
-        background: white; overflow-x: hidden; overflow-y: auto;
-        transition: width 0.3s ease; z-index: 1000;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-    }
-    .sidebar.open { width: 240px; }
-    .sidebar { padding-top: 0; }
-    .sidebar-logo {
-        display: none;
-        position: sticky;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 12px 12px 0;
-        background: white;
-        justify-content: flex-end;
-    }
-    .sidebar.open .sidebar-logo { display: flex; }
-    .sidebar-logo img { width: 95px; height: auto; }
     .main-panel { margin-left: 0 !important; transition: margin-left 0.3s ease; }
     .main-panel.shifted { margin-left: 240px; }
     .dashboard-scroll { padding: 1rem; }
@@ -756,11 +728,8 @@ form.filters button {
 }
 
 @media (max-width: 600px) {
-    .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
-    .sidebar.open { width: 100%; max-width: 280px; }
     .main-panel.shifted { margin-left: 0; }
     .dashboard-scroll { padding: 0.75rem; }
-    .sidebar-logo img { width: 85px; height: auto; }
     .metrics-row > .metric-card { flex: 1 1 100%; }
     .extras-row > .metric-card { flex: 1 1 100%; }
     .metrics-row > .metric-card .card-value { font-size: 22px !important; }
@@ -778,30 +747,14 @@ form.filters button {
 }
     </style>
     <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
+    <x-national-admin-styles />
 </head>
 <body class="na-app">
 
-<aside class="sidebar" id="na-sidebar">
-    <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-    </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/national-admin/heatmap') }}"   class="sidebar-link {{ request()->is('national-admin/heatmap')   ? 'active' : '' }}">Heat-map</a>
-        <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </ul>
-</aside>
-
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<x-national-admin-sidebar />
 
 <div class="main-panel">
-    <button class="menu-icon" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
+    <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
 
     <div class="topbar">
         <div class="profile">
@@ -1562,32 +1515,6 @@ function closeExtrasModal() {
   const modal = document.getElementById('extrasModal');
   if (modal) { modal.classList.remove('active'); modal.setAttribute('aria-hidden', 'true'); }
 }
-
-const menuIcon = document.querySelector('.menu-icon');
-const sidebar = document.querySelector('.sidebar');
-const mainPanel = document.querySelector('.main-panel');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-function toggleSidebar() {
-  if (!sidebar || !mainPanel) return;
-  sidebar.classList.toggle('open');
-  mainPanel.classList.toggle('shifted');
-  const isOpen = sidebar.classList.contains('open');
-  document.body.classList.toggle('na-sidebar-open', isOpen);
-  if (menuIcon) {
-    menuIcon.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    menuIcon.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
-  }
-  if (sidebarOverlay) {
-    sidebarOverlay.classList.toggle('active', isOpen);
-    sidebarOverlay.setAttribute('aria-hidden', !isOpen);
-  }
-}
-if (menuIcon) menuIcon.addEventListener('click', toggleSidebar);
-if (sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) toggleSidebar();
-});
 </script>
 
 <script>
@@ -1612,6 +1539,8 @@ function exportPDF() {
   }).save();
 }
 </script>
+
+<x-national-admin-sidebar-script />
 
 </body>
 </html>

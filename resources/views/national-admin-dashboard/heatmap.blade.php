@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="na-app-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace – National Heatmap</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -19,10 +19,6 @@
             --green: #d1cb23;
             --bg: white;
             --text: #253f58ff;
-            --sidebar-bg: white;
-            --sidebar-hover: var(--theme-gradient);
-            --sidebar-active: linear-gradient(to right, #38b6ff, #38b6ff);
-            --sidebar-border: #c7da30;
         }
 
         * { box-sizing: border-box; }
@@ -30,16 +26,20 @@
         html, body {
             font-family: 'Montserrat', sans-serif !important;
             color: #545454 !important;
+            background-color: #ffffff !important;
+            color-scheme: light;
         }
-        body {
+        body.na-app {
             display: flex;
             min-height: 100vh;
             width: 100%;
             min-width: 0;
             overflow-x: hidden;
             overflow-y: hidden;
+            margin: 0;
         }
 
+        /* Sidebar — identical to national dashboard */
         .sidebar {
             width: 235px;
             background-color: white;
@@ -47,10 +47,36 @@
             display: flex;
             flex-direction: column;
             padding-top: 120px;
+            flex-shrink: 0;
         }
-        .sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
-        .sidebar-logo img { width: 115px; height: auto; display: block; }
-        .sidebar-list { list-style: none; padding: 0 0 0 22px; }
+
+        .sidebar-logo {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            width: 100px;
+            height: auto;
+            z-index: 1001;
+        }
+
+        .sidebar-logo img {
+            width: 115px;
+            height: auto;
+            display: block;
+        }
+
+        .sidebar-list {
+            list-style: none;
+            padding: 0 0 0 22px;
+            margin: 0;
+        }
+
+        .sidebar-list li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
         .sidebar-link {
             display: block;
             width: 92%;
@@ -64,29 +90,9 @@
             text-decoration: none;
             transition: all 0.25s ease;
         }
-        .sidebar-link:hover, .sidebar-link.active {
-            background: var(--theme-gradient);
-            color: #000;
-        }
 
-        button {
-            background-color: white !important;
-            color: #38b6ff !important;
-            border: 2px solid #c7da30 !important;
-            font-weight: 900 !important;
-            font-family: 'Montserrat', sans-serif !important;
-            padding: 0.75rem 1rem !important;
-            border-radius: 0.5rem !important;
-            cursor: pointer !important;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-        button:hover, button:focus {
-            background-color: #c7da30 !important;
-            color: white !important;
-            border-color: #38b6ff !important;
-            outline: none;
-        }
-        button:hover, .sidebar-link:hover, .sidebar-link.active {
+        .sidebar-link:hover,
+        .sidebar-link.active {
             color: #fff !important;
             background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
         }
@@ -249,32 +255,6 @@
             font-weight: 700;
             color: #374151;
         }
-
-        .menu-icon {
-            display: none;
-            position: fixed;
-            top: 12px; left: 12px;
-            width: 44px; height: 44px;
-            padding: 0;
-            border: 2px solid #e5e7eb;
-            background: white !important;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            cursor: pointer;
-            z-index: 1001;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: #38b6ff !important;
-        }
-        .menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.3); z-index: 999;
-            opacity: 0; transition: opacity 0.2s ease;
-        }
-        .sidebar-overlay.active { display: block; opacity: 1; }
-        @media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
 
         .heatmap-panel {
             background: #fff;
@@ -462,16 +442,6 @@
         .map-legend-swatch.high { background: radial-gradient(circle, #d80f18 0%, #ef2b2d 35%, #f26a21 52%, #f9c80e 78%, #a8d05f 100%); }
 
         @media (max-width: 900px) {
-            .menu-icon { display: flex !important; }
-            .sidebar {
-                position: fixed; top: 0; left: 0; width: 0; height: 100vh;
-                background: white; overflow-x: hidden; overflow-y: auto;
-                transition: width 0.3s ease; z-index: 1000;
-                box-shadow: 2px 0 12px rgba(0,0,0,0.15); padding-top: 0;
-            }
-            .sidebar.open { width: 240px; }
-            .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-            .sidebar.open .sidebar-logo { display: flex; }
             .main-panel { margin-left: 0 !important; width: 100%; }
             .dashboard-scroll { padding: 1rem; }
             .district-map-container { height: 320px; min-height: 280px; }
@@ -481,30 +451,15 @@
             .heatmap-table th, .heatmap-table td { padding: 0.35rem 0.45rem; }
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
+    <x-national-admin-styles />
 </head>
-<body>
+<body class="na-app">
 
-<aside class="sidebar" id="na-sidebar">
-    <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-    </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/national-admin/dashboard') }}" class="sidebar-link {{ request()->is('national-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/national-admin/reports') }}" class="sidebar-link {{ request()->is('national-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/national-admin/heatmap') }}" class="sidebar-link {{ request()->is('national-admin/heatmap') ? 'active' : '' }}">Heat-Map</a>
-        <a href="{{ url('/national-admin/settings') }}" class="sidebar-link {{ request()->is('national-admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </ul>
-</aside>
-
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<x-national-admin-sidebar />
 
 <div class="main-panel">
-    <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="na-sidebar" type="button">&#9776;</button>
 
     <div class="topbar">
         <div class="profile">
@@ -798,27 +753,6 @@
         cell.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
         });
-    });
-})();
-</script>
-
-<script>
-(function () {
-    const menuIcon = document.getElementById('sidebarToggle');
-    const sidebar = document.getElementById('na-sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-
-    function toggle() {
-        if (!sidebar) return;
-        const isOpen = sidebar.classList.toggle('open');
-        if (menuIcon) menuIcon.setAttribute('aria-expanded', isOpen);
-        if (overlay) overlay.classList.toggle('active', isOpen);
-    }
-
-    if (menuIcon) menuIcon.addEventListener('click', toggle);
-    if (overlay) overlay.addEventListener('click', toggle);
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) toggle();
     });
 })();
 </script>
@@ -1346,6 +1280,8 @@ function exportPDF() {
     }).save();
 }
 </script>
+
+<x-national-admin-sidebar-script />
 
 </body>
 </html>
