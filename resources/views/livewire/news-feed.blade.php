@@ -56,14 +56,11 @@
         </div>
 
 <div class="text-center mb-8 px-4">
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-[#2f343e] tracking-wide font-[Montserrat] leading-tight">
-        <span class="relative inline-block">
-            Tekete Safe Space New
-            <span class="absolute left-0 bottom-[-5px] md:bottom-[-7px] w-full h-[7px] md:h-[8px] bg-[#c7da30]"></span>
-        </span><span>s.</span>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold text-[#2f343e] tracking-wide font-[Montserrat] leading-[1.4] md:leading-tight">
+        <span class="inline box-decoration-clone" style="background: linear-gradient(to top, transparent 0px, #c7da30 0px, #c7da30 8px, transparent 8px); padding-bottom: 2px; text-decoration-skip-ink: none; -webkit-text-decoration-skip-ink: none;">
+            Tekete Safe S<span class="inline-block" style="clip-path: inset(0 0 10% 0);">p</span>ace New</span><span class="inline">s.</span>
     </h1>
 </div>
-
     <div class="flex justify-center mb-8 py-8">
     <div class="w-[220px] h-[220px] flex items-center justify-center">
         <img src="{{ asset('images/PSA-logo.png') }}" 
@@ -106,14 +103,14 @@
 
     </main>
 
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0;">
-
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 px-0" style="max-width: 1280px; margin: 0 auto; font-family: 'Montserrat', sans-serif; font-size: 16px;">
-            <div>
-                <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
-            </div>
-            
-
+    <!-- ================= FOOTER ================= -->
+    <footer class="w-full bg-[#808080] text-white py-6 mt-12">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-[14px] sm:text-[16px]"
+style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
+    <div>
+        <p>© {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
+    </div>
         </div>
     </footer>
 
