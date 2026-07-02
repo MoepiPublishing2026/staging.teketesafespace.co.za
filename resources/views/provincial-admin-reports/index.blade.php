@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="pa-app-root">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -28,52 +28,11 @@ body {
     overflow-y: hidden;
 }
 
-.sidebar-link, button, select, input, label {
+button, select, input, label {
     font-size: 15px !important;
     font-weight: 900 !important;
     color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
-}
-.sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 100;
-}
-.sidebar-logo {
-    position: fixed;
-    top: 40px;
-    left: 40px;
-    width: 100px;
-    height: auto;
-    z-index: 1;
-}
-.sidebar-logo img { width: 115px; height: auto; display: block; }
-.sidebar-list { list-style: none; padding: 0 0 0 22px; }
-.sidebar-link {
-    display: block;
-    width: 92%;
-    font-size: 15px !important;
-    font-weight: 900 !important;
-    color: #545454 !important;
-    font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-.sidebar-link:hover, .sidebar-link.active { background: var(--theme-gradient); color: #000; }
-button:hover, .sidebar-link:hover, .sidebar-link.active {
-    color: #fff !important;
-    background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
 button {
     background-color: white !important;
@@ -99,42 +58,6 @@ button:hover, button:focus {
 }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 
-.menu-icon {
-    display: none;
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    width: 44px;
-    height: 44px;
-    background: white !important;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    cursor: pointer;
-    z-index: 1001;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    margin: 0 !important;
-    padding: 0 !important;
-    font-size: 22px;
-    color: #38b6ff !important;
-}
-
-.menu-icon:hover { background: #f3f4f6 !important; border-color: #38b6ff !important; }
-
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-.sidebar-overlay.active { display: block; opacity: 1; }
-@media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
-
-.sidebar.open { width: 240px; min-width: 240px; }
 main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
 
 .topbar {
@@ -270,24 +193,7 @@ tbody tr:last-child td { border-bottom: none; }
 ::-webkit-scrollbar-track { background: #f2f2f2; }
 
 @media (max-width: 900px) {
-    .menu-icon { display: flex !important; }
-    .sidebar {
-        position: fixed;
-        top: 0; left: 0;
-        width: 0; min-width: 0;
-        height: 100vh;
-        overflow-x: hidden;
-        transition: width 0.3s ease, min-width 0.3s ease;
-        z-index: 1000;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-        padding-top: 0;
-    }
-    .sidebar-link { margin-bottom: 17px; padding: 11px 18px; font-size: 15px !important; }
-    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-    .sidebar.open .sidebar-logo { display: flex; }
-    .sidebar-logo img { width: 95px; height: auto; display: block; }
-    .main-panel { margin-left: 0 !important; transition: margin-left 0.3s ease; height: 100vh; }
-    .main-panel.shifted { margin-left: 240px; }
+    .main-panel { margin-left: 0 !important; height: 100vh; }
     main { padding: 1.25rem; }
     .filter-grid { grid-template-columns: 1fr 1fr !important; }
     th, td { padding: 0.65rem 0.75rem; }
@@ -299,9 +205,7 @@ tbody tr:last-child td { border-bottom: none; }
 }
 @media (max-width: 600px) {
     .menu-icon { top: 10px; left: 10px; width: 40px; height: 40px; font-size: 20px; }
-    .sidebar.open { width: 100%; max-width: 280px; min-width: 0; }
     .main-panel.shifted { margin-left: 0; }
-    .sidebar-logo img { width: 85px; height: auto; }
 }
 
 /* ── Filter Panel ──────────────────────────────────────────────── */
@@ -461,8 +365,9 @@ tbody tr:last-child td { border-bottom: none; }
     opacity: 1 !important;
 }
     </style>
+    <x-provincial-admin-styles />
 </head>
-<body>
+<body class="pa-app">
 
 {{-- Report Details Modal --}}
 <div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
@@ -487,25 +392,10 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
 </div>
 
-<aside class="sidebar" id="sidebarPanel">
-    <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-    </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}"   class="sidebar-link {{ request()->is('provincial-admin/reports')   ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial-admin/heatmap') }}"   class="sidebar-link {{ request()->is('provincial-admin/heatmap')   ? 'active' : '' }}">Heat-map</a>
-        <a href="{{ url('/provincial-admin/settings') }}"  class="sidebar-link {{ request()->is('provincial-admin/settings')  ? 'active' : '' }}">My Profile</a>
-        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </ul>
-</aside>
-
-<button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<x-provincial-admin-sidebar />
 
 <div class="main-panel">
+    <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pa-sidebar" type="button">&#9776;</button>
     <div class="topbar">
         <div class="profile">
             <div class="meta">
@@ -929,37 +819,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (anonSelect) anonSelect.addEventListener('change', syncAnonNameState);
     syncAnonNameState();
 
-
-    // Sidebar toggle
-    var toggle    = document.getElementById('sidebarToggle');
-    var sidebar   = document.getElementById('sidebarPanel');
-    var overlay   = document.getElementById('sidebarOverlay');
-    var mainPanel = document.querySelector('.main-panel');
-
-    function toggleSidebar() {
-        if (!sidebar || !mainPanel) return;
-        sidebar.classList.toggle('open');
-        mainPanel.classList.toggle('shifted');
-        if (overlay) {
-            overlay.classList.toggle('active', sidebar.classList.contains('open'));
-            overlay.setAttribute('aria-hidden', !sidebar.classList.contains('open'));
-        }
-    }
-
-    if (toggle)  toggle.addEventListener('click', toggleSidebar);
-    if (overlay) overlay.addEventListener('click', toggleSidebar);
-
-    window.addEventListener('resize', function () {
-        if (window.innerWidth > 900 && sidebar && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open');
-            if (mainPanel) mainPanel.classList.remove('shifted');
-            if (overlay) {
-                overlay.classList.remove('active');
-                overlay.setAttribute('aria-hidden', 'true');
-            }
-        }
-    });
-
     // ── Subtype filtered by report type ──────────────────────────
     const typeSelect    = document.querySelector('select[name="type_id"]');
     const subtypeSelect = document.getElementById('subtypeSelect');
@@ -1198,5 +1057,8 @@ function filterSubtypes() {
 });
 
 </script>
+
+<x-provincial-admin-sidebar-script />
+
 </body>
 </html>

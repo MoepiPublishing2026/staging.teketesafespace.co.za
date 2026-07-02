@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="pa-app-root">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -21,50 +21,6 @@
         a { text-decoration: none; }
         h2,h3 { font-family: 'Poppins', sans-serif; color: #000; margin-bottom: 1rem; }
 
-        /* Sidebar */
-        .sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    z-index: 100;
-    flex-shrink: 0;
-}
-        .sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
-        .sidebar-logo img { width: 115px; height: auto; display: block; }
-        .sidebar::before {
-            content: '';
-            position: absolute;
-            top: 75px;
-            right: 0;
-            width: 1px;
-            height: calc(100% - 75px);
-            background: #eaeaea;
-            z-index: 1;
-        }
-        .sidebar-list { list-style: none; padding: 0 0 0 22px; }
-        .sidebar-link {
-            display: block;
-            width: 92%;
-            padding: 11px 18px;
-            margin-bottom: 17px;
-            font-size: 15px;
-            font-weight: 900;
-            color: #545454;
-            border-radius: 8px;
-            transition: all 0.25s ease;
-        }
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: var(--theme-gradient);
-            color: #000;
-        }
        button:not(.menu-icon):not(.submit-btn):not(.delete-btn){
             background-color: white !important;
             color: #38b6ff !important;
@@ -86,34 +42,7 @@
             outline: none;
         }
 
-        /* Hide menu icon on desktop */
-        .menu-icon {
-            display: none;
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-
-        @media (min-width: 901px) {
-            .sidebar-overlay {
-                display: none !important;
-            }
-        }
-
-        /* Responsive sidebar and elements */
-        /* Tablet breakpoint (768px - 1024px) */
+        /* Main Panel */
         @media (max-width: 1024px) {
             main {
                 padding: 1.5rem;
@@ -129,59 +58,10 @@
             body {
                 overflow-x: hidden;
             }
-            
-            .menu-icon {
-                display: flex !important;
-                position: fixed;
-                top: 12px;
-                left: 12px;
-                width: 44px;
-                height: 44px;
-                padding: 0;
-                border: 2px solid #e5e7eb;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                cursor: pointer;
-                z-index: 1001;
-                align-items: center;
-                justify-content: center;
-                font-size: 22px;
-                color: #38b6ff;
-            }
-            
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 0;
-                height: 100vh;
-                background: white;
-                overflow-x: hidden;
-                overflow-y: auto;
-                transition: width 0.3s ease;
-                z-index: 1000;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.15);
-                padding-top: 0;
-                border-right: 1px solid #eaeaea;
-            }
-            
-            .sidebar.open {
-                width: 240px;
-            }
 
-            .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-            .sidebar.open .sidebar-logo { display: flex; }
-            .sidebar-logo img { width: 95px; height: auto; }
-            
             .main-panel {
                 margin-left: 0 !important;
-                transition: margin-left 0.3s ease;
                 width: 100%;
-            }
-            
-            .main-panel.shifted {
-                margin-left: 240px;
             }
             
             main {
@@ -279,12 +159,6 @@
                 width: 40px;
                 height: 40px;
                 font-size: 20px;
-            }
-
-            .sidebar-logo img { width: 85px; height: auto; }
-            
-            .sidebar.open {
-                width: 220px;
             }
 
             .main-panel.shifted {
@@ -460,29 +334,15 @@ button.submit-btn {
             margin-bottom: 1.5rem;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/provincial-admin-mobile.css') }}">
+    <x-provincial-admin-styles />
 </head>
 <body class="pa-app">
-    <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
 
-<aside class="sidebar" id="provincialSidebar">
-      <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-      </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial/heatmap') }}"  class="sidebar-link {{ request()->is('provincial/heatmap') ? 'active' : '' }}">Heat-Map</a>
-        <a href="{{ url('/provincial-admin/reports') }}" class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial-admin/settings') }}" class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </ul>
-</aside>
-
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<x-provincial-admin-sidebar />
 
     <!-- Main dashboard (topbar + scrollable dashboard) -->
     <div class="main-panel">
+        <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pa-sidebar" type="button">&#9776;</button>
         <div class="topbar">
             <div class="profile">
                 <div class="meta">
@@ -624,7 +484,7 @@ button.submit-btn {
 
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 
-@include('components.provincial-admin-sidebar-script')
+<x-provincial-admin-sidebar-script />
 
 <script>
    // Profile picture preview functionality

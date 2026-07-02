@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="pa-app-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace – Heat-Map</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
- 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -21,88 +21,103 @@
             --border:     #eaeaea;
             --text:       #545454;
             --muted:      #6b7280;
-            --sidebar-w:  235px;
         }
- 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { overflow-x: hidden; scroll-behavior: smooth; }
+
+        * { box-sizing: border-box; }
+
+        html { overflow-x: hidden; }
+
+        html, body {
+            font-family: 'Montserrat', sans-serif !important;
+            color: #545454 !important;
+        }
+
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: var(--bg);
-            color: var(--text);
             display: flex;
             min-height: 100vh;
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        /* ══ MAIN PANEL ══ */
+        .main-panel {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 100vh;
+            height: auto;
+            background: white;
             overflow-x: hidden;
         }
  
-        /* ══ SIDEBAR ══ */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: #ffffff;
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding-top: 120px;
-            flex-shrink: 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 100;
-        }
-        .sidebar-logo { position: fixed; top: 40px; left: 40px; z-index: 200; }
-        .sidebar-logo img { width: 115px; height: auto; display: block; }
-        .sidebar-list { list-style: none; padding: 0 0 0 22px; margin: 0; }
-        .sidebar-link {
-            display: block; width: 92%;
-            font-size: 15px; font-weight: 900; color: var(--text);
-            font-family: 'Montserrat', sans-serif;
-            padding: 11px 18px; margin-bottom: 17px;
-            border-radius: 8px; text-decoration: none;
-            transition: all 0.25s ease;
-        }
-        .sidebar-link:hover, .sidebar-link.active {
-            background: var(--theme-gradient);
-            color: #fff !important;
-        }
- 
-        /* ══ MAIN PANEL ══ */
-        .main-panel {
-            flex: 1 1 0; display: flex; flex-direction: column;
-            min-width: 0; min-height: 100vh;
-            background: white; overflow-x: hidden;
-            margin-left: var(--sidebar-w); /* clear the fixed sidebar */
-        }
- 
-        /* ── Top bar ── */
+        /* ── Top bar (match dashboard) ── */
         .topbar {
-            background: #fff; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 50;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-height: 64px;
+            width: 100%;
+            background: white;
+            border-bottom: 1px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 1rem 2.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-height: 64px;
         }
-        .topbar-left {
-            font-size: 13px; font-weight: 700; color: var(--blue);
-            cursor: pointer; letter-spacing: 0.03em; text-decoration: none;
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
-        .topbar-left:hover { text-decoration: underline; }
-        .profile { display: flex; align-items: center; gap: 0.8rem; }
-        .profile-meta { text-align: right; }
-        .profile-meta .name { font-weight: 700; font-size: 18px; color: var(--blue); display: block; }
-        .profile-meta .role { font-weight: 400; color: #333; font-size: 0.9rem; display: block; }
         .profile-avatar {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: #ececec; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid #c7da30;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #ececec;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
         }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile .meta {
+            text-align: right;
+        }
+        .profile .meta > span:first-child {
+            color: #38b6ff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .profile .meta span {
+            display: block;
+            line-height: 1.3;
+            font-weight: 700;
+            color: #232323;
+        }
+        .profile .meta .role {
+            font-weight: 400;
+            color: #333030ff;
+            font-size: 0.9rem;
+        }
  
         /* ── Scroll area ── */
         .dashboard-scroll {
-            flex: 1; overflow-y: auto; overflow-x: hidden;
-            padding: 1.5rem; max-width: 1280px; margin: 0 auto; width: 100%;
+            flex: 1 1 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 2.5rem;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
         }
  
         /* ── Page title ── */
@@ -275,33 +290,8 @@
         .key-name { font-weight: 700; }
         .key-cnt  { font-weight: 900; color: var(--blue); white-space: nowrap; }
  
-        /* ── Mobile ── */
-        .menu-icon {
-            display: none; position: fixed; top: 12px; left: 12px;
-            width: 44px; height: 44px; padding: 0;
-            border: 2px solid #e5e7eb; background: white;
-            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            cursor: pointer; z-index: 1001;
-            align-items: center; justify-content: center;
-            font-size: 22px; color: var(--blue);
-        }
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.3); z-index: 999;
-        }
-        .sidebar-overlay.active { display: block; }
- 
+        /* ── Mobile (heatmap page layout) ── */
         @media (max-width: 900px) {
-            .menu-icon { display: flex !important; }
-            .sidebar {
-                position: fixed; top: 0; left: 0; width: 0; height: 100vh;
-                overflow: hidden; transition: width 0.3s; z-index: 1000;
-                box-shadow: 2px 0 12px rgba(0,0,0,0.15); padding-top: 70px;
-            }
-            .sidebar.open { width: 240px; }
-            .sidebar-logo { display: none; }
-            .sidebar.open .sidebar-logo { display: block; position: static; padding: 0 12px 12px; }
-            .main-panel { margin-left: 0; } /* no offset — sidebar overlays on mobile */
             .dashboard-scroll { padding: 1rem; }
             .filters-grid { flex-direction: column; }
             .filter-group { min-width: 100%; }
@@ -309,68 +299,44 @@
             .map-key { display: none !important; }
         }
         @media (max-width: 600px) {
-            .sidebar.open { width: 100%; max-width: 280px; }
             .district-map-container { height: 260px; }
         }
     </style>
+    <x-provincial-admin-styles />
 </head>
-<body>
- 
-{{-- ══ SIDEBAR ══ --}}
-<aside class="sidebar" id="provincialSidebar">
-    <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-    </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}"
-           class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}"
-           class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url()->current() }}"
-           class="sidebar-link active">Heat-Map</a>
-        <a href="{{ url('/provincial-admin/settings') }}"
-           class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}"
-           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-           class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">@csrf</form>
-    </ul>
-</aside>
- 
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
- 
-{{-- ══ MAIN PANEL ══ --}}
+<body class="pa-app">
+
+<x-provincial-admin-sidebar />
+
 <div class="main-panel">
- 
-    <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
- 
-    {{-- Top bar --}}
+    <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pa-sidebar" type="button">&#9776;</button>
+
     <div class="topbar">
-        <a class="topbar-left" href="#" onclick="event.preventDefault(); exportPDF();">Export PDF</a>
         <div class="profile">
-            <div class="profile-meta">
+            <div class="meta">
                 @php
                     $currentUser = auth()->user()->fresh();
-                    $fullName    = $currentUser->name ?? 'Administrator';
-                    $nameParts   = explode(' ', $fullName, 2);
+                    $fullName = $currentUser->name ?? 'Administrator';
+                    $nameParts = explode(' ', $fullName, 2);
+                    $firstName = $nameParts[0] ?? '';
+                    $surname = $nameParts[1] ?? '';
                 @endphp
-                <span class="name">{{ $fullName }}</span>
+                <span>{{ $firstName }} {{ $surname }}</span>
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
                 @if($currentUser && $currentUser->profile_picture)
-                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile"
-                         onerror="this.style.display='none'">
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture"
+                         onerror="this.style.display='none'; this.parentElement.style.background='#ececec';">
                 @else
-                    <svg width="22" height="22" fill="#94a3b8" viewBox="0 0 24 24">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color: #999;">
                         <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                     </svg>
                 @endif
             </div>
         </div>
     </div>
- 
+
     <div class="dashboard-scroll" id="main-content">
  
         {{-- ── Filters ── --}}
@@ -581,22 +547,12 @@ function exportPDF() {
         jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
     }).save();
 }
- 
-/* ════════════════════════════════════════
-   Sidebar toggle
-════════════════════════════════════════ */
-(function () {
-    const toggle  = document.getElementById('sidebarToggle');
-    const sidebar = document.getElementById('provincialSidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    if (!toggle || !sidebar) return;
-    function open()  { sidebar.classList.add('open');    overlay.classList.add('active'); }
-    function close() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
-    toggle.addEventListener('click',  () => sidebar.classList.contains('open') ? close() : open());
-    overlay.addEventListener('click', close);
-    window.addEventListener('resize', () => { if (window.innerWidth > 900) close(); });
-})();
- 
+
+</script>
+
+<x-provincial-admin-sidebar-script />
+
+<script>
 /* ════════════════════════════════════════
    Heatmap view toggle
 ════════════════════════════════════════ */

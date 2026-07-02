@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="pa-app-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -48,43 +48,6 @@ body {
     overflow-y: hidden;
 }
 
-.sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-}
-
-.sidebar-logo { position: fixed; top: 40px; left: 40px; width: 100px; height: auto; }
-.sidebar-logo img { width: 115px; height: auto; display: block; }
-
-.sidebar-list {
-    list-style: none;
-    padding: 0 0 0 22px;
-}
-
-.sidebar-link {
-    display: block;
-    width: 92%;
-  font-size: 15px !important;
-  font-weight: 900 !important;
-  color: #545454 !important;
-  font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-    background: var(--theme-gradient);
-    color: #000;
-}
-
 button {
  background-color: white !important;
   color: #38b6ff !important;
@@ -102,16 +65,6 @@ button:hover, button:focus {
   color: white !important;
   border-color: #38b6ff !important;
   outline: none;
-}
-
-button.active{
-    background: var(--theme-gradient);
-    color: var(--theme-dark);
-}
-
-button:hover, .sidebar-link:hover, .sidebar-link.active {
-  color: #fff !important;
-  background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
 
 .topbar {
@@ -202,12 +155,6 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
     height: auto;
     background: white;
     overflow-x: hidden;
-}
-
-.sidebar-link.active {
-    background: linear-gradient(to right, #38b6ff, #38b6ff);
-    color: #000;
-    font-weight: 400;
 }
 
 .metrics-row > .metric-card {
@@ -496,57 +443,11 @@ form.filters button {
     font-weight: 600;
 }
 
-.menu-icon {
-    display: none;
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: 2px solid #e5e7eb;
-    background: white !important;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    cursor: pointer;
-    z-index: 1001;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: #38b6ff !important;
-}
-.menu-icon:hover {
-    background: #f3f4f6 !important;
-    border-color: #38b6ff !important;
-}
-.sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.3);
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-.sidebar-overlay.active {
-    display: block;
-    opacity: 1;
-}
-@media (min-width: 901px) {
-    .sidebar-overlay {
-        display: none !important;
-    }
-}
-
 /* Small mobile (max-width: 480px) */
 @media (max-width: 480px) {
     .menu-icon {
         font-size: 24px;
         padding: 6px 10px;
-    }
-    
-    .sidebar.open {
-        width: 220px;
     }
     
     .metric-card {
@@ -731,29 +632,6 @@ section[aria-label="Analytics"] .chart-status-host canvas {
     body {
         overflow-x: hidden;
     }
-    .menu-icon {
-        display: flex !important;
-    }
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 0;
-        height: 100vh;
-        background: white;
-        overflow-x: hidden;
-        overflow-y: auto;
-        transition: width 0.3s ease;
-        z-index: 1000;
-        box-shadow: 2px 0 12px rgba(0,0,0,0.15);
-        padding-top: 0;
-    }
-    .sidebar.open {
-        width: 240px;
-    }
-    .sidebar-logo { display: none; position: sticky; top: 0; left: 0; width: 100%; padding: 12px 12px 0; background: white; justify-content: flex-end; }
-    .sidebar.open .sidebar-logo { display: flex; }
-    .sidebar-logo img { width: 95px; height: auto; }
     .main-panel {
         margin-left: 0 !important;
         width: 100%;
@@ -912,13 +790,6 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 }
 
 @media (max-width: 600px) {
-    .sidebar-logo img { width: 85px; height: auto; }
-}
-
-
-
-
-@media (max-width: 600px) {
     .menu-icon {
         top: 10px;
         left: 10px;
@@ -933,10 +804,6 @@ section[aria-label="Analytics"] .chart-status-host canvas {
     }
 
 
-    .sidebar.open {
-        width: 100%;
-        max-width: 280px;
-    }
     .main-panel.shifted {
         margin-left: 0;
     }
@@ -1279,31 +1146,14 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 .district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
 .district-map-tooltip .tt-sub { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
     </style>
-    <link rel="stylesheet" href="{{ asset('css/provincial-admin-mobile.css') }}">
+    <x-provincial-admin-styles />
 </head>
 <body class="pa-app">
 
-<aside class="sidebar" id="provincialSidebar">
-    <div class="sidebar-logo">
-        <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
-    </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/provincial-admin/dashboard') }}" class="sidebar-link {{ request()->is('provincial-admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/provincial-admin/reports') }}" class="sidebar-link {{ request()->is('provincial-admin/reports') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/provincial/heatmap') }}"  class="sidebar-link {{ request()->is('provincial/heatmap') ? 'active' : '' }}">Heat-Map</a>
-        <a href="{{ url('/provincial-admin/settings') }}" class="sidebar-link {{ request()->is('provincial-admin/settings') ? 'active' : '' }}">My Profile</a>
-        <a href="#" onclick="event.preventDefault(); exportPDF();" class="sidebar-link">Export PDF</a>
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </ul>
-</aside>
-
-<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+<x-provincial-admin-sidebar />
 
 <div class="main-panel">
-    <button class="menu-icon" id="sidebarToggle" aria-label="Toggle menu" type="button">&#9776;</button>
+    <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="pa-sidebar" type="button">&#9776;</button>
 
     <div class="topbar">
         <div class="profile">
@@ -2105,7 +1955,7 @@ function navigateWithFilterByAnonymous(isAnonymous) {
 }
 
 </script>
-@include('components.provincial-admin-sidebar-script')
+<x-provincial-admin-sidebar-script />
 
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
