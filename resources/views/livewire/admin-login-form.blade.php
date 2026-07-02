@@ -45,8 +45,9 @@
 
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
-                <button id="mobile-menu-button"
-                    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+              <button id="mobile-menu-button"
+                        onclick="toggleMobileMenu()"
+                        class="p-2 rounded-md text-black hover:bg-gray-100">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -86,7 +87,7 @@
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">About Us</a>
                 <a href="{{ route('download.nomination') }}" 
                            @click="menuOpen = false" 
-                           class="text-black text-[17px] mb-4 hover:text-[#c7da30] transition-colors">
+                           class="text-black text-[17px] hover:text-[#c7da30] transition-colors">
                            Nomination Form
                  </a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors" style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Contact Us</a>
@@ -95,10 +96,83 @@
     </div>
 
     <script>
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+    function toggleMobileMenu() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    // ---------------------------------------------------------------
+    // Fix: restore login form state when navigating Back from the
+    // OTP/verification page (or any back/forward-cache restore).
+    //
+    // Why this is needed: window.history.back() / bfcache restores the
+    // *visual* DOM exactly as it looked before navigating away, but
+    // Livewire reconnects to a brand-new server-side component with
+    // empty/default properties. So the fields LOOK filled in, but
+    // Livewire's actual `role` / `username` / `password` state is
+    // empty -> clicking Login immediately fails validation.
+    //
+    // Fix: persist the values to sessionStorage as the user types,
+    // then on pageshow (fires on every load, including bfcache
+    // restores) push those values back into the live Livewire
+    // component so its real state matches what's on screen.
+    // ---------------------------------------------------------------
+
+    // Save values as the user types/selects
+    document.addEventListener('input', function (e) {
+        if (e.target.id === 'username' || e.target.id === 'password') {
+            sessionStorage.setItem('login_' + e.target.id, e.target.value);
         }
-    </script>
+    });
+
+    document.addEventListener('change', function (e) {
+        if (e.target.name === 'role') {
+            sessionStorage.setItem('login_role', e.target.value);
+        }
+    });
+
+    // Restore values into Livewire whenever the page is (re)shown
+    window.addEventListener('pageshow', function () {
+        const username = sessionStorage.getItem('login_username');
+        const password = sessionStorage.getItem('login_password');
+        const role = sessionStorage.getItem('login_role');
+
+        if (!username && !password && !role) {
+            return;
+        }
+
+        const restore = function (attemptsLeft) {
+            if (window.Livewire && Livewire.first && Livewire.first()) {
+                const component = Livewire.first();
+
+                if (role) {
+                    component.set('role', role, false);
+
+                    const roleRadio = document.querySelector(
+                        'input[name="role"][value="' + role + '"]'
+                    );
+                    if (roleRadio) {
+                        roleRadio.checked = true;
+                    }
+                }
+
+                if (username) component.set('username', username, false);
+                if (password) component.set('password', password, false);
+            } else if (attemptsLeft > 0) {
+                setTimeout(function () { restore(attemptsLeft - 1); }, 50);
+            }
+        };
+
+        restore(20);
+    });
+
+    // Clear saved values once login succeeds so they don't linger
+    // for the next person who uses this device/browser.
+    document.addEventListener('livewire:navigated', function () {
+        sessionStorage.removeItem('login_username');
+        sessionStorage.removeItem('login_password');
+        sessionStorage.removeItem('login_role');
+    });
+</script>
 
     <!-- Main Section -->
     <div class="flex-grow bg-white flex flex-col font-[Montserrat]" style="padding-top: 140px; padding-bottom: 80px; width: 100%;">
@@ -118,7 +192,7 @@
            <div class="w-full px-2 md:px-0 md:justify-center justify-start items-start gap-4 md:gap-8 mt-2 mb-8 text-black text-[15px] flex flex-col sm:flex-row"
                  style="font-family: 'Montserrat', sans-serif;">
                 <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
-                    <input type="radio" wire:model="role" value="school" wire:change="resetForm" class="accent-[#c7da30]">
+                    <input type="radio" name="role" wire:model.live="role" value="school" wire:change="resetForm" class="accent-[#c7da30]">
                     <span>School Administrator</span>
                 </label>
                 <!--<label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">-->
@@ -126,11 +200,11 @@
                 <!--    <span>District Administrator</span>-->
                 <!--</label>-->
                 <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
-                    <input type="radio" wire:model="role" value="provincial" wire:change="resetForm" class="accent-[#c7da30]">
+                    <input type="radio" name="role" wire:model.live="role" value="provincial" wire:change="resetForm" class="accent-[#c7da30]">
                     <span>Provincial Administrator</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
-                    <input type="radio" wire:model="role" value="national" wire:change="resetForm" class="accent-[#c7da30]">
+                    <input type="radio" name="role" wire:model.live="role" value="national" wire:change="resetForm" class="accent-[#c7da30]">
                     <span>National Administrator</span>
                 </label>
             </div>
