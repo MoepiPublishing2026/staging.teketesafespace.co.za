@@ -237,20 +237,49 @@
 
         .map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
         .district-map-container {
-            height: 520px;
+            height: 640px;
             width: 100%;
             max-width: 100%;
-            min-height: 320px;
+            min-height: 420px;
             border-radius: 0.5rem;
             overflow: hidden;
             position: relative;
             background: #f6f7f2;
         }
         .district-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; z-index: 1; }
-        .district-map-shape { stroke: rgba(255,255,255,0.95); stroke-width: 1.5; stroke-linejoin: round; transition: stroke 0.15s ease, stroke-width 0.15s ease; }
+        .heat-glow-layer { pointer-events: none; overflow: visible; }
+        .district-map-shape {
+            stroke: rgba(255,255,255,0.95);
+            stroke-width: 1.25;
+            stroke-linejoin: round;
+            vector-effect: non-scaling-stroke;
+            transition: stroke 0.12s ease;
+        }
         .district-map-shape.is-hover,
-        .district-map-shape.is-key-hover { stroke: #111827; stroke-width: 2.2; }
-        .district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 3; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
+        .district-map-shape.is-key-hover { stroke: #111827; stroke-width: 1.25; }
+        .district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 1.75; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
+        .district-map-province-border {
+            fill: none;
+            stroke: #111827;
+            stroke-width: 1.5;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            vector-effect: non-scaling-stroke;
+            pointer-events: none;
+        }
+        .map-label-layer { pointer-events: none; user-select: none; }
+        .map-label-layer text {
+            font-family: 'Montserrat', system-ui, sans-serif;
+            font-weight: 900;
+            paint-order: stroke fill;
+            stroke: #ffffff;
+            stroke-width: 0.5px;
+            stroke-linejoin: round;
+        }
+        .map-label-layer .map-label-district {
+            fill: #111827;
+            stroke-width: 0.65px;
+        }
         .district-map-status {
             position: absolute; inset: 0;
             display: grid; place-items: center;
@@ -275,66 +304,6 @@
         }
         .district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
         .district-map-tooltip .tt-sub { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
-        .district-map-key {
-            position: absolute; top: 12px; left: 12px; z-index: 20;
-            background: rgba(255,255,255,0.96);
-            border: 1px solid rgba(17,24,39,0.2);
-            border-radius: 10px;
-            padding: 10px 10px 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            max-height: calc(100% - 24px);
-            overflow: auto;
-            min-width: 210px;
-        }
-        .district-map-key-title {
-            font-weight: 900;
-            font-size: 11px;
-            color: #111827;
-            margin-bottom: 6px;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-        }
-        .district-map-key-title .map-key-meta { font-weight: 700; color: #6b7280; text-transform: none; letter-spacing: 0; }
-        .map-key-tools { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-        .map-key-search {
-            width: 100%;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 5px 8px;
-            border: 1px solid rgba(17,24,39,0.25);
-            border-radius: 6px;
-            background: #fff;
-        }
-        .map-key-sort { display: flex; gap: 4px; }
-        .map-key-sort-btn {
-            flex: 1;
-            padding: 4px 6px !important;
-            font-size: 10px !important;
-            border-radius: 5px !important;
-            min-height: 0 !important;
-        }
-        .map-key-sort-btn.active { background: #c7da30 !important; color: #fff !important; }
-        .district-map-key-rows { max-height: 340px; overflow-y: auto; }
-        .district-map-key-row.is-zero .district-map-key-name,
-        .district-map-key-row.is-zero .district-map-key-count { color: #9ca3af; font-weight: 700; }
-        .district-map-key-row {
-            display: grid;
-            grid-template-columns: 14px 1fr auto;
-            gap: 8px;
-            align-items: center;
-            font-size: 11px;
-            color: #111827;
-            padding: 4px 0;
-            border-top: 1px solid rgba(17,24,39,0.08);
-            cursor: pointer;
-            user-select: none;
-        }
-        .district-map-key-row:first-of-type { border-top: none; }
-        .district-map-key-row:hover { background: rgba(56,182,255,0.10); border-radius: 6px; }
-        .district-map-key-swatch { width: 14px; height: 10px; border: 1px solid rgba(17,24,39,0.35); border-radius: 3px; }
-        .district-map-key-name { font-weight: 800; color: #111827; }
-        .district-map-key-count { font-weight: 900; color: #4b5563; white-space: nowrap; }
         .map-legend {
             position: absolute;
             bottom: 18px;
@@ -356,7 +325,7 @@
         @media (max-width: 900px) {
             .main-panel { margin-left: 0 !important; width: 100%; }
             .dashboard-scroll { padding: 1rem; }
-            .district-map-container { height: 320px; min-height: 280px; }
+            .district-map-container { height: 380px; min-height: 320px; }
             h1 { font-size: 22px !important; padding: 0 0.5rem; }
             .heatmap-wrap { -webkit-overflow-scrolling: touch; overflow-x: auto; }
             .heatmap-table { font-size: 11px; }
@@ -567,17 +536,6 @@
             <h2>Geographic Distribution — {{ $province->province_name }}</h2>
             <div id="district-map" class="district-map-container">
                 <div class="district-map-status" id="districtMapStatus">Loading map…</div>
-                <div class="district-map-key" id="districtMapKey" style="display:none;">
-                    <div class="district-map-key-title">Districts <span class="map-key-meta" id="districtMapKeyMeta"></span></div>
-                    <div class="map-key-tools">
-                        <input type="search" class="map-key-search" id="districtMapKeySearch" placeholder="Search districts…" aria-label="Search districts">
-                        <div class="map-key-sort">
-                            <button type="button" class="map-key-sort-btn active" data-sort="name">A–Z</button>
-                            <button type="button" class="map-key-sort-btn" data-sort="count">By reports</button>
-                        </div>
-                    </div>
-                    <div class="district-map-key-rows" id="districtMapKeyRows"></div>
-                </div>
                 <div class="district-map-tooltip" id="districtMapTooltip" style="display:none;">
                     <div class="tt-title" id="districtMapTooltipTitle"></div>
                     <div class="tt-sub" id="districtMapTooltipSub"></div>
@@ -654,7 +612,7 @@
 
 <script type="application/json" id="pa-map-asset-base">@json(rtrim(asset('geojson'), '/'))</script>
 <script type="application/json" id="pa-province-slug">@json($mapProvinceSlug ?? '')</script>
-<script type="application/json" id="pa-district-counts">@json($mapDistrictCounts ?? [])</script>
+<script type="application/json" id="pa-district-counts">@json($mapDistrictCounts ?? new \stdClass())</script>
 <script type="application/json" id="pa-district-name-to-id">@json($mapDistrictNameToId ?? [])</script>
 <script type="application/json" id="pa-map-band-low-max">@json((int) ($mapDistrictBandLowMax ?? 0))</script>
 <script type="application/json" id="pa-map-band-medium-max">@json((int) ($mapDistrictBandMediumMax ?? 0))</script>
@@ -677,16 +635,8 @@
     const tooltipEl = document.getElementById('districtMapTooltip');
     const tooltipTitleEl = document.getElementById('districtMapTooltipTitle');
     const tooltipSubEl = document.getElementById('districtMapTooltipSub');
-    const keyEl = document.getElementById('districtMapKey');
-    const keyRowsEl = document.getElementById('districtMapKeyRows');
-    const keyMetaEl = document.getElementById('districtMapKeyMeta');
-    const keySearchEl = document.getElementById('districtMapKeySearch');
-    const keySortBtns = container.querySelectorAll('.map-key-sort-btn');
 
     let districtLayer = null;
-    let keyEntries = [];
-    let keySortMode = 'name';
-    let keyHoverPaths = [];
 
     function keyName(name) {
         return String(name || '').toLowerCase()
@@ -708,6 +658,18 @@
             .replace(/\s+District Municipality$/i, '')
             .replace(/\s+Metropolitan Municipality$/i, '')
             .trim();
+    }
+
+    function titleCaseLabel(name) {
+        return String(name || '').trim().toLowerCase().replace(/\b\w/g, function (c) {
+            return c.toUpperCase();
+        });
+    }
+
+    function mapDisplayLabel(name) {
+        return titleCaseLabel(cleanLabel(name))
+            .replace(/^city of\s+/i, '')
+            .replace(/ekhurhuleni/i, 'Ekurhuleni');
     }
 
     function heatGradientStops(bandIdx) {
@@ -854,8 +816,8 @@
         'fezile dabi': ['fezile dabi'],
         'xhariep': ['xhariep'],
         'city of johannesburg': ['johannesburg', 'gauteng east'],
-        'city of ekhurhuleni': ['ekurhuleni', 'ekhurhuleni'],
-        'city of tshwane': ['tshwane'],
+        'city of ekhurhuleni': ['ekurhuleni'],
+        'city of tshwane': ['tshwane', 'gauteng north'],
         'sedibeng': ['sedibeng'],
         'west rand': ['gauteng west', 'west rand'],
         'ethekwini': ['ethekwini', 'pinetown', 'umlazi'],
@@ -951,10 +913,10 @@
     function appendDistrictShape(it, layer, svgNS) {
         const pathD = it && it.path ? String(it.path) : '';
         const rawName = (it && it.name) ? String(it.name).trim() : '';
-        if (!pathD || !rawName) return;
+        if (!pathD || !rawName) return null;
 
         const count = countForGeo(rawName);
-        const displayLabel = resolveDbDistrictLabel(rawName);
+        const displayLabel = mapDisplayLabel(resolveDbDistrictLabel(rawName));
         const bandIdx = heatBandIndexFromCount(count);
 
         const path = document.createElementNS(svgNS, 'path');
@@ -969,118 +931,19 @@
         path.setAttribute('data-count', String(count));
         path.style.cursor = 'default';
         layer.appendChild(path);
+        return path;
     }
 
-    function clearKeyHover() {
-        keyHoverPaths.forEach(function (path) { path.classList.remove('is-key-hover'); });
-        keyHoverPaths = [];
+    function appendDistrictBorder(it, borderLayer, svgNS) {
+        const pathD = it && it.path ? String(it.path) : '';
+        if (!pathD) return;
+
+        const border = document.createElementNS(svgNS, 'path');
+        border.setAttribute('d', pathD);
+        border.setAttribute('class', 'district-map-province-border');
+        border.setAttribute('fill', 'none');
+        borderLayer.appendChild(border);
     }
-
-    function pathsForEntry(entry) {
-        if (!districtLayer) return [];
-        const districtId = entry.districtId ? String(entry.districtId) : '';
-        const labelKey = keyName(entry.label);
-        return Array.from(districtLayer.querySelectorAll('.district-map-shape')).filter(function (path) {
-            if (districtId && path.getAttribute('data-district-id') === districtId) return true;
-            return keyName(path.getAttribute('data-district-label') || '') === labelKey;
-        });
-    }
-
-    function sortKeyEntries(list, mode) {
-        const copy = list.slice();
-        if (mode === 'count') {
-            copy.sort(function (a, b) {
-                return (Number(b.count) || 0) - (Number(a.count) || 0) ||
-                    String(a.label).localeCompare(String(b.label));
-            });
-        } else {
-            copy.sort(function (a, b) { return String(a.label).localeCompare(String(b.label)); });
-        }
-        return copy;
-    }
-
-    function filterKeyEntries(list, query) {
-        const q = String(query || '').trim().toLowerCase();
-        if (!q) return list;
-        return list.filter(function (entry) {
-            return String(entry.label || '').toLowerCase().indexOf(q) !== -1;
-        });
-    }
-
-    function collectKeyEntries(layer) {
-        const byKey = new Map();
-        layer.querySelectorAll('.district-map-shape').forEach(function (path) {
-            const label = path.getAttribute('data-district-label') || '';
-            const districtId = path.getAttribute('data-district-id') || '';
-            const count = Number(path.getAttribute('data-count') || 0);
-            const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
-            const mapKey = districtId || keyName(label);
-            const existing = byKey.get(mapKey);
-            if (!existing || count > existing.count) {
-                byKey.set(mapKey, { label: label, districtId: districtId, count: count, bandIdx: bandIdx });
-            }
-        });
-        return Array.from(byKey.values());
-    }
-
-    function renderDistrictKey() {
-        if (!keyEl || !keyRowsEl) return;
-
-        const visible = filterKeyEntries(sortKeyEntries(keyEntries, keySortMode), keySearchEl ? keySearchEl.value : '');
-        if (keyMetaEl) keyMetaEl.textContent = visible.length ? '(' + visible.length + ')' : '';
-
-        if (!keyEntries.length) {
-            keyEl.style.display = 'none';
-            return;
-        }
-
-        keyEl.style.display = 'block';
-        keyRowsEl.innerHTML = '';
-        clearKeyHover();
-
-        visible.forEach(function (entry) {
-            const row = document.createElement('div');
-            row.className = 'district-map-key-row' + (Number(entry.count) > 0 ? '' : ' is-zero');
-
-            const swatch = document.createElement('span');
-            swatch.className = 'district-map-key-swatch';
-            swatch.style.background = bandSolidColor(entry.bandIdx);
-
-            const nameEl = document.createElement('span');
-            nameEl.className = 'district-map-key-name';
-            nameEl.textContent = entry.label;
-
-            const countEl = document.createElement('span');
-            countEl.className = 'district-map-key-count';
-            countEl.textContent = Number(entry.count || 0).toLocaleString();
-
-            row.appendChild(swatch);
-            row.appendChild(nameEl);
-            row.appendChild(countEl);
-
-            row.addEventListener('mouseenter', function () {
-                clearKeyHover();
-                keyHoverPaths = pathsForEntry(entry);
-                keyHoverPaths.forEach(function (path) { path.classList.add('is-key-hover'); });
-            });
-            row.addEventListener('mouseleave', function () { clearKeyHover(); });
-
-            keyRowsEl.appendChild(row);
-        });
-    }
-
-    if (keySearchEl) {
-        keySearchEl.addEventListener('input', function () { renderDistrictKey(); });
-    }
-
-    keySortBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            keySortMode = this.dataset.sort || 'name';
-            keySortBtns.forEach(function (b) { b.classList.remove('active'); });
-            this.classList.add('active');
-            renderDistrictKey();
-        });
-    });
 
     loadMapItems()
         .then(function (districtItems) {
@@ -1101,10 +964,14 @@
 
             districtLayer = document.createElementNS(svgNS, 'g');
             districtLayer.setAttribute('class', 'district-layer');
+            const borderLayer = document.createElementNS(svgNS, 'g');
+            borderLayer.setAttribute('class', 'district-border-layer');
             g.appendChild(districtLayer);
+            g.appendChild(borderLayer);
 
             districtItems.forEach(function (it) {
                 appendDistrictShape(it, districtLayer, svgNS);
+                appendDistrictBorder(it, borderLayer, svgNS);
             });
 
             const oldSvg = container.querySelector('svg.district-map-svg');
@@ -1114,10 +981,12 @@
             requestAnimationFrame(function () {
                 try {
                     const mapBb = g.getBBox();
-                    const pad = 24;
-                    svg.setAttribute('viewBox',
-                        (mapBb.x - pad) + ' ' + (mapBb.y - pad) + ' ' +
-                        (mapBb.width + pad * 2) + ' ' + (mapBb.height + pad * 2));
+                    if (mapBb.width > 0 && mapBb.height > 0) {
+                        const pad = 36;
+                        svg.setAttribute('viewBox',
+                            (mapBb.x - pad) + ' ' + (mapBb.y - pad) + ' ' +
+                            (mapBb.width + pad * 2) + ' ' + (mapBb.height + pad * 2));
+                    }
                 } catch (e) {}
 
                 let gradSeq = 0;
@@ -1126,10 +995,41 @@
                     gradSeq = applyDistrictRadialFill(path, bandIdx, defs, svgNS, gradSeq);
                 });
 
+                const labelLayer = document.createElementNS(svgNS, 'g');
+                labelLayer.setAttribute('class', 'map-label-layer');
+                labelLayer.setAttribute('aria-hidden', 'true');
+                g.appendChild(labelLayer);
+
+                districtLayer.querySelectorAll('.district-map-shape').forEach(function (pathEl) {
+                    let bb;
+                    try { bb = pathEl.getBBox(); } catch (e) { return; }
+                    if (bb.width < 28 || bb.height < 18) return;
+
+                    const text = String(pathEl.getAttribute('data-district-label') || '').trim();
+                    if (!text) return;
+
+                    const cx = bb.x + bb.width / 2;
+                    const cy = bb.y + bb.height / 2;
+                    const len = text.length;
+                    let fs = len > 18 ? 9 : (len > 14 ? 10.5 : (len > 11 ? 11.5 : 13));
+                    fs = Math.min(fs, bb.height * 0.14, bb.width / (len * 0.62));
+                    if (fs < 5) return;
+
+                    const textEl = document.createElementNS(svgNS, 'text');
+                    textEl.setAttribute('x', String(cx));
+                    textEl.setAttribute('y', String(cy));
+                    textEl.setAttribute('text-anchor', 'middle');
+                    textEl.setAttribute('dominant-baseline', 'middle');
+                    textEl.setAttribute('font-size', String(fs));
+                    textEl.setAttribute('class', 'map-label-district');
+                    textEl.textContent = text;
+                    labelLayer.appendChild(textEl);
+                });
+
                 let hovered = null;
                 svg.addEventListener('mousemove', function (event) {
                     const target = event.target;
-                    const isDistrict = (target instanceof SVGPathElement) && target.classList.contains('district-map-shape');
+                    const isDistrict = (target instanceof SVGGeometryElement) && target.classList.contains('district-map-shape');
                     if (!isDistrict) {
                         if (hovered) hovered.classList.remove('is-hover');
                         hovered = null;
@@ -1149,14 +1049,14 @@
                     hideTooltip();
                 });
 
-                keyEntries = collectKeyEntries(districtLayer);
-                renderDistrictKey();
-
                 if (statusEl) statusEl.style.display = 'none';
             });
         })
-        .catch(function () {
+        .catch(function (err) {
             if (statusEl) statusEl.textContent = 'Map unavailable';
+            if (typeof console !== 'undefined' && console.error) {
+                console.error('Provincial heatmap map failed:', err);
+            }
         });
 })();
 </script>
