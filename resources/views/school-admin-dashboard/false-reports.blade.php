@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="sa-app-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -446,13 +446,13 @@ us
 }
 
     </style>
-    @include('components.school-admin-styles')
-    <link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
+    <x-school-admin-styles />
 </head>
 <body class="sa-app">
-@include('components.school-admin-sidebar')
+<x-school-admin-sidebar />
 
     <div class="main-panel">
+        <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sa-sidebar" type="button">&#9776;</button>
         <div class="topbar">
             <div class="profile">
                 <div class="meta">
@@ -714,6 +714,6 @@ us
 
         </div>
     </div>
-    @include('components.school-admin-sidebar-script')
+    <x-school-admin-sidebar-script />
 </body>
 </html>

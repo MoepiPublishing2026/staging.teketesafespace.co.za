@@ -1,24 +1,62 @@
-{{-- Shared School Admin Sidebar - Use across Dashboard, Reports, False Reports, Settings --}}
-<aside class="sidebar school-admin-sidebar" id="schoolAdminSidebar">
+{{-- Shared School Admin Sidebar — Dashboard, Reports, False Reports, Settings --}}
+@php
+    $currentRoute = request()->route()?->getName() ?? '';
+    $isDashboard = $currentRoute === 'admin.dashboard';
+    $isReports = in_array($currentRoute, ['admin.reports', 'admin.reports.show'], true);
+    $isFalseReports = $currentRoute === 'admin.false-reports';
+    $isSettings = $currentRoute === 'admin.settings';
+    $showExportPdf = $isDashboard || $isReports;
+@endphp
+
+<aside class="sidebar school-admin-sidebar" id="sa-sidebar">
     <div class="sidebar-logo">
         <img src="{{ asset('images/logo.png') }}" alt="Tekete SafeSpace">
     </div>
-    <ul class="sidebar-list">
-        <a href="{{ url('/admin/dashboard') }}" class="sidebar-link {{ request()->is('admin/dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ url('/admin/reports') }}" class="sidebar-link {{ request()->is('admin/reports*') ? 'active' : '' }}">Reports</a>
-        <a href="{{ url('/admin/false-reports') }}" class="sidebar-link {{ request()->is('admin/false-reports*') ? 'active' : '' }}">False Reports</a>
-        <a href="{{ url('/admin/settings') }}" class="sidebar-link {{ request()->is('admin/settings') ? 'active' : '' }}">My Profile</a>
-        {{-- Export PDF only on Dashboard (other pages may define exportPDF in-page if needed) --}}
-            @if(request()->is('admin/dashboard'))
-                <a href="#"
-                   onclick="event.preventDefault(); if(typeof exportPDF === 'function') exportPDF();"
-                   class="sidebar-link">
-                   Export PDF
+    <nav aria-label="School admin navigation">
+        <ul class="sidebar-list">
+            <li>
+                <a href="{{ url('/admin/dashboard') }}"
+                   class="sidebar-link{{ $isDashboard ? ' active' : '' }}">
+                    Dashboard
                 </a>
+            </li>
+            <li>
+                <a href="{{ url('/admin/reports') }}"
+                   class="sidebar-link{{ $isReports ? ' active' : '' }}">
+                    Reports
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/admin/false-reports') }}"
+                   class="sidebar-link{{ $isFalseReports ? ' active' : '' }}">
+                    False Reports
+                </a>
+            </li>
+            <li>
+                <a href="{{ url('/admin/settings') }}"
+                   class="sidebar-link{{ $isSettings ? ' active' : '' }}">
+                    My Profile
+                </a>
+            </li>
+            @if ($showExportPdf)
+                <li>
+                    <a href="#"
+                       class="sidebar-link"
+                       onclick="event.preventDefault(); if (typeof exportPDF === 'function') exportPDF();">
+                        Export PDF
+                    </a>
+                </li>
             @endif
-        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="sidebar-link">Sign Out</a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
-    </ul>
+            <li>
+                <a href="{{ route('logout') }}"
+                   class="sidebar-link"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Sign Out
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" hidden>@csrf</form>
 </aside>
-<button class="menu-icon" id="sidebarToggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="schoolAdminSidebar">&#9776;</button>
+
 <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>

@@ -18,7 +18,7 @@
     --lime: #c7da30;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { font-family: 'Montserrat', sans-serif !important; color: #545454 !important; }
+html, body { font-family: 'Montserrat', sans-serif !important; color: #545454 !important; background-color: white !important; }
 body {
     display: flex;
     min-height: 100vh;
@@ -28,34 +28,9 @@ body {
     overflow-y: hidden;
 }
 
-button, select, input, label {
-    font-size: 15px !important;
-    font-weight: 900 !important;
-    color: #545454 !important;
-    font-family: 'Montserrat', sans-serif !important;
-}
-button {
-    background-color: white !important;
-    color: #000 !important;
-    border: 3px solid #c7da30 !important;
-    font-weight: 900 !important;
-    font-family: 'Montserrat', sans-serif !important;
-    padding: 0.75rem 1rem !important;
-    border-radius: 0.5rem !important;
-    cursor: pointer !important;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    margin: 10px;
-    display: block;
-    margin-bottom: 0.5rem;
-    text-decoration: none;
-    padding-right: 110px;
-}
-button:hover, button:focus {
-    background-color: #c7da30 !important;
-    color: black !important;
-    border-color: #38b6ff !important;
-    outline: none;
-}
+.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 900 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
+button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 900 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+button:hover, button:focus { background-color: #c7da30 !important; color: white !important; border-color: #38b6ff !important; outline: none; }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 
 main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
@@ -121,6 +96,55 @@ thead { background: #bbc93dff; color: black; text-transform: uppercase; letter-s
 th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--lime); text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 tbody tr:hover { background: rgba(199,218,48,0.15); cursor: pointer; transition: background-color 0.3s ease; }
 tbody tr:last-child td { border-bottom: none; }
+
+/* ── Status Badge Styling ── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.status-awaiting-resolution {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.status-under-review {
+    background-color: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #93c5fd;
+}
+
+.status-forwarded {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.status-closed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.status-unresolved {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.status-false-report {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+    border: 1px solid #e9d5ff;
+}
 
 .pagination { display: flex; justify-content: center; margin-top: 1rem; }
 .page-item.active .page-link { background: #cddc39; border-color: #cddc39; color: black; }
@@ -289,15 +313,15 @@ tbody tr:last-child td { border-bottom: none; }
     color: white !important;
     border: none !important;
     border-radius: 8px !important;
-    padding: 0px 14px !important;
+    padding: 8px 14px !important;
     font-size: 12px !important;
     font-family: 'Montserrat', sans-serif !important;
     font-weight: 700 !important;
     cursor: pointer;
     height: 36px;
     transition: background-color 0.2s;
-    margin: 0 !important;        /* ← add this */
-    display: block !important;   /* ← add this */
+    margin: 0 !important;
+    display: block !important;
 }
 #refreshBtn:hover { background: #1a9fe0 !important; color: white !important; }
 
@@ -533,11 +557,8 @@ tbody tr:last-child td { border-bottom: none; }
                     </div>
                 </div>
                 
-                <div style="display:flex; flex-direction:column; justify-content:flex-end; height:100%;">
-                    <label class="filter-label" style="visibility:hidden; margin-bottom:5px;">Refresh</label>
-                    <button type="button" id="refreshBtn" style="margin:0 !important; display:block !important;">
-                        Refresh Table
-                    </button>
+                <div style="display:flex; align-items:flex-end;">
+                    <button type="button" id="refreshBtn">Refresh Table</button>
                 </div>
 
             </div>{{-- end .filter-grid --}}
@@ -605,7 +626,11 @@ tbody tr:last-child td { border-bottom: none; }
                         <td>{{ $report->school->school_name ?? 'N/A' }}</td>
                         <td>{{ $report->grade ?? 'N/A' }}</td>
                         <td>{{ $report->reportType->type_name ?? 'N/A' }}</td>
-                        <td>{{ ucfirst(str_replace('-', ' ', $report->status)) }}</td>
+                        <td style="text-align: center;">
+                            <span class="status-badge status-{{ str_replace('_', '-', $report->status) }}">
+                                {{ ucfirst(str_replace('-', ' ', $report->status)) }}
+                            </span>
+                        </td>
                         <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
                         <td>{{ $report->created_at->format('Y-m-d') }}</td>
                     </tr>
