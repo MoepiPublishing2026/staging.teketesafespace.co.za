@@ -45,6 +45,32 @@
     </div>
 
     <main class="max-w-[1280px] w-full mx-auto px-14 py-12 flex-grow mt-8">
+    
+<style>
+    .news-nav-link-text {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    color: #c7da30;
+    letter-spacing: -0.04em;
+    
+    /* FIX: Force the line height to be tight and pull the border up */
+    line-height: 0.7; 
+    border-bottom: 2.5px solid #c7da30;
+    padding-bottom: 0px;
+    margin-bottom: 2px; /* Keeps it aligned nicely with the arrow vertical center */
+
+    transform: scaleX(0.84);
+    transform-origin: left center;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+a:hover .news-nav-link-text {
+    color: #2f343e;
+    border-color: #2f343e;
+}
+</style>
         
         <div class="flex justify-center items-center gap-1 my-6">
             <div class="w-48 h-auto flex-shrink-0 md:w-[300px] mt-12">
@@ -91,12 +117,12 @@
             </div>
 
 
-         <div class="mb-4">
-    <a href="{{ route('news') }}" class="-ml-2 font-[Montserrat] font-medium text-[18px] text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-0 underline">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block"style="width: 30px; height: 30px;">
+        <div class="mb-1">
+    <a href="{{ route('news') }}" class="-ml-2 inline-flex items-center gap-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block" style="width: 30px; height: 30px;">
             <path d="M10 5l-7 7 7 7v-4h11v-6h-11z"/>
         </svg>
-        Back
+        <span class="news-nav-link-text">Back</span>
     </a>
 </div>
         </div>

@@ -72,6 +72,39 @@
                 font-size: 12px;
                 font-weight: 900;
             }
+           /* Base styles shared by both Back and Next links */
+.news-nav-link-text,
+.news-nav-link-text-next {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    color: #c7da30;
+    letter-spacing: -0.04em;
+    line-height: 0.7; /* Pulls the underline tight to the letters */
+    border-bottom: 2.5px solid #c7da30;
+    padding-bottom: 1px;
+    margin-bottom: 2px;
+    transform: scaleX(0.84);
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Back link anchors to the left */
+.news-nav-link-text {
+    transform-origin: left center;
+}
+
+/* Next link anchors to the right so it doesn't push the arrow away */
+.news-nav-link-text-next {
+    transform-origin: right center;
+}
+
+/* Hover states for both */
+a:hover .news-nav-link-text,
+a:hover .news-nav-link-text-next {
+    color: #2f343e;
+    border-color: #2f343e;
+}
         </style>
         
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-1 my-0 w-full px-4">
@@ -246,14 +279,14 @@
 </div>
 
                 <div class="absolute right-16 bottom-0 z-30">
-                    <a href="{{ route('news.feed') }}" 
-                       class="font-medium text-[18px] text-[#c7da30] hover:text-[#2f343e] transition-colors inline-flex items-center gap-1 underline">
-                        Next 
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block" style="width: 30px; height: 30px;">
-                            <path d="M14 5l7 7-7 7v-4H3v-6h11z"/>
-                        </svg>
-                    </a>
-                </div>
+    <a href="{{ route('news.feed') }}" class="inline-flex items-center gap-1">
+        <span class="news-nav-link-text-next">Next</span>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-black inline-block" style="width: 30px; height: 30px;">
+            <path d="M14 5l7 7-7 7v-4H3v-6h11z"/>
+        </svg>
+    </a>
+</div>
 
             </div>
         </div>
