@@ -8,7 +8,7 @@ use App\Models\Report;
 use App\Models\AbuseType;
 use App\Models\Subtype;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
+use App\Support\SafeMail;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ReportStatusChangedNotification;
 use App\Mail\ReporterBlockedNotification;
@@ -168,12 +168,8 @@ class AdminReports extends Component
 
             // Notify reporter by email
             if ($report->reporter_email && $report->reporter_email !== $user->email) {
-                try {
-                    Mail::to($report->reporter_email)->send(
-                        new ReportStatusChangedNotification($report, $this->statusChangeReason)
-                    );
-                } catch (\Exception $e) {
-                    \Log::error('Failed to send status update email: ' . $e->getMessage());
+                if (! SafeMail::send($report->reporter_email, new ReportStatusChangedNotification($report, $this->statusChangeReason))) {
+                    \Log::error('Failed to send status update email to: ' . $report->reporter_email);
                 }
             }
 
@@ -297,13 +293,8 @@ class AdminReports extends Component
     $report->refresh(); 
 
     if ($report->reporter_email) {
-        try {
-            // Using the new specialized Mail class
-            Mail::to($report->reporter_email)->send(
-                new ReporterBlockedNotification($report, true)
-            );
-        } catch (\Exception $e) {
-            \Log::error('Failed to send block email: ' . $e->getMessage());
+        if (! SafeMail::send($report->reporter_email, new ReporterBlockedNotification($report, true))) {
+            \Log::error('Failed to send block email to: ' . $report->reporter_email);
         }
     }
 
