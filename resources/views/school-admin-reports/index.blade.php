@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Reports | Tekete SafeSpace – {{ $school->school_name ?? 'School Admin' }}</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
     <style>
 :root {
     --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -16,17 +16,31 @@
     --lime: #c7da30;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { font-family: 'Montserrat', sans-serif !important; color: #545454 !important; background-color: white !important; }
+html, body { font-family: 'Montserrat', sans-serif !important; background-color: white !important; }
+body.sa-app .main-panel,
+body.sa-app .main-panel main { color: #545454; }
 body { display: flex; min-height: 100vh; width: 100%; min-width: 0; overflow-x: hidden; overflow-y: hidden; }
-.sidebar-link, button, select, input, label, textarea {
+.main-panel button,
+.main-panel select,
+.main-panel input,
+.main-panel label,
+.main-panel textarea,
+.filter-panel input,
+.filter-panel select,
+.filter-panel label,
+.modal-card button,
+.modal-card input,
+.modal-card select,
+.modal-card textarea,
+.reason-modal-card textarea {
     font-size: 15px !important;
     font-family: 'Montserrat', sans-serif !important;
 }
 button:not(.menu-icon):not(.modal-close):not(.status-select) {
     background-color: white !important;
     color: #38b6ff !important;
-    border: 3px solid #c7da30 !important;
-    font-weight: 900 !important;
+    border: 2px solid #c7da30 !important;
+    font-weight: 600 !important;
     padding: 0.75rem 1rem !important;
     border-radius: 0.5rem !important;
     cursor: pointer !important;
@@ -159,60 +173,6 @@ tbody tr:last-child td { border-bottom: none; }
     <x-school-admin-styles />
 </head>
 <body class="sa-app">
-
-<div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
-    <div class="modal-card" role="dialog" aria-modal="true">
-        <div class="modal-content">
-            <h3>Report Details: <span id="modalCaseNumber"></span></h3>
-            <div id="modalBlockedBanner" class="alert-banner blocked" style="display:none;"></div>
-            <div id="modalFalseBanner" class="alert-banner danger" style="display:none;"></div>
-            <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
-            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
-            <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
-            <p><strong>Report Type:</strong> <span id="modalType"></span></p>
-            <p><strong>Subtype:</strong> <span id="modalSubtype"></span></p>
-            <p><strong>Grade:</strong> <span id="modalGrade"></span></p>
-            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
-            <p><strong>Latest Reason:</strong> <span id="modalReason"></span></p>
-            <p><strong>Description:</strong></p>
-            <div id="modalDescription"></div>
-            <p><strong>Attachments:</strong></p>
-            <div id="modalAttachments"></div>
-            <div style="margin-top:1rem;">
-                <label class="filter-label" for="modalStatusSelect">Update Status</label>
-                <select id="modalStatusSelect" class="filter-input" style="max-width:280px;">
-                    <option value="awaiting-resolution">Awaiting Resolution</option>
-                    <option value="under-review">Under Review</option>
-                    <option value="forwarded">Forwarded</option>
-                    <option value="closed">Closed</option>
-                    <option value="unresolved">Unresolved</option>
-                    <option value="false-report">False Report</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <div id="blockReporterWrap" style="display:none;">
-                    <span id="falseReportsCountLabel" style="font-size:11px;font-weight:700;color:#dc2626;display:block;margin-bottom:4px;"></span>
-                    <button type="button" id="blockReporterBtn" class="modal-close" style="background:#c7da30 !important;color:#000 !important;">Block Reporter</button>
-                </div>
-                <button type="button" class="modal-close" onclick="closeReportModal()">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal-backdrop" id="reasonModal" aria-hidden="true" style="display:none;">
-    <div class="reason-modal-card" role="dialog" aria-modal="true">
-        <h3 id="reasonModalTitle" style="margin-bottom:0.75rem;font-weight:900;">Update Status</h3>
-        <p id="reasonModalText" style="font-size:0.9rem;margin-bottom:1rem;"></p>
-        <label class="filter-label" for="statusChangeReason">Reason</label>
-        <textarea id="statusChangeReason" placeholder="Enter reason (at least 10 characters)…"></textarea>
-        <p class="reason-error" id="reasonError"></p>
-        <div class="modal-actions">
-            <button type="button" class="modal-close" onclick="cancelStatusUpdate()">Cancel</button>
-            <button type="button" class="modal-close" id="confirmStatusBtn" style="background:#38b6ff !important;color:#fff !important;border-color:#38b6ff !important;">Confirm</button>
-        </div>
-    </div>
-</div>
 
 <x-school-admin-sidebar />
 
@@ -403,6 +363,60 @@ tbody tr:last-child td { border-bottom: none; }
             @endif
         </div>
     </main>
+</div>
+
+<div class="modal-backdrop" id="reportModal" aria-hidden="true" style="display:none;">
+    <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-content">
+            <h3>Report Details: <span id="modalCaseNumber"></span></h3>
+            <div id="modalBlockedBanner" class="alert-banner blocked" style="display:none;"></div>
+            <div id="modalFalseBanner" class="alert-banner danger" style="display:none;"></div>
+            <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
+            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+            <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
+            <p><strong>Report Type:</strong> <span id="modalType"></span></p>
+            <p><strong>Subtype:</strong> <span id="modalSubtype"></span></p>
+            <p><strong>Grade:</strong> <span id="modalGrade"></span></p>
+            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+            <p><strong>Latest Reason:</strong> <span id="modalReason"></span></p>
+            <p><strong>Description:</strong></p>
+            <div id="modalDescription"></div>
+            <p><strong>Attachments:</strong></p>
+            <div id="modalAttachments"></div>
+            <div style="margin-top:1rem;">
+                <label class="filter-label" for="modalStatusSelect">Update Status</label>
+                <select id="modalStatusSelect" class="filter-input" style="max-width:280px;">
+                    <option value="awaiting-resolution">Awaiting Resolution</option>
+                    <option value="under-review">Under Review</option>
+                    <option value="forwarded">Forwarded</option>
+                    <option value="closed">Closed</option>
+                    <option value="unresolved">Unresolved</option>
+                    <option value="false-report">False Report</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <div id="blockReporterWrap" style="display:none;">
+                    <span id="falseReportsCountLabel" style="font-size:11px;font-weight:700;color:#dc2626;display:block;margin-bottom:4px;"></span>
+                    <button type="button" id="blockReporterBtn" class="modal-close" style="background:#c7da30 !important;color:#000 !important;">Block Reporter</button>
+                </div>
+                <button type="button" class="modal-close" onclick="closeReportModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="reasonModal" aria-hidden="true" style="display:none;">
+    <div class="reason-modal-card" role="dialog" aria-modal="true">
+        <h3 id="reasonModalTitle" style="margin-bottom:0.75rem;font-weight:900;">Update Status</h3>
+        <p id="reasonModalText" style="font-size:0.9rem;margin-bottom:1rem;"></p>
+        <label class="filter-label" for="statusChangeReason">Reason</label>
+        <textarea id="statusChangeReason" placeholder="Enter reason (at least 10 characters)…"></textarea>
+        <p class="reason-error" id="reasonError"></p>
+        <div class="modal-actions">
+            <button type="button" class="modal-close" onclick="cancelStatusUpdate()">Cancel</button>
+            <button type="button" class="modal-close" id="confirmStatusBtn" style="background:#38b6ff !important;color:#fff !important;border-color:#38b6ff !important;">Confirm</button>
+        </div>
+    </div>
 </div>
 
 <x-school-admin-sidebar-script />

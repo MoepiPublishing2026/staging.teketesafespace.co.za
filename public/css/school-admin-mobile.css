@@ -222,7 +222,7 @@ body.sa-app .menu-icon:focus-visible {
     opacity: 1 !important;
   }
 
-  body.sa-app .sidebar-link {
+  body.sa-app #sa-sidebar .sidebar-link {
     padding-top: 0.85rem;
     padding-bottom: 0.85rem;
     border-radius: 10px;
