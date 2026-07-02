@@ -41,7 +41,7 @@ body.sa-app .school-admin-sidebar .sidebar-link {
     display: block !important;
     width: 92% !important;
     font-size: 15px !important;
-    font-weight: 900 !important;
+    font-weight: 600 !important;
     color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
     padding: 11px 18px !important;
@@ -51,13 +51,20 @@ body.sa-app .school-admin-sidebar .sidebar-link {
     transition: all 0.25s ease;
     box-sizing: border-box;
     background: transparent !important;
+    -webkit-text-fill-color: #545454 !important;
+}
+body.sa-app #sa-sidebar .sidebar-link:not(.active):not(:hover) {
+    color: #545454 !important;
+    background: transparent !important;
+    font-weight: 600 !important;
+    -webkit-text-fill-color: #545454 !important;
 }
 body.sa-app #sa-sidebar .sidebar-link:hover,
-body.sa-app #sa-sidebar .sidebar-link.active,
-body.sa-app .school-admin-sidebar .sidebar-link:hover,
-body.sa-app .school-admin-sidebar .sidebar-link.active {
+body.sa-app #sa-sidebar .sidebar-link.active {
     color: #ffffff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
+    font-weight: 600 !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 body.sa-app .menu-icon {
     display: none;

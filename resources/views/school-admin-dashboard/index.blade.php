@@ -44,40 +44,6 @@ body {
     overflow: hidden;
 }
 
-.sidebar {
-    width: 235px;
-    background-color: white;
-    border-right: 1px solid #eaeaea;
-    display: flex;
-    flex-direction: column;
-    padding-top: 120px;
-}
-
-.sidebar-list {
-    list-style: none;
-    padding: 0 0 0 22px;
-}
-
-.sidebar-link {
-    display: block;
-    width: 92%;
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  color: #545454 !important;
-  font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.sidebar-link:hover,
-.sidebar-link.active {
-    background: var(--theme-gradient);
-    color: #000;
-}
-
 button {
  background-color: white !important;
   color: #38b6ff !important;
@@ -95,16 +61,6 @@ button:hover, button:focus {
   color: white !important;
   border-color: #38b6ff !important;
   outline: none;
-}
-
-button.active{
-    background: var(--theme-gradient);
-    color: var(--theme-dark);
-}
-
-button:hover, .sidebar-link:hover, .sidebar-link.active {
-  color: #fff !important;
-  background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
 
 .topbar {
@@ -237,12 +193,6 @@ button:hover, .sidebar-link:hover, .sidebar-link.active {
      height: 100vh;
      background: white;
  }
-       
-       .sidebar-link.active {
-       background: linear-gradient(to right, #38b6ff, #38b6ff);
-    color: #000;
-    font-weight: 400;
-}
 
 .metrics-row > .metric-card {
     flex: 0 0 100px; /* fixed width */
@@ -604,27 +554,12 @@ canvas {
     body {
         overflow-x: hidden;
     }
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 0;
-        height: 100vh;
-        background: white;
-        overflow-x: hidden;
-        transition: width 0.3s ease;
-        z-index: 1000;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    }
-    .sidebar.open {
-        width: 220px;
-    }
     .main-panel {
         margin-left: 0 !important;
         transition: margin-left 0.3s ease;
     }
     .main-panel.shifted {
-        margin-left: 220px;
+        margin-left: 0 !important;
     }
 
     .metric-card {
@@ -665,10 +600,6 @@ canvas {
     .menu-icon {
         font-size: 24px;
         padding: 6px 10px;
-    }
-    
-    .sidebar.open {
-        width: 220px;
     }
     
     .metric-card {
