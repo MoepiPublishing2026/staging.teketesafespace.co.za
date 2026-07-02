@@ -10,6 +10,13 @@ class SafeMail
 {
     private const SOCKET_TIMEOUT_SECONDS = 10;
 
+    public static function sendAfterResponse(string $to, Mailable $mailable): void
+    {
+        dispatch(static function () use ($to, $mailable): void {
+            self::send($to, $mailable);
+        })->afterResponse();
+    }
+
     public static function send(string $to, Mailable $mailable): bool
     {
         $previousSocketTimeout = ini_get('default_socket_timeout');

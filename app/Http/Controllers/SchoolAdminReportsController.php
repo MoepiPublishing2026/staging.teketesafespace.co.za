@@ -9,11 +9,12 @@ use App\Models\School;
 use App\Models\AbuseType;
 use App\Models\Subtype;
 use App\Support\SafeMail;
+use App\Support\SafeNotify;
 use App\Mail\ReportStatusChangedNotification;
 use App\Mail\ReporterBlockedNotification;
 use App\Notifications\CaseStatusChanged;
 
-class SchoolAdminReportsController extends Controller
+class SchoolAdminReportsController extends AdminController
 {
     public function index(Request $request)
     {
@@ -205,6 +206,13 @@ class SchoolAdminReportsController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
+        return $this->safeAdmin(function () use ($request, $id) {
+            return $this->performUpdateStatus($request, $id);
+        }, $request);
+    }
+
+    private function performUpdateStatus(Request $request, $id)
+    {
         $user = Auth::user();
 
         if (!$user || $user->role !== 'school') {
@@ -261,17 +269,11 @@ class SchoolAdminReportsController extends Controller
         }
 
         if ($report->reporter_email && $report->reporter_email !== $user->email) {
-            if (! SafeMail::send($report->reporter_email, new ReportStatusChangedNotification($report, $reason))) {
-                \Log::error('School admin status email failed for reporter: ' . $report->reporter_email);
-            }
+            SafeMail::sendAfterResponse($report->reporter_email, new ReportStatusChangedNotification($report, $reason));
         }
 
         if ($report->user && $report->user->id !== $user->id) {
-            try {
-                $report->user->notify(new CaseStatusChanged($report));
-            } catch (\Exception $e) {
-                \Log::error('School admin in-app notification failed: ' . $e->getMessage());
-            }
+            SafeNotify::sendAfterResponse($report->user, new CaseStatusChanged($report));
         }
 
         $message = 'Status updated successfully. Reporter notified.';
@@ -298,6 +300,13 @@ class SchoolAdminReportsController extends Controller
     }
 
     public function permanentBlock(Request $request)
+    {
+        return $this->safeAdmin(function () use ($request) {
+            return $this->performPermanentBlock($request);
+        }, $request);
+    }
+
+    private function performPermanentBlock(Request $request)
     {
         $user = Auth::user();
 
@@ -337,9 +346,7 @@ class SchoolAdminReportsController extends Controller
 
         $report->refresh();
 
-        if (! SafeMail::send($report->reporter_email, new ReporterBlockedNotification($report, true))) {
-            \Log::error('School admin block email failed for reporter: ' . $report->reporter_email);
-        }
+        SafeMail::sendAfterResponse($report->reporter_email, new ReporterBlockedNotification($report, true));
 
         return response()->json([
             'success' => true,

@@ -169,6 +169,9 @@
                                 onpaste="handleOtpPaste(event)" id="otp-{{ $i }}">
                         @endfor
                     </div>
+                    @error('admin')
+                        <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
+                    @enderror
                     @error('otp')
                         <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
                     @enderror
@@ -189,6 +192,9 @@
                 <form wire:submit.prevent="sendOtp" class="flex flex-col gap-8 items-center">
                     <input type="email" id="email" wire:model="email" placeholder="Email Address"
                         class="w-full h-[60px] px-5 text-black border-[3px] border-[#c7da30] rounded-[10px] bg-white text-sm outline-none placeholder-gray-400 focus:border-[#a8c529] placeholder:tracking-wider">
+                    @error('admin')
+                        <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
+                    @enderror
                     @error('email')
                         <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
                     @enderror

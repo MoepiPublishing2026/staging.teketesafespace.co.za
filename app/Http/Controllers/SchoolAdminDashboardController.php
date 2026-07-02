@@ -9,7 +9,7 @@ use App\Models\School;
 use App\Models\AbuseType;
 use Carbon\Carbon;
 
-class SchoolAdminDashboardController extends Controller
+class SchoolAdminDashboardController extends AdminController
 {
     public function index(Request $request)
     {
@@ -390,6 +390,13 @@ class SchoolAdminDashboardController extends Controller
     }
 
     public function flagReport(Request $request, $reportId)
+    {
+        return $this->safeAdmin(function () use ($request, $reportId) {
+            return $this->performFlagReport($request, $reportId);
+        }, $request);
+    }
+
+    private function performFlagReport(Request $request, $reportId)
     {
         $user = Auth::user();
 

@@ -9,6 +9,7 @@ use App\Models\AbuseType;
 use App\Models\Subtype;
 use App\Models\User;
 use App\Support\SafeMail;
+use App\Support\SafeNotify;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ReportStatusChangedNotification;
 use App\Mail\ReporterBlockedNotification;
@@ -168,18 +169,12 @@ class AdminReports extends Component
 
             // Notify reporter by email
             if ($report->reporter_email && $report->reporter_email !== $user->email) {
-                if (! SafeMail::send($report->reporter_email, new ReportStatusChangedNotification($report, $this->statusChangeReason))) {
-                    \Log::error('Failed to send status update email to: ' . $report->reporter_email);
-                }
+                SafeMail::sendAfterResponse($report->reporter_email, new ReportStatusChangedNotification($report, $this->statusChangeReason));
             }
 
             // In-app notification
             if ($report->user && $report->user->id !== $user->id) {
-                try {
-                    $report->user->notify(new CaseStatusChanged($report));
-                } catch (\Exception $e) {
-                    \Log::error('Failed to send in-app status notification: ' . $e->getMessage());
-                }
+                SafeNotify::sendAfterResponse($report->user, new CaseStatusChanged($report));
             }
 
         
@@ -293,9 +288,7 @@ class AdminReports extends Component
     $report->refresh(); 
 
     if ($report->reporter_email) {
-        if (! SafeMail::send($report->reporter_email, new ReporterBlockedNotification($report, true))) {
-            \Log::error('Failed to send block email to: ' . $report->reporter_email);
-        }
+        SafeMail::sendAfterResponse($report->reporter_email, new ReporterBlockedNotification($report, true));
     }
 
     $this->dispatch('toast', type: 'success', message: "Reporter has been permanently blocked and notified via email.");
