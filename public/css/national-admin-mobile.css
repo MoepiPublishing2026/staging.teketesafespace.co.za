@@ -34,6 +34,12 @@ body.na-app .menu-icon:active {
   transform: scale(0.94);
 }
 
+body.na-app .sidebar-list li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 body.na-app .menu-icon:focus-visible {
   outline: 3px solid rgba(56, 182, 255, 0.55);
   outline-offset: 2px;
@@ -41,6 +47,43 @@ body.na-app .menu-icon:focus-visible {
 
 /* ─── Tablet & phone (match existing 900px breakpoint) ─── */
 @media (max-width: 900px) {
+  body.na-app .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  body.na-app .menu-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+  }
+
+  body.na-app .national-admin-sidebar .sidebar-logo {
+    display: none;
+    position: sticky;
+    top: 0;
+    left: auto;
+    width: 100%;
+    padding: 12px 12px 0;
+    background: transparent;
+    justify-content: flex-end;
+  }
+
+  body.na-app .national-admin-sidebar.open .sidebar-logo {
+    display: flex;
+  }
+
+  body.na-app .national-admin-sidebar .sidebar-logo img {
+    width: 95px;
+    height: auto;
+  }
+
   /* Fluid page titles */
   body.na-app .dashboard-scroll > h1,
   body.na-app main h1 {
@@ -110,7 +153,8 @@ body.na-app .menu-icon:focus-visible {
     will-change: transform;
     box-shadow: none;
     border-right: 1px solid rgba(226, 232, 240, 0.95);
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff !important;
+    background-color: #ffffff !important;
   }
 
   body.na-app .sidebar.open {
@@ -290,6 +334,11 @@ body.na-app .menu-icon:focus-visible {
     width: 44px;
     height: 44px;
     font-size: 20px;
+  }
+
+  body.na-app .national-admin-sidebar .sidebar-logo img {
+    width: 85px;
+    height: auto;
   }
 
   body.na-app .profile .meta {

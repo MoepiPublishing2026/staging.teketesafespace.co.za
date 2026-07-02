@@ -111,7 +111,14 @@ body.pa-app .menu-icon:focus-visible {
     font-size: 22px;
   }
 
-  body.pa-app .sidebar {
+  body.pa-app #pa-sidebar.provincial-admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 1000;
     width: min(300px, 88vw) !important;
     min-width: min(300px, 88vw) !important;
     max-width: 100%;
@@ -124,19 +131,46 @@ body.pa-app .menu-icon:focus-visible {
     will-change: transform;
     box-shadow: none;
     border-right: 1px solid rgba(226, 232, 240, 0.95);
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff !important;
+    background-color: #ffffff !important;
   }
 
-  body.pa-app .sidebar.open {
+  body.pa-app #pa-sidebar .sidebar-list li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.pa-app #pa-sidebar .sidebar-logo {
+    display: none;
+    position: sticky;
+    top: 0;
+    left: auto;
+    width: 100%;
+    padding: 12px 12px 0;
+    background: transparent;
+    justify-content: flex-end;
+  }
+
+  body.pa-app #pa-sidebar.open .sidebar-logo {
+    display: flex;
+  }
+
+  body.pa-app #pa-sidebar .sidebar-logo img {
+    width: 95px;
+    height: auto;
+  }
+
+  body.pa-app #pa-sidebar.open {
     transform: translate3d(0, 0, 0);
     box-shadow: var(--pa-shadow-drawer);
   }
 
-  body.pa-app .sidebar:not(.open) {
+  body.pa-app #pa-sidebar:not(.open) {
     pointer-events: none;
   }
 
-  body.pa-app .sidebar.open {
+  body.pa-app #pa-sidebar.open {
     pointer-events: auto;
   }
 
@@ -155,7 +189,7 @@ body.pa-app .menu-icon:focus-visible {
     opacity: 1 !important;
   }
 
-  body.pa-app .sidebar-link {
+  body.pa-app #pa-sidebar .sidebar-link {
     padding-top: 0.85rem;
     padding-bottom: 0.85rem;
     border-radius: 10px;
@@ -314,7 +348,7 @@ body.pa-app .menu-icon:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.pa-app .sidebar {
+  body.pa-app #pa-sidebar {
     transition: none !important;
   }
 

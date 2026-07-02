@@ -1,8 +1,8 @@
-{{-- Provincial admin sidebar toggle — include once per page, before </body> --}}
+{{-- National admin sidebar toggle — include once per page, before </body> --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var toggle = document.getElementById('sidebarToggle') || document.querySelector('.menu-icon');
-    var sidebar = document.getElementById('pa-sidebar');
+    var sidebar = document.getElementById('na-sidebar');
     var overlay = document.getElementById('sidebarOverlay');
     var mainPanel = document.querySelector('.main-panel');
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!sidebar || !mainPanel) return;
         sidebar.classList.toggle('open', open);
         mainPanel.classList.toggle('shifted', open);
-        document.body.classList.toggle('pa-sidebar-open', open);
+        document.body.classList.toggle('na-sidebar-open', open);
         if (overlay) {
             overlay.classList.toggle('active', open);
             overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
@@ -38,16 +38,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('keydown', function (e) {
-        if (e.key !== 'Escape' || !sidebar || !sidebar.classList.contains('open')) return;
-        var reportModal = document.getElementById('reportModal');
-        if (reportModal && reportModal.getAttribute('aria-hidden') === 'false') return;
-        var statusModal = document.getElementById('statusModal');
-        var extrasModal = document.getElementById('extrasModal');
-        if (statusModal && statusModal.classList.contains('active')) return;
-        if (extrasModal && extrasModal.classList.contains('active')) return;
-        e.preventDefault();
-        setSidebarOpen(false);
-    }, true);
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+            setSidebarOpen(false);
+        }
+    });
 
     if (sidebar) {
         sidebar.querySelectorAll('.sidebar-link').forEach(function (link) {
