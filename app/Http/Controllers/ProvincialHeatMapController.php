@@ -14,6 +14,63 @@ use Illuminate\Support\Facades\DB;
 
 class ProvincialHeatMapController extends Controller
 {
+    /**
+     * @return array{0:int,1:int} [lowMax, mediumMax]
+     */
+    protected function rangeScaledBandThresholds(array $counts): array
+    {
+        $vals = array_map(fn ($c) => (int) $c, $counts);
+        $max = max(0, ...$vals);
+        if ($max <= 0) {
+            return [0, 0];
+        }
+        $lowMax = max(1, (int) floor($max / 3));
+        $mediumMax = max($lowMax, (int) floor((2 * $max) / 3));
+
+        return [$lowMax, $mediumMax];
+    }
+
+    /**
+     * @return array{0:int,1:int} [lowMax, mediumMax]
+     */
+    protected function balancedBandThresholds(array $counts): array
+    {
+        $positive = array_values(array_filter(
+            array_map(fn ($c) => (int) $c, $counts),
+            fn ($c) => $c > 0
+        ));
+
+        if (count($positive) < 3) {
+            return $this->rangeScaledBandThresholds($counts);
+        }
+
+        sort($positive);
+        if (count(array_unique($positive)) < 3) {
+            return $this->rangeScaledBandThresholds($counts);
+        }
+
+        $n = count($positive);
+        $iLow = max(0, (int) floor($n / 3) - 1);
+        $iMed = min($n - 1, max($iLow + 1, (int) floor((2 * $n) / 3) - 1));
+        $lowMax = $positive[$iLow];
+        $mediumMax = $positive[$iMed];
+
+        if ($mediumMax <= $lowMax) {
+            foreach ($positive as $v) {
+                if ($v > $lowMax) {
+                    $mediumMax = $v;
+                    break;
+                }
+            }
+        }
+
+        if ($mediumMax <= $lowMax) {
+            return $this->rangeScaledBandThresholds($counts);
+        }
+
+        return [(int) $lowMax, (int) $mediumMax];
+    }
+
     protected function applyHeatmapFilters(Builder $query, Request $request, int $provinceId): void
     {
         $query->where('province_id', $provinceId);
@@ -175,6 +232,22 @@ class ProvincialHeatMapController extends Controller
 
         $mapProvinceSlug = preg_replace('/[^a-z]/', '', strtolower((string) ($province->province_name ?? '')));
 
+        $districtTotals = (clone $baseQuery)
+            ->select('district_id', DB::raw('COUNT(*) as count'))
+            ->whereNotNull('district_id')
+            ->groupBy('district_id')
+            ->get()
+            ->keyBy('district_id');
+
+        $mapDistrictCounts = [];
+        foreach ($districts as $district) {
+            $mapDistrictCounts[$district->name] = (int) ($districtTotals[$district->id]->count ?? 0);
+        }
+
+        $mapDistrictNameToId = $heatmapDistrictNameToId;
+        [$mapDistrictBandLowMax, $mapDistrictBandMediumMax] = $this->balancedBandThresholds(array_values($mapDistrictCounts));
+        $filteredReportsTotal = (clone $baseQuery)->count();
+
         return view('provincial-admin-dashboard.heatmap', [
             'province' => $province,
             'districts' => $districts,
@@ -201,6 +274,11 @@ class ProvincialHeatMapController extends Controller
             'heatmapHotspots' => $heatmapHotspots,
 
             'mapProvinceSlug' => $mapProvinceSlug,
+            'mapDistrictCounts' => $mapDistrictCounts,
+            'mapDistrictNameToId' => $mapDistrictNameToId,
+            'mapDistrictBandLowMax' => $mapDistrictBandLowMax,
+            'mapDistrictBandMediumMax' => $mapDistrictBandMediumMax,
+            'filteredReportsTotal' => $filteredReportsTotal,
         ]);
     }
 }
