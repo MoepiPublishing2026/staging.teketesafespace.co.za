@@ -5,9 +5,9 @@ namespace App\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginOtpMail;
 use App\Support\OtpSession;
+use App\Support\SafeMail;
 
 class PasswordlessLogin extends Component
 {
@@ -54,14 +54,9 @@ class PasswordlessLogin extends Component
         $otp = random_int(100000, 999999);
         OtpSession::markSent($otp);
 
-        try {
-            Mail::to($user->email)->send(new LoginOtpMail($otp));
-        } catch (\Throwable $e) {
+        if (! SafeMail::send($user->email, new LoginOtpMail($otp))) {
             OtpSession::clearPending();
-            Log::error('Failed to send OTP', [
-                'email' => $user->email,
-                'error' => $e->getMessage(),
-            ]);
+            Log::error('Failed to send OTP', ['email' => $user->email]);
             $this->addError('email', 'Unable to send OTP. Please verify your email settings and try again.');
             return;
         }

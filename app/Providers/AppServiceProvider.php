@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if ($this->app->environment('local') && ! filter_var(env('MAIL_ALLOW_SMTP', false), FILTER_VALIDATE_BOOL)) {
+            config(['mail.default' => 'log']);
+        }
     }
 }

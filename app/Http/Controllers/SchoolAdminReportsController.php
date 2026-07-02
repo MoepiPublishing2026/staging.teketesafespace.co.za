@@ -8,7 +8,7 @@ use App\Models\Report;
 use App\Models\School;
 use App\Models\AbuseType;
 use App\Models\Subtype;
-use Illuminate\Support\Facades\Mail;
+use App\Support\SafeMail;
 use App\Mail\ReportStatusChangedNotification;
 use App\Mail\ReporterBlockedNotification;
 use App\Notifications\CaseStatusChanged;
@@ -261,12 +261,8 @@ class SchoolAdminReportsController extends Controller
         }
 
         if ($report->reporter_email && $report->reporter_email !== $user->email) {
-            try {
-                Mail::to($report->reporter_email)->send(
-                    new ReportStatusChangedNotification($report, $reason)
-                );
-            } catch (\Exception $e) {
-                \Log::error('School admin status email failed: ' . $e->getMessage());
+            if (! SafeMail::send($report->reporter_email, new ReportStatusChangedNotification($report, $reason))) {
+                \Log::error('School admin status email failed for reporter: ' . $report->reporter_email);
             }
         }
 
@@ -341,12 +337,8 @@ class SchoolAdminReportsController extends Controller
 
         $report->refresh();
 
-        try {
-            Mail::to($report->reporter_email)->send(
-                new ReporterBlockedNotification($report, true)
-            );
-        } catch (\Exception $e) {
-            \Log::error('School admin block email failed: ' . $e->getMessage());
+        if (! SafeMail::send($report->reporter_email, new ReporterBlockedNotification($report, true))) {
+            \Log::error('School admin block email failed for reporter: ' . $report->reporter_email);
         }
 
         return response()->json([
