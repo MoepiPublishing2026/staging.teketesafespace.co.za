@@ -103,27 +103,37 @@ public function updateSettings()
     }
 
     // Profile picture upload
-    if ($this->profile_picture) {
-        try {
-            // Delete old profile picture if exists
-            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
-                Storage::disk('public')->delete($user->profile_picture);
+          if ($this->profile_picture) {
+            try {
+
+                if ($user->profile_picture) {
+                    $oldPath = str_replace('public/', '', $user->profile_picture);
+
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+
+                $filename = 'profile_' . $user->id . '_' . time() . '.' .
+                    $this->profile_picture->getClientOriginalExtension();
+
+                $path = $this->profile_picture->storeAs(
+                    'profile_pictures',
+                    $filename,
+                    'public'
+                );
+
+                $user->profile_picture = $path;
+
+                $this->profile_picture = null;
+
+                $updated = true;
+
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+                $this->addError('profile_picture', 'Upload failed.');
             }
-
-            // Store new profile picture
-            $path = $this->profile_picture->store('profile_pictures', 'public');
-            $user->profile_picture = $path;
-            $updated = true;
-
-            // Clear the profile_picture property after saving
-            $this->profile_picture = null;
-
-        } catch (\Exception $e) {
-            $this->addError('profile_picture', 'Upload failed. Please try again.');
-            Log::error('Profile picture upload error: ' . $e->getMessage());
-            return;
         }
-    }
 
     // Password change
     if ($this->new_password) {
