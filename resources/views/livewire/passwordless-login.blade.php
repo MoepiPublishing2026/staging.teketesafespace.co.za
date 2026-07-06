@@ -200,12 +200,16 @@
                     @enderror
 
                     <button type="submit"
+                        wire:loading.attr="disabled"
+                        wire:target="sendOtp"
                         class="w-full h-[60px] font-semibold text-[16px]
                                    border-4 border-solid border-[#c7da30]
                                    rounded-[100px] text-[#38b6ff]
-                                   shadow-md uppercase transition-opacity hover:opacity-90">
-                        Send OTP
+                                   shadow-md uppercase transition-opacity hover:opacity-90 disabled:opacity-60">
+                        <span wire:loading.remove wire:target="sendOtp">Send OTP</span>
+                        <span wire:loading wire:target="sendOtp">Sending OTP…</span>
                     </button>
+                    <p wire:loading wire:target="sendOtp" class="text-sm text-gray-500 -mt-4">This can take up to a minute. Please wait.</p>
                 </form>
             </div>
         @endif

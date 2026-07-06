@@ -52,9 +52,14 @@ class PasswordlessLogin extends Component
 
         $otp = random_int(100000, 999999);
         OtpSession::markSent($otp);
-        $this->showOtpForm = true;
 
-        SafeMail::sendAfterResponse($user->email, new LoginOtpMail($otp));
+        if (! SafeMail::sendReliable($user->email, new LoginOtpMail($otp))) {
+            OtpSession::clearPending();
+            $this->addError('email', 'Unable to send OTP email. Please check your connection and try again in a minute.');
+            return;
+        }
+
+        $this->showOtpForm = true;
     }
 
     public function login()
