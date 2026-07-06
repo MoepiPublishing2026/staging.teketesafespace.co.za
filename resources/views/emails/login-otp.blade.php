@@ -3,7 +3,7 @@
 
 Your one-time password for login is: **{{ $otp }}**
 
-This code is valid for 5 minutes. Do not share it with anyone.
+This code is valid for 10 minutes. Do not share it with anyone.
 
 Thanks,
 {{ config('app.name') }}
