@@ -171,18 +171,22 @@
                     min-height: 100vh;
                 }
 
+                /* Use normal document flow for the footer to avoid extra bottom gaps/black space */
                 .custom-desktop-footer {
-                    position: absolute !important;
+                    position: relative !important;
                     top: auto !important;
-                    bottom: 0 !important;
+                    bottom: auto !important;
                     padding-top: 25px;
                     padding-bottom: 25px;
                 }
-                
+
+                /* Keep the section tall enough to fill the viewport behind the footer */
                 section {
-                     min-height: calc(100vh - 60px);
+                     min-height: auto;
+                     flex: 1 1 auto;
                 }
             }
+
 
             /* --- EXTERNAL FORCE OVERRIDE FOR THE COOKIE COMPONENT --- */
             .force-cookie-bottom, 
