@@ -55,7 +55,8 @@ class ProvincialDashboardController extends Controller
         $province_id = $user->province_id;
 
         $query = Report::with(['abuseType', 'subtype'])
-            ->where('province_id', $province_id);
+            ->where('province_id', $province_id)
+            ->orderBy('created_at', 'desc');
 
         if ($request->district) {
             $query->where('district_id', $request->district);

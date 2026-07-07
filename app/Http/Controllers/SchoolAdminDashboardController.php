@@ -77,7 +77,8 @@ class SchoolAdminDashboardController extends AdminController
 
         // Base reports query with eager loading (filtered by school)
         $reportsQuery = Report::with(['school', 'abuseType'])
-            ->where('school_name', $schoolName);
+            ->where('school_name', $schoolName)
+            ->orderBy('created_at', 'desc');
 
         // Apply filters
         if ($abuseTypeFilter) {
