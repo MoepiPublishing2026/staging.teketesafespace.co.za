@@ -5,7 +5,7 @@
     <div id="main-landing-container" x-data="{ menuOpen: false }"
         class="relative w-screen min-h-screen bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
 
-        <header class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[4vw] lg:pt-[1.5vh]">
+        <header  class="fixed top-0 left-0 right-0 z-40 w-full flex justify-between items-center px-6 pt-4 lg:px-[2vw] lg:pt-[1.5vh]">
             <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
             <div class="relative z-10 flex justify-end items-center w-full">
 
@@ -112,7 +112,7 @@
             </div>
         </section>
 
-        <footer class="custom-desktop-footer relative lg:absolute bottom-0 left-0 w-full bg-[#808080] text-white px-6 py-4 min-[520px]:px-3 min-[520px]:py-2 lg:pl-[2vw] lg:pr-[5vw] lg:py-[1.5vh] flex flex-col min-[520px]:flex-row justify-between items-center gap-4 min-[520px]:gap-2 lg:gap-0 z-30">
+        <footer class="custom-desktop-footer relative lg:absolute bottom-0 left-0 w-full bg-[#808080] text-white px-6 py-4 min-[520px]:px-3 min-[520px]:py-2 lg:pl-[2vw] lg:pr-[2vw] lg:py-[1.5vh] flex flex-col min-[520px]:flex-row justify-between items-center gap-4 min-[520px]:gap-2 lg:gap-0 z-30">
            <p class="text-[13px] min-[520px]:text-[14px] lg:text-[16px] text-center min-[520px]:text-left w-full min-[520px]:w-auto">
                 &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
            </p>
