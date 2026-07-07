@@ -51,6 +51,7 @@ class NationalAdminDashboardController extends Controller
          * REPORTS QUERY WITH FILTERS
          * ----------------------------------------- */
         $reportsQuery = Report::with(['province', 'district', 'school', 'abuseType']);
+        $reportsQuery->orderByDesc('created_at', 'desc');
 
         if ($provinceFilter) $reportsQuery->where('province_id', $provinceFilter);
         if ($districtFilter) $reportsQuery->where('district_id', $districtFilter);
