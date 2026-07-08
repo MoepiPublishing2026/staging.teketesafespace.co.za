@@ -60,7 +60,7 @@ class NewsIndex extends Component
             ->when($searchQuery !== '', function ($query) use ($searchQuery) {
                 $query->where('title', 'like', '%' . $searchQuery . '%');
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return view('livewire.news-index', [
