@@ -1,3 +1,4 @@
+@php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
 
 <div class="min-h-screen bg-white flex flex-col w-full overflow-x-hidden" style="font-family: 'Montserrat', sans-serif;">
     <script src="//unpkg.com/alpinejs" defer></script>
@@ -11,6 +12,10 @@
                 <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
                     <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
                     <a href="{{ route('about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
+                    <a href="{{ $workshopBookingUrl }}/workshops" class="text-black transition-colors hover:text-[#c7da30]">
+
+                            Workshops
+                    </a>
                     <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
                     <a href="{{ route('news') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">News</a>
                 </nav>
@@ -37,11 +42,18 @@
                     </svg>
                 </button>
             </div>
-            <nav class="mt-8 px-4 text-[17px] font-[Montserrat]">
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Home</a>
-                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">About Us</a>
-                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Contact Us</a>
-                <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
+           <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+                <a href="{{ route('landing-page') }}"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Home</a>
+                <a href="{{ route('about-us') }}"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">About Us</a>
+                     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Workshops</a>
+                
+                <a href="{{ route('contact-us') }}"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
+                 <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
+
             </nav>
         </div>
     </div>
@@ -160,7 +172,7 @@ a:hover .news-nav-link-text-next {
         @endif
     </div>
 </div>
-            <div class="relative w-full h-[450px] flex gap-4 items-stretch overflow-hidden pb-8">
+            <div class="relative w-full h-[490px] flex gap-4 items-stretch overflow-hidden pb-8">
             
                 <div id="news-scroll-viewport" 
                      wire:ignore.self 
@@ -168,41 +180,8 @@ a:hover .news-nav-link-text-next {
                      class="flex-1 block overflow-y-auto no-scrollbar scroll-smooth space-y-5 pr-2"
                      style="height: 100%;">
                     
-                    <div wire:key="news-static-psa-card" class="bg-[#f4f4f5] rounded-xl p-6 flex flex-col justify-center gap-4 hover:shadow-sm transition-all duration-200 w-full min-h-[160px] border border-gray-100">
-                        <div class="flex flex-col md:flex-row gap-8 items-center w-full">
-                            <div class="w-40 h-30 flex-shrink-0 bg-[#f4f4f5] rounded-xl flex items-center justify-center overflow-hidden border border-gray-100">
-                                <img src="{{ asset('images/PSA-logo.png') }}" alt="Proudly South African" class="w-full h-full object-cover">
-                            </div>
-
-                            <div class="flex-1 text-center md:text-left w-full min-w-0">
-                                <h2 class="text-[19px] font-bold text-[#2f343e] text-slate-800 leading-snug mb-1 break-words">
-                                  Tekete Safe Space App Receives Proudly South African Approval, Strengthening Support for School Safety and Wellbeing
-                                </h2>
-                                
-                                <div class="text-[14px] text-[#2f343e] text-slate-800 mb-2">
-                                    <span>FOR IMMEDIATE RELEASE: 04/02/2026</span> 
-                                </div>
-
-                                <button type="button" wire:click="toggleExpand('psa-static')" class="text-[20px] font-medium text-[#c7da30] underline transition-colors focus:outline-none">
-                                    {{ $expandedNewsletterId === 'psa-static' ? 'Show Less' : 'Read More' }}
-                                </button>
-                            </div>
-                        </div>
-
-                        @if($expandedNewsletterId === 'psa-static')
-                            <div class="mt-2 p-4 border-t-2 rounded-b-lg transition-all duration-300 w-full">
-                                <p class="text-[16px] text-[#2f343e] text-slate-800 leading-relaxed whitespace-pre-line break-words" style="word-break: break-word;">
-                                    Pretoria, South Africa – Tekete Safe Space is proud to announce that its digital reporting and learner wellbeing application has been officially approved by Proudly South African, marking a significant milestone in its mission to support safer, more inclusive learning environments across the country.
-                                    This approval recognises Tekete Safe Space as a locally developed, credible, and trusted solution, purpose-built to meet the needs of South African schools, learners, and educators. It affirms the app’s adherence to quality, ethical standards, and its commitment to creating meaningful social impact within the education sector.
-                                    For schools, the Proudly South African endorsement provides added assurance that Tekete Safe Space aligns with local policies, values, and the realities faced by school communities. The app supports schools in fulfilling their duty of care by offering a secure and confidential platform for reporting safety concerns, promoting learner wellbeing, and enabling early intervention.
-                                    Tekete Safe Space strengthens school safeguarding structures by encouraging responsible reporting and fostering a culture of trust, accountability, and transparency among learners, educators, and parents. By integrating technology into school safety strategies, the app complements existing school policies and child protection frameworks, enhancing schools’ ability to respond effectively to incidents and concerns.
-                                    This Proudly South African approval reinforces Tekete Safe Space’s belief that local innovation can drive real and sustainable change in education. The organisation remains committed to working collaboratively with schools, governing bodies, and education stakeholders to help create safer spaces where learners can thrive.                                 
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-
-                    @forelse($newsletters as $item)
+                  
+               @forelse($newsletters as $item)
                         <div wire:key="news-item-loop-key-{{ $item->id }}" class="bg-[#f4f4f5] rounded-xl p-8 flex flex-col justify-center gap-4 hover:shadow-sm transition-all duration-200 w-full min-h-[220px] border border-gray-100">
                             
                             <div class="flex flex-col md:flex-row gap-8 items-center w-full">
@@ -211,47 +190,55 @@ a:hover .news-nav-link-text-next {
                                         <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider select-none px-2 text-center">
-                                            No Cover Image
+                                            No Featured Image
                                         </div>
                                     @endif
                                 </div>
 
-                                <div class="flex-1 text-center md:text-left w-full min-w-0">
-                                    <h2 class="text-[19px] font-bold text-[#2f343e] text-slate-800 leading-snug mb-1 break-words">
-                                        {{ $item->title }}
-                                    </h2>
-                                    
-                                    <div class="text-[16px] text-[#2f343e] text-slate-800 mb-2">
-                                        <p class="font-bold">
-                                            {{ \Carbon\Carbon::parse($item->publish_date)->format('d F Y') }}
-                                        </p> 
-                                        @if($item->category)
-                                            <p class="text-sm text-gray-600 mt-0.5">
-                                                {{ $item->category }} @if($item->author) by {{ $item->author }} @endif
-                                            </p>
-                                        @endif
-                                    </div>
+            <div class="flex-1 text-center md:text-left w-full min-w-0">
+                <h2 class="text-[21px] font-bold text-[#2f343e] leading-snug mb-2 break-words" style="font-family: 'Montserrat', sans-serif;">
+                    {{ $item->title }}
+                </h2>
+                
+                <div class="text-[15px] text-[#2f343e] mb-3">
+                    {{-- Check explicitly for Press Release Category --}}
+                    @if($item->category && strtolower($item->category) === 'press release')
+                        <p class="font-medim text[14px] uppercase tracking-wide text-gray-700">
+                            FOR IMMEDIATE RELEASE: {{ \Carbon\Carbon::parse($item->publish_date)->format('d/m/Y') }}
+                        </p>
+                    @else
+                        {{-- Standard News Item Layout --}}
+                        <p class="font-bold">
+                            {{ \Carbon\Carbon::parse($item->publish_date)->format('d F Y') }}
+                        </p>
+                        @if($item->category)
+                            <p class="text-sm text-gray-600 mt-0.5">
+                                {{ $item->category }} @if($item->author) by {{ $item->author }} @endif
+                            </p>
+                        @endif
+                    @endif
+                </div>
 
-                                    <button type="button" wire:click="toggleExpand('{{ $item->id }}')" class="text-[20px] font-medium text-[#c7da30] underline transition-colors focus:outline-none">
-                                        {{ (string)$expandedNewsletterId === (string)$item->id ? 'Show Less' : 'Read More' }}
-                                    </button>
-                                </div>
-                            </div>
+                <button type="button" wire:click="toggleExpand('{{ $item->id }}')" class="text-[21px] font-medium text-[#c7da30] underline transition-colors focus:outline-none hover:text-[#2f343e]">
+                    {{ (string)$expandedNewsletterId === (string)$item->id ? 'Show Less' : 'Read More' }}
+                </button>
+            </div>
+        </div>
 
-                            @if((string)$expandedNewsletterId === (string)$item->id)
-                                <div class="mt-2 p-4 border-t-2 rounded-b-lg transition-all duration-300 w-full">
-                                    <p class="text-[16px] text-[#2f343e] text-slate-800 leading-relaxed whitespace-pre-line break-words" style="word-break: break-word;">
-                                        {{ $item->full_context }}
-                                    </p>
-                                </div>
-                            @endif
-
-                        </div>
-                    @empty
-                        <div wire:key="news-empty-placeholder" class="p-8 text-center text-sm text-gray-500 italic bg-[#f1f5f9] rounded-xl w-full">
-                            No recent webinar contexts logged.
-                        </div>
-                    @endforelse
+        {{-- Expanded Content --}}
+        @if((string)$expandedNewsletterId === (string)$item->id)
+            <div class="mt-2 p-4 border-t border-gray-200 transition-all duration-300 w-full">
+                <p class="text-[16px] text-[#2f343e] text-slate-800 leading-relaxed whitespace-pre-line break-words" style="word-break: break-word;">
+                    {{ $item->full_context }}
+                </p>
+            </div>
+        @endif
+    </div>
+@empty
+    <div wire:key="news-empty-placeholder" class="p-8 text-center text-sm text-gray-500 italic bg-[#f1f5f9] rounded-xl w-full">
+        No recent webinar contexts logged.
+    </div>
+@endforelse
 
                 </div>
 

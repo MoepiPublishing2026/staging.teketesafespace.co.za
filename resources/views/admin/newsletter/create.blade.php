@@ -249,6 +249,7 @@ textarea {
                                 <label for="category">Display Category</label>
                                 <select id="category" name="category" required>
                                     <option value="News">News</option>
+                                    <option value="Press Release">Press Release</option>
                                     <option value="Article">Article</option>
                                     <option value="Event">Event</option>
                                 </select>
@@ -261,9 +262,9 @@ textarea {
                             </div>
                         </div>
 
-                       <div class="form-group">
-    <label for="author">Author Byline</label>
-    <input type="text" id="author" name="author" value="{{ old('author') }}" required>
+                     <div class="form-group">
+    <label for="author" id="authorLabel">Author Byline</label>
+    <input type="text" id="author" name="author" value="{{ old('author') }}">
     @error('author') <p class="error-text">{{ $message }}</p> @enderror
 </div>
 
@@ -352,6 +353,29 @@ textarea {
             if (mobileMenuButton) mobileMenuButton.addEventListener('click', toggleMobileMenu);
             if (closeMenuButton) closeMenuButton.addEventListener('click', toggleMobileMenu);
             if (overlay) overlay.addEventListener('click', toggleMobileMenu);
+
+            const categorySelect = document.getElementById('category');
+    const authorInput = document.getElementById('author');
+    const authorLabel = document.getElementById('authorLabel');
+
+    function checkAuthorStatus() {
+        if (categorySelect.value === 'Press Release') {
+            authorInput.value = ''; // Clear any typed text
+            authorInput.disabled = true; // Block typing entirely
+            authorInput.removeAttribute('required'); // Remove required rule so form submits
+            authorLabel.innerHTML = 'Author Byline <span style="color: #64748b; font-size: 12px; font-weight: normal;">(Not applicable for Press Releases)</span>';
+        } else {
+            authorInput.disabled = false;
+            authorInput.setAttribute('required', 'required');
+            authorLabel.innerHTML = 'Author Byline';
+        }
+    }
+
+    // Bind the event listener to the select dropdown
+    if (categorySelect && authorInput) {
+        categorySelect.addEventListener('change', checkAuthorStatus);
+        checkAuthorStatus(); // Run right away on page load
+    }
         });
 
         function previewImage(event) {
