@@ -1,4 +1,4 @@
-<div>
+<div class="min-h-screen flex flex-col bg-white font-[Montserrat]">
     <!-- Subscription Modal Wrapper -->
     <!--<div wire:key="subscription-modal-wrapper">-->
     <!--    @if ($this->showSubscriptionModal ?? false)
@@ -93,8 +93,10 @@
 
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
-                <button id="mobile-menu-button"
-                    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+                <button
+    id="mobile-menu-button"
+    onclick="toggleMobileMenu()"
+    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -126,7 +128,7 @@
                 </button>
             </div>
             <nav class="mt-8 px-4">
-                <a href="javascript:void(0);" onclick="window.location.href = document.referrer"; toggleMobileMenu();"
+                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
                     class="block py-3 text-black hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Back
@@ -151,15 +153,16 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex flex-col justify-center items-center flex-1 pt-32 px-4 w-full min-h-screen">
+    <main class="flex-1 pt-32 sm:pt-32 px-4 w-full">
+    <div class="max-w-2xl mx-auto">
         @if ($showOtpForm)
             <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-12 text-center tracking-wide">
                 {{ ucfirst($role) }} Administrator – Enter OTP
             </h1>
 
             <div
-                class="bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-12 sm:py-20 rounded-[20px] text-center">
-                <form class="flex flex-col items-center gap-8 sm:gap-10">
+                 class="bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-8 sm:py-20 rounded-[20px] text-center">
+                <form wire:submit.prevent="login" class="flex flex-col items-center gap-5 sm:gap-10">
                     <input type="hidden" wire:model.live="otp" id="otp">
                     <div class="flex justify-center gap-1 sm:gap-2 w-full otp-container px-2 sm:px-0">
                         @for ($i = 0; $i < 6; $i++)
@@ -176,21 +179,20 @@
                         <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
                     @enderror
 
-                    <button type="button" wire:click.prevent="login"
-                        class="w-full max-w-[500px] h-[60px] font-semibold text-[16px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] shadow-md uppercase transition-opacity hover:opacity-90">
-                        Verify
-                    </button>
+                    <button type="submit"
+    class="w-full max-w-[500px] h-[60px] font-semibold text-[16px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] shadow-md uppercase transition-opacity hover:opacity-90">
+    Verify
+</button>
                 </form>
             </div>
         @else
-            <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-12 text-center tracking-wide">
+            <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-8 sm:mb-12 text-center tracking-wide">
                 {{ ucfirst($role) }} Administrator Verification
             </h1>
 
-            <div
-                class="bg-white border-[3px] border-[#c7da30] w-full max-w-[600px] px-6 sm:px-12 py-12 sm:py-16 rounded-[20px] text-center">
+            <div class="bg-white border-[3px] border-[#c7da30] w-full max-w-[600px] px-6 sm:px-12 py-12 sm:py-16 rounded-[20px] text-center mx-auto">
                 <form wire:submit.prevent="sendOtp" class="flex flex-col gap-8 items-center">
-                    <input type="email" id="email" wire:model="email" placeholder="Email Address"
+                    <input type="email" id="email" wire:model.live="email" placeholder="Email Address"
                         class="w-full h-[60px] px-5 text-black border-[3px] border-[#c7da30] rounded-[10px] bg-white text-sm outline-none placeholder-gray-400 focus:border-[#a8c529] placeholder:tracking-wider">
                     @error('admin')
                         <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
@@ -213,10 +215,11 @@
                 </form>
             </div>
         @endif
-    </main>
+        </div>
+</main>
 
     <!-- Footer -->
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 1.5rem;">
+    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; ">
         <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 lg:px-8 w-full"
      style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
@@ -288,21 +291,55 @@
             const firstBox = document.getElementById('otp-0');
             if (firstBox) firstBox.focus();
         });
+
+        // Save the email as the user types
+        document.addEventListener('input', function (e) {
+            if (e.target.id === 'email') {
+                sessionStorage.setItem('admin_email', e.target.value);
+            }
+        });
+
+        // Restore it into Livewire whenever the page is (re)shown
+        window.addEventListener('pageshow', function () {
+            const email = sessionStorage.getItem('admin_email');
+            if (!email) return;
+
+            const restore = function (attemptsLeft) {
+                if (window.Livewire && Livewire.first && Livewire.first()) {
+                    const component = Livewire.first();
+                    component.set('email', email, false);
+
+                    const emailInput = document.getElementById('email');
+                    if (emailInput) {
+                        emailInput.value = email;
+                    }
+                } else if (attemptsLeft > 0) {
+                    setTimeout(function () { restore(attemptsLeft - 1); }, 50);
+                }
+            };
+
+            restore(20);
+        });
+
+        // Clear the saved email once verification succeeds
+        document.addEventListener('livewire:navigated', function () {
+            sessionStorage.removeItem('admin_email');
+        });
     </script>
 
     <style>
         @media (max-width: 480px) {
             .otp-container {
-                gap: 1px !important;
-                padding: 0 4px;
-            }
+    gap: 0.3rem !important;
+    padding: 0;
+}
 
             .otp-input {
-                min-width: 42px !important;
-                width: 42px !important;
-                height: 46px !important;
-                font-size: 18px !important;
-            }
+    min-width: 40px !important;
+    width: 40px !important;
+    height: 44px !important;
+    font-size: 17px !important;
+}
         }
 
         @media (min-width: 481px) and (max-width: 640px) {

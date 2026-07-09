@@ -1,3 +1,5 @@
+@php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
+
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
     <script src="//unpkg.com/alpinejs" defer></script>
 
@@ -9,6 +11,10 @@
                 <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
                     <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
                     <a href="{{ route('about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
+                    <a href="{{ $workshopBookingUrl }}/workshops" class="text-black transition-colors hover:text-[#c7da30]">
+
+                            Workshops
+                    </a>
                     <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
                     <a href="{{ route('news') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">News</a>
                 </nav>
@@ -35,11 +41,18 @@
                     </svg>
                 </button>
             </div>
-            <nav class="mt-8 px-4 text-[17px] font-[Montserrat]">
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Home</a>
-                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">About Us</a>
-                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">Contact Us</a>
-                <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
+            <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+                <a href="{{ route('landing-page') }}"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Home</a>
+                <a href="{{ route('about-us') }}"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">About Us</a>
+                     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Workshops</a>
+                
+                <a href="{{ route('contact-us') }}"
+                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
+                 <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
+
             </nav>
         </div>
     </div>
