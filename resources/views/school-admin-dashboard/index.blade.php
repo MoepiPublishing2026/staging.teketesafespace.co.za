@@ -640,15 +640,8 @@ canvas {
         height: 32px;
     }
 }
-    @media (max-width: 480px) {
-        .chart-abuse-pie .chart-canvas-host {
-            height: 620px !important;   /* fixed, not auto */
-            min-height: 620px !important;
-            flex: 0 0 620px !important; /* stop flex from stretching it further */
-            padding-bottom: 12px;
-        }
-    }
-        </style>
+
+    </style>
     <x-school-admin-styles />
 </head>
 <body class="sa-app">
@@ -750,11 +743,11 @@ canvas {
         </select>
         <label>
             From
-            <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()">
+            <input type="date" name="date_from" value="{{ $fromDate }}" onchange="this.form.submit()">
         </label>
         <label>
             To
-            <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()">
+            <input type="date" name="date_to" value="{{ $toDate }}" onchange="this.form.submit()">
         </label>
         <button type="button" id="refreshBtn">Refresh Table</button>
     </form>
@@ -1610,6 +1603,13 @@ function navigateToTopAbuseTypes() {
     navigateToReportsUnfiltered();
 }
 
+if (isMobile) {
+    const legendRows = Math.ceil(abuseLabels.length / 1); // 1 label per row on mobile
+    const legendHeight = legendRows * 34; // ~34px per legend row at 13px font
+    const pieHeight = 260; // fixed circle size
+    const totalHeight = pieHeight + legendHeight + 40; // + padding
+    document.querySelector('.chart-abuse-pie .chart-canvas-host').style.height = totalHeight + 'px';
+}
     </script>
     <x-school-admin-sidebar-script />
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
