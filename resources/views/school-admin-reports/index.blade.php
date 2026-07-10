@@ -217,7 +217,18 @@ tbody tr:last-child td { border-bottom: none; }
                         <input type="text" name="full_name" class="filter-input" value="{{ request('full_name') }}" placeholder="e.g. John Smith" id="fullNameInput" />
                     </div>
                     <div>
-                        <label class="filter-label">Grade</label>
+                      <label class="filter-label">Grade</label>
+                      @php
+$gradeOptions = collect($gradeOptions)
+    ->sortBy(function ($grade) {
+        if ($grade === 'Grade R') {
+            return 0;
+        }
+
+        return (int) str_replace('Grade ', '', $grade);
+    })
+    ->values();
+@endphp
                         <select name="grade" class="filter-input" onchange="this.form.submit()">
                             <option value="">All Grades</option>
                             @foreach($gradeOptions as $grade)
@@ -242,14 +253,30 @@ tbody tr:last-child td { border-bottom: none; }
                             @endforeach
                         </select>
                     </div>
-                    <div>
+                     <div>
                         <label class="filter-label">Subtype</label>
-                        <select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
-                            <option value="">All Subtypes</option>
-                            @foreach($subtypeOptions as $sub)
-                                <option value="{{ $sub->id }}" data-type="{{ $sub->abuse_type_id }}" {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>{{ $sub->sub_type_name }}</option>
-                            @endforeach
-                        </select>
+<select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
+    <option value="">All Subtypes</option>
+
+    @php
+        $shown = [];
+    @endphp
+
+    @foreach($subtypeOptions as $sub)
+        @if(!in_array($sub->sub_type_name, $shown))
+            @php
+                $shown[] = $sub->sub_type_name;
+            @endphp
+
+            <option value="{{ $sub->id }}"
+                    data-type="{{ $sub->abuse_type_id }}"
+                    {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
+                {{ $sub->sub_type_name }}
+            </option>
+        @endif
+    @endforeach
+
+</select>
                     </div>
                     <div>
                         <label class="filter-label">Status</label>
@@ -483,23 +510,59 @@ function openReportModal(reportId) {
             blockWrap.style.display = 'none';
         }
 
-        const attachmentSpan = document.getElementById('modalAttachments');
-        attachmentSpan.innerHTML = '';
-        if (report.attachments && report.attachments.length) {
-            report.attachments.forEach(filePath => {
-                const ext = filePath.split('.').pop().toLowerCase();
-                const publicUrl = '/storage/' + filePath.replace(/^\/+/, '');
-                let elem;
-                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
+const attachmentSpan = document.getElementById('modalAttachments');
+attachmentSpan.innerHTML = '';
+
+if (report.attachments && report.attachments.length > 0) {
+
+    report.attachments.forEach(filePath => {
+
+        // Create Laravel storage URL
+        const publicUrl = "{{ asset('storage') }}/" + filePath.replace(/^\/+/, '');
+
+        const ext = filePath.split('.').pop().toLowerCase();
+
+        let elem;
+
+        // Images
+        if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
+                    // Lightbox overlay on click
                     elem = document.createElement('img');
                     elem.src = publicUrl;
-                    elem.style.cssText = 'width:80px;height:80px;margin-right:8px;border:2px solid #c7da30;border-radius:8px;object-fit:cover;';
+                    elem.alt = 'Attachment';
+                    Object.assign(elem.style, {
+                        width: '80px', height: '80px', marginRight: '10px',
+                        border: '2px solid #c7da30', borderRadius: '8px',
+                        objectFit: 'cover', cursor: 'zoom-in', transition: 'opacity .15s'
+                    });
+                    elem.onmouseover = () => elem.style.opacity = '.75';
+                    elem.onmouseout  = () => elem.style.opacity = '1';
+                    elem.onclick     = () => openLightbox(publicUrl);
+
+                } else if (['mp4','mov','avi','wmv'].includes(ext)) {
+                    elem = document.createElement('video');
+                    elem.controls = true;
+                    Object.assign(elem.style, {
+                        width: '200px', height: '130px', marginRight: '10px',
+                        border: '2px solid #c7da30', borderRadius: '8px', display: 'block'
+                    });
+                    const src = document.createElement('source');
+                    src.src  = publicUrl;
+                    src.type = 'video/' + (ext === 'mov' ? 'mp4' : ext);
+                    elem.appendChild(src);
+
                 } else {
+                    const icon = ext === 'pdf' ? '📄' : '📎';
                     elem = document.createElement('a');
-                    elem.href = publicUrl;
-                    elem.target = '_blank';
-                    elem.textContent = filePath.split('/').pop();
-                    elem.style.cssText = 'color:#4c8eda;margin-right:10px;';
+                    elem.href        = publicUrl;
+                    elem.target      = '_blank';
+                    elem.rel         = 'noopener noreferrer';
+                    elem.download    = filePath.split('/').pop();
+                    elem.textContent = icon + ' ' + filePath.split('/').pop();
+                    Object.assign(elem.style, {
+                        color: '#4c8eda', textDecoration: 'underline',
+                        marginRight: '10px', display: 'inline-block', fontSize: '13px'
+                    });
                 }
                 attachmentSpan.appendChild(elem);
             });
@@ -507,11 +570,40 @@ function openReportModal(reportId) {
             attachmentSpan.textContent = 'N/A';
         }
 
-        document.getElementById('reportModal').style.display = 'flex';
-        document.getElementById('reportModal').setAttribute('aria-hidden', 'false');
+        const modal = document.getElementById('reportModal');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
     })
-    .catch(() => showToast('Failed to load report details.', 'danger'));
+    .catch(() => alert('Failed to load report details.'));
 }
+function openLightbox(src) {
+    const overlay = document.createElement('div');
+    Object.assign(overlay.style, {
+        position: 'fixed', inset: '0',
+        background: 'rgba(0,0,0,.88)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: '99999', cursor: 'zoom-out'
+    });
+
+    const img = document.createElement('img');
+    img.src = src;
+    Object.assign(img.style, {
+        maxWidth: '90vw', maxHeight: '90vh',
+        borderRadius: '10px',
+        boxShadow: '0 8px 40px rgba(0,0,0,.6)'
+    });
+
+    // Close on overlay click or Escape
+    overlay.onclick = () => overlay.remove();
+    overlay.addEventListener('keydown', e => {
+        if (e.key === 'Escape') overlay.remove();
+    });
+
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    overlay.focus();
+}
+
 
 function closeReportModal() {
     document.getElementById('reportModal').style.display = 'none';
