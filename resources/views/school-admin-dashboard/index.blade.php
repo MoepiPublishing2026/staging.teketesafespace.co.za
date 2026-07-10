@@ -750,11 +750,11 @@ canvas {
         </select>
         <label>
             From
-            <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()">
+            <input type="date" name="date_from" value="{{ $fromDate }}" onchange="this.form.submit()">
         </label>
         <label>
             To
-            <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()">
+            <input type="date" name="date_to" value="{{ $toDate }}" onchange="this.form.submit()">
         </label>
         <button type="button" id="refreshBtn">Refresh Table</button>
     </form>
