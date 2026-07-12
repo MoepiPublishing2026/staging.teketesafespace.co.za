@@ -743,11 +743,11 @@ canvas {
         </select>
         <label>
             From
-            <input type="date" name="from_date" value="{{ $fromDate }}" onchange="this.form.submit()">
+            <input type="date" name="date_from" value="{{ $fromDate }}" onchange="this.form.submit()">
         </label>
         <label>
             To
-            <input type="date" name="to_date" value="{{ $toDate }}" onchange="this.form.submit()">
+            <input type="date" name="date_to" value="{{ $toDate }}" onchange="this.form.submit()">
         </label>
         <button type="button" id="refreshBtn">Refresh Table</button>
     </form>
@@ -961,7 +961,7 @@ canvas {
     // Clear all selects except hidden inputs
     form.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
-        select.disabled = false;  // enable in case disabled
+        select.disabled = false;  // enable in case disabledrenderOverviewCharts
     });
     // Clear all date inputs
     form.querySelectorAll('input[type="date"]').forEach(input => {
@@ -1100,6 +1100,7 @@ function formatStatusLabel(slug) {
 }
 
 function renderOverviewCharts(dataset) {
+    const isMobile = window.matchMedia('(max-width: 480px)').matches;
     const statusCtx = document.getElementById('statusChart')?.getContext('2d');
     const statusGradientColors = ['#99c4d3', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4'];
     const statusBarColors = [];
@@ -1115,6 +1116,13 @@ function renderOverviewCharts(dataset) {
         }
         statusCapColors.push(color);
     });
+    
+    
+    
+    
+    
+    
+    
     // Monthly Trends - vertical bar chart
    createChart('monthlyTrendChart', {
     type: 'line',  // Changed from 'bar' to 'line'
@@ -1183,12 +1191,12 @@ function renderOverviewCharts(dataset) {
                     align: 'center',
                     fullSize: true,
                     labels: {
-                        padding: abuseLegendPosition === 'right' ? 10 : 14,
-                        boxWidth: 14,
-                        boxHeight: 14,
-                        usePointStyle: true,
-                        maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
-                        font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
+                             padding: isMobile ? 14 : (abuseLegendPosition === 'right' ? 10 : 14),
+                             boxWidth: isMobile ? 14 : 14,
+                             boxHeight: isMobile ? 14 : 14,
+                             usePointStyle: true,
+                             maxWidth: isMobile ? window.innerWidth - 60 : (abuseLegendPosition === 'bottom' ? 520 : 220),
+                             font: { size: isMobile ? 12 : (abuseLabels.length > 10 ? 12 : 13), family: 'Montserrat' },
                         generateLabels: function(chart) {
                             const data = chart.data;
                             const ds = data.datasets[0];
@@ -1595,6 +1603,13 @@ function navigateToTopAbuseTypes() {
     navigateToReportsUnfiltered();
 }
 
+if (isMobile) {
+    const legendRows = Math.ceil(abuseLabels.length / 1); // 1 label per row on mobile
+    const legendHeight = legendRows * 34; // ~34px per legend row at 13px font
+    const pieHeight = 260; // fixed circle size
+    const totalHeight = pieHeight + legendHeight + 40; // + padding
+    document.querySelector('.chart-abuse-pie .chart-canvas-host').style.height = totalHeight + 'px';
+}
     </script>
     <x-school-admin-sidebar-script />
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>

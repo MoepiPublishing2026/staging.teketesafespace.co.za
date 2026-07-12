@@ -30,8 +30,8 @@ class SchoolAdminDashboardController extends AdminController
         $abuseTypeFilter = $request->input('abuse_type');
         $ageRange = $request->input('age_range');
         $gradeFilter = $request->input('grade');
-        $fromDate = $request->input('from_date');
-        $toDate = $request->input('to_date');
+        $fromDate = $request->input('date_from');
+        $toDate = $request->input('date_to');
 
         // Load abuse types for the filter dropdown (always show all for selection)
         $allAbuseTypes = AbuseType::orderBy('type_name')->get();
@@ -77,7 +77,8 @@ class SchoolAdminDashboardController extends AdminController
 
         // Base reports query with eager loading (filtered by school)
         $reportsQuery = Report::with(['school', 'abuseType'])
-            ->where('school_name', $schoolName);
+            ->where('school_name', $schoolName)
+            ->orderBy('created_at', 'desc');
 
         // Apply filters
         if ($abuseTypeFilter) {

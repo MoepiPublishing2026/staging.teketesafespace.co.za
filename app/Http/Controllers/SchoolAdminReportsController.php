@@ -115,21 +115,21 @@ class SchoolAdminReportsController extends AdminController
         }
 
         // Anonymous filter — use has() not filled() because '0' is falsy
-        if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
+        if ($request->filled('is_anonymous')) {
             $query->where('is_anonymous', (int)$request->input('is_anonymous'));
         }
 
         // Date range (new field names: date_from/date_to — kept alongside old from_date/to_date)
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->input('date_from'));
-        } elseif ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->input('from_date'));
+        } elseif ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->input('date_from'));
         }
 
         if ($request->filled('date_to')) {
             $query->whereDate('created_at', '<=', $request->input('date_to'));
-        } elseif ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->input('to_date'));
+        } elseif ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->input('date_to'));
         }
 
         $reports = $query->latest()->paginate(20)->withQueryString();
