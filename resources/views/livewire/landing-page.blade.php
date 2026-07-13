@@ -10,7 +10,7 @@
             <div class="relative z-10 flex justify-end items-center w-full">
 
                 <!-- Logo -->
-                <a href="{{ route('landing-page') }}" class="lg:hidden">
+                <a href="{{ route('landing-page') }}" class="lg:hidden -ml-3">
                     <img src="{{ asset('images/logo.png') }}"
                         alt="Safe Space Logo"
                         class="w-[140px] sm:w-[160px] md:w-[180px]">
@@ -28,7 +28,7 @@
 
                 </nav>
 
-                <div class="lg:hidden ml-auto -mt-8">
+                <div class="lg:hidden ml-auto -mt-2">
                     <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-black">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5m-16.5 6.5h16.5m-16.5 6.5h16.5" />
@@ -78,7 +78,7 @@
                 lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh]
                 lg:left-[0vw] lg:w-[30vw] z-0">
 
-            <h1 class="relative mt-8 sm:mt-15 min-[520px]:mt-0
+            <h1 class="relative mt-8 sm:mt-15 min-[520px]:mt-0 
                 mb-3 min-[520px]:mb-0
                 text-[#c7da30] font-bold leading-[0.95]
                 text-[30px] sm:text-[38px]

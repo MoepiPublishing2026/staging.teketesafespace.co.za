@@ -129,11 +129,11 @@
                     class="grid grid-cols-2 sm:grid-cols-2 gap-x-6 sm:gap-x-16 gap-y-4 sm:gap-y-8 w-full justify-items-center">
                     @foreach ($abuseTypes as $abuseType)
                         <button wire:click="selectAbuseType({{ $abuseType->id }})"
-                            class="w-full sm:w-[245px] h-[55px] sm:h-[65px] 
-                   border-4 border-solid border-[#c7da30]
-                   rounded-[100px] text-[#38b6ff] 
-                   text-[14px] sm:text-[15px] font-normal 
-                   transition duration-200 hover:opacity-80 shadow-md">
+                            class="w-full sm:w-[250px] h-[70px] sm:h-[65px] 
+                            border-4 border-solid border-[#c7da30]
+                            rounded-[100px] text-[#38b6ff] 
+                            text-[13px] sm:text-[15px] font-normal 
+                            transition duration-200 hover:opacity-80 shadow-md">
                             {{ $abuseType->type_name }}
                         </button>
                     @endforeach
