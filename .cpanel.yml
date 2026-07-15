@@ -4,18 +4,18 @@ deployment:
     - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za
     
     # 1. Enter maintenance mode immediately
-    - /usr/local/bin/php $DEPLOYPATH/artisan down --retry=60
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan down --retry=60
     
     # 2. Pull down updates and sync files
     - /bin/cp -R * $DEPLOYPATH
     
     # 3. Run optimizations and migrations
-    - /usr/local/bin/php $DEPLOYPATH/artisan optimize:clear
-    - /usr/local/bin/php $DEPLOYPATH/artisan optimize
-    - /usr/local/bin/php $DEPLOYPATH/artisan queue:restart
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize:clear
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php queue:restart
     
     # 4. Bring the application back online
-    - /usr/local/bin/php $DEPLOYPATH/artisan up
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan up
 
   
     
