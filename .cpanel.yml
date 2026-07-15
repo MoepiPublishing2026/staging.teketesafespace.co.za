@@ -1,7 +1,21 @@
 
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketeq9v8o0/public_html
-    - /bin/cp -R . $DEPLOYPATH
+    - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za
+    
+    # 1. Enter maintenance mode immediately
+    - /usr/local/bin/php $DEPLOYPATH/artisan down --retry=60
+    
+    # 2. Pull down updates and sync files
+    - /bin/cp -R * $DEPLOYPATH
+    
+    # 3. Run optimizations and migrations
+    - /usr/local/bin/php $DEPLOYPATH/artisan optimize:clear
+    - /usr/local/bin/php $DEPLOYPATH/artisan optimize
+    - /usr/local/bin/php $DEPLOYPATH/artisan queue:restart
+    
+    # 4. Bring the application back online
+    - /usr/local/bin/php $DEPLOYPATH/artisan up
+
   
     
