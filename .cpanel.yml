@@ -12,7 +12,6 @@ deployment:
     # 3. Run optimizations and migrations
     - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize:clear
     - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize
-    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php queue:restart
     
     # 4. Bring the application back online
     - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan up
