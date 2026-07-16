@@ -163,7 +163,7 @@
             flex-shrink: 0;
         }
         .btn-edit {
-            background-color: #0f172a;
+            background-color: #c7da30;
             color: #ffffff;
             padding: 8px 14px;
             border: none;
@@ -176,7 +176,8 @@
             transition: background-color 0.15s ease;
         }
         .btn-edit:hover {
-            background-color: #1e293b;
+            background-color: #b3c525;
+            color: #ffffff;
         }
         .btn-delete {
             background-color: #ffffff;
@@ -296,6 +297,10 @@
                             <p>Edit headlines, dates, body text, or cover images — or delete articles from the news feed.</p>
                         </div>
                         <a href="{{ route('admin.newsletter.create') }}" class="btn-primary">Upload New Article</a>
+                        <form action="{{ route('newsletter.logout') }}" method="POST" style="display:inline; margin:0;">
+                            @csrf
+                            <button type="submit" class="btn-delete" style="border-color:#94a3b8; color:#475569;">Logout</button>
+                        </form>
                     </div>
 
                     @if($newsletters->isEmpty())

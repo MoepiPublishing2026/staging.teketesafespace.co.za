@@ -4,15 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Models\Newsletter;
+use App\Models\NewsletterAdmin;
 
 class NewsletterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:newsletter')->except([
+            'showLogin',
+            'handleLogin',
+            'showForgotPassword',
+            'resetPassword',
+            'logout',
+        ]);
+    }
+
     public function showLogin()
     {
+        // Always show the login form so admins must sign in before upload.
+        // Clear any existing newsletter session so /login never skips to the panel.
         if (Auth::guard('newsletter')->check()) {
-            return redirect()->route('admin.newsletter.index');
+            Auth::guard('newsletter')->logout();
         }
 
         return view('admin.newsletter.login');
@@ -25,37 +41,62 @@ class NewsletterController extends Controller
             'password' => 'required',
         ]);
 
-        // 🔍 STEP 1: Check if the email exists in the correct table
-        $adminCheck = \App\Models\NewsletterAdmin::where('email', $credentials['email'])->first();
-        if (!$adminCheck) {
+        $admin = NewsletterAdmin::where('email', $credentials['email'])->first();
+
+        if (! $admin || ! Hash::check($credentials['password'], $admin->getAuthPassword())) {
             return back()
                 ->withErrors([
-                    'email' => 'This email address is not registered in our system.'
+                    'email' => 'The email or password you entered is incorrect.',
                 ])
                 ->withInput($request->only('email'));
         }
 
-        // 🔍 STEP 2: Check if the password hash matches perfectly
-        $passwordMatches = \Illuminate\Support\Facades\Hash::check($credentials['password'], $adminCheck->password);
-        if (!$passwordMatches) {
+        Auth::guard('newsletter')->login($admin);
+        $request->session()->regenerate();
+
+        return redirect()->route('admin.newsletter.create');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('newsletter')->logout();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('newsletter.login');
+    }
+
+    public function showForgotPassword()
+    {
+        return view('admin.newsletter.forgot-password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => [
+                'required',
+                'confirmed',
+                'string',
+                'min:8',
+                'max:50',
+            ],
+        ]);
+
+        $admin = NewsletterAdmin::where('email', $validated['email'])->first();
+
+        if (!$admin) {
             return back()
-                ->withErrors([
-                    'email' => 'The password you entered is incorrect.'
-                ])
+                ->withErrors(['email' => 'This email address is not registered in our system.'])
                 ->withInput($request->only('email'));
         }
 
-        // 🔐 STEP 3: Attempt login using the ISOLATED 'newsletter' guard track
-        if (Auth::guard('newsletter')->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->route('admin.newsletter.index');
-        }
+        $admin->forceFill([
+            'password' => $validated['password'],
+            'remember_token' => Str::random(60),
+        ])->save();
 
-        return back()
-            ->withErrors([
-                'email' => 'The credentials passed manual checks, but the guard authentication session failed.',
-            ])
-            ->withInput($request->only('email'));
+        return redirect()->route('newsletter.login')->with('status', 'Your password has been reset. You can log in now.');
     }
 
     public function index()

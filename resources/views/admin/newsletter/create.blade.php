@@ -247,6 +247,10 @@ textarea {
 
                 <div class="form-nav">
                     <a href="{{ route('admin.newsletter.index') }}">Manage published articles</a>
+                    <form action="{{ route('newsletter.logout') }}" method="POST" style="display:inline; margin:0;">
+                        @csrf
+                        <button type="submit" style="background:none; border:none; color:#64748b; font-weight:600; cursor:pointer; padding:0; font-size:inherit;">Logout</button>
+                    </form>
                 </div>
 
                 <div class="form-card">

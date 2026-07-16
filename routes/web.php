@@ -171,6 +171,9 @@ Route::middleware(['auth', 'role:district'])->group(function () {
 Route::prefix('newsletter-manager')->group(function () {
     Route::get('/login', [App\Http\Controllers\NewsletterController::class, 'showLogin'])->name('newsletter.login');
     Route::post('/login', [App\Http\Controllers\NewsletterController::class, 'handleLogin'])->name('newsletter.login.submit');
+    Route::post('/logout', [App\Http\Controllers\NewsletterController::class, 'logout'])->name('newsletter.logout');
+    Route::get('/forgot-password', [App\Http\Controllers\NewsletterController::class, 'showForgotPassword'])->name('newsletter.password.request');
+    Route::post('/forgot-password', [App\Http\Controllers\NewsletterController::class, 'resetPassword'])->name('newsletter.password.update');
 
     Route::middleware(['auth:newsletter'])->name('admin.newsletter.')->group(function () {
         Route::get('/', [App\Http\Controllers\NewsletterController::class, 'index'])->name('index');
