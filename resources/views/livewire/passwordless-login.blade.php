@@ -153,16 +153,16 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex-1 pt-32 sm:pt-32 px-4 w-full">
-    <div class="max-w-2xl mx-auto">
+    <main class="flex flex-col justify-center flex-1 pt-12 sm:pt-32 pb-8 px-4 w-full">
+    <div class="max-w-2xl mx-auto w-full">
         @if ($showOtpForm)
-            <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-12 text-center tracking-wide">
+            <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-6 sm:mb-12 text-center tracking-wide">
                 {{ ucfirst($role) }} Administrator – Enter OTP
             </h1>
 
             <div
-                 class="bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-8 sm:py-20 rounded-[20px] text-center">
-                <form wire:submit.prevent="login" class="flex flex-col items-center gap-5 sm:gap-10">
+                 class="otp-card bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-6 sm:py-20 rounded-[20px] text-center">
+                <form wire:submit.prevent="login" class="otp-form flex flex-col items-center gap-4 sm:gap-10">
                     <input type="hidden" wire:model.live="otp" id="otp">
                     <div class="flex justify-center gap-1 sm:gap-2 w-full otp-container px-2 sm:px-0">
                         @for ($i = 0; $i < 6; $i++)
@@ -180,7 +180,7 @@
                     @enderror
 
                     <button type="submit"
-    class="w-full max-w-[500px] h-[60px] font-semibold text-[16px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] shadow-md uppercase transition-opacity hover:opacity-90">
+    class="otp-button w-full max-w-[500px] h-[60px] font-semibold text-[16px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] shadow-md uppercase transition-opacity hover:opacity-90">
     Verify
 </button>
                 </form>
@@ -329,22 +329,76 @@
 
     <style>
         @media (max-width: 480px) {
+            .otp-card {
+                min-height: 254px !important;
+                padding: 60px 12px !important;
+                border-radius: 12px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .otp-form {
+                gap: 32px !important;
+                width: 100%;
+            }
+
             .otp-container {
-    gap: 0.3rem !important;
-    padding: 0;
+    gap: 6px !important;
+    padding: 0 !important;
 }
 
             .otp-input {
-    min-width: 40px !important;
-    width: 40px !important;
+    min-width: 42px !important;
+    width: 42px !important;
+    height: 52px !important;
+    border-width: 2px !important;
+    border-radius: 7px !important;
+    font-size: 14px !important;
+}
+
+            .otp-button {
+    max-width: 310px !important;
     height: 44px !important;
-    font-size: 17px !important;
+    border-width: 3px !important;
+    font-size: 11px !important;
 }
         }
 
         @media (min-width: 481px) and (max-width: 640px) {
+            .otp-card {
+                min-height: 254px !important;
+                padding: 60px 12px !important;
+                border-radius: 12px !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .otp-form {
+                gap: 32px !important;
+                width: 100%;
+            }
+
             .otp-container {
-                gap: 2px !important;
+                gap: 6px !important;
+                padding: 0 !important;
+            }
+
+            .otp-input {
+                width: 42px !important;
+                min-width: 42px !important;
+                height: 52px !important;
+                border-width: 2px !important;
+                border-radius: 7px !important;
+                font-size: 14px !important;
+            }
+
+            .otp-button {
+                max-width: 310px !important;
+                height: 44px !important;
+                border-width: 3px !important;
+                font-size: 11px !important;
             }
         }
     </style>
