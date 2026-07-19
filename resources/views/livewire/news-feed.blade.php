@@ -43,15 +43,15 @@
             </div>
             <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
                 <a href="{{ route('landing-page') }}"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Home</a>
+                    class="block py-3  text-[#38b6ff]">Home</a>
                 <a href="{{ route('about-us') }}"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">About Us</a>
+                    class="block py-3  text-[#38b6ff]">About Us</a>
                      <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Workshops</a>
+                    class="block py-3  text-[#38b6ff]">Workshops</a>
                 
                 <a href="{{ route('contact-us') }}"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
-                 <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
+                    class="block py-3  text-[#38b6ff]">Contact Us</a>
+                 <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold  text-[#38b6ff] border-b border-gray-100">News</a>
 
             </nav>
         </div>
