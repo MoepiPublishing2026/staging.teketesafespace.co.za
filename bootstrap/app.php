@@ -15,7 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo('/school-admin');
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('newsletter-manager', 'newsletter-manager/*')) {
+                return route('newsletter.login');
+            }
+
+            return '/school-admin';
+        });
 
         $middleware->web(append: [
             HandleAdminGracefully::class,

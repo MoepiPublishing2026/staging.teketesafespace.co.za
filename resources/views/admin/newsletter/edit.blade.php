@@ -3,44 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Newsletter Management Panel</title>
+    <title>Edit Published Article</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
-            background-color: white; 
-            margin: 0; 
-            padding: 0; 
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
             color: #1e293b;
         }
-        /* FIXED: Renamed card-wrapper to avoid clashing with Tailwind's native layout containers */
-        .form-card-wrapper { 
-            max-width: 600px; 
+        .form-card-wrapper {
+            max-width: 600px;
             width: 100%;
-            margin: 0 auto; 
+            margin: 0 auto;
         }
-        .form-card { 
-            background: #ffffff; 
-            padding: 32px; 
-            border-radius: 8px; 
+        .form-card {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 8px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             border: 1px solid #e2e8f0;
             border-left: 5px solid #c7da30;
         }
         .form-header {
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
         }
         .form-header h2 {
-            color: #0f172a; 
-            margin: 0 0 6px 0; 
-            font-size: 22px; 
+            color: #0f172a;
+            margin: 0 0 6px 0;
+            font-size: 22px;
             font-weight: 600;
             letter-spacing: -0.025em;
         }
         .form-header p {
-            color: #64748b; 
-            font-size: 13.5px; 
+            color: #64748b;
+            font-size: 13.5px;
             margin: 0;
             line-height: 1.4;
         }
@@ -59,92 +58,92 @@
         .form-nav a:hover {
             text-decoration: underline;
         }
-        .alert-success { 
-            background-color: #f0fdf4; 
-            color: #4d5410; 
-            padding: 12px 16px; 
-            border-radius: 6px; 
-            margin-bottom: 20px; 
-            border: 1px solid #bbf7d0;
-            font-size: 13.5px;
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
             font-weight: 500;
-        }
-        .form-group { 
-            margin-bottom: 18px; 
-        }
-        label { 
-            display: block; 
-            font-weight: 500; 
-            margin-bottom: 6px; 
-            color: #334155; 
+            margin-bottom: 6px;
+            color: #334155;
             font-size: 13.5px;
         }
-/* FIXED: Explicitly forced internal padding and text indents */
-input[type="text"], input[type="date"], input[type="file"], select, textarea { 
-    width: 100%; 
-    padding: 12px 16px !important; /* Forces spacious breathing room from all borders */
-    text-indent: 4px; /* Pushes the typing cursor further right in single-line inputs */
-    border: 1px solid #c7da30; 
-    border-radius: 6px; 
-    box-sizing: border-box; 
-    font-size: 14px; 
-    color: #0f172a;
-    background-color: #ffffff;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-input[type="file"] {
-    padding: 10px 14px !important;
-    text-indent: 0px;
-    cursor: pointer;
-}
-
-input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: #b3c525; 
-    box-shadow: 0 0 0 3px rgba(199, 218, 48, 0.25); 
-}
-
-/* FIXED: Re-aligned textarea to prevent top-left crowding */
-textarea { 
-    height: 150px; 
-    padding: 14px 18px !important; /* Extra padding comfort inside the text area */
-    text-indent: 0; /* Textareas rely strictly on padding for alignment, not indent */
-    resize: vertical; 
-    font-family: inherit; 
-    line-height: 1.5;
-}
-        .grid-row { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 16px; 
-            margin-bottom: 18px; 
+        input[type="text"], input[type="date"], input[type="file"], select, textarea {
+            width: 100%;
+            padding: 12px 16px !important;
+            text-indent: 4px;
+            border: 1px solid #c7da30;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #0f172a;
+            background-color: #ffffff;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
-        .btn-submit { 
-            background-color: #c7da30; 
-            color: #ffffff; 
-            padding: 12px 20px; 
-            border: none; 
-            border-radius: 6px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            width: 100%; 
-            font-size: 13.5px; 
-            transition: background-color 0.15s ease; 
+        input[type="file"] {
+            padding: 10px 14px !important;
+            text-indent: 0px;
+            cursor: pointer;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #b3c525;
+            box-shadow: 0 0 0 3px rgba(199, 218, 48, 0.25);
+        }
+        textarea {
+            height: 150px;
+            padding: 14px 18px !important;
+            text-indent: 0;
+            resize: vertical;
+            font-family: inherit;
+            line-height: 1.5;
+        }
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .btn-submit {
+            background-color: #c7da30;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 13.5px;
+            transition: background-color 0.15s ease;
             margin-top: 4px;
         }
-        .btn-submit:hover { 
-            background-color: #b3c525; 
+        .btn-submit:hover {
+            background-color: #b3c525;
         }
-        .error-text { 
-            color: #dc2626; 
-            font-size: 12.5px; 
-            margin-top: 5px; 
+        .btn-delete {
+            background-color: #ffffff;
+            color: #dc2626;
+            padding: 12px 20px;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 13.5px;
+            transition: background-color 0.15s ease;
+            margin-top: 10px;
+        }
+        .btn-delete:hover {
+            background-color: #fef2f2;
+        }
+        .error-text {
+            color: #dc2626;
+            font-size: 12.5px;
+            margin-top: 5px;
         }
         .preview-wrapper {
-            display: none; 
             margin-top: 10px;
-            max-width: fit-content; 
+            max-width: fit-content;
             border-radius: 6px;
             overflow: hidden;
             border: 1px dashed #c7da30;
@@ -153,14 +152,18 @@ textarea {
         }
         .preview-wrapper img {
             display: block;
-            max-height: 100px; 
-            max-width: 130px;  
+            max-height: 100px;
+            max-width: 130px;
             width: auto;
             height: auto;
             border-radius: 4px;
             object-fit: cover;
         }
-        
+        .help-text {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
         @media (max-width: 640px) {
             .grid-row {
                 grid-template-columns: 1fr;
@@ -176,14 +179,14 @@ textarea {
 <body class="bg-white font-[Inter]">
 
     <div class="min-h-screen bg-white flex flex-col w-full overflow-x-hidden">
-        
+
         <header style="position: fixed; top: 0; left: 0; width: 100%; background-color: #ffffff; z-index: 150; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
             <div class="flex flex-row justify-between items-center px-8 py-2" style="max-width: 1280px; margin: 0 auto;">
-                
+
                 <div>
                     <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
                 </div>
-                
+
                 <div style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     <div class="hidden md:flex gap-8">
                         <a href="javascript:void(0);" onclick="window.history.back();" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">
@@ -198,8 +201,7 @@ textarea {
                         <a href="{{ route('contact-us') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">
                             Contact Us
                         </a>
-                      <a href="{{ route('news') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">News</a>
-
+                        <a href="{{ route('news') }}" class="transition-colors hover:text-[#c7da30]" style="color: black; text-decoration: none;">News</a>
                     </div>
 
                     <div class="md:hidden flex items-center relative z-[160]">
@@ -209,7 +211,6 @@ textarea {
                             </svg>
                         </button>
                     </div>
-
                 </div>
             </div>
 
@@ -228,43 +229,34 @@ textarea {
                     <a href="{{ route('landing-page') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none;">Home</a>
                     <a href="{{ route('about-us') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none;">About Us</a>
                     <a href="{{ route('contact-us') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none;">Contact Us</a>
-                   <a href="{{ route('news') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none">News</a>
-
+                    <a href="{{ route('news') }}" class="text-black hover:text-[#c7da30] transition-colors" style="text-decoration: none">News</a>
                 </nav>
             </div>
 
             <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/40 z-[190] hidden transition-opacity duration-300"></div>
-        </header>   
+        </header>
 
         <div class="w-full flex-grow bg-white pt-24 pb-12 px-4">
             <div class="form-card-wrapper">
-                
-                @if(session('success'))
-                    <div class="alert-success">
-                        <strong>Success!</strong> {{ session('success') }}
-                    </div>
-                @endif
 
                 <div class="form-nav">
-                    <a href="{{ route('admin.newsletter.index') }}">Manage published articles</a>
-                    <form action="{{ route('newsletter.logout') }}" method="POST" style="display:inline; margin:0;">
-                        @csrf
-                        <button type="submit" style="background:none; border:none; color:#64748b; font-weight:600; cursor:pointer; padding:0; font-size:inherit;">Logout</button>
-                    </form>
+                    <a href="{{ route('admin.newsletter.index') }}">&larr; Back to published articles</a>
+                    <a href="{{ route('admin.newsletter.create') }}">Upload new article</a>
                 </div>
 
                 <div class="form-card">
                     <div class="form-header">
-                        <h2>Global Newsletter Management Panel</h2>
-                        <p>Publish a new article, or use Manage published articles to edit or delete existing ones.</p>
+                        <h2>Edit Published Article</h2>
+                        <p>Update the date, headline, body, author, category, or cover image. Changes appear on the public news feed immediately.</p>
                     </div>
 
-                    <form action="{{ route('admin.newsletter.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.newsletter.update', $newsletter) }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
 
                         <div class="form-group">
                             <label for="title">Newsletter / Article Title</label>
-                            <input type="text" id="title" name="title" value="{{ old('title') }}" required>
+                            <input type="text" id="title" name="title" value="{{ old('title', $newsletter->title) }}" required>
                             @error('title') <p class="error-text">{{ $message }}</p> @enderror
                         </div>
 
@@ -272,48 +264,56 @@ textarea {
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="category">Display Category</label>
                                 <select id="category" name="category" required>
-                                    <option value="News">News</option>
-                                    <option value="Press Release">Press Release</option>
-                                    <option value="Article">Article</option>
-                                    <option value="Event">Event</option>
+                                    @php $currentCategory = old('category', $newsletter->category); @endphp
+                                    <option value="News" {{ $currentCategory === 'News' ? 'selected' : '' }}>News</option>
+                                    <option value="Press Release" {{ $currentCategory === 'Press Release' ? 'selected' : '' }}>Press Release</option>
+                                    <option value="Article" {{ $currentCategory === 'Article' ? 'selected' : '' }}>Article</option>
+                                    <option value="Event" {{ $currentCategory === 'Event' ? 'selected' : '' }}>Event</option>
                                 </select>
                             </div>
 
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label for="publish_date">Publish Date</label>
-                                <input type="date" id="publish_date" name="publish_date" required value="{{ date('Y-m-d') }}">
+                                <input type="date" id="publish_date" name="publish_date" required value="{{ old('publish_date', \Carbon\Carbon::parse($newsletter->publish_date)->format('Y-m-d')) }}">
                                 @error('publish_date') <p class="error-text">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
-                     <div class="form-group">
-    <label for="author" id="authorLabel">Author Byline</label>
-    <input type="text" id="author" name="author" value="{{ old('author') }}">
-    @error('author') <p class="error-text">{{ $message }}</p> @enderror
-</div>
+                        <div class="form-group">
+                            <label for="author" id="authorLabel">Author Byline</label>
+                            <input type="text" id="author" name="author" value="{{ old('author', $newsletter->author) }}">
+                            @error('author') <p class="error-text">{{ $message }}</p> @enderror
+                        </div>
 
-<div class="form-group">
-    <label for="image">Featured Cover Image</label>
-    <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(event)" required>
-    @error('image') <p class="error-text">{{ $message }}</p> @enderror
-    
-    <div class="preview-wrapper" id="imagePreviewContainer">
-        <img id="imagePreview" src="#" alt="Image Preview Layout">
-    </div>
-</div>
+                        <div class="form-group">
+                            <label for="image">Featured Cover Image</label>
+                            <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                            <p class="help-text">Leave empty to keep the current image. Upload a new file to replace it.</p>
+                            @error('image') <p class="error-text">{{ $message }}</p> @enderror
+
+                            <div class="preview-wrapper" id="imagePreviewContainer" @if(!$newsletter->image) style="display: none;" @endif>
+                                <img id="imagePreview" src="{{ $newsletter->image ? asset('storage/' . $newsletter->image) : '#' }}" alt="Image Preview Layout">
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="full_context">"Read More" Extended Body Text</label>
-                            <textarea id="full_context" name="full_context" required ></textarea>
+                            <textarea id="full_context" name="full_context" required>{{ old('full_context', $newsletter->full_context) }}</textarea>
                             @error('full_context') <p class="error-text">{{ $message }}</p> @enderror
                         </div>
 
                         <button type="submit" class="btn-submit">
-                            Publish to Newsletter Feed
+                            Save Changes
                         </button>
                     </form>
+
+                    <form action="{{ route('admin.newsletter.destroy', $newsletter) }}" method="POST" onsubmit="return confirm('Delete this article permanently? This cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-delete">Delete Article</button>
+                    </form>
                 </div>
-                
+
             </div>
         </div>
 
@@ -348,24 +348,23 @@ textarea {
     </div>
 
     <script>
-      // REPLACE YOUR OLD toggleMobileMenu AND DOMContentLoaded LISTENER WITH THIS:
         function toggleMobileMenu() {
             const mobileMenu = document.getElementById('mobile-menu');
             const overlay = document.getElementById('mobile-menu-overlay');
             if (!mobileMenu || !overlay) return;
-            
+
             const isOpen = mobileMenu.classList.contains('translate-x-0');
 
             if (!isOpen) {
                 mobileMenu.classList.remove('translate-x-full');
                 mobileMenu.classList.add('translate-x-0');
                 overlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; 
+                document.body.style.overflow = 'hidden';
             } else {
                 mobileMenu.classList.remove('translate-x-0');
                 mobileMenu.classList.add('translate-x-full');
                 overlay.classList.add('hidden');
-                document.body.style.overflow = 'auto'; 
+                document.body.style.overflow = 'auto';
             }
         }
 
@@ -379,27 +378,26 @@ textarea {
             if (overlay) overlay.addEventListener('click', toggleMobileMenu);
 
             const categorySelect = document.getElementById('category');
-    const authorInput = document.getElementById('author');
-    const authorLabel = document.getElementById('authorLabel');
+            const authorInput = document.getElementById('author');
+            const authorLabel = document.getElementById('authorLabel');
 
-    function checkAuthorStatus() {
-        if (categorySelect.value === 'Press Release') {
-            authorInput.value = ''; // Clear any typed text
-            authorInput.disabled = true; // Block typing entirely
-            authorInput.removeAttribute('required'); // Remove required rule so form submits
-            authorLabel.innerHTML = 'Author Byline <span style="color: #64748b; font-size: 12px; font-weight: normal;">(Not applicable for Press Releases)</span>';
-        } else {
-            authorInput.disabled = false;
-            authorInput.setAttribute('required', 'required');
-            authorLabel.innerHTML = 'Author Byline';
-        }
-    }
+            function checkAuthorStatus() {
+                if (categorySelect.value === 'Press Release') {
+                    authorInput.value = '';
+                    authorInput.disabled = true;
+                    authorInput.removeAttribute('required');
+                    authorLabel.innerHTML = 'Author Byline <span style="color: #64748b; font-size: 12px; font-weight: normal;">(Not applicable for Press Releases)</span>';
+                } else {
+                    authorInput.disabled = false;
+                    authorInput.setAttribute('required', 'required');
+                    authorLabel.innerHTML = 'Author Byline';
+                }
+            }
 
-    // Bind the event listener to the select dropdown
-    if (categorySelect && authorInput) {
-        categorySelect.addEventListener('change', checkAuthorStatus);
-        checkAuthorStatus(); // Run right away on page load
-    }
+            if (categorySelect && authorInput) {
+                categorySelect.addEventListener('change', checkAuthorStatus);
+                checkAuthorStatus();
+            }
         });
 
         function previewImage(event) {
@@ -416,9 +414,6 @@ textarea {
                 }
 
                 reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.src = '#';
-                container.style.display = 'none';
             }
         }
     </script>
