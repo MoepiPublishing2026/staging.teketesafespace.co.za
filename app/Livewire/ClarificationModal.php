@@ -67,6 +67,6 @@ Mail::to($email)->send(new \App\Mail\ReportClarificationMail($this->report));
 }
     public function render()
     {
-        return view('livewire.clarification-modal')->layout('layouts.app');
+        return view('livewire.clarification-modal')->layout('components.layouts.app');
     }
 }
