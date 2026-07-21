@@ -339,7 +339,7 @@
 
                     <!-- Edit Report -->
                     @if ($reportData['status'] !== 'false-report')
-                        <div class="mt-6 border-t pt-4">
+                        <div class="mt-6 border-t pt-4 text-center">
                             <a href="{{ route('edit-report', ['caseNumber' => $reportData['case_number']]) }}"
                                 class="inline-block w-full sm:w-auto px-6 py-2 border-4 border-[#c7da30] rounded-full text-[#38b6ff] hover:opacity-90 transition font-[Montserrat] text-center block sm:inline-block">
                                 Edit Report

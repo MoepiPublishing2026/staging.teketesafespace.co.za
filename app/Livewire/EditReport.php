@@ -86,7 +86,7 @@ class EditReport extends Component
         $this->report = Report::where('case_number', $caseNumber)->firstOrFail();
         $this->email = $this->report->reporter_email ?? '';
         $this->isAppeal = ($this->report->status === 'false-report');
-        $this->abuseTypes = AbuseType::all();
+        $this->abuseTypes = AbuseType::orderBy('type_name')->get();
         $this->abuseTypeID = $this->report->abuse_type_id;
         $this->description = $this->report->description;
         $this->subtypeID = $this->report->subtype_id;
