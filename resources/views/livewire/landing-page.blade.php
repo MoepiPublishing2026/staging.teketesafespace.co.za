@@ -3,7 +3,7 @@
 <div>
 
     <div id="main-landing-container" x-data="{ menuOpen: false }"
-        class="relative w-screen min-h-screen bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
+        class="relative w-full min-h-[100dvh] bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
 
         <header class="fixed top-0 left-0 right-0 bg-white z-40 flex items-center justify-between px-4 py-3 lg:px-[2vw] lg:pt-[1.5vh]">
             <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
@@ -182,7 +182,8 @@
     /* Mobile */
     @media (max-width: 1023px) {
         #main-landing-container {
-            min-height: 100vh;
+            /* Recalculate against the visible viewport after returning from an external app. */
+            min-height: var(--landing-viewport-height, 100dvh);
             overflow-x: hidden;
         }
 
@@ -222,6 +223,18 @@
         transform: translateY(0) !important;
     }
 </style>
+    <script>
+        (() => {
+            const refreshLandingViewport = () => {
+                document.documentElement.style.setProperty('--landing-viewport-height', `${window.innerHeight}px`);
+            };
+
+            refreshLandingViewport();
+            window.addEventListener('resize', refreshLandingViewport, { passive: true });
+            window.addEventListener('orientationchange', refreshLandingViewport, { passive: true });
+            window.addEventListener('pageshow', refreshLandingViewport);
+        })();
+    </script>
     </div> <div class="force-cookie-bottom">
         @include('components.privacy-notice')
     </div>

@@ -48,7 +48,10 @@ Route::get('/', LandingPage::class)->name('landing-page');
 
 // Reporting flow routes
 Route::get('/choose-report-type', ChooseReportType::class)->name('choose-report-type');
-Route::get('/select-abuse-type/{isAnonymous}', AbuseTypeSelection::class)->name('select-abuse-type');
+Route::get('/types-of-abuse/{isAnonymous}', AbuseTypeSelection::class)->name('types-of-abuse');
+Route::get('/select-abuse-type/{isAnonymous}', function (string $isAnonymous) {
+    return redirect()->route('types-of-abuse', ['isAnonymous' => $isAnonymous]);
+});
 Route::get('/report-form/{abuseTypeID}/{isAnonymous}', ReportForm::class)->name('report-form');
 Route::get('/clarify/{caseNumber}', ClarificationModal::class)->name('report.clarify');
 Route::get('/check-status', CheckStatus::class)->name('check-status'); // Add this line
