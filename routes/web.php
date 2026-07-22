@@ -47,7 +47,8 @@ use App\Http\Controllers\NationalHeatmapController;
 Route::get('/', LandingPage::class)->name('landing-page');
 
 // Reporting flow routes
-Route::get('/choose-report-type', ChooseReportType::class)->name('choose-report-type');
+Route::get('/report-anonymity', ChooseReportType::class)
+    ->name('choose-report-type');
 Route::get('/types-of-abuse/{isAnonymous}', AbuseTypeSelection::class)->name('types-of-abuse');
 Route::get('/select-abuse-type/{isAnonymous}', function (string $isAnonymous) {
     return redirect()->route('types-of-abuse', ['isAnonymous' => $isAnonymous]);
