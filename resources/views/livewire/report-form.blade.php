@@ -215,7 +215,10 @@
                                         maxlength="100">
                                     <input type="hidden" id="schoolName" wire:model.lazy="schoolName" name="schoolName" value="">
                                     <input type="hidden" id="schoolProvince" wire:model.lazy="schoolProvince">
-                                    <input type="hidden" id="schoolId" name="schoolId" value="">
+                                    <input type="hidden"
+                                            id="schoolId"
+                                            name="schoolId"
+                                            wire:model="schoolId">
                                     <div id="schoolDropdown"
                                         class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
                                         style="display:none;"></div>
@@ -470,6 +473,8 @@
             let focused = -1;
             let timer = null;
 
+            let validSchoolSelected = false;
+
             function loadCache() {
                 try {
                     const raw = localStorage.getItem(LS_KEY);
@@ -560,45 +565,76 @@
 
             function selectItem(index) {
                 const it = items[index];
+
                 if (!it) return;
+
                 input.value = it.name;
+
                 hiddenName.value = it.name;
                 hiddenId.value = it.id ?? '';
-                document.getElementById('schoolProvince').value = it.province ?? '';
-                document.getElementById('schoolName').dispatchEvent(new Event('input', { bubbles: true }));
-                
-                  document.getElementById('schoolProvince').dispatchEvent(new Event('input', { bubbles: true }));
+
+                document.getElementById('schoolProvince').value =
+                    it.province ?? '';
+
+                // The school was selected from the database
+                validSchoolSelected = true;
+
+                // Notify Livewire
+                hiddenName.dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
+
+                hiddenId.dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
+
+                document.getElementById('schoolProvince').dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
+
                 clearSuggestions();
             }
 
             input.addEventListener('input', function() {
-                hiddenName.value = this.value;
-                hiddenId.value = '';
-                document.getElementById('schoolName').dispatchEvent(new Event('input', { bubbles: true }));
-                clearTimeout(timer);
-                const q = this.value.trim();
-                if (q.length < 1) { clearSuggestions(); return; }
-                timer = setTimeout(() => { render(searchPrefix(q, 20)); }, 120);
-            });
 
-            input.addEventListener('keydown', function(e) {
-                if (dropdown.style.display === 'none') return;
-                const count = dropdown.children.length;
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    focused = Math.min(count - 1, Math.max(0, focused + 1));
-                    updateFocus();
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    focused = Math.max(0, focused - 1);
-                    updateFocus();
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (focused >= 0) selectItem(focused);
-                    else clearSuggestions();
-                } else if (e.key === 'Escape') {
+                // User is typing manually, so no database school is selected
+                validSchoolSelected = false;
+
+                hiddenName.value = this.value;
+
+                // Clear the selected school ID
+                hiddenId.value = '';
+
+                document.getElementById('schoolName').dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
+
+                hiddenId.dispatchEvent(
+                    new Event('input', {
+                        bubbles: true
+                    })
+                );
+
+                clearTimeout(timer);
+
+                const q = this.value.trim();
+
+                if (q.length < 1) {
                     clearSuggestions();
+                    return;
                 }
+
+                timer = setTimeout(() => {
+                    render(searchPrefix(q, 20));
+                }, 120);
             });
 
             function updateFocus() {
