@@ -103,31 +103,36 @@
             </div>
         </section>
 
-        <footer class="custom-desktop-footer relative bg-[#757573] text-white px-4 py-5 flex flex-col items-center gap-4 min-[520px]:flex-row min-[520px]:gap-2 lg:pl-[2vw] lg:pr-[2vw] lg:py-[1.5vh] lg:justify-between lg:items-center lg:gap-0 z-30">
-          <p class="text-[9px] leading-5 text-center min-[520px]:text-[14px] lg:text-[16px] min-[520px]:text-left w-full min-[520px]:w-auto">
-                &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
-           </p>
+       <footer class="custom-desktop-footer relative bg-[#757573] text-white px-4 py-5 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:gap-2 lg:pl-[2vw] lg:pr-[2vw] lg:py-[1.5vh] lg:justify-between lg:items-center lg:gap-0 z-30">
+          <div class="inline-flex flex-col items-center gap-2 mx-auto
+            min-[640px]:flex-row min-[640px]:items-center min-[640px]:gap-6 min-[640px]:w-full min-[640px]:justify-center
+            lg:justify-between lg:gap-0">
 
-            <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/youtube.png') }}" class="w-7 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
-                </a>
-                <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
-                </a>
-            </div>
+    <p class="text-[13px] leading-5 text-center min-[640px]:text-[14px] lg:text-[16px]">
+        &copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
+    </p>
+
+    <div class="flex items-center justify-center flex-wrap gap-4 min-[640px]:gap-2 lg:gap-[1vw]">
+        <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
+            <img src="{{ asset('images/youtube.png') }}" class="w-7 min-[640px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0 hover:opacity-80 transition" alt="YouTube">
+        </a>
+        <a href="https://www.X.com/moepipublishing" target="_blank">
+            <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
+        </a>
+        <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
+            <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
+        </a>
+        <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
+            <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
+        </a>
+        <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank">
+            <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
+        </a>
+        <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
+            <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
+        </a>
+    </div>
+</div>
         </footer>
 
         <style>
