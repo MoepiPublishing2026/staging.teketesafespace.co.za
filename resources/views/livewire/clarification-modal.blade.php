@@ -121,7 +121,7 @@
                                     <a href="/" class="text-sm text-black">Cancel and
                                         exit</a>
                                     <button type="submit"
-                                        class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-black bg-[#c7da30] hover:bg-[#b8cc2a] transition">
+                                        class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-[#c7da30] hover:bg-[#b8cc2a] transition">
                                         Submit Official Statement
                                     </button>
                                 </div>
