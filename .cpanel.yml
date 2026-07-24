@@ -1,7 +1,7 @@
 
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za
+    - export DEPLOYPATH=/home/teketeq9v8o0/training.teketesafespace.co.za
     
     # 1. Enter maintenance mode immediately
     - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan down --retry=60
