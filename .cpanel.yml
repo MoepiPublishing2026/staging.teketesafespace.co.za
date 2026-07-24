@@ -7,7 +7,8 @@ deployment:
     - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan down --retry=60
     
     # 2. Pull down updates and sync files
-    - /bin/cp -R * $DEPLOYPATH
+      rsync -avz --exclude='.git' --exclude='node_modules' ./ "$DEPLOYPATH/"
+
     
     # 3. Run optimizations and migrations
     - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize:clear
