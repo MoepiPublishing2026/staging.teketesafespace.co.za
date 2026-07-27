@@ -107,4 +107,21 @@ class User extends Authenticatable
     //     $sub = $this->subscription;
     //     return ($sub && $sub->isActive()) ? $sub : null;
     // }
+
+    /**
+     * Whether a school admin may access this report.
+     * Compares school names case-insensitively and ignores surrounding whitespace,
+     * matching MySQL's typical collation behaviour used in list queries.
+     */
+    public function canAccessSchoolReport(Report $report): bool
+    {
+        if ($this->role !== 'school') {
+            return true;
+        }
+
+        return strcasecmp(
+            trim((string) $report->school_name),
+            trim((string) $this->school_name)
+        ) === 0;
+    }
 }
