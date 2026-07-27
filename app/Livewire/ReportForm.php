@@ -322,6 +322,10 @@ protected array $phaseGrades = [
                 }
             },
         ],
+        'schoolId' => [
+                'required',
+                'exists:schools,school_id',
+            ],
         ];
     }
 

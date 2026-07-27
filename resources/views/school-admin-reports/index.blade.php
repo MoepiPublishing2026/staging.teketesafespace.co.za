@@ -127,7 +127,7 @@ tbody tr:last-child td { border-bottom: none; }
 .alert-banner { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.9rem; }
 .alert-banner.danger { background: #fef2f2; border-left: 4px solid #dc2626; color: #991b1b; }
 .alert-banner.blocked { background: #111; border-left: 4px solid #dc2626; color: #fff; }
-.modal-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
+.modal-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; align-items: flex-end; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
 .filter-panel { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; }
 .filter-label { font-size: 11px !important; font-weight: 700 !important; color: #6b7280 !important; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; display: block; }
 .filter-input {

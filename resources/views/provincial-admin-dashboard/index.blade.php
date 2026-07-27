@@ -1322,11 +1322,51 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                 </div>
             </div>
             @php
+                // 1. Establish your baseline chart height variables
                 $statusBreakdownN = max(count($statusCounts ?? []), 1);
                 $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
+            
+                // 2. Normalize status counts to sum to exactly 100 using the Largest Remainder Method
+                $normalizedStatuses = [];
+                $rawTotal = array_sum($statusCounts ?? []);
+            
+                if ($rawTotal > 0) {
+                    $flooredValues = [];
+                    $remainders = [];
+                    $sumFloored = 0;
+            
+                    foreach ($statusCounts as $key => $value) {
+                        $precise = ($value / $rawTotal) * 100;
+                        $floored = (int) floor($precise);
+                        
+                        $flooredValues[$key] = $floored;
+                        $remainders[$key] = $precise - $floored;
+                        $sumFloored += $floored;
+                    }
+            
+                    // Calculate the difference needed to reach exactly 100
+                    $difference = 100 - $sumFloored;
+            
+                    // Sort remainders descending to find who was closest to rounding up
+                    arsort($remainders);
+            
+                    // Distribute the remaining units to those with the highest fractional remainder
+                    foreach ($remainders as $key => $remainder) {
+                        if ($difference <= 0) break;
+                        $flooredValues[$key]++;
+                        $difference--;
+                    }
+            
+                    $normalizedStatuses = $flooredValues;
+                } else {
+                    // Fallback if there are no items or counts are zero
+                    foreach (($statusCounts ?? []) as $key => $value) {
+                        $normalizedStatuses[$key] = 0;
+                    }
+                }
             @endphp
             <div class="chart-card chart-status" style="margin-top: 1.5rem;">
-                <h2 class="chart-title-left">Status Breakdown</h2>
+                <h2 class="chart-title-left">Status Breakdown (%)</h2>
                 <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
                     <canvas id="statusChart" aria-label="Reports by status"></canvas>
                 </div>
@@ -1391,6 +1431,45 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                 </div>
             </div>
         </section>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // PHP exports the perfectly balanced integers summing to 100
+                const statusLabels = {!! json_encode(array_keys($normalizedStatuses)) !!};
+                const statusPercentages = {!! json_encode(array_values($normalizedStatuses)) !!};
+
+                const ctx = document.getElementById('statusChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar', // Or 'horizontalBar' / 'doughnut'
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            data: statusPercentages, // These values now strictly equal 100 in total!
+                            backgroundColor: [
+                                '#a0c4df', // Awaiting Resolution
+                                '#ffcb77', // Forwarded
+                                '#17d195', // Under Review
+                                '#9b6bdc', // Closed
+                                '#7b9ff2', // Unresolved
+                                '#4cb2ff'  // False Report
+                            ]
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y', // Renders horizontally like your image
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.parsed.x + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
 
     </div>
 </div>

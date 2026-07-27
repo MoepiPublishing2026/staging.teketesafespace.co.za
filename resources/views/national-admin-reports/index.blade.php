@@ -677,6 +677,26 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
+    
+    
+    
+    const anonSelect = document.querySelector('select[name="is_anonymous"]');
+    const nameInput  = document.querySelector('input[name="full_name"]');
+
+    function syncAnonNameState() {
+        if (!anonSelect || !nameInput) return;
+        const isAnon = anonSelect.value === '1';
+        nameInput.disabled  = isAnon;
+        nameInput.title     = isAnon ? 'Not available for anonymous reports' : '';
+        nameInput.style.opacity    = isAnon ? '0.4' : '1';
+        nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
+        nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
+        if (isAnon) nameInput.value = '';
+    }
+
+    if (anonSelect) anonSelect.addEventListener('change', syncAnonNameState);
+    syncAnonNameState();
+    
 
     // ── Subtype filtered by report type ──────────────────────────
     const typeSelect    = document.querySelector('select[name="type_id"]');

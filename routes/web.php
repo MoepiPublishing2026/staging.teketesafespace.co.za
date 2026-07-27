@@ -14,7 +14,6 @@ use App\Livewire\EditReport;
 use App\Livewire\NewsIndex;
 use App\Livewire\NewsFeed;
 use Illuminate\Support\Facades\Auth;
-use App\Support\OtpSession;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NationalAdminDashboardController;
 use App\Http\Controllers\ReportController;
@@ -27,7 +26,6 @@ use App\Http\Controllers\ProvincialAdminSettingsController;
 use App\Http\Controllers\ProvincialAdminReportsController;
 use App\Http\Controllers\SchoolAdminDashboardController;
 use App\Http\Controllers\SchoolAdminReportsController;
-use App\Http\Controllers\SchoolAdminSettingsController;
 use App\Livewire\ContactUs;
 // use App\Http\Controllers\SubscriptionController;
 use App\Livewire\ClarificationModal;
@@ -49,8 +47,12 @@ use App\Http\Controllers\NationalHeatmapController;
 Route::get('/', LandingPage::class)->name('landing-page');
 
 // Reporting flow routes
-Route::get('/choose-report-type', ChooseReportType::class)->name('choose-report-type');
-Route::get('/select-abuse-type/{isAnonymous}', AbuseTypeSelection::class)->name('select-abuse-type');
+Route::get('/report-anonymity', ChooseReportType::class)
+    ->name('choose-report-type');
+Route::get('/types-of-abuse/{isAnonymous}', AbuseTypeSelection::class)->name('types-of-abuse');
+Route::get('/select-abuse-type/{isAnonymous}', function (string $isAnonymous) {
+    return redirect()->route('types-of-abuse', ['isAnonymous' => $isAnonymous]);
+});
 Route::get('/report-form/{abuseTypeID}/{isAnonymous}', ReportForm::class)->name('report-form');
 Route::get('/clarify/{caseNumber}', ClarificationModal::class)->name('report.clarify');
 Route::get('/check-status', CheckStatus::class)->name('check-status'); // Add this line
@@ -66,32 +68,28 @@ Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-dis
 // Step 2: The email and OTP verification form
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
 
-// Step 3: School admin dashboard — protected by auth + OTP verification
-Route::middleware(['auth', 'otp.verified'])->group(function () {
+// Step 3: School admin dashboard — protected only by auth
+Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
     Route::post('/admin/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
-    Route::get('/admin/reports', [SchoolAdminReportsController::class, 'index'])->name('admin.reports');
-    Route::get('/admin/reports/{id}', [SchoolAdminReportsController::class, 'show'])->name('admin.reports.show')->where('id', '[0-9]+');
-    Route::post('/admin/reports/{id}/status', [SchoolAdminReportsController::class, 'updateStatus'])->name('admin.reports.update-status');
-    Route::post('/admin/reports/block-reporter', [SchoolAdminReportsController::class, 'permanentBlock'])->name('admin.reports.block-reporter');
-    Route::get('/admin/settings', [SchoolAdminSettingsController::class, 'index'])->name('admin.settings');
-    Route::put('/admin/settings', [SchoolAdminSettingsController::class, 'update'])->name('admin.settings.update');
-    Route::delete('/admin/settings/delete-picture', [SchoolAdminSettingsController::class, 'deleteProfilePicture'])->name('admin.settings.delete-picture');
+    Route::get('/admin/reports', \App\Livewire\AdminReports::class)->name('admin.reports');
+    Route::get('/admin/reports/{filter?}', \App\Livewire\AdminReports::class)->name('admin.reports.index');
+    Route::get('/admin/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
 });
 
 // District Admin Dashboard
-Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard')->middleware(['auth', 'otp.verified']);
+Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard')->middleware('auth');
 
 //provincial Admin Report Pages
 
 
-Route::middleware(['auth', 'otp.verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/geojson/{file}', [App\Http\Controllers\GeoJsonController::class, 'show'])
         ->where('file', '[a-z_]+')
         ->name('geojson.show');
 
-    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard');
+    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard')->middleware('auth');
 
     Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
     Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)->name('provincial.reports.index');
@@ -114,7 +112,7 @@ Route::middleware(['auth', 'otp.verified'])->group(function () {
 });
 
 // Provincial Admin Settings and Reports
-Route::prefix('provincial-admin')->name('provincial-admin.')->middleware(['auth', 'otp.verified'])->group(function () {
+Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')->group(function () {
     Route::get('settings', [ProvincialAdminSettingsController::class, 'index'])->name('settings');
     Route::put('settings', [ProvincialAdminSettingsController::class, 'update'])->name('settings.update');
     Route::get('reports', [ProvincialAdminReportsController::class, 'index'])->name('reports');
@@ -127,38 +125,31 @@ Route::prefix('provincial-admin')->name('provincial-admin.')->middleware(['auth'
 
 Route::get('/national-admin/dashboard', [NationalAdminDashboardController::class, 'index'])
     ->name('national.admin.dashboard')
-    ->middleware(['auth', 'otp.verified']);
+    ->middleware('auth');
 Route::get('/national-admin/heatmap', [NationalHeatmapController::class, 'index'])
     ->name('national-admin.heatmap')
-    ->middleware(['auth', 'otp.verified']);
-Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports')->middleware(['auth', 'otp.verified']);
-Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show')->middleware(['auth', 'otp.verified']);
+    ->middleware('auth');
+Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports');
+Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
 
 
-Route::prefix('national-admin')->name('national-admin.')->middleware(['auth', 'otp.verified'])->group(function () {
+Route::prefix('national-admin')->name('national-admin.')->group(function () {
     Route::get('settings', [SettingsController::class, 'index'])->name('settings');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])
         ->name('settings.delete-picture');
 });
 
-// School Admin Reports (controller-based, matching Provincial/National Admin)
-// Routes defined in auth group above.
+// School Admin Reports Page (Controller-based, matching Provincial Admin)
+// Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+//     Route::get('reports', [SchoolAdminReportsController::class, 'index'])->name('reports');
+//     Route::get('reports/{id}', [SchoolAdminReportsController::class, 'show'])->name('reports.show')->where('id', '[0-9]+');
+// });
 
 // Admin Logout
 Route::post('/logout', function () {
     Auth::logout();
-    OtpSession::clear();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-
-    $loginUrl = route('school-admin', ['session_expired' => 1]);
-
-    if (request()->expectsJson()) {
-        return response()->json(['redirect' => $loginUrl]);
-    }
-
-    return redirect($loginUrl);
+    return redirect('/');
 })->name('logout');
 Auth::routes(['verify' => true]);
 Auth::routes();
@@ -166,14 +157,14 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Routing for filtering data on dashboard
-Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData')->middleware(['auth', 'otp.verified']);
+Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData');
 
 Route::get('/district/profile', \App\Livewire\DistrictAdminSettings::class)
     ->name('district.profile')
-    ->middleware(['auth', 'otp.verified']);
+    ->middleware(['auth']);
 
 
-Route::middleware(['auth', 'otp.verified', 'role:district'])->group(function () {
+Route::middleware(['auth', 'role:district'])->group(function () {
     Route::get('/district/settings', DistrictAdminSettings::class)->name('district.settings');
     // New Contact Us Route
 });
@@ -181,13 +172,21 @@ Route::middleware(['auth', 'otp.verified', 'role:district'])->group(function () 
 // ==========================================
 // PUBLIC NEWSLETTER MANAGEMENT (TOTAL SEPARATE TABLE ADMIN)
 // ==========================================
-Route::get('/newsletter-manager/login', [App\Http\Controllers\NewsletterController::class, 'showLogin'])->name('newsletter.login');
-Route::post('/newsletter-manager/login', [App\Http\Controllers\NewsletterController::class, 'handleLogin'])->name('newsletter.login.submit');
+Route::prefix('newsletter-manager')->group(function () {
+    Route::get('/login', [App\Http\Controllers\NewsletterController::class, 'showLogin'])->name('newsletter.login');
+    Route::post('/login', [App\Http\Controllers\NewsletterController::class, 'handleLogin'])->name('newsletter.login.submit');
+    Route::post('/logout', [App\Http\Controllers\NewsletterController::class, 'logout'])->name('newsletter.logout');
+    Route::get('/forgot-password', [App\Http\Controllers\NewsletterController::class, 'showForgotPassword'])->name('newsletter.password.request');
+    Route::post('/forgot-password', [App\Http\Controllers\NewsletterController::class, 'resetPassword'])->name('newsletter.password.update');
 
-// Changed from 'auth' to 'auth:newsletter'
-Route::middleware(['auth:newsletter'])->prefix('admin/newsletter')->name('admin.newsletter.')->group(function () {
-    Route::get('/create', [App\Http\Controllers\NewsletterController::class, 'create'])->name('create');
-    Route::post('/store', [App\Http\Controllers\NewsletterController::class, 'store'])->name('store');
+    Route::middleware(['auth:newsletter'])->name('admin.newsletter.')->group(function () {
+        Route::get('/', [App\Http\Controllers\NewsletterController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\NewsletterController::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\NewsletterController::class, 'store'])->name('store');
+        Route::get('/{newsletter}/edit', [App\Http\Controllers\NewsletterController::class, 'edit'])->name('edit');
+        Route::put('/{newsletter}', [App\Http\Controllers\NewsletterController::class, 'update'])->name('update');
+        Route::delete('/{newsletter}', [App\Http\Controllers\NewsletterController::class, 'destroy'])->name('destroy');
+    });
 });
 
 // ABOUT US PAGE

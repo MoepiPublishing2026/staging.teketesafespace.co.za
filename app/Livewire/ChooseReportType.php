@@ -13,6 +13,6 @@ class ChooseReportType extends Component
 
     public function selectReportType($isAnonymous)
     {
-        return $this->redirect('/select-abuse-type/' . ($isAnonymous ? 'anonymous' : 'non-anonymous'));
+        return $this->redirect('/types-of-abuse/' . ($isAnonymous ? 'anonymous' : 'non-anonymous'));
     }
 }
