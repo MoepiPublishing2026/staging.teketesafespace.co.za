@@ -53,7 +53,7 @@
                 </a>
 
                 <a href="{{ route('about-us') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    class="text-black font-bold transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
@@ -66,7 +66,7 @@
                 </a>
 
                 <a href="{{ route('contact-us') }}"
-                    class="text-black font-bold transition-colors hover:!text-[#c7da30]">
+                    class="text-black  transition-colors hover:!text-[#c7da30]">
                     Contact Us
                 </a>
 
@@ -76,7 +76,7 @@
             <div class="md:hidden">
               <button id="mobile-menu-button"
                         
-                        class="p-2 rounded-md text-black hover:bg-gray-100">
+                        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
