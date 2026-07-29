@@ -82,12 +82,6 @@
             xl:text-[20px]
             ">
 
-                <a href="javascript:void(0);"
-                    onclick="window.history.back();"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Back
-                </a>
-
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
@@ -96,6 +90,14 @@
                 <a href="{{ route('about-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
+                </a>
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
+                    </a>
+
+                 <a href="{{ route('news') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    News
                 </a>
 
                 <a href="{{ route('contact-us') }}"
@@ -109,7 +111,7 @@
             <div class="md:hidden">
               <button id="mobile-menu-button"
                         onclick="toggleMobileMenu()"
-                        class="p-2 rounded-md text-black hover:bg-gray-100">
+                        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -127,43 +129,29 @@
 </header>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 z-50 hidden md:hidden">
-        <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
-        <div
-            class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
-            <div class="flex items-center justify-between p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-black hover:bg-gray-100">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <nav class="mt-8 px-4">
-                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-                    Back
-                </a>
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-                    Home
-                </a>
-                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-                    About Us
-                </a>
-                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-                    Contact Us
-                </a>
-            </nav>
+     <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
+    <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+    
+  <div id="mobile-menu-slide"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-in-out">    
+        <div class="flex items-center justify-start px-4 pt-16 pb-4">
+            <button type="button" onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none">
+                <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
+        
+        <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+            <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Home</a>
+            <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">About Us</a>
+            <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Workshops</a>
+            <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff] border-b border-gray-100">News</a>
+           <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff]">Contact Us</a>
+
+        </nav>
     </div>
+</div>
 
     <!-- Main Content -->
     <main class="flex flex-col justify-center flex-1 pt-12 sm:pt-32 pb-16 sm:pb-24 px-4 w-full">
@@ -205,7 +193,7 @@
 
             <div class="bg-white border-[3px] border-[#c7da30] w-full max-w-[600px] px-6 sm:px-12 py-12 sm:py-16 rounded-[20px] text-center mx-auto">
                 <form wire:submit.prevent="sendOtp" class="flex flex-col gap-8 items-center">
-                    <input type="email" id="email" wire:model.live="email" placeholder="Email Address"
+                    <input type="email" id="email" wire:model.live="email" placeholder="EMAIL ADDRESS"
                         class="w-full h-[60px] px-5 text-black border-[3px] border-[#c7da30] rounded-[10px] bg-white text-sm outline-none placeholder-gray-400 focus:border-[#a8c529] placeholder:tracking-wider">
                     @error('admin')
                         <span class="text-red-500 text-sm block -mt-4">{{ $message }}</span>
@@ -220,8 +208,8 @@
                         class="w-full h-[60px] font-semibold text-[16px]
                                    border-4 border-solid border-[#c7da30]
                                    rounded-[100px] text-[#38b6ff]
-                                   shadow-md uppercase transition-opacity hover:opacity-90 disabled:opacity-60">
-                        <span wire:loading.remove wire:target="sendOtp">Send OTP</span>
+                                   shadow-md transition-opacity hover:opacity-90 disabled:opacity-60">
+                        <span wire:loading.remove wire:target="sendOtp">SendOTP</span>
                         <span wire:loading wire:target="sendOtp">Sending OTP…</span>
                     </button>
                     <p wire:loading wire:target="sendOtp" class="text-sm text-gray-500 -mt-4">This can take up to a minute. Please wait.</p>
@@ -265,8 +253,31 @@
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            const slide = document.getElementById('mobile-menu-slide');
+            
+            if (!menu || !slide) return;
+
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                setTimeout(() => {
+                    slide.classList.remove('translate-x-full');
+                    slide.classList.add('translate-x-0');
+                }, 10);
+            } else {
+                slide.classList.remove('translate-x-0');
+                slide.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+                
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            }
         }
+        
 
         function updateOtp() {
             let otp = '';
