@@ -337,6 +337,8 @@ protected array $phaseGrades = [
             'schoolName.required' => 'Please select or enter the Name of School.', 
             'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
 
+            'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+            'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
         ];
     }
      public function updatedPhoneNumber($value)
