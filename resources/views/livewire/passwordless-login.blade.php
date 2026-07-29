@@ -49,24 +49,38 @@
     <!--</div>-->
 
     <!-- Header -->
-    <header
-    class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
+     <header
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
     <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
         <!-- Logo -->
-        <div>
-            <img src="{{ asset('images/logo.png') }}"
-                alt="Safe Space Logo"
-                class="w-[143px] h-auto flex-shrink-0">
-        </div>
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
 
         <!-- Top Right Links -->
         <div class="flex items-center gap-4">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-10"
-                style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
 
                 <a href="javascript:void(0);"
                     onclick="window.history.back();"
@@ -93,10 +107,9 @@
 
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
-                <button
-    id="mobile-menu-button"
-    onclick="toggleMobileMenu()"
-    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+              <button id="mobile-menu-button"
+                        onclick="toggleMobileMenu()"
+                        class="p-2 rounded-md text-black hover:bg-gray-100">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -153,7 +166,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex flex-col justify-center flex-1 pt-12 sm:pt-32 pb-8 px-4 w-full">
+    <main class="flex flex-col justify-center flex-1 pt-12 sm:pt-32 pb-16 sm:pb-24 px-4 w-full">
     <div class="max-w-2xl mx-auto w-full">
         @if ($showOtpForm)
             <h1 class="font-bold text-black uppercase text-2xl sm:text-3xl mb-6 sm:mb-12 text-center tracking-wide">
@@ -161,10 +174,10 @@
             </h1>
 
             <div
-                 class="otp-card bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-6 sm:py-20 rounded-[20px] text-center">
-                <form wire:submit.prevent="login" class="otp-form flex flex-col items-center gap-4 sm:gap-10">
+                 class="otp-card bg-white border-[3px] border-[#c7da30] w-full max-w-[700px] px-4 sm:px-16 py-6 sm:py-12 rounded-[20px] text-center">
+                <form wire:submit.prevent="login" class="otp-form flex flex-col items-center gap-5 sm:gap-12">
                     <input type="hidden" wire:model.live="otp" id="otp">
-                    <div class="flex justify-center gap-1 sm:gap-2 w-full otp-container px-2 sm:px-0">
+                    <div class="flex justify-center gap-4 sm:gap-5 md:gap-6 w-full otp-container px-2 sm:px-0">
                         @for ($i = 0; $i < 6; $i++)
                             <input type="text" maxlength="1"
                                 class="otp-input w-[44px] h-[48px] sm:w-[52px] sm:h-[52px] xs:w-[48px] xs:h-[48px] md:w-[60px] md:h-[60px] lg:w-[70px] lg:h-[70px] text-center text-black border-[3px] border-[#c7da30] rounded-[12px] text-lg sm:text-xl font-semibold outline-none focus:border-[#a8c529] transition-colors flex-shrink-0"
@@ -180,7 +193,7 @@
                     @enderror
 
                     <button type="submit"
-    class="otp-button w-full max-w-[500px] h-[60px] font-semibold text-[16px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] shadow-md uppercase transition-opacity hover:opacity-90">
+    class="otp-button w-full max-w-[550px] h-[60px] font-semibold text-[16px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] shadow-md transition-opacity hover:opacity-90">
     Verify
 </button>
                 </form>
@@ -219,7 +232,7 @@
 </main>
 
     <!-- Footer -->
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; ">
+    <footer class="mt-auto" style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; ">
         <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 lg:px-8 w-full"
      style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
             <div>
