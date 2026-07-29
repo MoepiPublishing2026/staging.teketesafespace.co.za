@@ -1,23 +1,36 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full">
     <!-- Header -->
    <header
-    class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
     <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
-        <!-- Logo -->
-        <div>
-            <img src="{{ asset('images/logo.png') }}"
-                alt="Safe Space Logo"
-                class="w-[143px] h-auto flex-shrink-0">
-        </div>
-
+         <!-- Logo -->
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
         <!-- Top Right Links -->
         <div class="flex items-center gap-4">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-10"
-                style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
 
                 <a href="javascript:void(0);"
                     onclick="window.history.back();"
@@ -45,7 +58,7 @@
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
                 <button id="mobile-menu-button"
-                    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+                    class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -68,8 +81,8 @@
         <div
             class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
             <div class="flex items-center justify-between p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-black hover:bg-gray-100">
+               
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -78,22 +91,28 @@
             </div>
             <nav class="mt-8 px-4">
                 <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Back
                 </a>
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Home
                 </a>
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     About Us
                 </a>
+<a href="{{ route('news') }}"
+   onclick="toggleMobileMenu()"
+   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
+   style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+    News
+</a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Contact Us
                 </a>
@@ -102,9 +121,13 @@
     </div>
 
     <!-- Main Section -->
-    <div class="min-h-screen bg-white flex flex-col font-[Montserrat] justify-center items-center"
-        style="padding-top: 90px; width: 100%;">
-
+   <div class="min-h-screen bg-white flex flex-col font-[Montserrat]
+            justify-center items-center
+            w-full
+            pt-[90px]
+            sm:pt-[100px]
+            md:pt-[110px]
+            lg:pt-[120px]">
         <!-- Main Content -->
         <div class="flex flex-col items-center justify-center text-center px-4">
             <!-- Heading -->
@@ -125,19 +148,52 @@
             <div
                 class="w-full max-w-[698px] border-2 border-[#c7da30] rounded-xl bg-white p-6 sm:p-10 flex flex-col items-center justify-center">
                 <!-- Abuse Type Buttons -->
-                <div
-                    class="grid grid-cols-2 sm:grid-cols-2 gap-x-6 sm:gap-x-16 gap-y-4 sm:gap-y-8 w-full justify-items-center">
-                    @foreach ($abuseTypes as $abuseType)
-                        <button wire:click="selectAbuseType({{ $abuseType->id }})"
-                            class="w-full sm:w-[250px] h-[70px] sm:h-[65px] 
-                            border-4 border-solid border-[#c7da30]
-                            rounded-[100px] text-[#38b6ff] 
-                            text-[13px] sm:text-[15px] font-normal 
-                            transition duration-200 hover:opacity-80 shadow-md">
-                            {{ $abuseType->type_name }}
-                        </button>
-                    @endforeach
-                </div>
+                <div class="grid grid-cols-2 gap-x-3 sm:gap-x-6 md:gap-x-12 gap-y-4 sm:gap-y-6 w-full justify-items-center">
+    @foreach ($abuseTypes as $abuseType)
+
+        <button
+            wire:click="selectAbuseType({{ $abuseType->id }})"
+            class="
+                w-full
+                max-w-[140px]
+                sm:max-w-[180px]
+                md:max-w-[220px]
+                lg:w-[240px]
+
+                min-h-[52px]
+                sm:min-h-[58px]
+                md:min-h-[65px]
+
+                px-2
+                sm:px-4
+
+                border-4
+                border-[#c7da30]
+                rounded-full
+
+                flex
+                items-center
+                justify-center
+
+                text-center
+                text-[#00AEEF]
+
+                text-[12px]
+                sm:text-[14px]
+                md:text-[16px]
+
+                leading-tight
+                break-words
+
+                transition
+                duration-200">
+
+            {{ $abuseType->type_name }}
+
+        </button>
+
+    @endforeach
+</div>
             </div>
         </div>
     </div>

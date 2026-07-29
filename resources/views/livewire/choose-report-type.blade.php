@@ -5,11 +5,21 @@
     <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
         <!-- Logo -->
-        <div>
-            <img src="{{ asset('images/logo.png') }}"
-                alt="Safe Space Logo"
-                class="w-[143px] h-auto flex-shrink-0">
-        </div>
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
 
         <!-- Top Right Links -->
         <div class="flex items-center gap-4">
@@ -44,7 +54,7 @@
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
                 <button id="mobile-menu-button"
-                    class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+                    class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
 
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round"
@@ -67,8 +77,8 @@
         <div
             class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
             <div class="flex items-center justify-between p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-black hover:bg-gray-100">
+                
+                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
@@ -77,22 +87,29 @@
             </div>
             <nav class="mt-8 px-4">
                 <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Back
                 </a>
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Home
                 </a>
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     About Us
                 </a>
+                
+<a href="{{ route('news') }}"
+   onclick="toggleMobileMenu()"
+   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
+   style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+    News
+</a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     Contact Us
                 </a>
@@ -101,44 +118,92 @@
     </div>
 
     <!-- Main Section -->
+<div class="flex-grow flex items-center justify-center px-6 py-10 font-[Montserrat]">
 
-    <div class="flex-grow bg-white flex flex-col font-[Montserrat] items-center justify-center px-10 sm:px-6">
-        <h1 class="text-[20px] sm:text-[24px] font-bold text-black uppercase tracking-wide mb-10 sm:mb-12">
-            Report Anonymously?
-        </h1>
-        <!-- Main Content -->
+    <!-- Rectangle -->
+    <div
+        class="w-[95%]
+           sm:w-[85%]
+           md:w-[70%]
+           lg:w-[55%]
+           xl:w-[45%]
+           max-w-[600px]
+           min-h-[180px]
+           sm:min-h-[200px]
+           md:min-h-[258px]
+           border-2
+           border-[#c7da30]
+           rounded-lg
+           bg-transparent
+           flex
+           flex-col
+           items-center
+           justify-center
+           px-6
+           sm:px-8
+           py-8">
 
-        <div
-            class="w-full max-w-[698px] border-2 border-[#c7da30] rounded-xl bg-white p-6 sm:p-10 flex flex-col items-center justify-center">
-            <div class="flex flex-col items-center justify-center text-center">
+       <!-- Title -->
+<h1 class="font-bold
+           uppercase
+           text-black
+           text-center
+           text-[15px]
+           sm:text-[18px]
+           md:text-[22px]
+           lg:text-[30px]
+           mb-14">
+    REPORT ANONYMOUSLY?
+</h1>
 
+<!-- Buttons -->
+<div class="flex justify-center gap-4 sm:gap-8 md:gap-12 w-full">
 
-                <!-- Buttons -->
-                <div class="flex flex-row gap-8 sm:gap-12 w-full sm:w-auto justify-center">
-                    <!-- Yes Button -->
-                    <button wire:click="selectReportType(true)"
-                        class="w-[120px] h-[50px] sm:w-[190px] sm:h-[64px] 
-               border-4 border-solid border-[#c7da30]
-               rounded-[100px] text-[#38b6ff] 
-               text-[15px] font-normal transition duration-200 
-               hover:opacity-80 shadow-md">
-                        Yes
-                    </button>
+    <button
+        wire:click="selectReportType(true)"
+        class="w-[42%]
+               max-w-[180px]
+               h-[42px]
+               sm:h-[46px]
+               md:h-[50px]
+               border-2
+               border-[#c7da30]
+               rounded-full
+               bg-transparent
+               text-[#38b6ff]
+               font-bold
+               text-[14px]
+               sm:text-[15px]
+    
+               transition">
+        Yes
+    </button>
 
-                    <!-- No Button -->
-                    <button wire:click="selectReportType(false)"
-                        class="w-[120px] h-[50px] sm:w-[190px] sm:h-[64px] 
-               border-4 border-solid border-[#c7da30]
-               rounded-[100px] text-[#38b6ff] 
-               text-[15px] font-normal transition duration-200 
-               hover:opacity-80 shadow-md">
-                        No
-                    </button>
-                </div>
-            </div>
-        </div>
+    <button
+        wire:click="selectReportType(false)"
+        class="w-[42%]
+               max-w-[180px]
+               h-[42px]
+               sm:h-[46px]
+               md:h-[50px]
+               border-2
+               border-[#c7da30]
+               rounded-full
+               bg-transparent
+               text-[#38b6ff]
+               font-bold
+               text-[14px]
+               sm:text-[15px]
+
+               transition">
+        No
+    </button>
+
+</div>
 
     </div>
+
+</div>
 
 
 
