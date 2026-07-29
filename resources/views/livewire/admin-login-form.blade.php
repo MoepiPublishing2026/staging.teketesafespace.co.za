@@ -2,23 +2,37 @@
 
     <!-- Header -->
      <header
-    class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
     <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
         <!-- Logo -->
-        <div>
-            <img src="{{ asset('images/logo.png') }}"
-                alt="Safe Space Logo"
-                class="w-[143px] h-auto flex-shrink-0">
-        </div>
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
 
         <!-- Top Right Links -->
         <div class="flex items-center gap-4">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-10"
-                style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
 
                 <a href="javascript:void(0);"
                     onclick="window.history.back();"
@@ -175,7 +189,13 @@
 </script>
 
     <!-- Main Section -->
-    <div class="flex-grow bg-white flex flex-col font-[Montserrat]" style="padding-top: 140px; padding-bottom: 80px; width: 100%;">
+  <div class="min-h-screen bg-white flex flex-col font-[Montserrat]
+            justify-center items-center
+            w-full
+            pt-[90px]
+            sm:pt-[100px]
+            md:pt-[90px]
+            lg:pt-[100px]">
 
         <!-- Main Content -->
         <div class="w-full max-w-2xl px-4 mx-auto">
@@ -217,7 +237,7 @@
             <div class="border-4 border-[#c7da30] rounded-2xl p-8 bg-white">
                 <div class="w-full">
                     <form wire:submit.prevent="login" class="flex flex-col gap-5">
-                            <input type="text" id="username" wire:model.live="username" placeholder="Username"
+                            <input type="text" id="username" wire:model.live="username" placeholder="USERNAME"
                                    class="w-full py-4 px-4 text-gray-700 rounded-lg focus:outline-none"
                                    style="border: 3px solid #c7da30; font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: white;">
                             @error('username') 
@@ -225,7 +245,7 @@
                             @enderror
 
                             <div>
-                                <input type="password" id="password" wire:model.live="password" placeholder="Password"
+                                <input type="password" id="password" wire:model.live="password" placeholder="PASSWORD"
                                        class="w-full py-4 px-4 text-gray-700 rounded-lg focus:outline-none"
                                        style="border: 3px solid #c7da30; font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: white;">
                                 @error('password') 
