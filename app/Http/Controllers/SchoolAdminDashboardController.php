@@ -408,7 +408,7 @@ class SchoolAdminDashboardController extends AdminController
         $report = Report::findOrFail($reportId);
 
         // Security check: ensure report belongs to admin's school
-        if ($report->school_name !== $user->school_name) {
+        if (! $user->canAccessSchoolReport($report)) {
             abort(403, 'Unauthorized');
         }
 

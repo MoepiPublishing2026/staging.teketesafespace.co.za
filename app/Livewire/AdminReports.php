@@ -91,7 +91,7 @@ class AdminReports extends Component
         $user   = Auth::user();
         $report = Report::findOrFail($reportId);
 
-        if ($user->role === 'school' && $report->school_name !== $user->school_name) {
+        if (! $user->canAccessSchoolReport($report)) {
             $this->dispatch('toast', type: 'danger', message: 'You do not have permission to update this report.');
             return;
         }
@@ -124,7 +124,7 @@ class AdminReports extends Component
             $user   = Auth::user();
             $report = $this->reportToUpdate;
 
-            if ($user->role === 'school' && $report->school_name !== $user->school_name) {
+            if (! $user->canAccessSchoolReport($report)) {
                 $this->dispatch('toast', type: 'danger', message: 'Unauthorized action.');
                 $this->showReasonModal = false;
                 return;
@@ -215,7 +215,7 @@ class AdminReports extends Component
         $user   = Auth::user();
         $report = Report::with(['abuseType', 'subtype', 'user'])->find($reportId);
 
-        if ($user->role === 'school' && $report && $report->school_name !== $user->school_name) {
+        if ($report && ! $user->canAccessSchoolReport($report)) {
             $this->dispatch('toast', type: 'danger', message: 'You do not have permission to view this report.');
             return;
         }
