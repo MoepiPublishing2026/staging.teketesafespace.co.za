@@ -16,17 +16,38 @@
                         class="w-[170px]">
                 </a>
 
-                <nav class="hidden lg:flex items-center gap-[2vw] font-medium" style="font-family: 'Montserrat', sans-serif;">                    
-                    <a href="{{ route('landing-page') }}" class="text-black text-[1.3vw] font-bold transition-colors hover:text-[#c7da30]">Home</a>
-                    <a href="{{ route('about-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">About Us</a>
-                    <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+                    font-[Montserrat]
+                    text-[18px]
+                    lg:text-[18px]
+                    xl:text-[20px] ">
 
+
+                    <a href="{{ route('landing-page') }}"
+                        class="text-black transition-colors font-bold hover:!text-[#c7da30]">
+                        Home
+                    </a>
+
+                    <a href="{{ route('about-us') }}"
+                        class="text-black transition-colors hover:!text-[#c7da30]">
+                        About Us
+                    </a>
+                    <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
                             Workshops
-                    </a> 
-                    <a href="{{ route('contact-us') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30]">Contact Us</a>
-                  <a href="{{ route('news') }}" class="text-black text-[1.3vw] transition-colors hover:text-[#c7da30] whitespace-nowrap">News</a>
+                        </a>
 
-                </nav>
+                    <a href="{{ route('news') }}"
+                        class="text-black transition-colors hover:!text-[#c7da30]">
+                        News
+                    </a>
+
+                    <a href="{{ route('contact-us') }}"
+                        class="text-black transition-colors hover:!text-[#c7da30]">
+                        Contact Us
+                    </a>
+
+                </div>
 
                 <div class="lg:hidden ml-auto -mt-2">
                     <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
@@ -53,7 +74,7 @@
                     </button>
 
                 </div>
-                <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Home</a>
+                <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 mt-10 hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
                 <!-- <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
 
@@ -87,18 +108,18 @@
                 
             <div class="w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[8vw] lg:flex-row lg:gap-[1vw]">
                 <button wire:click="redirectToReportAbuse"
-                   class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[0.9vw] lg:font-medium lg:border-[0.27vw]">
+                   class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-medium lg:border-[0.27vw]">
                     Report Now
                 </button>
 
                 <button wire:click="redirectToStatusCheck"
-                   class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[0.9vw] lg:font-medium lg:border-[0.27vw]">
+                   class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-medium lg:border-[0.27vw]">
                     Check Status
                 </button>
 
                 <button wire:click="redirectToAdminLogin"
-                    class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[0.9vw] lg:font-medium lg:border-[0.27vw]">
-                    Administrator
+                    class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-medium lg:border-[0.27vw]">
+                    Administrators
                 </button>
             </div>
         </section>

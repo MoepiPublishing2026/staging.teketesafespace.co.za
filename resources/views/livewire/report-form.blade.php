@@ -226,6 +226,10 @@
                                 @error('schoolName')
                                     <p class="text-red-600 text-[12px]">{{ $message }}</p>
                                 @enderror
+                                
+                                @error('schoolId')
+                                    <p class="text-red-600 text-[12px]">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
