@@ -1,17 +1,23 @@
 @php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
-<div class="contact-page-livewire-container overflow-x-hidden w-full min-h-screen flex flex-col">
-
-    <style>
-        .store-btn {
+<div class="contact-page-livewire-container overflow-x-hidden w-full min-h-screen flex flex-col justify-between">
+                <style>
+        .zoom-stabilize {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform;
+        }
+      .store-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 10px;
             background-color: #000;
             color: #fff;
-            border-radius: 8px;
-            padding: 6px 10px;
-            width: 100px;
-            height: 38px;
+            border-radius: 10px;
+            padding: 8px 14px;
+            width: 150px;
+            height: 50px;
             text-decoration: none;
             box-sizing: border-box;
             transition: opacity 0.2s;
@@ -21,8 +27,8 @@
         .store-btn:hover { opacity: 0.8; }
 
         .store-btn .store-icon {
-            width: 16px;
-            height: 16px;
+            width: 22px;
+            height: 22px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -42,8 +48,8 @@
             line-height: 1.15;
         }
 
-        .store-btn .store-text .top-line {
-            font-size: 6.5px;
+       .store-btn .store-text .top-line  {
+            font-size: 8px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 400;
             color: #fff;
@@ -51,7 +57,7 @@
         }
 
         .store-btn .store-text .bottom-line {
-            font-size: 10px;
+            font-size: 14px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
             color: #fff;
@@ -77,104 +83,169 @@
     </style>
 
     <!-- Header -->
-<header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm font-[Montserrat]">
-    <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
-        <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
+    <header
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
-        <div class="flex items-center gap-8">
-            <!-- Desktop Nav -->
-            <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
-                <a href="{{ url('/') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ url('/about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
-                 <a href="{{ $workshopBookingUrl }}/workshops" class="text-black transition-colors hover:text-[#c7da30]">
+    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
-                            Workshops
+        <!-- Logo -->
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
+
+        <!-- Top Right Links -->
+        <div class="flex items-center gap-4">
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
+
+
+                <a href="{{ route('landing-page') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Home
+                </a>
+
+                <a href="{{ route('about-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    About Us
+                </a>
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
                     </a>
-                <a href="{{ url('/contact-us') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
-                <a href="{{ route('news') }}" class="text-black hover:text-[#c7da30] transition-colors">News</a>
 
-            </nav>
+                 <a href="{{ route('news') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    News
+                </a>
 
-            <!-- Mobile Hamburger -->
+                <a href="{{ route('contact-us') }}"
+                    class="text-black font-bold transition-colors hover:!text-[#c7da30]">
+                    Contact Us
+                </a>
+
+            </div>
+
+            <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
-                <button id="mobile-menu-button" class="p-2 rounded-md text-black hover:bg-gray-100 transition">
+              <button id="mobile-menu-button"
+                        
+                        class="p-2 rounded-md text-black hover:bg-gray-100">
+
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
+
                 </button>
             </div>
+
         </div>
+
     </div>
 </header>
 
+
 <!-- Mobile Menu -->
-<div id="mobile-menu" class="fixed inset-0 z-[60] hidden md:hidden">
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
-    <div id="mobile-menu-slide"
-        class="absolute top-0 right-0 h-full w-64 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out">
-        <div class="flex justify-between items-center p-4 border-b">
-            <img src="{{ asset('images/logo.png') }}" class="h-8 w-auto">
-            <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded-full transition">
-                <svg class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+ <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
+    <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+    
+  <div id="mobile-menu-slide"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-in-out">    
+        <div class="flex items-center justify-start px-4 pt-16 pb-4">
+            <button type="button" onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none">
+                <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
+        
         <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-                <a href="{{ route('landing-page') }}"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('about-us') }}"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">About Us</a>
-                     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors">Workshops</a>
-                
-                <a href="{{ route('contact-us') }}"
-                    class="block py-3 text-black hover:text-[#c7da30] font-bold  transition-colors">Contact Us</a>
-                 <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3  text-black hover:text-[#c7da30] transition-colors border-b border-gray-100">News</a>
+            <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Home</a>
+            <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">About Us</a>
+            <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Workshops</a>
+            <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff] border-b border-gray-100">News</a>
+           <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-[#38b6ff]">Contact Us</a>
 
-            </nav>
+        </nav>
     </div>
 </div>
-
     <!-- PAGE CONTENT -->
-<section class="pt-24 md:pt-20 pb-10 px-4 sm:px-10 lg:px-16 relative flex-1">      
-      <div class="relative max-w-[1280px] mx-auto min-h-[700px]">
+   <section class="pt-30 sm:pt-36 md:pt-40 pb-4 px-4 sm:px-10 lg:px-16 relative overflow-hidden">
+          <div class="relative max-w-[1280px] mx-auto min-h-[500px]">
 
-            <!-- LEFT CONTENT — relative so sun can be absolute inside -->
             <div class="relative z-20 max-w-[500px]">
 
-                <!-- Sun graphic: top-right of the contact info block, mobile only -->
                 <img src="{{ asset('images/futuristic digital frame tech.png') }}"
-                    class="lg:hidden absolute top-[450px] right-[-150px] w-[250px] h-auto pointer-events-none z-0 opacity-90">
+    class="lg:hidden absolute top-[540px] right-[-150px] max-h-[320px] w-[250px] object-cover object-top pointer-events-none z-0 opacity-90">       <h1 class="font-[Montserrat] font-bold text-[40px] sm:text-[50px] text-[#000000] text-center lg:text-left underline decoration-[#c7da30] decoration-[7px] underline-offset-4 mb-8">CONTACT US</h1>
+              <br>
 
-                <h1 class="font-[Montserrat] font-bold text-[40px] sm:text-[50px] text-[#000000]">CONTACT US</h1>
-                <div class="w-[200px] sm:w-[345px] h-[7px] bg-[#c7da30] mt-2 mb-8"></div>
-                <br>
+              <div class="lg:hidden flex flex-col gap-3 mb-6">
+    <div class="flex items-center gap-6 border border-gray-300 bg-white rounded-2xl px-5 py-2 w-full">
+        <div class="w-[40px] h-[40px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-[#c7da30]" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </div>
+        <span class="text-[16px] text-[#000000]">087 265 6716</span>
+    </div>
 
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="{{ asset('images/phone icon.png') }}" class="w-[26px] h-[26px]">
-                    <span class="text-[16px] sm:text-xl text-[#000000]">087 265 6716</span>
+    <div class="flex items-center gap-6 border border-gray-300 bg-white rounded-2xl px-5 py-2 w-full">
+        <div class="w-[40px] h-[40px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-[#c7da30]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-4V6l8 5 8-4v2z"/></svg>
+        </div>
+        <a href="mailto:support@tekete.co.za" class="text-[16px] text-[#000000] hover:text-[#c7da30] break-all">support@tekete.co.za</a>
+    </div>
+
+    <div class="flex items-center gap-6 border border-gray-300 bg-white rounded-2xl px-5 py-2 w-full">
+        <div class="w-[40px] h-[40px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
+            <svg class="w-5 h-5 text-[#c7da30]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-4V6l8 5 8-4v2z"/></svg>
+        </div>
+        <a href="mailto:sales@teketesafespace.co.za" class="text-[16px] text-[#000000] hover:text-[#c7da30] break-all">sales@teketesafespace.co.za</a>
+    </div>
+</div>
+                <div class="hidden lg:block">
+                    <div class="flex items-center gap-10 mb-4">
+                        <img src="{{ asset('images/phone icon.png') }}" class="w-[26px] h-[26px]">
+                        <span class="text-xl text-[#000000]">087 265 6716</span>
+                    </div>
+
+                    <div class="flex items-center gap-10 mb-4">
+                        <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px]">
+                        <a href="mailto:support@tekete.co.za" class="text-xl text-[#000000] hover:text-[#c7da30]">support@tekete.co.za</a>
+                    </div>
+
+                    <div class="flex items-center gap-10 mb-8">
+                        <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px]">
+                        <a href="mailto:sales@teketesafespace.co.za" class="text-xl text-[#000000] hover:text-[#c7da30]">sales@teketesafespace.co.za</a>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-4 mb-4">
-                    <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px]">
-                    <a href="mailto:support@tekete.co.za" class="text-[16px] sm:text-xl text-[#000000] hover:text-[#c7da30]">support@tekete.co.za</a>
-                </div>
-
-                <div class="flex items-center gap-4 mb-8">
-                    <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px]">
-                    <a href="mailto:sales@teketesafespace.co.za" class="text-[16px] sm:text-xl text-[#000000] hover:text-[#c7da30]">sales@teketesafespace.co.za</a>
-                </div>
-
                 <br>
                 <br>
-                <h2 class="font-[Montserrat] font-medium text-[18px] sm:text-[20px] text-[#000000] mb-4">
-                    Download the Tekete SafeSpace App
+             <h2 class="font-[Montserrat] text-[18px] sm:text-[24px] text-[#000000] mb-4 text-center lg:text-left">
+                        Download the Tekete Safe Space App
                 </h2>
 
                 <!-- ===== MOBILE BUTTONS ===== -->
-                <div class="lg:hidden relative pb-4">
-                    <div class="flex flex-row gap-2">
+                <div class="lg:hidden relative mt-10 pb-4">
+                 <div class="flex flex-col items-center gap-3">
 
                         <!-- Apple -->
                         <a href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank" class="store-btn">
@@ -235,9 +306,7 @@
 
                 <!-- Mobile Phone image -->
                 <div class="lg:hidden flex mt-2 mb-2">
-                    <img src="{{ asset('images/social media phone1.png') }}" 
-                    class="relative left-0 top-[-100px] w-[320px] sm:w-[420px] h-auto">
-                </div>
+<img src="{{ asset('images/social media phone1.png') }}" class="hidden lg:block absolute top-[320px] right-[-80px] w-[260px] sm:w-[320px] h-auto pointer-events-none z-10">                </div>
 
                 <!-- ===== DESKTOP BUTTONS ===== -->
                 <div class="hidden lg:flex flex-row gap-4 items-center pt-2">
@@ -301,10 +370,10 @@
             </div>
 
             <!-- Desktop Graphics -->
-            <div class="hidden lg:block absolute right-[-320px] top-20 z-10 pointer-events-none">
-                <img src="{{ asset('images/futuristic digital frame tech.png') }}" class="w-[400px] xl:w-[459px] h-auto">
-            </div>
-            <div class="hidden lg:block absolute right-[200px] -top-20 z-20 pointer-events-none">
+           <div class="hidden lg:block absolute right-[-300px] top-20 z-10 pointer-events-none">
+    <img src="{{ asset('images/futuristic digital frame tech.png') }}" class="w-[460px]  h-[400px] object-cover object-left [clip-path:inset(0_50%_0_0)]">
+</div>
+            <div class="hidden lg:block absolute right-[120px] -top-36 z-20 pointer-events-none">
                 <img src="{{ asset('images/social media phone1.png') }}" class="w-[400px] xl:w-[540px] h-auto">
             </div>
 
@@ -312,8 +381,7 @@
     </section>
 
     <!-- FOOTER -->
-<footer class="w-full bg-[#808080] text-white py-6 mt-12">
-
+<footer class="w-full bg-[#808080] text-white py-6 -mt-18">
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-[14px] sm:text-[16px]"
     style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
             <div>
@@ -342,27 +410,46 @@
         </div>
     </footer>
 
-    <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const slide = document.getElementById('mobile-menu-slide');
-            const isHidden = menu.classList.contains('hidden');
-            if (isHidden) {
-                menu.classList.remove('hidden');
+   <script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const slide = document.getElementById('mobile-menu-slide');
+        
+        if (!menu || !slide) return;
+
+        const isHidden = menu.classList.contains('hidden');
+        
+        if (isHidden) {
+            // Show background overlay and slide panel in sequence
+            menu.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Small timeout to allow display:block to apply before triggering CSS transition
+            setTimeout(() => {
                 slide.classList.remove('translate-x-full');
                 slide.classList.add('translate-x-0');
-                document.body.style.overflow = 'hidden';
-            } else {
-                slide.classList.remove('translate-x-0');
-                slide.classList.add('translate-x-full');
-                setTimeout(() => menu.classList.add('hidden'), 300);
-                document.body.style.overflow = '';
-            }
+            }, 10);
+        } else {
+            // Slide panel away first, then hide the wrapper
+            slide.classList.remove('translate-x-0');
+            slide.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                menu.classList.add('hidden');
+            }, 300); // Matches the 300ms duration-300 transition time
         }
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.getElementById('mobile-menu-button');
-            if (btn) btn.addEventListener('click', toggleMobileMenu);
-        });
-    </script>
+    }
+
+    // Re-initialize or attach listener safely on page load and Livewire navigation
+    document.addEventListener('DOMContentLoaded', function() {
+        const btn = document.getElementById('mobile-menu-button');
+        if (btn) {
+            // Remove old listeners to prevent stacking duplicates
+            btn.removeEventListener('click', toggleMobileMenu);
+            btn.addEventListener('click', toggleMobileMenu);
+        }
+    });
+</script>
 
 </div>
