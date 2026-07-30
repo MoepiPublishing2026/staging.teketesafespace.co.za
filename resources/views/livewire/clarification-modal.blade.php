@@ -2,67 +2,114 @@
 
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    <!-- ================= HEADER ================= -->
-    <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
-        <div class="flex justify-between items-center px-4 sm:px-8 py-2 max-w-7xl mx-auto">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[110px] h-auto">
+        <header
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
-            <div class="flex items-center gap-4">
-                <!-- Desktop Nav -->
-                <div class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
-                    <a href="javascript:void(0);" onclick="window.history.back();"
-                        class="hover:text-[#c7da30] transition-colors">Back</a>
-                    <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
-                    <a href="{{ route('about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
-                    <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
-                </div>
+    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
-                <!-- Mobile Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button"
-                        class="p-2 rounded-md text-black hover:bg-gray-100 focus:ring-2 focus:ring-[#c7da30]">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
+        <!-- Logo -->
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
+
+        <!-- Top Right Links -->
+        <div class="flex items-center gap-4">
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
+
+               <a href="{{ route('landing-page') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Home
+                </a>
+
+                <a href="{{ route('about-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    About Us
+                </a>
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
+                    </a>
+
+                 <a href="{{ route('news') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    News
+                </a>
+
+                <a href="{{ route('contact-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Contact Us
+                </a>
+
             </div>
-        </div>
-    </header>
 
-    <!-- ================= MOBILE MENU ================= -->
-    <div id="mobile-menu" class="fixed inset-0 z-50 hidden md:hidden">
-        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+            <!-- Mobile Hamburger Menu -->
+            <div class="md:hidden">
+              <button id="mobile-menu-button"
+                        onclick="toggleMobileMenu()"
+                        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
 
-        <div class="absolute top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300">
-            <div class="flex justify-between items-center p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" class="h-8">
-                <button onclick="toggleMobileMenu()" class="p-2 hover:bg-gray-100 rounded">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
+
                 </button>
             </div>
 
-            <nav class="mt-6 px-4 space-y-4 text-[17px] font-[Montserrat]">
-                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
-                    class="block text-black hover:text-[#c7da30] transition-colors">Back</a>
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                    class="block text-black hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('landing-page') }}#about" onclick="toggleMobileMenu()"
-                    class="block text-black hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="{{ route('landing-page') }}#section" onclick="toggleMobileMenu()"
-                    class="block text-black hover:text-[#c7da30] transition-colors">Contact Us</a>
-            </nav>
         </div>
+
     </div>
+</header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
+    <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+    
+  <div id="mobile-menu-slide"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-in-out">    
+        <div class="flex items-center justify-start px-4 pt-16 pb-4">
+            <button type="button" onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none">
+                <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+            <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Home</a>
+            <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">About Us</a>
+            <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Workshops</a>
+            <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff] border-b border-gray-100">News</a>
+           <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff]">Contact Us</a>
+
+        </nav>
+    </div>
+</div>
 
 
 
 
-    <div class="flex-grow bg-white pt-28 pb-12 px-4 font-[Montserrat]">
+    <div class="flex-grow bg-white pt-40 pb-12 px-4 font-[Montserrat]">
         @if ($showSuccess)
             <div wire:key="success-message"
                 class="mb-6 p-6 bg-green-100 border-l-4 border-green-500 text-green-700 shadow-md rounded-lg flex justify-between items-center ">
@@ -78,24 +125,20 @@
 
 
             <div class="bg-white border-4 border-[#c7da30] rounded-2xl shadow-lg overflow-hidden">
-                <div class="p-6 border-b-2 border-gray-100">
-                    <h2 class="text-2xl font-bold text-gray-800 uppercase">Official Clarification Statement</h2>
-                    <p class="text-sm text-gray-500">Case Reference: <span
-                            class="font-bold text-[#c7da30]">{{ $caseNumber }}</span></p>
+                <div class="p-6 border-b-2 border-gray-200 space-y-2">
+                    <h2 class="text-2xl font-bold text-black uppercase">Official Clarification Statement</h2>
+                    <p class="text-s font-small text-black">Case Reference: <span
+                            class="font-medium text-[#c7da30]">{{ $caseNumber }}</span></p>
                 </div>
 
                 <div class="bg-white p-8">
                     <div class="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500">
                         <div class="flex">
                             <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                                
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-amber-800">
+                                <p class="text-sm text-amber-500">
                                     <strong>Notice:</strong> This report was flagged during review. Please provide a
                                     detailed explanation.
                                 </p>
@@ -106,7 +149,7 @@
                     <form wire:submit.prevent="submitClarification">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Your Clarification /
+                                <label class="block text-s font-small text-black mb-2">Your Clarification /
                                     Explanation</label>
                                 <div>
                                     <textarea wire:model="clarificationText" wire:key="clarification-input-{{ $showSuccess ? 'success' : 'reset' }}"
@@ -118,10 +161,10 @@
                                 </div>
 
                                 <div class="flex items-center justify-between pt-4 border-t">
-                                    <a href="/" class="text-sm text-black">Cancel and
+                                    <a href="/" class="text-s font-small text-black">Cancel and
                                         exit</a>
                                     <button type="submit"
-                                        class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-[#c7da30] hover:bg-[#b8cc2a] transition">
+                                        class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-s font-small rounded-md text-white bg-[#c7da30] hover:bg-[#b8cc2a] transition">
                                         Submit Official Statement
                                     </button>
                                 </div>
@@ -162,20 +205,30 @@
     </footer>
 </div>
 <script>
-    function toggleMobileMenu() {
-        const menu = document.getElementById('mobile-menu');
-        const isHidden = menu.classList.contains('hidden');
-        if (isHidden) {
-            menu.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        } else {
-            menu.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }
-    }
+       function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const slide = document.getElementById('mobile-menu-slide');
+            
+            if (!menu || !slide) return;
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const btn = document.getElementById('mobile-menu-button');
-        if (btn) btn.addEventListener('click', toggleMobileMenu);
-    });
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                
+                setTimeout(() => {
+                    slide.classList.remove('translate-x-full');
+                    slide.classList.add('translate-x-0');
+                }, 10);
+            } else {
+                slide.classList.remove('translate-x-0');
+                slide.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+                
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                }, 300);
+            }
+        }
 </script>

@@ -22,7 +22,7 @@
                 </div>
                 <div class="md:hidden">
                     <button id="mobile-menu-button"
-                        class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
+                        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30]">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 6h16M4 12h16M4 18h16" />
@@ -34,35 +34,68 @@
     </header>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 z-50 hidden md:hidden">
-        <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
-        <div
-            class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
-            <div class="flex items-center justify-between p-4 border-b">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="h-8">
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-black hover:bg-gray-100">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <nav class="mt-8 px-4">
-                <a href="javascript:void(0);" onclick="window.history.back(); toggleMobileMenu();"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Back</a>
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Home</a>
-                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">About Us</a>
-                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
-                    class="block py-3 text-black hover:text-[#c7da30] transition-colors"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">Contact Us</a>
-            </nav>
+    <!-- ================= MOBILE MENU ================= -->
+<div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
+
+    <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+
+    <div id="mobile-menu-slide"
+        class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-in-out">
+
+        <div class="flex items-center justify-start px-4 pt-16 pb-4">
+            <button onclick="toggleMobileMenu()"
+                class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
+                <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="3"
+                          d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
         </div>
+
+        <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+
+            <a href="javascript:void(0);"
+               onclick="window.history.back(); toggleMobileMenu();"
+               class="block py-3 text-[#38b6ff]">
+                Back
+            </a>
+
+            <a href="{{ route('landing-page') }}"
+               onclick="toggleMobileMenu()"
+               class="block py-3 text-[#38b6ff]">
+                Home
+            </a>
+
+            <a href="{{ route('about-us') }}"
+               onclick="toggleMobileMenu()"
+               class="block py-3 text-[#38b6ff]">
+                About Us
+            </a>
+
+            <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+               onclick="toggleMobileMenu()"
+               class="block py-3 text-[#38b6ff]">
+                Workshops
+            </a>
+
+            <a href="{{ route('news') }}"
+               onclick="toggleMobileMenu()"
+               class="block py-3 text-[#38b6ff]">
+                News
+            </a>
+
+            <a href="{{ route('contact-us') }}"
+               onclick="toggleMobileMenu()"
+               class="block py-3 text-[#38b6ff]">
+                Contact Us
+            </a>
+
+        </nav>
+
     </div>
+</div>
 
     <!-- Success Modal -->
     @if ($showSuccessModal)
@@ -642,23 +675,41 @@
         })();
 
         function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            const isHidden = mobileMenu.classList.contains('hidden');
-            if (isHidden) {
-                mobileMenu.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            } else {
-                mobileMenu.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-            }
-        }
+    const menu = document.getElementById('mobile-menu');
+    const slide = document.getElementById('mobile-menu-slide');
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', toggleMobileMenu);
-            }
-        });
+    if (!menu || !slide) return;
+
+    if (menu.classList.contains('hidden')) {
+
+        menu.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => {
+            slide.classList.remove('translate-x-full');
+            slide.classList.add('translate-x-0');
+        }, 10);
+
+    } else {
+
+        slide.classList.remove('translate-x-0');
+        slide.classList.add('translate-x-full');
+
+        document.body.style.overflow = '';
+
+        setTimeout(() => {
+            menu.classList.add('hidden');
+        }, 300);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const btn = document.getElementById('mobile-menu-button');
+
+    if (btn) {
+        btn.addEventListener('click', toggleMobileMenu);
+    }
+});
     </script>
 
 </div>
