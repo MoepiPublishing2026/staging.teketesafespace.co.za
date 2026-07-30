@@ -600,62 +600,56 @@ const subtypesByType = {
     @endforeach
 };
 
+// ── Subtype filtering: shared state, declared once at top level ──
+let allSubtypeOptions = null;
+let typeSelect, subtypeSelect;
+
 function filterSubtypes() {
-                const selectedType = typeSelect.value;
+    if (allSubtypeOptions === null) {
+        allSubtypeOptions = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
+    }
 
-                const options = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
-                const placeholder = subtypeSelect.options[0]; // "All Subtypes"
+    const selectedType = typeSelect.value;
+    const placeholder = subtypeSelect.options[0];
 
-                // Separate "Other" and non-Other options
-                const seenOtherTypes = new Set();
-                const regular = [];
-                const others  = [];
+    const seenOtherTypes = new Set();
+    const regular = [];
+    const others = [];
 
-                options.forEach(function(opt) {
-                    const isOther = opt.text.trim().toLowerCase() === 'other';
-                    const optType = opt.getAttribute('data-type');
+    allSubtypeOptions.forEach(function (opt) {
+        const isOther = opt.text.trim().toLowerCase() === 'other';
+        const optType = opt.getAttribute('data-type');
 
-                    if (!selectedType) {
-                        // No type selected: show all non-Others, show only one Other total
-                        if (isOther) {
-                            if (!seenOtherTypes.has('global')) {
-                                seenOtherTypes.add('global');
-                                others.push(opt);
-                            }
-                        } else {
-                            regular.push(opt);
-                        }
-                    } else {
-                        // Type selected: show only matching subtypes
-                        if (String(optType) === String(selectedType)) {
-                            if (isOther) {
-                                others.push(opt);
-                            } else {
-                                regular.push(opt);
-                            }
-                        }
-                    }
-                });
+        if (!selectedType) {
+            // No type selected: show all non-Others, only ONE "Other" total
+            if (isOther) {
+                if (!seenOtherTypes.has('global')) {
+                    seenOtherTypes.add('global');
+                    others.push(opt.cloneNode(true));
+                }
+            } else {
+                regular.push(opt.cloneNode(true));
+            }
+        } else if (String(optType) === String(selectedType)) {
+            // Type selected: show only that type's subtypes (including its own "Other")
+            if (isOther) {
+                others.push(opt.cloneNode(true));
+            } else {
+                regular.push(opt.cloneNode(true));
+            }
+        }
+    });
 
-                // Rebuild the select: placeholder → regular options → Others at bottom
-                subtypeSelect.innerHTML = '';
-                subtypeSelect.appendChild(placeholder);
-
-                regular.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
-
-                others.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
+    subtypeSelect.innerHTML = '';
+    subtypeSelect.appendChild(placeholder.cloneNode(true));
+    regular.forEach(opt => subtypeSelect.appendChild(opt));
+    others.forEach(opt => subtypeSelect.appendChild(opt));
 }
 
-// Run on page load (in case filters are already active)
-document.addEventListener('DOMContentLoaded', filterSubtypes);
-
 document.addEventListener('DOMContentLoaded', function () {
+    typeSelect    = document.querySelector('select[name="type_id"]');
+    subtypeSelect = document.getElementById('subtypeSelect');
+
     const filterForm = document.getElementById('filterForm');
     let filterDebounce = null;
 
@@ -672,14 +666,12 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshBtn.addEventListener('click', function () {
                 filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
                 filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
-                if (typeof filterSubtypes === 'function') filterSubtypes();
+                filterSubtypes();
                 filterForm.submit();
             });
         }
     }
-    
-    
-    
+
     const anonSelect = document.querySelector('select[name="is_anonymous"]');
     const nameInput  = document.querySelector('input[name="full_name"]');
 
@@ -696,12 +688,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (anonSelect) anonSelect.addEventListener('change', syncAnonNameState);
     syncAnonNameState();
-    
 
-    // ── Subtype filtered by report type ──────────────────────────
-    const typeSelect    = document.querySelector('select[name="type_id"]');
-    const subtypeSelect = document.getElementById('subtypeSelect');
-
+    // ── School autocomplete ──────────────────────────────────────
     (function initSchoolAutocomplete() {
         const API_ENDPOINT = '/api/schools';
         const LS_KEY = 'schools_cache_v3';
@@ -880,58 +868,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     })();
 
-function filterSubtypes() {
-                const selectedType = typeSelect.value;
-
-                const options = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
-                const placeholder = subtypeSelect.options[0]; // "All Subtypes"
-
-                // Separate "Other" and non-Other options
-                const seenOtherTypes = new Set();
-                const regular = [];
-                const others  = [];
-
-                options.forEach(function(opt) {
-                    const isOther = opt.text.trim().toLowerCase() === 'other';
-                    const optType = opt.getAttribute('data-type');
-
-                    if (!selectedType) {
-                        // No type selected: show all non-Others, show only one Other total
-                        if (isOther) {
-                            if (!seenOtherTypes.has('global')) {
-                                seenOtherTypes.add('global');
-                                others.push(opt);
-                            }
-                        } else {
-                            regular.push(opt);
-                        }
-                    } else {
-                        // Type selected: show only matching subtypes
-                        if (String(optType) === String(selectedType)) {
-                            if (isOther) {
-                                others.push(opt);
-                            } else {
-                                regular.push(opt);
-                            }
-                        }
-                    }
-                });
-
-                // Rebuild the select: placeholder → regular options → Others at bottom
-                subtypeSelect.innerHTML = '';
-                subtypeSelect.appendChild(placeholder);
-
-                regular.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
-
-                others.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
-}
-
     typeSelect.addEventListener('change', filterSubtypes);
     filterSubtypes();
 });
@@ -947,7 +883,6 @@ function closeLightbox() {
     lb.style.display = 'none';
     document.getElementById('lightboxImg').src = '';
 }
-
 </script>
 
     <div id="lightbox" onclick="closeLightbox()"
