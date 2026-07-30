@@ -180,7 +180,7 @@
                rounded-full
                bg-transparent
                text-[#38b6ff]
-               font-bold
+               
                text-[14px]
                sm:text-[15px]
     
@@ -200,7 +200,7 @@
                rounded-full
                bg-transparent
                text-[#38b6ff]
-               font-bold
+               
                text-[14px]
                sm:text-[15px]
 

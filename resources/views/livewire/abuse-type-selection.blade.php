@@ -32,11 +32,7 @@
             xl:text-[20px]
             ">
 
-                <a href="javascript:void(0);"
-                    onclick="window.history.back();"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Back
-                </a>
+                
 
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
@@ -46,6 +42,14 @@
                 <a href="{{ route('about-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
+                </a>
+                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
+                    </a>
+
+                 <a href="{{ route('news') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    News
                 </a>
 
                 <a href="{{ route('contact-us') }}"
