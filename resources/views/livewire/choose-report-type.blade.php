@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full"> <!-- Header -->
     <header
-    class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm">
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
     <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
@@ -25,14 +25,15 @@
         <div class="flex items-center gap-4">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-10"
-                style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+            
+             <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
 
-                <a href="javascript:void(0);"
-                    onclick="window.history.back();"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Back
-                </a>
+               
 
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
@@ -42,6 +43,14 @@
                 <a href="{{ route('about-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
+                </a>
+                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
+                    </a>
+
+                 <a href="{{ route('news') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    News
                 </a>
 
                 <a href="{{ route('contact-us') }}"
@@ -148,7 +157,7 @@
            uppercase
            text-black
            text-center
-           text-[15px]
+           text-[20px]
            sm:text-[18px]
            md:text-[22px]
            lg:text-[30px]
