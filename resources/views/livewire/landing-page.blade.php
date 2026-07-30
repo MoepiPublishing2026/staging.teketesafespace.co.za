@@ -59,32 +59,61 @@
             </div>
 
             <div x-show="menuOpen"
-                x-transition
-                @click.away="menuOpen = false"
-                class="fixed top-0 right-0 w-[265px] h-full bg-white shadow-lg flex flex-col items-start p-3 z-50 lg:hidden">
-
-                <div class="flex items-center justify-between w-full mb-4">
+    x-transition:enter="transform transition ease-in-out duration-300"
+    x-transition:enter-start="translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transform transition ease-in-out duration-300"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="translate-x-full"
+    @click.away="menuOpen = false"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 lg:hidden">
     
-                    
+               <div class="flex items-center justify-start px-4 pt-16 pb-4">
+    <button @click="menuOpen = false"
+        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
+        <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+</div>
 
-                    <button @click="menuOpen = !menuOpen" class="focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-[#c7da30]">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+<nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
 
-                </div>
-                <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 mt-10 hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('about-us') }}" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 hover:text-[#c7da30] transition-colors">About Us</a>
-                <!-- <a href="{{ $workshopBookingUrl }}/workshops" class="text-black text-[1.1vw] transition-colors hover:text-[#c7da30]">
+   <a href="{{ route('landing-page') }}"
+    @click="menuOpen = false"
+    class="block py-3 font-bold text-[#38b6ff]">
+    Home
+</a>
 
-                        Workshops
-                </a> -->
-                <a href="{{ $workshopBookingUrl }}/workshops" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Workshops</a>
-                <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="text-[#38b6ff] text-[17px] mb-4 hover:text-[#c7da30] transition-colors">Contact Us</a>
-                <a href="{{ route('news') }}"  @click="menuOpen = false" class="text-[#38b6ff] text-[17px] hover:text-[#c7da30] transition-colors">News</a>
+<a href="{{ route('about-us') }}"
+    @click="menuOpen = false"
+    class="block py-3 text-[#38b6ff]">
+    About Us
+</a>
 
-            </div>
+<a href="{{ $workshopBookingUrl }}/workshops"
+    @click="menuOpen = false"
+    class="block py-3 text-[#38b6ff]">
+    Workshops
+</a>
+
+<a href="{{ route('news') }}"
+    @click="menuOpen = false"
+    class="block py-3 text-[#38b6ff]">
+    News
+</a>
+
+<a href="{{ route('contact-us') }}"
+    @click="menuOpen = false"
+    class="block py-3 text-[#38b6ff]">
+    Contact Us
+</a>
+
+
+</nav>
         </header>
 
        <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-24 pb-8 lg:block lg:px-0 lg:pt-0 overflow-hidden">

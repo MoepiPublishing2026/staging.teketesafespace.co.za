@@ -17,7 +17,7 @@
                 </nav>
 
                 <div class="md:hidden">
-                    <button id="mobile-menu-button" type="button" class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30] cursor-pointer">
+                    <button id="mobile-menu-button" type="button" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30] cursor-pointer">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -40,6 +40,10 @@
             </div>
             
             <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+                 <a href="javascript:void(0);"
+       onclick="window.history.back(); toggleMobileMenu();"
+       class="block py-3 text-[#38b6ff]">Back</a>
+
                 <a href="{{ route('landing-page') }}"
                     class="block py-3 text-[#38b6ff]">Home</a>
                 <a href="{{ route('about-us') }}"
@@ -48,7 +52,7 @@
                     class="block py-3 text-[#38b6ff]">Workshops</a>
                 <a href="{{ route('contact-us') }}"
                     class="block py-3 text-[#38b6ff]">Contact Us</a>
-                <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-[#38b6ff] border-b border-gray-100">News</a>
+                <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-[#38b6ff]">News</a>
             </nav>
         </div>
     </div>
