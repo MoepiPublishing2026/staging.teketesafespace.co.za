@@ -3,55 +3,111 @@
 <div class="min-h-screen bg-white flex flex-col w-full overflow-x-hidden" style="font-family: 'Montserrat', sans-serif;">
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    <header class="fixed top-0 left-0 w-full bg-white z-50 shadow-sm font-[Montserrat]">
-        <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
-            <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[143px] h-auto flex-shrink-0">
+    <header
+    class="fixed top-0 left-0 w-full bg-white z-50 ">
 
-            <div class="flex items-center gap-8">
-                <nav class="hidden md:flex gap-8 text-[17px] text-black font-[Montserrat]">
-                    <a href="{{ route('landing-page') }}" class="hover:text-[#c7da30] transition-colors">Home</a>
-                    <a href="{{ route('about-us') }}" class="hover:text-[#c7da30] transition-colors">About Us</a>
-                    <a href="{{ $workshopBookingUrl }}/workshops" class="text-black transition-colors hover:text-[#c7da30]">Workshops</a>
-                    <a href="{{ route('contact-us') }}" class="hover:text-[#c7da30] transition-colors">Contact Us</a>
-                    <a href="{{ route('news') }}" class="font-bold text-black hover:text-[#c7da30] transition-colors">News</a>
-                </nav>
+    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" type="button" class="p-2 rounded-md text-black hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#c7da30] cursor-pointer">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
+        <!-- Logo -->
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
+
+        <!-- Top Right Links -->
+        <div class="flex items-center gap-4">
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
+
+                <a href="{{ route('landing-page') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Home
+                </a>
+
+                <a href="{{ route('about-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    About Us
+                </a>
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
+                    </a>
+
+                 <a href="{{ route('news') }}"
+                    class="text-black font-bold transition-colors hover:!text-[#c7da30]">
+                    News
+                </a>
+
+                <a href="{{ route('contact-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Contact Us
+                </a>
+
             </div>
-        </div>
-    </header>
 
-     <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
-        <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
-        <div class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
-            
-            <div class="flex items-center justify-start px-4 pt-16 pb-4">
-                <button onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
-                    <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+            <!-- Mobile Hamburger Menu -->
+            <div class="md:hidden">
+              <button id="mobile-menu-button"
+                        onclick="toggleMobileMenu()"
+                        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
+
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
+
                 </button>
             </div>
-            
-            <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-                <a href="{{ route('landing-page') }}"
-                    class="block py-3 text-[#38b6ff]">Home</a>
-                <a href="{{ route('about-us') }}"
-                    class="block py-3 text-[#38b6ff]">About Us</a>
-                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
-                    class="block py-3 text-[#38b6ff]">Workshops</a>
-                <a href="{{ route('contact-us') }}"
-                    class="block py-3 text-[#38b6ff]">Contact Us</a>
-                <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-[#38b6ff] border-b border-gray-100">News</a>
-            </nav>
+
         </div>
+
     </div>
+</header>
+
+    <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
+    <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
+    
+  <div id="mobile-menu-slide"
+    class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-in-out">    
+        <div class="flex items-center justify-start px-4 pt-16 pb-4">
+            <button type="button" onclick="toggleMobileMenu()" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none">
+                <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        
+        <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+             <a href="javascript:void(0);"
+       onclick="window.history.back(); toggleMobileMenu();"class="block py-3 text-[#38b6ff]"> Back</a>
+
+            <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Home</a>
+            <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">About Us</a>
+            <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Workshops</a>
+            <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-[#38b6ff]">News</a>
+           <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff]">Contact Us</a>
+
+        </nav>
+    </div>
+</div>
     <div class="w-full flex-grow bg-white pt-24 pb-[10vh] px-6 lg:px-[4vw] flex flex-col items-center">
         
         <style>
@@ -373,26 +429,35 @@
     let startTop = 0;
 
     function toggleMobileMenu() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (!mobileMenu) return;
-        const isHidden = mobileMenu.classList.contains('hidden');
+        const menu = document.getElementById('mobile-menu');
+        const slide = document.getElementById('mobile-menu-slide');
+        
+        if (!menu || !slide) return;
+
+        const isHidden = menu.classList.contains('hidden');
+        
         if (isHidden) {
-            mobileMenu.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; 
+            // Show background overlay and slide panel in sequence
+            menu.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Small timeout to allow display:block to apply before triggering CSS transition
+            setTimeout(() => {
+                slide.classList.remove('translate-x-full');
+                slide.classList.add('translate-x-0');
+            }, 10);
         } else {
-            mobileMenu.classList.add('hidden');
-            document.body.style.overflow = 'auto'; 
+            // Slide panel away first, then hide the wrapper
+            slide.classList.remove('translate-x-0');
+            slide.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                menu.classList.add('hidden');
+            }, 300); // Matches the 300ms duration-300 transition time
         }
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        if (mobileMenuButton) {
-            mobileMenuButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleMobileMenu();
-            });
-        }
-    });
+   
 
     function updateCustomScrollbar() {
         const view = document.getElementById('news-scroll-viewport');

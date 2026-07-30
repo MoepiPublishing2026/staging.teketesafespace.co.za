@@ -46,7 +46,7 @@
             xl:text-[20px]
             ">
 
-
+                
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
@@ -108,13 +108,45 @@
         </div>
         
         <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-            <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Home</a>
-            <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()" class="block py-3 font-bold text-[#38b6ff]">About Us</a>
-            <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" onclick="toggleMobileMenu()" class="block py-3 text-[#38b6ff]">Workshops</a>
-            <a href="{{ route('news') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff] border-b border-gray-100">News</a>
-           <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()" class="block py-3  text-[#38b6ff]">Contact Us</a>
 
-        </nav>
+    <!-- Back -->
+    <a href="javascript:void(0);"
+       onclick="window.history.back(); toggleMobileMenu();"
+       class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
+        Back
+    </a>
+
+    <a href="{{ route('landing-page') }}"
+       onclick="toggleMobileMenu()"
+       class="block py-3 text-[#38b6ff]">
+        Home
+    </a>
+
+    <a href="{{ route('about-us') }}"
+       onclick="toggleMobileMenu()"
+       class="block py-3 font-bold text-[#38b6ff]">
+        About Us
+    </a>
+
+    <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+       onclick="toggleMobileMenu()"
+       class="block py-3 text-[#38b6ff]">
+        Workshops
+    </a>
+
+    <a href="{{ route('news') }}"
+       onclick="toggleMobileMenu()"
+       class="block py-3 text-[#38b6ff]">
+        News
+    </a>
+
+    <a href="{{ route('contact-us') }}"
+       onclick="toggleMobileMenu()"
+       class="block py-3 text-[#38b6ff]">
+        Contact Us
+    </a>
+
+</nav>
     </div>
 </div>
     <section class="pt-24 w-full bg-white py-16" style="padding-left: 2vw; padding-right: 2vw;">
