@@ -580,6 +580,17 @@ document.addEventListener('keydown', e => {
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
+// ── Shared top-level state (declared ONCE) ──────────────────────
+const anonSelect  = document.querySelector('select[name="is_anonymous"]');
+const nameInput   = document.querySelector('input[name="full_name"]');
+const searchInput = document.querySelector('input[name="search"]');
+
+let allSubtypeOptions = null;
+let typeSelect, subtypeSelect;
+
+const PLACEHOLDER_DEFAULT = 'Search by name, email, case number, school, description…';
+const PLACEHOLDER_ANON    = 'Search by email, case number, school, description…';
+
 function exportPDF() {
     const element = document.getElementById('main-content');
     if (!element) { alert("Main content not found!"); return; }
@@ -600,10 +611,7 @@ const subtypesByType = {
     @endforeach
 };
 
-// ── Subtype filtering: shared state, declared once at top level ──
-let allSubtypeOptions = null;
-let typeSelect, subtypeSelect;
-
+// ── Subtype filtering ─────────────────────────────────────────────
 function filterSubtypes() {
     if (allSubtypeOptions === null) {
         allSubtypeOptions = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
@@ -631,7 +639,6 @@ function filterSubtypes() {
                 regular.push(opt.cloneNode(true));
             }
         } else if (String(optType) === String(selectedType)) {
-            // Type selected: show only that type's subtypes (including its own "Other")
             if (isOther) {
                 others.push(opt.cloneNode(true));
             } else {
@@ -644,6 +651,23 @@ function filterSubtypes() {
     subtypeSelect.appendChild(placeholder.cloneNode(true));
     regular.forEach(opt => subtypeSelect.appendChild(opt));
     others.forEach(opt => subtypeSelect.appendChild(opt));
+}
+
+// ── Anonymous / name-search sync ─────────────────────────────────
+function syncAnonNameState() {
+    if (!anonSelect || !nameInput) return;
+    const isAnon = anonSelect.value === '1';
+
+    nameInput.disabled  = isAnon;
+    nameInput.title     = isAnon ? 'Not available for anonymous reports' : '';
+    nameInput.style.opacity    = isAnon ? '0.4' : '1';
+    nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
+    nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
+    if (isAnon) nameInput.value = '';
+
+    if (searchInput) {
+        searchInput.placeholder = isAnon ? PLACEHOLDER_ANON : PLACEHOLDER_DEFAULT;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -667,23 +691,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
                 filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
                 filterSubtypes();
+                syncAnonNameState();
                 filterForm.submit();
             });
         }
-    }
-
-    const anonSelect = document.querySelector('select[name="is_anonymous"]');
-    const nameInput  = document.querySelector('input[name="full_name"]');
-
-    function syncAnonNameState() {
-        if (!anonSelect || !nameInput) return;
-        const isAnon = anonSelect.value === '1';
-        nameInput.disabled  = isAnon;
-        nameInput.title     = isAnon ? 'Not available for anonymous reports' : '';
-        nameInput.style.opacity    = isAnon ? '0.4' : '1';
-        nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
-        nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
-        if (isAnon) nameInput.value = '';
     }
 
     if (anonSelect) anonSelect.addEventListener('change', syncAnonNameState);
