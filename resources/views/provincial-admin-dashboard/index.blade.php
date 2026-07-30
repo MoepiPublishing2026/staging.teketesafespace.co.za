@@ -302,7 +302,49 @@ h2 {
     font-family: 'Century Gothic';
     line-height: 1;
 }
+.chart-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:30px;
+    margin-top:20px;
+}
 
+.chart-card{
+    background:#fff;
+    border-radius:12px;
+    padding:18px;
+}
+
+/* Make Status Breakdown span the full row */
+.chart-status{
+    grid-column:1 / -1;
+}
+
+.chart-card h2{
+    font-size:18px;
+    font-weight:700;
+    color:#4b7cff;
+    margin-bottom:15px;
+}
+
+.chart-status-host{
+    width:100%;
+}
+
+.chart-status-host canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+@media(max-width:900px){
+    .chart-grid{
+        grid-template-columns:1fr;
+    }
+
+    .chart-status{
+        grid-column:auto;
+    }
+}
 .card-subtext {
     font-size: 0.8rem;
     color: #080808ff;
@@ -1299,7 +1341,7 @@ section[aria-label="Analytics"] .chart-status-host canvas {
             </div>
         </section>
 
-        <section class="panel" aria-label="Analytics">
+     <section class="panel" aria-label="Analytics">
             @php
                 $monthlyPointCount = max(count($months ?? []), 1);
                 $monthlyTrendHostH = (int) max(260, min(440, 170 + $monthlyPointCount * 12));
@@ -1307,101 +1349,49 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                 $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
                 $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
             @endphp
-            <div class="grid-two">
-                <div class="chart-monthly-block">
+            <section class="chart-grid" aria-label="Dashboard charts overview">
+
+                <div class="chart-card chart-monthly">
                     <h2>Monthly Trends</h2>
                     <div class="chart-canvas-host" style="height: {{ $monthlyTrendHostH }}px;">
                         <canvas id="monthlyTrendChart"></canvas>
                     </div>
                 </div>
+
                 <div class="chart-card chart-abuse-pie">
                     <h2>Report Types Distribution</h2>
                     <div class="chart-canvas-host" style="height: {{ $abusePieHostHeight }}px;">
                         <canvas id="abuseTypeChart"></canvas>
                     </div>
                 </div>
-            </div>
-            @php
-                // 1. Establish your baseline chart height variables
-                $statusBreakdownN = max(count($statusCounts ?? []), 1);
-                $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
-            
-                // 2. Normalize status counts to sum to exactly 100 using the Largest Remainder Method
-                $normalizedStatuses = [];
-                $rawTotal = array_sum($statusCounts ?? []);
-            
-                if ($rawTotal > 0) {
-                    $flooredValues = [];
-                    $remainders = [];
-                    $sumFloored = 0;
-            
-                    foreach ($statusCounts as $key => $value) {
-                        $precise = ($value / $rawTotal) * 100;
-                        $floored = (int) floor($precise);
-                        
-                        $flooredValues[$key] = $floored;
-                        $remainders[$key] = $precise - $floored;
-                        $sumFloored += $floored;
-                    }
-            
-                    // Calculate the difference needed to reach exactly 100
-                    $difference = 100 - $sumFloored;
-            
-                    // Sort remainders descending to find who was closest to rounding up
-                    arsort($remainders);
-            
-                    // Distribute the remaining units to those with the highest fractional remainder
-                    foreach ($remainders as $key => $remainder) {
-                        if ($difference <= 0) break;
-                        $flooredValues[$key]++;
-                        $difference--;
-                    }
-            
-                    $normalizedStatuses = $flooredValues;
-                } else {
-                    // Fallback if there are no items or counts are zero
-                    foreach (($statusCounts ?? []) as $key => $value) {
-                        $normalizedStatuses[$key] = 0;
-                    }
-                }
-            @endphp
-            <div class="chart-card chart-status" style="margin-top: 1.5rem;">
-                <h2 class="chart-title-left">Status Breakdown (%)</h2>
-                <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
-                    <canvas id="statusChart" aria-label="Reports by status"></canvas>
-                </div>
-            </div>
-            <div class="grid-two" style="margin-top: 1.5rem;">
+
                 <div class="chart-card chart-anonymous">
                     <h2>Anonymous vs Identified</h2>
                     <div class="chart-canvas-host" style="height: {{ $anonymousHostH }}px;">
                         <canvas id="anonymousChart"></canvas>
                     </div>
                 </div>
-                <div>
+
+                <div class="chart-card chart-schools">
                     <h2>Top Reporting Schools</h2>
-                    <div class="table-responsive">
-                        <table style="width:100%; border-collapse:collapse;" class="table">
+                    <div class="schools-table-wrap">
+                        <table class="schools-table">
                             <thead>
                                 <tr>
-                                    <th style="text-align:left;">School</th>
-                                    <th style="text-align:right; white-space:nowrap;">Reports</th>
+                                    <th>School</th>
+                                    <th>Reports</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($topSchools ?? [] as $schoolName => $schoolCount)
                                     <tr>
-                                        <td style="padding:0.5rem; border-bottom:1px solid #e5e7eb; word-break:break-word;">
-                                            {{ $schoolName }}
-                                        </td>
-                                        <td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb; white-space:nowrap;">
-                                            {{ number_format($schoolCount) }}
-                                        </td>
+                                        <td>{{ $schoolName }}</td>
+                                        <td>{{ number_format($schoolCount) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="2" style="text-align:center; color:#6b7280; padding:1rem;">
-                                            No schools with a linked record for these filters.
+                                            No schools with a linked record in this filter.
                                             @if(($reportsWithoutLinkedSchool ?? 0) > 0)
                                                 <br><span style="font-size:12px;">{{ number_format($reportsWithoutLinkedSchool) }} report(s) have no linked school.</span>
                                             @endif
@@ -1409,18 +1399,12 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                                     </tr>
                                 @endforelse
                                 @if(count($topSchools ?? []) > 0)
-                                @php
-                                    $sumTopSchools = array_sum($topSchools);
-                                    $moreSchools = max(0, ($activeSchoolsWithReports ?? 0) - count($topSchools));
-                                @endphp
+                                @php $sumTopSchools = array_sum($topSchools); @endphp
                                 <tr>
                                     <td colspan="2" style="font-size:12px; color:#6b7280; padding:0.65rem 0.5rem 0; line-height:1.45;">
                                         Top {{ count($topSchools) }} by volume: <strong>{{ number_format($sumTopSchools) }}</strong> reports.
                                         @if(($reportsWithoutLinkedSchool ?? 0) > 0)
                                             <strong>{{ number_format($reportsWithoutLinkedSchool) }}</strong> report(s) have no linked school.
-                                        @endif
-                                        @if($moreSchools > 0)
-                                            <strong>{{ number_format($moreSchools) }}</strong> other active school(s) not listed — see Active Schools card for the total.
                                         @endif
                                     </td>
                                 </tr>
@@ -1429,48 +1413,21 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                         </table>
                     </div>
                 </div>
-            </div>
+
+                @php
+                    $statusBreakdownN = max(count($statusCounts ?? []), 1);
+                    $statusChartHostH = max(300, min(680, 110 + $statusBreakdownN * 54));
+                @endphp
+                <div class="chart-card chart-status">
+                    <h2>Status Breakdown</h2>
+                    <div class="chart-status-host" style="height: {{ $statusChartHostH }}px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
+            </section>
+
         </section>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                // PHP exports the perfectly balanced integers summing to 100
-                const statusLabels = {!! json_encode(array_keys($normalizedStatuses)) !!};
-                const statusPercentages = {!! json_encode(array_values($normalizedStatuses)) !!};
-
-                const ctx = document.getElementById('statusChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar', // Or 'horizontalBar' / 'doughnut'
-                    data: {
-                        labels: statusLabels,
-                        datasets: [{
-                            data: statusPercentages, // These values now strictly equal 100 in total!
-                            backgroundColor: [
-                                '#a0c4df', // Awaiting Resolution
-                                '#ffcb77', // Forwarded
-                                '#17d195', // Under Review
-                                '#9b6bdc', // Closed
-                                '#7b9ff2', // Unresolved
-                                '#4cb2ff'  // False Report
-                            ]
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y', // Renders horizontally like your image
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return context.parsed.x + '%';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            });
-        </script>
-
     </div>
 </div>
 

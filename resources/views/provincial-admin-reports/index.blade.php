@@ -625,7 +625,7 @@ tbody tr:last-child td { border-bottom: none; }
                         <td>{{ $report->district->district_name ?? 'N/A' }}</td>
                         <td>{{ $report->school->school_name ?? 'N/A' }}</td>
                         <td>{{ $report->grade ?? 'N/A' }}</td>
-                        <td>{{ $report->reportType->type_name ?? 'N/A' }}</td>
+                      <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                         <td style="text-align: center;">
                             <span class="status-badge status-{{ str_replace('_', '-', $report->status) }}">
                                 {{ ucfirst(str_replace('-', ' ', $report->status)) }}

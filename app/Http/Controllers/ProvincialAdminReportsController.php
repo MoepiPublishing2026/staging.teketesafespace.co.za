@@ -62,14 +62,14 @@ class ProvincialAdminReportsController extends Controller
             });
         }
 
-        // ── Targeted Name / Email filter ─────────────────────────────────
-        if ($n = trim($request->input('full_name', ''))) {
-            $query->where(function ($q) use ($n) {
-                $q->where('full_name',        'like', "%{$n}%")
-                  ->orWhere('reporter_email', 'like', "%{$n}%");
-            });
-        }
+       if ($request->filled('full_name')) {
+    $n = trim($request->full_name);
 
+    $query->where(function ($q) use ($n) {
+        $q->where('full_name', 'like', "%{$n}%")
+          ->orWhere('reporter_email', 'like', "%{$n}%");
+    });
+}
         // ── Case number search (backward compatibility) ──────────────────
         if ($request->filled('case_number')) {
             $query->where('case_number', 'LIKE', '%' . $request->input('case_number') . '%');
