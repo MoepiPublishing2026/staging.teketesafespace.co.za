@@ -235,9 +235,7 @@
                     </div>
 
                     <div class="flex items-center gap-10 mb-8">
-                        <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px]">
-                        <a href="mailto:sales@teketesafespace.co.za" class="text-xl text-[#000000] hover:text-[#c7da30]">sales@teketesafespace.co.za</a>
-                    </div>
+                       <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px] hidden">                    </div>
                 </div>
 
                 <br>
