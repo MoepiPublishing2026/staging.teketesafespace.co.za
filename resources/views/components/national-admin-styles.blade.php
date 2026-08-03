@@ -1,5 +1,144 @@
-{{-- Shared National Admin sidebar styles — include in <head> on Dashboard, Reports, Heat-map, Settings --}}
+{{-- Shared National Admin styles — include in <head> on Dashboard, Reports, Heat-map, Settings --}}
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+/*
+ * National Admin type scale (matches provincial/school)
+ * xs 11 | sm 13 | base 15 | md 18 | lg 22 | xl 32
+ * regular 400 | semibold 600 | bold 700 | black 900
+ */
+body.na-app {
+    --na-font: 'Montserrat', sans-serif;
+    --na-text: #545454;
+    --na-text-muted: #5f6b7b;
+    --na-accent: #38b6ff;
+    --na-size-xs: 11px;
+    --na-size-sm: 13px;
+    --na-size-base: 15px;
+    --na-size-md: 18px;
+    --na-size-lg: 22px;
+    --na-size-xl: 32px;
+    --na-weight-regular: 400;
+    --na-weight-semibold: 600;
+    --na-weight-bold: 700;
+    --na-weight-black: 900;
+}
+
+body.na-app,
+body.na-app .main-panel,
+body.na-app main,
+body.na-app .dashboard-scroll,
+body.na-app button,
+body.na-app select,
+body.na-app input,
+body.na-app textarea,
+body.na-app label,
+body.na-app table,
+body.na-app th,
+body.na-app td,
+body.na-app h1,
+body.na-app h2,
+body.na-app h3,
+body.na-app h4,
+body.na-app p,
+body.na-app span,
+body.na-app a,
+body.na-app .subtitle {
+    font-family: var(--na-font) !important;
+}
+
+body.na-app {
+    font-size: var(--na-size-base) !important;
+    font-weight: var(--na-weight-regular) !important;
+    color: var(--na-text) !important;
+    line-height: 1.5;
+}
+
+body.na-app .main-panel,
+body.na-app main,
+body.na-app .dashboard-scroll {
+    font-size: var(--na-size-base) !important;
+    font-weight: var(--na-weight-regular) !important;
+    color: var(--na-text) !important;
+}
+
+body.na-app h1 {
+    margin: 0 0 1.5rem !important;
+    font-size: var(--na-size-xl) !important;
+    font-weight: var(--na-weight-black) !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    color: var(--na-text) !important;
+    text-align: center !important;
+    line-height: 1.25 !important;
+}
+
+body.na-app h2 {
+    font-size: var(--na-size-md) !important;
+    font-weight: var(--na-weight-bold) !important;
+    color: var(--na-accent) !important;
+    line-height: 1.3 !important;
+}
+body.na-app h3 {
+    font-size: var(--na-size-base) !important;
+    font-weight: var(--na-weight-bold) !important;
+    color: var(--na-text) !important;
+    line-height: 1.3 !important;
+}
+
+body.na-app .subtitle {
+    font-size: var(--na-size-sm) !important;
+    font-weight: var(--na-weight-regular) !important;
+    color: var(--na-text-muted) !important;
+    margin-bottom: 2rem !important;
+    text-align: center;
+}
+
+body.na-app .profile .meta > span:first-child {
+    color: var(--na-accent) !important;
+    font-size: var(--na-size-md) !important;
+    font-weight: var(--na-weight-bold) !important;
+}
+body.na-app .profile .meta span {
+    font-size: var(--na-size-md) !important;
+    font-weight: var(--na-weight-bold) !important;
+    color: #232323 !important;
+    line-height: 1.3 !important;
+}
+body.na-app .profile .meta .role {
+    font-size: var(--na-size-sm) !important;
+    font-weight: var(--na-weight-regular) !important;
+    color: #4a4a4a !important;
+}
+
+body.na-app label {
+    font-size: var(--na-size-sm) !important;
+    font-weight: var(--na-weight-bold) !important;
+    color: var(--na-text) !important;
+}
+body.na-app select,
+body.na-app input,
+body.na-app textarea {
+    font-size: var(--na-size-base) !important;
+    font-weight: var(--na-weight-regular) !important;
+    font-family: var(--na-font) !important;
+    color: var(--na-text) !important;
+}
+body.na-app button:not(.menu-icon) {
+    font-size: var(--na-size-base) !important;
+    font-weight: var(--na-weight-bold) !important;
+    font-family: var(--na-font) !important;
+}
+
+body.na-app table {
+    font-size: var(--na-size-sm) !important;
+    font-weight: var(--na-weight-regular) !important;
+}
+body.na-app thead,
+body.na-app th {
+    font-size: var(--na-size-xs) !important;
+    font-weight: var(--na-weight-bold) !important;
+}
+
 .sidebar {
     width: 235px;
     background-color: white;
@@ -108,6 +247,9 @@ body.na-app .dashboard-scroll {
     padding-top: 3px !important;
 }
 @media (max-width: 900px) {
+    body.na-app h1 {
+        font-size: var(--na-size-lg) !important;
+    }
     body.na-app .topbar {
         height: 60px !important;
         flex-basis: 60px !important;

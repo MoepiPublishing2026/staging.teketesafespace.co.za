@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace National Dashboard</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
    <style>
        :root {
@@ -325,7 +325,7 @@ h1 {
     background: white;
     color: #1f2933;
     cursor: pointer;
-    font-family: 'Century Gothic';
+    font-family: 'Montserrat', sans-serif;
     box-shadow: 0 4px 8px rgba(199, 218, 48, 0.2);
     border: 1px solid #c7da30;
 }

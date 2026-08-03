@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Reports | Tekete SafeSpace – {{ $school->school_name ?? 'School Admin' }}</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
 :root {
     --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
