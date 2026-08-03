@@ -65,36 +65,37 @@ button:hover, button:focus {
 
 .topbar {
     width: 100%;
-    background: white;
-    border-bottom: 1px solid white;
+    background: #fff;
+    border: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
-    padding: 1rem 2.5rem;
-    position: sticky;
-    top: 0;
+    padding: 24px 39px 0;
+    position: relative;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-   
-    min-height: 64px;
+    box-shadow: none;
+    height: 78px;
+    flex: 0 0 78px;
+    min-height: 0;
 }
 
 .profile {
     display: flex;
-    align-items: center;
-    gap: 0.8rem;
+    align-items: flex-start;
+    gap: 12px;
 }
 
 .profile-avatar {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
     border-radius: 50%;
-    background: #ececec;
+    background: transparent;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
+    box-shadow: none;
 }
 .charts-grid {
   display: grid;
@@ -165,11 +166,13 @@ button:hover, button:focus {
 
 .profile .meta {
     text-align: right;
+    padding-top: 4px;
+    line-height: 1.08;
 }
 .profile .meta > span:first-child {
-    color: #38b6ff; /* Theme blue */
-    font-size: 18px; /* Increase font size */
-    font-weight: 700; /* Bold for emphasis */
+    color: #38b6ff;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .profile .meta span {
@@ -180,9 +183,10 @@ button:hover, button:focus {
 }
 
 .profile .meta .role {
+    margin-top: 2px;
     font-weight: 400;
-    color: #333030ff;
-    font-size: 0.9rem;
+    color: #4a4a4a;
+    font-size: 13px;
 }
 
  .main-panel {
@@ -191,7 +195,8 @@ button:hover, button:focus {
      flex-direction: column;
      min-width: 0;
      height: 100vh;
-     background: white;
+     background: #fff;
+     overflow: hidden;
  }
 
 .metrics-row > .metric-card {
@@ -204,9 +209,10 @@ button:hover, button:focus {
     flex: 1 1 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 2.5rem;
+    padding: 3px 2.5rem 2.5rem;
     max-width: 1280px;
     margin: 0 auto;
+    background: #fff;
 }
 
 h1 {
@@ -575,8 +581,11 @@ canvas {
         align-items: stretch;
     }
     .topbar {
-        padding: 0 1rem;
-        height: 56px;
+        height: 60px;
+        flex-basis: 60px;
+        padding: 10px 16px 0 60px;
+        box-shadow: none;
+        border: 0;
     }
     /* Title alignment: padding comes from .dashboard-scroll in school-admin-mobile.css */
     h1, .subtitle {

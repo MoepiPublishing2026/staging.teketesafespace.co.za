@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace – Heat-Map</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -42,44 +42,46 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
-            min-height: 100vh;
-            height: auto;
-            background: white;
-            overflow-x: hidden;
+            height: 100vh;
+            background: #fff;
+            overflow: hidden;
         }
         .topbar {
             width: 100%;
-            background: white;
-            border-bottom: 1px solid white;
+            background: #fff;
+            border: 0;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: flex-end;
-            padding: 1rem 2.5rem;
-            position: sticky;
-            top: 0;
+            padding: 24px 39px 0;
+            position: relative;
             z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            min-height: 64px;
+            box-shadow: none;
+            height: 78px;
+            flex: 0 0 78px;
+            min-height: 0;
         }
-        .profile { display: flex; align-items: center; gap: 0.8rem; }
+        .profile { display: flex; align-items: flex-start; gap: 12px; }
         .profile-avatar {
-            width: 42px; height: 42px; border-radius: 50%; background: #ececec;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 1px 6px rgba(51,51,63,0.08);
+            width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%;
+            background: transparent; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: none;
         }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile .meta { text-align: right; }
+        .profile .meta { text-align: right; padding-top: 4px; line-height: 1.08; }
         .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
         .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-        .profile .meta .role { font-weight: 400; color: #333030ff; font-size: 0.9rem; }
+        .profile .meta .role { margin-top: 2px; font-weight: 400; color: #4a4a4a; font-size: 13px; }
         .dashboard-scroll {
             flex: 1 1 0;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 2.5rem;
+            padding: 3px 2.5rem 2.5rem;
             max-width: 1280px;
             width: 100%;
             margin: 0 auto;
+            background: #fff;
         }
 
         h1 {
@@ -95,10 +97,11 @@
         h2 {
             color: #38b6ff !important;
             font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
+            font-size: 18px;
+            font-weight: 700;
             margin: 0 0 1rem;
         }
-        .subtitle { margin-bottom: 2rem; color: #5f6b7b; text-align: center; }
+        .subtitle { margin-bottom: 2rem; color: #5f6b7b; text-align: center; font-size: 13px; font-weight: 400; }
 
         .filter-panel {
             background: #fff;
@@ -122,22 +125,22 @@
         .filters select,
         .filters input[type="date"] {
             font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 400;
             padding: 0.5rem 0.65rem;
             border: 1px solid #111827;
             border-radius: 6px;
             background: #fff;
-            color: #111827;
+            color: #545454;
             min-width: 140px;
         }
         .filters label {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
-            color: #4b5563;
+            color: #545454;
         }
         .filter-chips {
             display: flex;
@@ -209,8 +212,8 @@
             padding: 0.35rem 0.75rem;
             border: 2px solid #c7da30;
             border-radius: 6px;
-            font-size: 11px;
-            font-weight: 900;
+            font-size: 13px;
+            font-weight: 700;
             font-family: 'Montserrat', sans-serif;
             cursor: pointer;
             background: #fff;
@@ -244,86 +247,88 @@
             border-radius: 0.5rem;
             overflow: hidden;
             position: relative;
-            background: #f6f7f2;
+            background: #f7f6f2;
         }
         .district-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; z-index: 1; }
         .heat-glow-layer { pointer-events: none; overflow: visible; }
+        .map-color-root {
+            /* thin dark outer silhouette only — no per-district dark strokes */
+            filter: drop-shadow(0 0 0.55px #111111);
+        }
         .district-map-shape {
-            stroke: rgba(255,255,255,0.95);
-            stroke-width: 1.25;
-            stroke-linejoin: round;
-            vector-effect: non-scaling-stroke;
-            transition: stroke 0.12s ease;
+            fill: transparent;
+            stroke: none;
+            pointer-events: all;
         }
         .district-map-shape.is-hover,
-        .district-map-shape.is-key-hover { stroke: #111827; stroke-width: 1.25; }
-        .district-map-shape.is-selected { stroke: #38b6ff; stroke-width: 1.75; filter: drop-shadow(0 0 4px rgba(56,182,255,0.45)); }
-        .district-map-province-border {
+        .district-map-shape.is-key-hover {
+            fill: rgba(255,255,255,0.08);
+        }
+        .district-map-shape.is-selected {
+            fill: rgba(56,182,255,0.12);
+        }
+        .district-map-inner-border {
             fill: none;
-            stroke: #111827;
-            stroke-width: 1.5;
-            stroke-linejoin: round;
-            stroke-linecap: round;
+            stroke: #ffffff;
+            stroke-width: 0.9;
+            stroke-linejoin: miter;
+            stroke-linecap: butt;
             vector-effect: non-scaling-stroke;
             pointer-events: none;
+            shape-rendering: geometricPrecision;
         }
         .map-label-layer { pointer-events: none; user-select: none; }
         .map-label-layer text {
-            font-family: 'Montserrat', system-ui, sans-serif;
-            font-weight: 900;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
             paint-order: stroke fill;
-            stroke: #ffffff;
-            stroke-width: 0.5px;
+            stroke: rgba(255,255,255,0.9);
+            stroke-width: 0.35px;
             stroke-linejoin: round;
         }
         .map-label-layer .map-label-district {
-            fill: #111827;
-            stroke-width: 0.65px;
+            fill: #111111;
+            stroke-width: 0.35px;
         }
         .district-map-status {
             position: absolute; inset: 0;
             display: grid; place-items: center;
             font-weight: 800; color: #4b5563;
-            background: rgba(246, 247, 242, 0.65);
+            background: rgba(247, 246, 242, 0.65);
             z-index: 5;
         }
         .district-map-tooltip {
-            position: absolute; left: 0; top: 0;
-            transform: translate(-9999px, -9999px);
-            background: rgba(255,255,255,0.98);
-            border: 1px solid rgba(17,24,39,0.2);
-            border-radius: 10px;
-            padding: 8px 10px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            font-size: 12px;
-            color: #111827;
-            pointer-events: none;
-            z-index: 25;
-            max-width: 260px;
-            line-height: 1.2;
+            display: none !important; /* reference map uses in-place labels only */
         }
-        .district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
-        .district-map-tooltip .tt-sub { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
         .map-legend {
             position: absolute;
             bottom: 18px;
             right: 18px;
             z-index: 20;
-            background: rgba(255,255,255,0.96);
-            padding: 10px 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-            font-size: 12px;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+            font-size: 13px;
             font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
         }
-        .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
-        .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-        .map-legend-swatch.low { background: radial-gradient(circle, #a8d05f 0%, #a8d05f 100%); }
-        .map-legend-swatch.medium { background: radial-gradient(circle, #f9c80e 0%, #f9c80e 70%, #a8d05f 100%); }
-        .map-legend-swatch.high { background: radial-gradient(circle, #d80f18 0%, #ef2b2d 35%, #f26a21 52%, #f9c80e 78%, #a8d05f 100%); }
+        .map-legend-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #111111; margin-top: 8px; }
+        .map-legend-row:first-child { margin-top: 0; }
+        .map-legend-swatch { width: 18px; height: 18px; border-radius: 2px; border: none; }
+        .map-legend-swatch.high { background: #d72323; }
+        .map-legend-swatch.medium { background: #ffd700; }
+        .map-legend-swatch.low { background: #99b871; }
 
         @media (max-width: 900px) {
             .main-panel { margin-left: 0 !important; width: 100%; }
+            .topbar {
+                height: 60px;
+                flex-basis: 60px;
+                padding: 10px 16px 0 60px;
+                box-shadow: none;
+                border: 0;
+            }
             .dashboard-scroll { padding: 1rem; }
             .district-map-container { height: 380px; min-height: 320px; }
             h1 { font-size: 22px !important; padding: 0 0.5rem; }
@@ -541,9 +546,9 @@
                     <div class="tt-sub" id="districtMapTooltipSub"></div>
                 </div>
                 <div class="map-legend" aria-label="Heatmap legend">
-                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
                     <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low</span></div>
                 </div>
             </div>
         </section>
@@ -667,41 +672,40 @@
     }
 
     function mapDisplayLabel(name) {
-        return titleCaseLabel(cleanLabel(name))
+        // Keep reference labels intact (e.g. "Tshwane Metro (Pretoria)")
+        const raw = String(name || '').trim();
+        if (!raw) return '';
+        if (/\(|Metro|Region|Vaal/i.test(raw)) return raw;
+        return titleCaseLabel(cleanLabel(raw))
             .replace(/^city of\s+/i, '')
             .replace(/ekhurhuleni/i, 'Ekurhuleni');
     }
 
-    function heatGradientStops(bandIdx) {
+    const HEAT_LOW = '#99b871';
+    const HEAT_MED = '#ffd700';
+    const HEAT_HIGH = '#d72323';
+
+    /** Continuous soft field — fades to transparent so green base shows through. */
+    function heatGlowStops(bandIdx) {
         if (bandIdx === 2) {
             return [
-                { offset: '0%', color: '#d80f18' },
-                { offset: '35%', color: '#ef2b2d' },
-                { offset: '52%', color: '#f26a21' },
-                { offset: '78%', color: '#f9c80e' },
-                { offset: '100%', color: '#a8d05f' },
-            ];
-        }
-        if (bandIdx === 1) {
-            return [
-                { offset: '0%', color: '#f9c80e' },
-                { offset: '80%', color: '#f9c80e' },
-                { offset: '100%', color: '#a8d05f' },
+                { offset: '0%', color: HEAT_HIGH, opacity: '0.95' },
+                { offset: '20%', color: '#ef4a2a', opacity: '0.85' },
+                { offset: '42%', color: '#f5b400', opacity: '0.7' },
+                { offset: '62%', color: HEAT_MED, opacity: '0.45' },
+                { offset: '82%', color: HEAT_MED, opacity: '0.15' },
+                { offset: '100%', color: HEAT_LOW, opacity: '0' },
             ];
         }
         return [
-            { offset: '0%', color: '#a8d05f' },
-            { offset: '100%', color: '#a8d05f' },
+            { offset: '0%', color: HEAT_MED, opacity: '0.8' },
+            { offset: '38%', color: HEAT_MED, opacity: '0.45' },
+            { offset: '72%', color: '#c5d46e', opacity: '0.15' },
+            { offset: '100%', color: HEAT_LOW, opacity: '0' },
         ];
     }
 
-    function bandSolidColor(bandIdx) {
-        if (bandIdx === 2) return '#d80f18';
-        if (bandIdx === 1) return '#f9c80e';
-        return '#a8d05f';
-    }
-
-    function districtGradientRadius(bb) {
+    function districtGlowRadius(bb, bandIdx) {
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
         const corners = [
@@ -715,22 +719,26 @@
             const d = Math.hypot(pt[0] - cx, pt[1] - cy);
             if (d > maxDist) maxDist = d;
         });
-        return Math.max(maxDist * 1.12, 8);
+        // Wide enough that neighboring districts share one continuous wash
+        const scale = bandIdx === 2 ? 3.6 : 2.8;
+        return Math.max(maxDist * scale, 22);
     }
 
-    function applyDistrictRadialFill(path, bandIdx, defs, svgNS, gradSeq) {
+    function appendHeatGlow(path, bandIdx, heatLayer, defs, svgNS, gradSeq) {
+        if (bandIdx < 1) return gradSeq;
+
         let bb;
         try {
             bb = path.getBBox();
         } catch (e) {
-            path.setAttribute('fill', bandSolidColor(bandIdx));
             return gradSeq;
         }
+        if (bb.width <= 0 || bb.height <= 0) return gradSeq;
 
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
-        const r = districtGradientRadius(bb);
-        const gradId = 'pa-dg-' + gradSeq;
+        const r = districtGlowRadius(bb, bandIdx);
+        const gradId = 'pa-hg-' + gradSeq;
 
         const grad = document.createElementNS(svgNS, 'radialGradient');
         grad.setAttribute('id', gradId);
@@ -740,16 +748,35 @@
         grad.setAttribute('r', String(r));
         grad.setAttribute('spreadMethod', 'pad');
 
-        heatGradientStops(bandIdx).forEach(function (stopDef) {
+        heatGlowStops(bandIdx).forEach(function (stopDef) {
             const stop = document.createElementNS(svgNS, 'stop');
             stop.setAttribute('offset', stopDef.offset);
             stop.setAttribute('stop-color', stopDef.color);
+            stop.setAttribute('stop-opacity', stopDef.opacity);
             grad.appendChild(stop);
         });
         defs.appendChild(grad);
-        path.setAttribute('fill', 'url(#' + gradId + ')');
+
+        const circle = document.createElementNS(svgNS, 'circle');
+        circle.setAttribute('cx', String(cx));
+        circle.setAttribute('cy', String(cy));
+        circle.setAttribute('r', String(r));
+        circle.setAttribute('fill', 'url(#' + gradId + ')');
+        circle.setAttribute('class', 'heat-glow-blob');
+        heatLayer.appendChild(circle);
 
         return gradSeq + 1;
+    }
+
+    function labelLines(text) {
+        const paren = String(text || '').match(/^(.+?)\s*(\([^)]+\))\s*$/);
+        if (paren) return [paren[1].trim(), paren[2].trim()];
+        const parts = String(text || '').trim().split(/\s+/);
+        if (parts.length >= 3) {
+            return [parts.slice(0, Math.ceil(parts.length / 2)).join(' '), parts.slice(Math.ceil(parts.length / 2)).join(' ')];
+        }
+        if (parts.length === 2) return parts;
+        return [text];
     }
 
     function heatBandIndexFromCount(count) {
@@ -790,7 +817,8 @@
     }
 
     async function loadMapItems() {
-        return fetchJson(mapAssetBase + '/' + provinceSlug + '.json');
+        const bust = Date.now();
+        return fetchJson(mapAssetBase + '/' + provinceSlug + '.json?v=' + bust);
     }
 
     const countsByNorm = {};
@@ -815,11 +843,8 @@
         'thabo mofutsanyana': ['thabo mofutsanyana'],
         'fezile dabi': ['fezile dabi'],
         'xhariep': ['xhariep'],
-        'city of johannesburg': ['johannesburg', 'gauteng east'],
-        'city of ekhurhuleni': ['ekurhuleni'],
-        'city of tshwane': ['tshwane', 'gauteng north'],
-        'sedibeng': ['sedibeng'],
-        'west rand': ['gauteng west', 'west rand'],
+        // Gauteng uses granular education districts in gauteng.json (exact name match).
+        // Do not alias metros → many districts (that bundles Tshwane/Johannesburg/etc.).
         'ethekwini': ['ethekwini', 'pinetown', 'umlazi'],
         'amajuba': ['amajuba'],
         'harry gwala': ['harry gwala'],
@@ -858,6 +883,14 @@
         if (!geoNorm || !dbNorm) return false;
         if (geoNorm === dbNorm) return true;
 
+        // Prefer exact education-district names; avoid parent→child bundling
+        // (e.g. "tshwane" must not swallow "tshwane north" + "tshwane south").
+        const geoTokens = geoNorm.split(' ').filter(Boolean);
+        const dbTokens = dbNorm.split(' ').filter(Boolean);
+        if (geoTokens.length >= 2 && dbTokens.length >= 2) {
+            return false;
+        }
+
         const prefixes = GEO_DB_PREFIXES[geoNorm];
         if (prefixes) {
             for (let i = 0; i < prefixes.length; i++) {
@@ -866,13 +899,30 @@
             }
         }
         if (dbNorm.indexOf(geoNorm + ' ') === 0 || geoNorm.indexOf(dbNorm + ' ') === 0) return true;
-        if (geoNorm.length >= 5 && dbNorm.indexOf(geoNorm) !== -1) return true;
-        if (dbNorm.length >= 5 && geoNorm.indexOf(dbNorm) !== -1) return true;
         return false;
     }
 
     const geoCountCache = {};
-    function countForGeo(rawGeoName) {
+    function countForDbNames(dbNames) {
+        const names = Array.isArray(dbNames) ? dbNames : [];
+        if (!names.length) return null;
+        const vals = [];
+        const seen = {};
+        names.forEach(function (n) {
+            const k = keyName(n);
+            if (!k || seen[k]) return;
+            seen[k] = true;
+            vals.push(Number(countsByNorm[k]) || 0);
+        });
+        if (!vals.length) return 0;
+        // Multi-mapped regions (Metro / Region) use max so we don't double-count.
+        return names.length > 1 ? Math.max.apply(null, vals) : vals[0];
+    }
+
+    function countForGeo(rawGeoName, dbNames) {
+        const fromDb = countForDbNames(dbNames);
+        if (fromDb !== null) return fromDb;
+
         const geoKey = keyName(rawGeoName);
         if (geoCountCache[geoKey] !== undefined) return geoCountCache[geoKey];
 
@@ -891,7 +941,12 @@
         return total;
     }
 
-    function primaryDistrictIdForGeo(rawGeoName) {
+    function primaryDistrictIdForGeo(rawGeoName, dbNames) {
+        const names = Array.isArray(dbNames) && dbNames.length ? dbNames : [rawGeoName];
+        for (let i = 0; i < names.length; i++) {
+            const k = keyName(names[i]);
+            if (districtIdByNorm[k]) return districtIdByNorm[k];
+        }
         const geoKey = keyName(rawGeoName);
         if (districtIdByNorm[geoKey]) return districtIdByNorm[geoKey];
         const norms = Object.keys(districtIdByNorm || {});
@@ -901,32 +956,25 @@
         return null;
     }
 
-    function resolveDbDistrictLabel(rawGeoName) {
-        const geoKey = keyName(rawGeoName);
-        const dbNames = Object.keys(districtNameToId || {});
-        for (let i = 0; i < dbNames.length; i++) {
-            if (keyName(dbNames[i]) === geoKey) return cleanLabel(dbNames[i]);
-        }
-        return cleanLabel(rawGeoName);
-    }
-
     function appendDistrictShape(it, layer, svgNS) {
         const pathD = it && it.path ? String(it.path) : '';
         const rawName = (it && it.name) ? String(it.name).trim() : '';
         if (!pathD || !rawName) return null;
 
-        const count = countForGeo(rawName);
-        const displayLabel = mapDisplayLabel(resolveDbDistrictLabel(rawName));
+        const dbNames = (it && Array.isArray(it.db_names)) ? it.db_names : [];
+        const count = countForGeo(rawName, dbNames);
+        const displayLabel = mapDisplayLabel(rawName);
         const bandIdx = heatBandIndexFromCount(count);
+        const districtId = primaryDistrictIdForGeo(rawName, dbNames);
 
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('d', pathD);
         path.setAttribute('class', 'district-map-shape' + (bandIdx === 2 ? ' district-map-shape-dark' : ''));
         path.setAttribute('data-heat-band', String(bandIdx));
-        path.setAttribute('fill', '#a8d05f');
+        path.setAttribute('fill', 'transparent');
         path.setAttribute('fill-opacity', '1');
         path.setAttribute('data-shape-kind', 'district');
-        path.setAttribute('data-district-id', primaryDistrictIdForGeo(rawName) ? String(primaryDistrictIdForGeo(rawName)) : '');
+        path.setAttribute('data-district-id', districtId ? String(districtId) : '');
         path.setAttribute('data-district-label', displayLabel);
         path.setAttribute('data-count', String(count));
         path.style.cursor = 'default';
@@ -934,20 +982,18 @@
         return path;
     }
 
-    function appendDistrictBorder(it, borderLayer, svgNS) {
-        const pathD = it && it.path ? String(it.path) : '';
+    function appendStrokePath(pathD, className, layer, svgNS) {
         if (!pathD) return;
-
         const border = document.createElementNS(svgNS, 'path');
         border.setAttribute('d', pathD);
-        border.setAttribute('class', 'district-map-province-border');
+        border.setAttribute('class', className);
         border.setAttribute('fill', 'none');
-        borderLayer.appendChild(border);
+        layer.appendChild(border);
     }
 
     loadMapItems()
-        .then(function (districtItems) {
-            districtItems = (districtItems || []).filter(function (it) {
+        .then(function (rawItems) {
+            const districtItems = (Array.isArray(rawItems) ? rawItems : []).filter(function (it) {
                 return it && it.path && it.name;
             });
             if (!districtItems.length) throw new Error('Empty map data');
@@ -962,16 +1008,20 @@
             g.setAttribute('class', 'za-map-root');
             svg.appendChild(g);
 
+            // Reference stack: seamless green+heat (clipped) → hit paths → labels
+            // (no white grid / district wireframe lines)
+            const colorRoot = document.createElementNS(svgNS, 'g');
+            colorRoot.setAttribute('class', 'map-color-root');
+            const heatLayer = document.createElementNS(svgNS, 'g');
+            heatLayer.setAttribute('class', 'heat-glow-layer');
             districtLayer = document.createElementNS(svgNS, 'g');
             districtLayer.setAttribute('class', 'district-layer');
-            const borderLayer = document.createElementNS(svgNS, 'g');
-            borderLayer.setAttribute('class', 'district-border-layer');
+            g.appendChild(colorRoot);
+            colorRoot.appendChild(heatLayer);
             g.appendChild(districtLayer);
-            g.appendChild(borderLayer);
 
             districtItems.forEach(function (it) {
                 appendDistrictShape(it, districtLayer, svgNS);
-                appendDistrictBorder(it, borderLayer, svgNS);
             });
 
             const oldSvg = container.querySelector('svg.district-map-svg');
@@ -989,10 +1039,49 @@
                     }
                 } catch (e) {}
 
+                const clip = document.createElementNS(svgNS, 'clipPath');
+                clip.setAttribute('id', 'pa-province-clip');
+                clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+                districtLayer.querySelectorAll('.district-map-shape').forEach(function (pathEl) {
+                    const clipPath = document.createElementNS(svgNS, 'path');
+                    clipPath.setAttribute('d', pathEl.getAttribute('d') || '');
+                    clip.appendChild(clipPath);
+                });
+                defs.appendChild(clip);
+                const clipUrl = 'url(#pa-province-clip)';
+                colorRoot.setAttribute('clip-path', clipUrl);
+
+                // Seamless green base (one field — no per-district fill seams)
+                let mapBb;
+                try { mapBb = districtLayer.getBBox(); } catch (e) { mapBb = null; }
+                if (mapBb && mapBb.width > 0) {
+                    const base = document.createElementNS(svgNS, 'rect');
+                    base.setAttribute('x', String(mapBb.x - 2));
+                    base.setAttribute('y', String(mapBb.y - 2));
+                    base.setAttribute('width', String(mapBb.width + 4));
+                    base.setAttribute('height', String(mapBb.height + 4));
+                    base.setAttribute('fill', HEAT_LOW);
+                    base.setAttribute('class', 'map-green-base');
+                    colorRoot.insertBefore(base, heatLayer);
+                }
+
                 let gradSeq = 0;
-                districtLayer.querySelectorAll('.district-map-shape').forEach(function (path) {
-                    const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
-                    gradSeq = applyDistrictRadialFill(path, bandIdx, defs, svgNS, gradSeq);
+                const shapes = Array.prototype.slice.call(
+                    districtLayer.querySelectorAll('.district-map-shape')
+                );
+                [1, 2].forEach(function (band) {
+                    shapes.forEach(function (path) {
+                        const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
+                        if (bandIdx !== band) return;
+                        gradSeq = appendHeatGlow(path, bandIdx, heatLayer, defs, svgNS, gradSeq);
+                    });
+                });
+
+                const labelAnchors = {};
+                districtItems.forEach(function (it) {
+                    if (it && it.name && typeof it.label_x === 'number' && typeof it.label_y === 'number') {
+                        labelAnchors[String(it.name)] = { x: it.label_x, y: it.label_y };
+                    }
                 });
 
                 const labelLayer = document.createElementNS(svgNS, 'g');
@@ -1000,20 +1089,57 @@
                 labelLayer.setAttribute('aria-hidden', 'true');
                 g.appendChild(labelLayer);
 
+                const placed = [];
+                const labelCandidates = [];
                 districtLayer.querySelectorAll('.district-map-shape').forEach(function (pathEl) {
                     let bb;
                     try { bb = pathEl.getBBox(); } catch (e) { return; }
-                    if (bb.width < 28 || bb.height < 18) return;
+                    if (!(bb.width > 0) || !(bb.height > 0)) return;
 
                     const text = String(pathEl.getAttribute('data-district-label') || '').trim();
                     if (!text) return;
 
-                    const cx = bb.x + bb.width / 2;
-                    const cy = bb.y + bb.height / 2;
-                    const len = text.length;
-                    let fs = len > 18 ? 9 : (len > 14 ? 10.5 : (len > 11 ? 11.5 : 13));
-                    fs = Math.min(fs, bb.height * 0.14, bb.width / (len * 0.62));
-                    if (fs < 5) return;
+                    labelCandidates.push({
+                        bb: bb,
+                        text: text,
+                        area: bb.width * bb.height,
+                    });
+                });
+
+                labelCandidates.sort(function (a, b) { return b.area - a.area; });
+
+                labelCandidates.forEach(function (item) {
+                    const bb = item.bb;
+                    const text = item.text;
+                    const anchor = labelAnchors[text];
+                    let cx = anchor ? anchor.x : (bb.x + bb.width / 2);
+                    let cy = anchor ? anchor.y : (bb.y + bb.height / 2);
+
+                    const lines = labelLines(text);
+                    const longest = lines.reduce(function (a, b) { return a.length >= b.length ? a : b; }, '');
+                    let fs = Math.min(bb.height * 0.125, bb.width / (longest.length * 0.65), 2.7);
+                    fs = Math.max(1.45, fs);
+
+                    let boxW = longest.length * fs * 0.52;
+                    let boxH = fs * 1.15 * lines.length;
+
+                    for (let attempt = 0; attempt < 8; attempt++) {
+                        let hit = false;
+                        const left = cx - boxW / 2;
+                        const top = cy - boxH / 2;
+                        for (let i = 0; i < placed.length; i++) {
+                            const p = placed[i];
+                            if (left < p.right && left + boxW > p.left && top < p.bottom && top + boxH > p.top) {
+                                hit = true;
+                                cy += (attempt % 2 === 0 ? 1 : -1) * (fs * 0.8 + attempt * 0.28);
+                                fs = Math.max(1.25, fs * 0.94);
+                                boxW = longest.length * fs * 0.52;
+                                boxH = fs * 1.15 * lines.length;
+                                break;
+                            }
+                        }
+                        if (!hit) break;
+                    }
 
                     const textEl = document.createElementNS(svgNS, 'text');
                     textEl.setAttribute('x', String(cx));
@@ -1021,9 +1147,29 @@
                     textEl.setAttribute('text-anchor', 'middle');
                     textEl.setAttribute('dominant-baseline', 'middle');
                     textEl.setAttribute('font-size', String(fs));
+                    textEl.setAttribute('stroke-width', String(Math.max(0.28, fs * 0.17)));
                     textEl.setAttribute('class', 'map-label-district');
-                    textEl.textContent = text;
+
+                    if (lines.length === 1) {
+                        textEl.textContent = lines[0];
+                    } else {
+                        const lh = fs * 1.15;
+                        const startY = cy - (lh * (lines.length - 1)) / 2;
+                        lines.forEach(function (line, idx) {
+                            const tspan = document.createElementNS(svgNS, 'tspan');
+                            tspan.setAttribute('x', String(cx));
+                            tspan.setAttribute('y', String(startY + idx * lh));
+                            tspan.textContent = line;
+                            textEl.appendChild(tspan);
+                        });
+                    }
                     labelLayer.appendChild(textEl);
+                    placed.push({
+                        left: cx - boxW / 2,
+                        right: cx + boxW / 2,
+                        top: cy - boxH / 2,
+                        bottom: cy + boxH / 2,
+                    });
                 });
 
                 let hovered = null;
@@ -1033,20 +1179,15 @@
                     if (!isDistrict) {
                         if (hovered) hovered.classList.remove('is-hover');
                         hovered = null;
-                        hideTooltip();
                         return;
                     }
                     if (hovered && hovered !== target) hovered.classList.remove('is-hover');
                     hovered = target;
                     hovered.classList.add('is-hover');
-                    const lbl = target.getAttribute('data-district-label') || '';
-                    const cnt = Number(target.getAttribute('data-count') || 0);
-                    showTooltip(event.clientX, event.clientY, lbl, cnt);
                 });
                 svg.addEventListener('mouseleave', function () {
                     if (hovered) hovered.classList.remove('is-hover');
                     hovered = null;
-                    hideTooltip();
                 });
 
                 if (statusEl) statusEl.style.display = 'none';

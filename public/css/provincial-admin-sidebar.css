@@ -1,5 +1,5 @@
 /**
- * Provincial Admin sidebar — shared across dashboard, reports, heat-map, settings.
+ * Provincial Admin sidebar — shared Reports-page visual treatment.
  * Scoped to #pa-sidebar so page-level .sidebar-link rules cannot bleed in.
  */
 
@@ -10,33 +10,35 @@ body.pa-app {
 }
 
 body.pa-app #pa-sidebar.provincial-admin-sidebar {
-    width: 235px;
+    width: 185px;
+    min-width: 185px;
+    height: 100vh;
     background-color: #ffffff !important;
-    border-right: 1px solid #eaeaea;
+    border-right: 3px solid #d7d7d7;
     display: flex;
     flex-direction: column;
-    padding-top: 120px;
+    padding-top: 151px;
     flex-shrink: 0;
 }
 
 body.pa-app #pa-sidebar .sidebar-logo {
-    position: fixed;
-    top: 40px;
-    left: 40px;
-    width: 100px;
+    position: absolute;
+    top: 46px;
+    left: 28px;
+    width: 140px;
     height: auto;
     z-index: 1001;
 }
 
 body.pa-app #pa-sidebar .sidebar-logo img {
-    width: 115px;
+    width: 140px;
     height: auto;
     display: block;
 }
 
 body.pa-app #pa-sidebar .sidebar-list {
     list-style: none;
-    padding: 0 0 0 22px;
+    padding: 0 0 0 28px;
     margin: 0;
 }
 
@@ -48,29 +50,34 @@ body.pa-app #pa-sidebar .sidebar-list li {
 
 body.pa-app #pa-sidebar .sidebar-link {
     display: block;
-    width: 92%;
+    width: 118px;
+    min-height: 31px;
     font-size: 15px !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
+    padding: 5px 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    line-height: 21px;
     text-decoration: none;
     transition: all 0.25s ease;
     box-sizing: border-box;
     background: transparent !important;
+    -webkit-text-fill-color: #545454 !important;
 }
 
 body.pa-app #pa-sidebar .sidebar-link:not(.active):not(:hover) {
     color: #545454 !important;
     background: transparent !important;
+    -webkit-text-fill-color: #545454 !important;
 }
 
 body.pa-app #pa-sidebar .sidebar-link:hover,
 body.pa-app #pa-sidebar .sidebar-link.active {
     color: #ffffff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
 body.pa-app .menu-icon {
@@ -114,12 +121,28 @@ body.pa-app .sidebar-overlay.active {
 }
 
 @media (min-width: 901px) {
+    body.pa-app #pa-sidebar.provincial-admin-sidebar {
+        position: relative;
+    }
+
     body.pa-app .sidebar-overlay {
         display: none !important;
     }
 }
 
 @media (max-width: 900px) {
+    body.pa-app #pa-sidebar.provincial-admin-sidebar {
+        position: fixed;
+    }
+
+    body.pa-app #pa-sidebar .sidebar-link {
+        width: 92%;
+        min-height: 0;
+        padding: 0.85rem 18px;
+        margin-bottom: 0.35rem;
+        border-radius: 10px;
+    }
+
     body.pa-app .menu-icon {
         display: flex !important;
     }

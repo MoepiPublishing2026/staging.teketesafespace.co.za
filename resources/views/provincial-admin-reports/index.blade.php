@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Reports | Tekete SafeSpace – {{ $province->province_name ?? 'Provincial Admin' }}</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     <style>
 :root {
@@ -28,8 +27,8 @@ body {
     overflow-y: hidden;
 }
 
-.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 900 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
-button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 900 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 400 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
+button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 700 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
 button:hover, button:focus { background-color: #c7da30 !important; color: white !important; border-color: #38b6ff !important; outline: none; }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 
@@ -37,30 +36,31 @@ main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; min-width: 
 
 .topbar {
     width: 100%;
-    background: white;
-    border-bottom: 1px solid white;
+    background: #fff;
+    border: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
-    padding: 1rem 2.5rem;
-    position: sticky;
-    top: 0;
+    padding: 24px 39px 0;
+    position: relative;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    min-height: 64px;
+    box-shadow: none;
+    height: 78px;
+    flex: 0 0 78px;
+    min-height: 0;
 }
-.profile { display: flex; align-items: center; gap: 0.8rem; }
+.profile { display: flex; align-items: flex-start; gap: 12px; }
 .profile-avatar {
-    width: 42px; height: 42px; border-radius: 50%;
-    background: #ececec; overflow: hidden;
+    width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%;
+    background: transparent; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
+    box-shadow: none;
 }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile .meta { text-align: right; }
 .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
 .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-.profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
+.profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 13px; }
 h1 {
     margin: 0 0 1.5rem;
     font-weight: 900 !important;
@@ -221,7 +221,7 @@ tbody tr:last-child td { border-bottom: none; }
     main { padding: 1.25rem; }
     .filter-grid { grid-template-columns: 1fr 1fr !important; }
     th, td { padding: 0.65rem 0.75rem; }
-    h1 { font-size: 26px !important; }
+    h1 { font-size: 22px !important; }
 }
 @media (max-width: 540px) {
     .filter-grid { grid-template-columns: 1fr !important; }
@@ -242,11 +242,11 @@ tbody tr:last-child td { border-bottom: none; }
 }
 .filter-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 11px !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
-    color: #6b7280 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
+    color: #545454 !important;
+    text-transform: none;
+    letter-spacing: 0;
     margin-bottom: 5px;
     display: block;
 }
@@ -255,9 +255,9 @@ tbody tr:last-child td { border-bottom: none; }
     border: 2px solid #e5e7eb !important;
     border-radius: 8px;
     padding: 7px 10px !important;
-    font-size: 13px !important;
+    font-size: 15px !important;
     font-family: 'Montserrat', sans-serif !important;
-    color: #111 !important;
+    color: #545454 !important;
     background: white !important;
     transition: border-color 0.2s;
     outline: none;
@@ -273,9 +273,9 @@ tbody tr:last-child td { border-bottom: none; }
     border: 2px solid #c7da30 !important;
     border-radius: 30px;
     padding: 10px 20px 10px 44px !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
     font-family: 'Montserrat', sans-serif !important;
-    color: #111 !important;
+    color: #545454 !important;
     background: white !important;
     outline: none;
     transition: box-shadow 0.2s;
@@ -388,6 +388,339 @@ tbody tr:last-child td { border-bottom: none; }
     color: #9ca3af !important;
     opacity: 1 !important;
 }
+
+/* Provincial Reports — match the School/National Admin reports visual system */
+body.pa-app {
+    --reports-lime: #c7da30;
+    --reports-blue: #38b6ff;
+    background: #fff !important;
+}
+
+body.pa-app .main-panel {
+    height: 100vh;
+    overflow: hidden;
+    background: #fff;
+}
+
+body.pa-app .topbar {
+    position: relative;
+    height: 78px;
+    flex: 0 0 78px;
+    align-items: flex-start;
+    padding: 24px 39px 0;
+    border: 0;
+    background: #fff;
+    box-shadow: none;
+}
+
+body.pa-app .profile {
+    align-items: flex-start;
+    gap: 12px;
+}
+
+body.pa-app .profile .meta {
+    padding-top: 4px;
+    line-height: 1.08;
+}
+
+body.pa-app .profile .meta > span:first-child {
+    color: var(--reports-blue) !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+body.pa-app .profile .meta .role {
+    margin-top: 2px;
+    color: #4a4a4a !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+}
+
+body.pa-app .profile-avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    background: transparent;
+    box-shadow: none;
+}
+
+body.pa-app .profile-avatar svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+body.pa-app main#main-content {
+    min-width: 0;
+    padding: 3px 39px 18px 24px;
+    background: #fff;
+}
+
+body.pa-app main#main-content > h1 {
+    margin: 0 0 1.5rem !important;
+    color: #545454 !important;
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
+}
+
+body.pa-app .filter-panel {
+    margin: 0 0 1.25rem;
+    padding: 1rem 1.15rem;
+    border: 2px solid var(--reports-lime) !important;
+    border-radius: 10px;
+    background: #f5f5f5;
+    box-shadow: none;
+}
+
+body.pa-app .search-wrap {
+    margin-bottom: 0.85rem;
+}
+
+body.pa-app .search-icon {
+    display: none;
+}
+
+body.pa-app .search-wrap input {
+    width: 100%;
+    height: 40px;
+    margin: 0 !important;
+    padding: 0 16px !important;
+    border: 2px solid var(--reports-lime) !important;
+    border-radius: 999px;
+    background: #fff !important;
+    color: #545454 !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+body.pa-app .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.75rem;
+    align-items: end;
+}
+
+body.pa-app .filter-grid > div {
+    min-width: 0;
+}
+
+body.pa-app .filter-label {
+    display: block;
+    height: auto;
+    margin: 0 0 0.35rem;
+    overflow: hidden;
+    color: #545454 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+body.pa-app .filter-input,
+body.pa-app #refreshBtn {
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    margin: 0 !important;
+    padding: 0 0.65rem !important;
+    border-radius: 6px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 15px !important;
+}
+
+body.pa-app .filter-input {
+    border: 2px solid var(--reports-lime) !important;
+    background: #fff !important;
+    color: #545454 !important;
+    font-weight: 400 !important;
+}
+
+body.pa-app #refreshBtn {
+    border: 0 !important;
+    background: var(--reports-blue) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+
+body.pa-app .active-filter-badge {
+    padding: 0.25rem 0.55rem;
+    font-size: 11px;
+}
+
+body.pa-app .choices__inner {
+    min-height: 40px !important;
+    padding: 0 0.65rem !important;
+    border: 2px solid var(--reports-lime) !important;
+    border-radius: 6px !important;
+    font-size: 15px !important;
+}
+
+body.pa-app .choices__list--single .choices__item {
+    font-size: 15px !important;
+    padding: 0.35rem 0 !important;
+}
+
+body.pa-app .choices__list--dropdown,
+body.pa-app .choices__list--dropdown .choices__item {
+    font-size: 13px !important;
+}
+
+body.pa-app .table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border: 0;
+    border-radius: 0;
+    background: #e5e5e5;
+}
+
+body.pa-app .table-wrap table {
+    display: table;
+    width: 100% !important;
+    min-width: 780px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #e5e5e5;
+    color: #545454;
+    font-size: 13px !important;
+}
+
+body.pa-app .table-wrap thead {
+    background: #c4df20;
+    color: #fff;
+    font-size: 11px !important;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+body.pa-app .table-wrap th {
+    height: 40px;
+    padding: 0 0.5rem;
+    border-right: 1px solid rgba(255,255,255,.9);
+    border-bottom: 0;
+    color: #fff;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-align: center;
+}
+
+body.pa-app .table-wrap td {
+    height: 40px;
+    padding: 0 0.5rem;
+    overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,.9);
+    border-bottom: 1px solid #fff;
+    color: #545454;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.pa-app .table-wrap th:nth-child(1) { width: 10%; }
+body.pa-app .table-wrap th:nth-child(2) { width: 12%; }
+body.pa-app .table-wrap th:nth-child(3) { width: 9%; }
+body.pa-app .table-wrap th:nth-child(4) { width: 9%; }
+body.pa-app .table-wrap th:nth-child(5) { width: 13%; }
+body.pa-app .table-wrap th:nth-child(6) { width: 8%; }
+body.pa-app .table-wrap th:nth-child(7) { width: 11%; }
+body.pa-app .table-wrap th:nth-child(8) { width: 13%; }
+body.pa-app .table-wrap th:nth-child(9) { width: 8%; }
+body.pa-app .table-wrap th:nth-child(10) { width: 7%; }
+
+body.pa-app .table-wrap td:first-child {
+    font-weight: 700;
+}
+
+body.pa-app .table-wrap tbody tr {
+    background: #e5e5e5;
+}
+
+body.pa-app .table-wrap tbody tr:hover {
+    background: #f4f8d4;
+}
+
+body.pa-app .status-badge {
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff3a6;
+    color: #9b8749;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    line-height: 1.2;
+    text-transform: none;
+}
+
+body.pa-app .pagination {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 13px;
+}
+
+body.pa-app .page-link {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--reports-lime);
+    border-radius: 50%;
+    background: #fff;
+    color: #545454;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    line-height: 1;
+}
+
+body.pa-app .page-link:hover,
+body.pa-app .page-link[aria-current="page"] {
+    border-color: var(--reports-lime);
+    background: var(--reports-lime);
+    color: #111;
+}
+
+@media (min-width: 1400px) {
+    body.pa-app .filter-grid {
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    body.pa-app .topbar {
+        height: 60px;
+        flex-basis: 60px;
+        padding: 10px 16px 0 60px;
+    }
+
+    body.pa-app main#main-content {
+        padding: 12px 16px 24px;
+    }
+
+    body.pa-app .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    body.pa-app .table-wrap table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 540px) {
+    body.pa-app .filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
     </style>
     <x-provincial-admin-styles />
 </head>
@@ -430,12 +763,18 @@ tbody tr:last-child td { border-bottom: none; }
                 @php $currentUser = auth()->user()->fresh(); @endphp
                 @if($currentUser && $currentUser->profile_picture)
                     <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                @else
+                    <svg viewBox="0 0 52 52" role="img" aria-label="Default administrator profile picture">
+                        <circle cx="26" cy="26" r="26" fill="#e3e7ec"/>
+                        <ellipse cx="26" cy="20" rx="10" ry="12" fill="#647184"/>
+                        <path d="M8 47c2-11 9-17 18-17s16 6 18 17c-5 3-11 5-18 5S13 50 8 47Z" fill="#647184"/>
+                    </svg>
                 @endif
             </div>
         </div>
     </div>
     <main id="main-content">
-        <h1>Reports</h1>
+        <h1>All Reports</h1>
 
         {{-- ════════════════════════════════════════════════════════════ --}}
         {{--  SEARCH BAR + FILTER PANEL                                  --}}
@@ -450,7 +789,7 @@ tbody tr:last-child td { border-bottom: none; }
                     type="text"
                     name="search"
                     value="{{ request('search') }}"
-                    placeholder="Search by name, email, case number, description…"
+                    placeholder="Search by name, email, case number, description"
                     autocomplete="off"
                 />
             </div>
@@ -473,11 +812,11 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Name / Surname</label>
                     <input type="text" name="full_name" class="filter-input"
                            value="{{ request('full_name') }}"
-                           placeholder="e.g. John Smith" />
+                           placeholder="e.g Joe Smith" />
                 </div>
 
                 <div>
-                    <label class="filter-label">Grade</label>
+                    <label class="filter-label">Grades</label>
                     <select name="grade" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Grades</option>
                         @foreach($gradeOptions as $grade)
@@ -513,7 +852,7 @@ tbody tr:last-child td { border-bottom: none; }
                 </div>
 
                 <div>
-                    <label class="filter-label">Subtype</label>
+                    <label class="filter-label">Subtypes</label>
                     <select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Subtypes</option>
                         @foreach($subtypeOptions as $sub)
@@ -628,10 +967,10 @@ tbody tr:last-child td { border-bottom: none; }
                       <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                         <td style="text-align: center;">
                             <span class="status-badge status-{{ str_replace('_', '-', $report->status) }}">
-                                {{ ucfirst(str_replace('-', ' ', $report->status)) }}
+                                {{ str_replace(' ', '-', ucwords(str_replace(['-', '_'], ' ', $report->status))) }}
                             </span>
                         </td>
-                        <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
+                        <td>{{ $report->is_anonymous ? 'YES' : 'NO' }}</td>
                         <td>{{ $report->created_at->format('Y-m-d') }}</td>
                     </tr>
                 @empty
@@ -655,7 +994,7 @@ tbody tr:last-child td { border-bottom: none; }
 
             @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
                 @if ($page == $reports->currentPage())
-                    <span class="page-link" style="background:#cddc39; font-weight:bold;">{{ $page }}</span>
+                    <span class="page-link" aria-current="page">{{ $page }}</span>
                 @else
                     <a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}" class="page-link">{{ $page }}</a>
                 @endif
