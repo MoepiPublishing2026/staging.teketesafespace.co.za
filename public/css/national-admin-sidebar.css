@@ -1,5 +1,5 @@
 /**
- * National Admin sidebar — matches dashboard exactly.
+ * National Admin sidebar — shared Reports-page visual treatment.
  * Load on all national-admin pages after page inline styles.
  */
 
@@ -10,33 +10,35 @@ body.na-app {
 }
 
 body.na-app .sidebar {
-    width: 235px;
+    width: 185px;
+    min-width: 185px;
+    height: 100vh;
     background-color: #ffffff !important;
-    border-right: 1px solid #eaeaea;
+    border-right: 3px solid #d7d7d7;
     display: flex;
     flex-direction: column;
-    padding-top: 120px;
+    padding-top: 151px;
     flex-shrink: 0;
 }
 
 body.na-app .sidebar-logo {
-    position: fixed;
-    top: 40px;
-    left: 40px;
-    width: 100px;
+    position: absolute;
+    top: 46px;
+    left: 28px;
+    width: 140px;
     height: auto;
     z-index: 1001;
 }
 
 body.na-app .sidebar-logo img {
-    width: 115px;
+    width: 140px;
     height: auto;
     display: block;
 }
 
 body.na-app .sidebar-list {
     list-style: none;
-    padding: 0 0 0 22px;
+    padding: 0 0 0 28px;
     margin: 0;
 }
 
@@ -48,21 +50,26 @@ body.na-app .sidebar-list li {
 
 body.na-app .sidebar-link {
     display: block;
-    width: 92%;
+    width: 118px;
+    min-height: 31px;
     font-size: 15px !important;
-    font-weight: 900 !important;
+    font-weight: 400 !important;
     color: #545454 !important;
+    -webkit-text-fill-color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px;
-    margin-bottom: 17px;
-    border-radius: 8px;
+    padding: 5px 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    line-height: 21px;
     text-decoration: none;
     transition: all 0.25s ease;
+    background: transparent !important;
 }
 
 body.na-app .sidebar-link:hover,
 body.na-app .sidebar-link.active {
     color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
 }
 
@@ -107,7 +114,25 @@ body.na-app .sidebar-overlay.active {
 }
 
 @media (min-width: 901px) {
+    body.na-app .sidebar {
+        position: relative;
+    }
+
     body.na-app .sidebar-overlay {
         display: none !important;
+    }
+}
+
+@media (max-width: 900px) {
+    body.na-app .sidebar {
+        position: fixed;
+    }
+
+    body.na-app .sidebar-link {
+        width: 92%;
+        min-height: 0;
+        padding: 0.85rem 18px;
+        margin-bottom: 0.35rem;
+        border-radius: 10px;
     }
 }

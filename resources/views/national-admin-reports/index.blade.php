@@ -188,6 +188,365 @@ tbody tr:last-child td { border-bottom: none; }
 }
 #refreshBtn:hover { background: #1a9fe0 !important; color: white !important; }
 .active-filter-badge { display: inline-flex; align-items: center; background: #f0f9d4; border: 1px solid #c7da30; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-family: 'Montserrat', sans-serif; font-weight: 600; color: #4a5e00; margin-right: 6px; margin-bottom: 6px; }
+
+/* National Reports — match the School Admin reports visual system */
+body.na-app {
+    --reports-lime: #c7da30;
+    --reports-blue: #38b6ff;
+    background: #fff !important;
+}
+
+body.na-app #na-sidebar.national-admin-sidebar {
+    position: relative !important;
+    width: 185px !important;
+    min-width: 185px !important;
+    height: 100vh;
+    padding-top: 151px !important;
+    border-right: 3px solid #d7d7d7 !important;
+    background: #fff !important;
+}
+
+body.na-app #na-sidebar .sidebar-logo {
+    position: absolute !important;
+    top: 46px !important;
+    left: 28px !important;
+    width: 140px !important;
+}
+
+body.na-app #na-sidebar .sidebar-logo img {
+    width: 140px !important;
+}
+
+body.na-app #na-sidebar .sidebar-list {
+    padding-left: 28px !important;
+}
+
+body.na-app #na-sidebar nav a.sidebar-link {
+    width: 118px !important;
+    min-height: 31px !important;
+    margin-bottom: 8px !important;
+    padding: 5px 8px !important;
+    border-radius: 4px !important;
+    color: #545454 !important;
+    -webkit-text-fill-color: #545454 !important;
+    background: transparent !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    line-height: 21px !important;
+}
+
+body.na-app #na-sidebar nav a.sidebar-link:hover,
+body.na-app #na-sidebar nav a.sidebar-link.active {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    background: var(--reports-blue) !important;
+}
+
+body.na-app .main-panel {
+    height: 100vh;
+    overflow: hidden;
+    background: #fff;
+}
+
+body.na-app .topbar {
+    position: relative;
+    height: 78px;
+    flex: 0 0 78px;
+    align-items: flex-start;
+    padding: 24px 39px 0;
+    border: 0;
+    background: #fff;
+    box-shadow: none;
+}
+
+body.na-app .profile {
+    align-items: flex-start;
+    gap: 12px;
+}
+
+body.na-app .profile .meta {
+    padding-top: 4px;
+    line-height: 1.08;
+}
+
+body.na-app .profile .meta > span:first-child {
+    color: var(--reports-blue) !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+body.na-app .profile .meta .role {
+    margin-top: 2px;
+    color: #656565 !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+body.na-app .profile-avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    background: transparent;
+    box-shadow: none;
+}
+
+body.na-app .profile-avatar svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+body.na-app main#main-content {
+    min-width: 0;
+    padding: 3px 39px 18px 24px;
+    background: #fff;
+}
+
+body.na-app main#main-content > h1 {
+    margin: 0 0 4px;
+    color: #4a4a4a !important;
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    line-height: 1.25;
+    text-align: left;
+}
+
+body.na-app .filter-panel {
+    margin: 0 0 13px;
+    padding: 11px 14px 7px;
+    border: 2px solid var(--reports-lime) !important;
+    border-radius: 10px;
+    background: #f5f5f5;
+    box-shadow: none;
+}
+
+body.na-app .search-wrap {
+    margin-bottom: 7px;
+}
+
+body.na-app .search-icon {
+    display: none;
+}
+
+body.na-app .search-wrap input {
+    width: 100%;
+    height: 23px;
+    margin: 0 !important;
+    padding: 0 14px !important;
+    border: 2px solid var(--reports-lime) !important;
+    border-radius: 999px;
+    background: #fff !important;
+    color: #333 !important;
+    font-size: 9px !important;
+    font-weight: 400 !important;
+}
+
+body.na-app .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 7px;
+    align-items: end;
+}
+
+body.na-app .filter-grid > div {
+    min-width: 0;
+}
+
+body.na-app .filter-label {
+    display: block;
+    height: 11px;
+    margin: 0 0 3px;
+    overflow: hidden;
+    color: #60646a !important;
+    font-size: 7px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0;
+    line-height: 11px;
+    white-space: nowrap;
+}
+
+body.na-app .filter-input,
+body.na-app #refreshBtn {
+    box-sizing: border-box;
+    width: 100%;
+    height: 23px;
+    margin: 0 !important;
+    padding: 0 5px !important;
+    border-radius: 6px !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 8px !important;
+}
+
+body.na-app .filter-input {
+    border: 2px solid var(--reports-lime) !important;
+    background: #fff !important;
+    color: #555 !important;
+    font-weight: 400 !important;
+}
+
+body.na-app #refreshBtn {
+    border: 0 !important;
+    background: var(--reports-blue) !important;
+    color: #fff !important;
+    font-weight: 400 !important;
+}
+
+body.na-app .active-filter-badge {
+    padding: 1px 6px;
+    font-size: 7px;
+}
+
+body.na-app .table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border: 0;
+    border-radius: 0;
+    background: #e5e5e5;
+}
+
+body.na-app .table-wrap table {
+    display: table;
+    width: 100% !important;
+    min-width: 780px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    background: #e5e5e5;
+    color: #303030;
+    font-size: 8px;
+}
+
+body.na-app .table-wrap thead {
+    background: #c4df20;
+    color: #fff;
+    font-size: 8px;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+body.na-app .table-wrap th {
+    height: 36px;
+    padding: 0 5px;
+    border-right: 1px solid rgba(255,255,255,.9);
+    border-bottom: 0;
+    color: #fff;
+    font-size: 8px;
+    font-weight: 400;
+    text-align: center;
+}
+
+body.na-app .table-wrap td {
+    height: 32px;
+    padding: 0 6px;
+    overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,.9);
+    border-bottom: 1px solid #fff;
+    color: #303030;
+    font-size: 8px;
+    font-weight: 400;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.na-app .table-wrap th:nth-child(1) { width: 10%; }
+body.na-app .table-wrap th:nth-child(2) { width: 12%; }
+body.na-app .table-wrap th:nth-child(3) { width: 9%; }
+body.na-app .table-wrap th:nth-child(4) { width: 9%; }
+body.na-app .table-wrap th:nth-child(5) { width: 13%; }
+body.na-app .table-wrap th:nth-child(6) { width: 8%; }
+body.na-app .table-wrap th:nth-child(7) { width: 11%; }
+body.na-app .table-wrap th:nth-child(8) { width: 13%; }
+body.na-app .table-wrap th:nth-child(9) { width: 8%; }
+body.na-app .table-wrap th:nth-child(10) { width: 7%; }
+
+body.na-app .table-wrap td:first-child {
+    font-weight: 700;
+}
+
+body.na-app .table-wrap tbody tr {
+    background: #e5e5e5;
+}
+
+body.na-app .table-wrap tbody tr:hover {
+    background: #f4f8d4;
+}
+
+body.na-app .status-badge {
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff3a6;
+    color: #9b8749;
+    font-size: 8px;
+    font-weight: 400;
+    line-height: 1.2;
+    text-transform: none;
+}
+
+body.na-app .pagination {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 13px;
+}
+
+body.na-app .page-link {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--reports-lime);
+    border-radius: 50%;
+    background: #fff;
+    color: #222;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+body.na-app .page-link:hover,
+body.na-app .page-link[aria-current="page"] {
+    border-color: var(--reports-lime);
+    background: var(--reports-lime);
+    color: #111;
+}
+
+@media (min-width: 1400px) {
+    body.na-app .filter-grid {
+        grid-template-columns: repeat(11, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    body.na-app .topbar {
+        height: 60px;
+        flex-basis: 60px;
+        padding: 10px 16px 0 60px;
+    }
+
+    body.na-app main#main-content {
+        padding: 12px 16px 24px;
+    }
+
+    body.na-app .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    body.na-app .table-wrap table {
+        min-width: 900px;
+    }
+}
+
+@media (max-width: 540px) {
+    body.na-app .filter-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
     </style>
     <link rel="stylesheet" href="{{ asset('css/national-admin-mobile.css') }}">
     <x-national-admin-styles />
@@ -208,13 +567,19 @@ tbody tr:last-child td { border-bottom: none; }
                 @php $currentUser = auth()->user()->fresh(); @endphp
                 @if($currentUser && $currentUser->profile_picture)
                     <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                @else
+                    <svg viewBox="0 0 52 52" role="img" aria-label="Default administrator profile picture">
+                        <circle cx="26" cy="26" r="26" fill="#e3e7ec"/>
+                        <ellipse cx="26" cy="20" rx="10" ry="12" fill="#647184"/>
+                        <path d="M8 47c2-11 9-17 18-17s16 6 18 17c-5 3-11 5-18 5S13 50 8 47Z" fill="#647184"/>
+                    </svg>
                 @endif
             </div>
         </div>
     </div>
 
     <main id="main-content">
-        <h1>Reports</h1>
+        <h1>All Reports</h1>
 
         {{-- ════════════════════════════════════════════════════════════ --}}
         {{--  SEARCH BAR + FILTER PANEL                                  --}}
@@ -250,13 +615,13 @@ tbody tr:last-child td { border-bottom: none; }
                     <label class="filter-label">Name / Surname</label>
                     <input type="text" name="full_name" class="filter-input"
                            value="{{ request('full_name') }}"
-                           placeholder="e.g. John Smith" />
+                           placeholder="e.g Joe Smith" />
                 </div>
                 
 
                 
                 <div>
-                    <label class="filter-label">Grade</label>
+                    <label class="filter-label">Grades</label>
                     <select name="grade" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Grades</option>
                         @foreach($gradeOptions as $grade)
@@ -292,7 +657,7 @@ tbody tr:last-child td { border-bottom: none; }
                 </div>
 
                 <div>
-                    <label class="filter-label">Subtype</label>
+                    <label class="filter-label">Subtypes</label>
                     <select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
                         <option value="">All Subtypes</option>
                         @foreach($subtypeOptions as $sub)
@@ -423,10 +788,10 @@ tbody tr:last-child td { border-bottom: none; }
                             <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                             <td style="text-align: center;">
                                 <span class="status-badge status-{{ str_replace('_', '-', $report->status) }}">
-                                    {{ ucfirst(str_replace('-', ' ', $report->status)) }}
+                                    {{ str_replace(' ', '-', ucwords(str_replace(['-', '_'], ' ', $report->status))) }}
                                 </span>
                             </td>
-                            <td>{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
+                            <td>{{ $report->is_anonymous ? 'YES' : 'NO' }}</td>
                             <td>{{ $report->created_at->format('Y-m-d') }}</td>
                         </tr>
                     @empty
@@ -450,7 +815,7 @@ tbody tr:last-child td { border-bottom: none; }
 
             @foreach ($reports->getUrlRange(1, $reports->lastPage()) as $page => $url)
                 @if ($page == $reports->currentPage())
-                    <span class="page-link" style="background:#cddc39; font-weight:bold;">{{ $page }}</span>
+                    <span class="page-link" aria-current="page">{{ $page }}</span>
                 @else
                     <a href="{{ $url }}&{{ http_build_query(request()->except('page')) }}" class="page-link">{{ $page }}</a>
                 @endif
@@ -580,6 +945,17 @@ document.addEventListener('keydown', e => {
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
+// ── Shared top-level state (declared ONCE) ──────────────────────
+const anonSelect  = document.querySelector('select[name="is_anonymous"]');
+const nameInput   = document.querySelector('input[name="full_name"]');
+const searchInput = document.querySelector('input[name="search"]');
+
+let allSubtypeOptions = null;
+let typeSelect, subtypeSelect;
+
+const PLACEHOLDER_DEFAULT = 'Search by name, email, case number, school, description…';
+const PLACEHOLDER_ANON    = 'Search by email, case number, school, description…';
+
 function exportPDF() {
     const element = document.getElementById('main-content');
     if (!element) { alert("Main content not found!"); return; }
@@ -600,62 +976,69 @@ const subtypesByType = {
     @endforeach
 };
 
+// ── Subtype filtering ─────────────────────────────────────────────
 function filterSubtypes() {
-                const selectedType = typeSelect.value;
+    if (allSubtypeOptions === null) {
+        allSubtypeOptions = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
+    }
 
-                const options = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
-                const placeholder = subtypeSelect.options[0]; // "All Subtypes"
+    const selectedType = typeSelect.value;
+    const placeholder = subtypeSelect.options[0];
 
-                // Separate "Other" and non-Other options
-                const seenOtherTypes = new Set();
-                const regular = [];
-                const others  = [];
+    const seenOtherTypes = new Set();
+    const regular = [];
+    const others = [];
 
-                options.forEach(function(opt) {
-                    const isOther = opt.text.trim().toLowerCase() === 'other';
-                    const optType = opt.getAttribute('data-type');
+    allSubtypeOptions.forEach(function (opt) {
+        const isOther = opt.text.trim().toLowerCase() === 'other';
+        const optType = opt.getAttribute('data-type');
 
-                    if (!selectedType) {
-                        // No type selected: show all non-Others, show only one Other total
-                        if (isOther) {
-                            if (!seenOtherTypes.has('global')) {
-                                seenOtherTypes.add('global');
-                                others.push(opt);
-                            }
-                        } else {
-                            regular.push(opt);
-                        }
-                    } else {
-                        // Type selected: show only matching subtypes
-                        if (String(optType) === String(selectedType)) {
-                            if (isOther) {
-                                others.push(opt);
-                            } else {
-                                regular.push(opt);
-                            }
-                        }
-                    }
-                });
+        if (!selectedType) {
+            // No type selected: show all non-Others, only ONE "Other" total
+            if (isOther) {
+                if (!seenOtherTypes.has('global')) {
+                    seenOtherTypes.add('global');
+                    others.push(opt.cloneNode(true));
+                }
+            } else {
+                regular.push(opt.cloneNode(true));
+            }
+        } else if (String(optType) === String(selectedType)) {
+            if (isOther) {
+                others.push(opt.cloneNode(true));
+            } else {
+                regular.push(opt.cloneNode(true));
+            }
+        }
+    });
 
-                // Rebuild the select: placeholder → regular options → Others at bottom
-                subtypeSelect.innerHTML = '';
-                subtypeSelect.appendChild(placeholder);
-
-                regular.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
-
-                others.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
+    subtypeSelect.innerHTML = '';
+    subtypeSelect.appendChild(placeholder.cloneNode(true));
+    regular.forEach(opt => subtypeSelect.appendChild(opt));
+    others.forEach(opt => subtypeSelect.appendChild(opt));
 }
 
-// Run on page load (in case filters are already active)
-document.addEventListener('DOMContentLoaded', filterSubtypes);
+// ── Anonymous / name-search sync ─────────────────────────────────
+function syncAnonNameState() {
+    if (!anonSelect || !nameInput) return;
+    const isAnon = anonSelect.value === '1';
+
+    nameInput.disabled  = isAnon;
+    nameInput.title     = isAnon ? 'Not available for anonymous reports' : '';
+    nameInput.style.opacity    = isAnon ? '0.4' : '1';
+    nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
+    nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
+    if (isAnon) nameInput.value = '';
+
+    if (searchInput) {
+        searchInput.placeholder = isAnon ? PLACEHOLDER_ANON : PLACEHOLDER_DEFAULT;
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
+    typeSelect    = document.querySelector('select[name="type_id"]');
+    subtypeSelect = document.getElementById('subtypeSelect');
+
     const filterForm = document.getElementById('filterForm');
     let filterDebounce = null;
 
@@ -672,36 +1055,17 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshBtn.addEventListener('click', function () {
                 filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
                 filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
-                if (typeof filterSubtypes === 'function') filterSubtypes();
+                filterSubtypes();
+                syncAnonNameState();
                 filterForm.submit();
             });
         }
     }
-    
-    
-    
-    const anonSelect = document.querySelector('select[name="is_anonymous"]');
-    const nameInput  = document.querySelector('input[name="full_name"]');
-
-    function syncAnonNameState() {
-        if (!anonSelect || !nameInput) return;
-        const isAnon = anonSelect.value === '1';
-        nameInput.disabled  = isAnon;
-        nameInput.title     = isAnon ? 'Not available for anonymous reports' : '';
-        nameInput.style.opacity    = isAnon ? '0.4' : '1';
-        nameInput.style.cursor     = isAnon ? 'not-allowed' : '';
-        nameInput.style.background = isAnon ? '#f3f4f6' : 'white';
-        if (isAnon) nameInput.value = '';
-    }
 
     if (anonSelect) anonSelect.addEventListener('change', syncAnonNameState);
     syncAnonNameState();
-    
 
-    // ── Subtype filtered by report type ──────────────────────────
-    const typeSelect    = document.querySelector('select[name="type_id"]');
-    const subtypeSelect = document.getElementById('subtypeSelect');
-
+    // ── School autocomplete ──────────────────────────────────────
     (function initSchoolAutocomplete() {
         const API_ENDPOINT = '/api/schools';
         const LS_KEY = 'schools_cache_v3';
@@ -880,58 +1244,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     })();
 
-function filterSubtypes() {
-                const selectedType = typeSelect.value;
-
-                const options = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
-                const placeholder = subtypeSelect.options[0]; // "All Subtypes"
-
-                // Separate "Other" and non-Other options
-                const seenOtherTypes = new Set();
-                const regular = [];
-                const others  = [];
-
-                options.forEach(function(opt) {
-                    const isOther = opt.text.trim().toLowerCase() === 'other';
-                    const optType = opt.getAttribute('data-type');
-
-                    if (!selectedType) {
-                        // No type selected: show all non-Others, show only one Other total
-                        if (isOther) {
-                            if (!seenOtherTypes.has('global')) {
-                                seenOtherTypes.add('global');
-                                others.push(opt);
-                            }
-                        } else {
-                            regular.push(opt);
-                        }
-                    } else {
-                        // Type selected: show only matching subtypes
-                        if (String(optType) === String(selectedType)) {
-                            if (isOther) {
-                                others.push(opt);
-                            } else {
-                                regular.push(opt);
-                            }
-                        }
-                    }
-                });
-
-                // Rebuild the select: placeholder → regular options → Others at bottom
-                subtypeSelect.innerHTML = '';
-                subtypeSelect.appendChild(placeholder);
-
-                regular.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
-
-                others.forEach(opt => {
-                    opt.style.display = '';
-                    subtypeSelect.appendChild(opt);
-                });
-}
-
     typeSelect.addEventListener('change', filterSubtypes);
     filterSubtypes();
 });
@@ -947,7 +1259,6 @@ function closeLightbox() {
     lb.style.display = 'none';
     document.getElementById('lightboxImg').src = '';
 }
-
 </script>
 
     <div id="lightbox" onclick="closeLightbox()"

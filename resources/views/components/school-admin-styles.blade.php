@@ -5,30 +5,32 @@
 /* Inline block loads after linked CSS so these rules always win */
 body.sa-app #sa-sidebar.school-admin-sidebar,
 body.sa-app .school-admin-sidebar.sidebar {
-    width: 235px !important;
+    width: 185px !important;
+    min-width: 185px !important;
+    height: 100vh;
     background-color: #ffffff !important;
-    border-right: 1px solid #eaeaea;
+    border-right: 3px solid #d7d7d7;
     display: flex;
     flex-direction: column;
-    padding-top: 120px;
+    padding-top: 151px;
     flex-shrink: 0;
 }
 body.sa-app #sa-sidebar .sidebar-logo {
-    position: fixed;
-    top: 40px;
-    left: 40px;
-    width: 100px;
+    position: absolute;
+    top: 46px;
+    left: 28px;
+    width: 140px;
     height: auto;
     z-index: 1001;
 }
 body.sa-app #sa-sidebar .sidebar-logo img {
-    width: 115px;
+    width: 140px;
     height: auto;
     display: block;
 }
 body.sa-app #sa-sidebar .sidebar-list {
     list-style: none;
-    padding: 0 0 0 22px;
+    padding: 0 0 0 28px;
     margin: 0;
 }
 body.sa-app #sa-sidebar .sidebar-list li {
@@ -39,14 +41,16 @@ body.sa-app #sa-sidebar .sidebar-list li {
 body.sa-app #sa-sidebar .sidebar-link,
 body.sa-app .school-admin-sidebar .sidebar-link {
     display: block !important;
-    width: 92% !important;
+    width: 118px !important;
+    min-height: 31px !important;
     font-size: 15px !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
     color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px !important;
-    margin-bottom: 17px !important;
-    border-radius: 8px !important;
+    padding: 5px 8px !important;
+    margin-bottom: 8px !important;
+    border-radius: 4px !important;
+    line-height: 21px !important;
     text-decoration: none !important;
     transition: all 0.25s ease;
     box-sizing: border-box;
@@ -56,14 +60,14 @@ body.sa-app .school-admin-sidebar .sidebar-link {
 body.sa-app #sa-sidebar .sidebar-link:not(.active):not(:hover) {
     color: #545454 !important;
     background: transparent !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
     -webkit-text-fill-color: #545454 !important;
 }
 body.sa-app #sa-sidebar .sidebar-link:hover,
 body.sa-app #sa-sidebar .sidebar-link.active {
     color: #ffffff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
     -webkit-text-fill-color: #ffffff !important;
 }
 body.sa-app .menu-icon {
@@ -103,9 +107,28 @@ body.sa-app .sidebar-overlay.active {
     opacity: 1;
 }
 @media (min-width: 901px) {
+    body.sa-app #sa-sidebar.school-admin-sidebar {
+        position: relative;
+    }
+
     body.sa-app .sidebar-overlay { display: none !important; }
 }
 @media (max-width: 900px) {
+    body.sa-app #sa-sidebar.school-admin-sidebar {
+        position: fixed;
+        width: min(300px, 88vw) !important;
+        min-width: min(300px, 88vw) !important;
+        padding-top: max(0.75rem, env(safe-area-inset-top, 0px)) !important;
+    }
+
+    body.sa-app #sa-sidebar .sidebar-link {
+        width: 92% !important;
+        min-height: 0 !important;
+        padding: 0.85rem 18px !important;
+        margin-bottom: 0.35rem !important;
+        border-radius: 10px !important;
+    }
+
     body.sa-app .menu-icon { display: flex !important; }
 }
 </style>

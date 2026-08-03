@@ -135,7 +135,7 @@ class ReportController extends Controller
             $query->whereDate('created_at', '<=', $request->input('to_date'));
         }
 
-        $reports = $query->latest()->paginate(20)->withQueryString();
+        $reports = $query->latest()->paginate(12)->withQueryString();
 
         // ── Dropdown options for the filter panel ────────────────────
         $provinceOptions = Province::orderBy('province_name')->get();
