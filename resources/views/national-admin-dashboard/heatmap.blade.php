@@ -39,64 +39,6 @@
             margin: 0;
         }
 
-        /* Sidebar — identical to national dashboard */
-        .sidebar {
-            width: 235px;
-            background-color: white;
-            border-right: 1px solid #eaeaea;
-            display: flex;
-            flex-direction: column;
-            padding-top: 120px;
-            flex-shrink: 0;
-        }
-
-        .sidebar-logo {
-            position: fixed;
-            top: 40px;
-            left: 40px;
-            width: 100px;
-            height: auto;
-            z-index: 1001;
-        }
-
-        .sidebar-logo img {
-            width: 115px;
-            height: auto;
-            display: block;
-        }
-
-        .sidebar-list {
-            list-style: none;
-            padding: 0 0 0 22px;
-            margin: 0;
-        }
-
-        .sidebar-list li {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .sidebar-link {
-            display: block;
-            width: 92%;
-            font-size: 15px !important;
-            font-weight: 900 !important;
-            color: #545454 !important;
-            font-family: 'Montserrat', sans-serif !important;
-            padding: 11px 18px;
-            margin-bottom: 17px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            color: #fff !important;
-            background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
-        }
-
         .topbar {
             width: 100%;
             background: #fff;

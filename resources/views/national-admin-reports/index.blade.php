@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="na-app-root">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -23,7 +23,7 @@ body {
     overflow-y: hidden;
 }
 
-.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 400 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
+button, select, input, label { font-size: 15px !important; font-weight: 400 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
 button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 700 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
 button:hover, button:focus { background-color: #c7da30 !important; color: white !important; border-color: #38b6ff !important; outline: none; }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
@@ -193,52 +193,6 @@ body.na-app {
     --reports-lime: #c7da30;
     --reports-blue: #38b6ff;
     background: #fff !important;
-}
-
-body.na-app #na-sidebar.national-admin-sidebar {
-    position: relative !important;
-    width: 185px !important;
-    min-width: 185px !important;
-    height: 100vh;
-    padding-top: 151px !important;
-    border-right: 3px solid #d7d7d7 !important;
-    background: #fff !important;
-}
-
-body.na-app #na-sidebar .sidebar-logo {
-    position: absolute !important;
-    top: 46px !important;
-    left: 28px !important;
-    width: 140px !important;
-}
-
-body.na-app #na-sidebar .sidebar-logo img {
-    width: 140px !important;
-}
-
-body.na-app #na-sidebar .sidebar-list {
-    padding-left: 28px !important;
-}
-
-body.na-app #na-sidebar nav a.sidebar-link {
-    width: 118px !important;
-    min-height: 31px !important;
-    margin-bottom: 8px !important;
-    padding: 5px 8px !important;
-    border-radius: 4px !important;
-    color: #545454 !important;
-    -webkit-text-fill-color: #545454 !important;
-    background: transparent !important;
-    font-size: 15px !important;
-    font-weight: 400 !important;
-    line-height: 21px !important;
-}
-
-body.na-app #na-sidebar nav a.sidebar-link:hover,
-body.na-app #na-sidebar nav a.sidebar-link.active {
-    color: #fff !important;
-    -webkit-text-fill-color: #fff !important;
-    background: var(--reports-blue) !important;
 }
 
 body.na-app .main-panel {
