@@ -131,4 +131,65 @@ body.sa-app .sidebar-overlay.active {
 
     body.sa-app .menu-icon { display: flex !important; }
 }
+
+/* Seamless topbar — flush with page content (no bar/border/shadow) */
+body.sa-app .topbar {
+    width: 100% !important;
+    height: 78px !important;
+    flex: 0 0 78px !important;
+    min-height: 0 !important;
+    padding: 24px 39px 0 !important;
+    border: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    position: relative !important;
+    top: auto !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    z-index: 10;
+}
+body.sa-app .profile {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+}
+body.sa-app .profile .meta {
+    text-align: right !important;
+    padding-top: 4px !important;
+    line-height: 1.08 !important;
+}
+body.sa-app .profile .meta .role {
+    margin-top: 2px !important;
+}
+body.sa-app .profile-avatar {
+    width: 52px !important;
+    height: 52px !important;
+    flex: 0 0 52px !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+body.sa-app .main-panel {
+    background: #fff !important;
+    overflow: hidden !important;
+}
+body.sa-app main,
+body.sa-app .dashboard-scroll {
+    background: #fff !important;
+    padding-top: 3px !important;
+}
+@media (max-width: 900px) {
+    body.sa-app .topbar {
+        height: 60px !important;
+        flex-basis: 60px !important;
+        padding: 10px 16px 0 60px !important;
+        box-shadow: none !important;
+        border: 0 !important;
+    }
+}
 </style>

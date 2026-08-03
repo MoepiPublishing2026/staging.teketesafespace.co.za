@@ -153,7 +153,7 @@ class ProvincialAdminReportsController extends Controller
         }
 
         // ── Paginate ─────────────────────────────────────────────────────
-        $reports = $query->latest()->paginate(20)->withQueryString();
+        $reports = $query->latest()->paginate(12)->withQueryString();
 
         // ── Dropdown options ─────────────────────────────────────────────
         $typeOptions = AbuseType::orderBy('type_name')->get();

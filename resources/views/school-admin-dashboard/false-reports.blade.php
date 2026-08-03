@@ -60,35 +60,37 @@ body {
 .topbar {
     flex-shrink: 0;
     width: 100%;
-    background: white;
-    border-bottom: 1px solid white;
+    background: #fff;
+    border: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
-    padding: 1rem 2.5rem;
-    position: sticky;
-    top: 0;
+    padding: 24px 39px 0;
+    position: relative;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    min-height: 64px;
+    box-shadow: none;
+    height: 78px;
+    flex: 0 0 78px;
+    min-height: 0;
 }
 
 .profile {
     display: flex;
-    align-items: center;
-    gap: 0.8rem;
+    align-items: flex-start;
+    gap: 12px;
 }
 
 .profile-avatar {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
     border-radius: 50%;
-    background: #ececec;
+    background: transparent;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
+    box-shadow: none;
 }
 
 .profile-avatar img {
@@ -112,6 +114,8 @@ body {
 
 .profile .meta {
     text-align: right;
+    padding-top: 4px;
+    line-height: 1.08;
 }
 .profile .meta > span:first-child {
     color: #38b6ff;
@@ -127,9 +131,10 @@ body {
 }
 
 .profile .meta .role {
+    margin-top: 2px;
     font-weight: 400;
-    color: #333030ff;
-    font-size: 0.9rem;
+    color: #4a4a4a;
+    font-size: 13px;
 }
 
 .dashboard-scroll {
@@ -138,9 +143,10 @@ body {
     min-height: 0;
     overflow-y: auto;
     overflow-x: auto;
-    padding: 2.5rem;
+    padding: 3px 2.5rem 2.5rem;
     width: 100%;
     max-width: 100%;
+    background: #fff;
 }
 
 h1 {

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tekete SafeSpace Provincial Dashboard</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
     <style>
@@ -52,8 +52,9 @@ button {
  background-color: white !important;
   color: #38b6ff !important;
   border: 2px solid #c7da30 !important;
-  font-weight: 900 !important;
+  font-weight: 700 !important;
   font-family: 'Montserrat', sans-serif !important;
+  font-size: 15px !important;
   padding: 0.75rem 1rem !important;
   border-radius: 0.5rem !important;
   cursor: pointer !important;
@@ -69,17 +70,18 @@ button:hover, button:focus {
 
 .topbar {
     width: 100%;
-    background: white;
-    border-bottom: 1px solid white;
+    background: #fff;
+    border: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
-    padding: 1rem 2.5rem;
-    position: sticky;
-    top: 0;
+    padding: 24px 39px 0;
+    position: relative;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    min-height: 64px;
+    box-shadow: none;
+    height: 78px;
+    flex: 0 0 78px;
+    min-height: 0;
 }
 
 .table-responsive {
@@ -102,20 +104,21 @@ button:hover, button:focus {
 
 .profile {
     display: flex;
-    align-items: center;
-    gap: 0.8rem;
+    align-items: flex-start;
+    gap: 12px;
 }
 
 .profile-avatar {
-    width: 42px;
-    height: 42px;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
     border-radius: 50%;
-    background: #ececec;
+    background: transparent;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 1px 6px rgba(51, 51, 63, 0.08);
+    box-shadow: none;
 }
 
 .profile-avatar img {
@@ -126,6 +129,8 @@ button:hover, button:focus {
 
 .profile .meta {
     text-align: right;
+    padding-top: 4px;
+    line-height: 1.08;
 }
 .profile .meta > span:first-child {
     color: #38b6ff;
@@ -141,9 +146,10 @@ button:hover, button:focus {
 }
 
 .profile .meta .role {
+    margin-top: 2px;
     font-weight: 400;
-    color: #333030ff;
-    font-size: 0.9rem;
+    color: #4a4a4a;
+    font-size: 13px;
 }
 
 .main-panel {
@@ -151,10 +157,9 @@ button:hover, button:focus {
     display: flex;
     flex-direction: column;
     min-width: 0;
-    min-height: 100vh;
-    height: auto;
-    background: white;
-    overflow-x: hidden;
+    height: 100vh;
+    background: #fff;
+    overflow: hidden;
 }
 
 .metrics-row > .metric-card {
@@ -167,10 +172,11 @@ button:hover, button:focus {
     flex: 1 1 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 2.5rem;
+    padding: 3px 2.5rem 2.5rem;
     max-width: 1280px;
     width: 100%;
     margin: 0 auto;
+    background: #fff;
 }
 
 h1 {
@@ -186,11 +192,15 @@ h1 {
 h2 {
   color: #38b6ff !important;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 900;
+  font-size: 18px;
+  font-weight: 700;
 }
 .subtitle {
     margin-bottom: 2rem;
     color: #5f6b7b;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: center;
 }
 
 .metrics-row, .extras-row {
@@ -235,8 +245,8 @@ h2 {
 }
 
 .card-title {
-    font-weight: 900 !important;
-    font-size: 14px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
     font-family: 'Montserrat', sans-serif !important;
     margin-bottom: 0;
     color: inherit;
@@ -286,7 +296,7 @@ h2 {
     background: white;
     color: #1f2933;
     cursor: pointer;
-    font-family: 'Century Gothic';
+    font-family: 'Montserrat', sans-serif;
     box-shadow: 0 4px 8px rgba(199, 218, 48, 0.2);
     border: 2px solid var(--sidebar-border);
 }
@@ -299,7 +309,7 @@ h2 {
     font-weight: 800;
     margin-bottom: 0.17rem;
     color: #38b6ff !important;
-    font-family: 'Century Gothic';
+    font-family: 'Montserrat', sans-serif;
     line-height: 1;
 }
 .chart-grid{
@@ -442,7 +452,10 @@ form.filters button {
     padding: 0.65rem 0.85rem;
     border-radius: 0.75rem;
     border: 2px solid #c9db41ff;
-    font-weight: 600;
+    font-size: 15px;
+    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+    color: #545454;
     background: white;
     min-width: 160px;
     box-shadow: inset 0 1px 3px rgba(92, 120, 88, 0.08);
@@ -453,8 +466,8 @@ form.filters label {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     color: #545454;
     min-width: 160px;
 }
@@ -616,7 +629,7 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 
 .modal-card h3 {
     margin: 0 0 1.5rem;
-    font-size: 1.5rem;
+    font-size: 18px;
     font-weight: 700;
     color: var(--green-dark);
 }
@@ -624,7 +637,7 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 .modal-close {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 22px;
     color: #ef4444;
     cursor: pointer;
 }
@@ -802,8 +815,11 @@ section[aria-label="Analytics"] .chart-status-host canvas {
         width: 100%;
     }
     .topbar {
-        padding: 0.75rem 1rem;
-        min-height: 56px;
+        height: 60px;
+        flex-basis: 60px;
+        padding: 10px 16px 0 60px;
+        box-shadow: none;
+        border: 0;
     }
     .profile .meta > span:first-child {
         font-size: 14px;

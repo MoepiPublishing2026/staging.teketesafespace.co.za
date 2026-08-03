@@ -99,48 +99,50 @@
 
         .topbar {
             width: 100%;
-            background: white;
-            border-bottom: 1px solid white;
+            background: #fff;
+            border: 0;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: flex-end;
-            padding: 1rem 2.5rem;
-            position: sticky;
-            top: 0;
+            padding: 24px 39px 0;
+            position: relative;
             z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            min-height: 64px;
+            box-shadow: none;
+            height: 78px;
+            flex: 0 0 78px;
+            min-height: 0;
         }
-        .profile { display: flex; align-items: center; gap: 0.8rem; }
+        .profile { display: flex; align-items: flex-start; gap: 12px; }
         .profile-avatar {
-            width: 42px; height: 42px; border-radius: 50%; background: #ececec;
-            overflow: hidden; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 1px 6px rgba(51,51,63,0.08);
+            width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%;
+            background: transparent; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: none;
         }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile .meta { text-align: right; }
+        .profile .meta { text-align: right; padding-top: 4px; line-height: 1.08; }
         .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
         .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-        .profile .meta .role { font-weight: 400; color: #333030ff; font-size: 0.9rem; }
+        .profile .meta .role { margin-top: 2px; font-weight: 400; color: #4a4a4a; font-size: 13px; }
 
         .main-panel {
             flex: 1 1 0;
             display: flex;
             flex-direction: column;
             min-width: 0;
-            min-height: 100vh;
-            height: auto;
-            background: white;
-            overflow-x: hidden;
+            height: 100vh;
+            background: #fff;
+            overflow: hidden;
         }
         .dashboard-scroll {
             flex: 1 1 0;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 2.5rem;
+            padding: 3px 2.5rem 2.5rem;
             max-width: 1280px;
             width: 100%;
             margin: 0 auto;
+            background: #fff;
         }
 
         h1 {
@@ -1007,11 +1009,7 @@
         'thabo mofutsanyana': ['thabo mofutsanyana'],
         'fezile dabi': ['fezile dabi'],
         'xhariep': ['xhariep'],
-        'city of johannesburg': ['johannesburg', 'gauteng east'],
-        'city of ekhurhuleni': ['ekurhuleni', 'ekhurhuleni'],
-        'city of tshwane': ['tshwane'],
-        'sedibeng': ['sedibeng'],
-        'west rand': ['gauteng west', 'west rand'],
+        // Gauteng education districts are granular in gauteng.json — exact name match only.
         'ethekwini': ['ethekwini', 'pinetown', 'umlazi'],
         'amajuba': ['amajuba'],
         'harry gwala': ['harry gwala'],

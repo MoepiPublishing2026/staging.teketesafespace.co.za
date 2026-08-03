@@ -55,5 +55,66 @@
 }
 .sidebar-overlay.active { display: block; opacity: 1; }
 @media (min-width: 901px) { .sidebar-overlay { display: none !important; } }
+
+/* Seamless topbar — flush with page content (no bar/border/shadow) */
+body.na-app .topbar {
+    width: 100% !important;
+    height: 78px !important;
+    flex: 0 0 78px !important;
+    min-height: 0 !important;
+    padding: 24px 39px 0 !important;
+    border: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    position: relative !important;
+    top: auto !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    z-index: 10;
+}
+body.na-app .profile {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+}
+body.na-app .profile .meta {
+    text-align: right !important;
+    padding-top: 4px !important;
+    line-height: 1.08 !important;
+}
+body.na-app .profile .meta .role {
+    margin-top: 2px !important;
+}
+body.na-app .profile-avatar {
+    width: 52px !important;
+    height: 52px !important;
+    flex: 0 0 52px !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+body.na-app .main-panel {
+    background: #fff !important;
+    overflow: hidden !important;
+}
+body.na-app main,
+body.na-app .dashboard-scroll {
+    background: #fff !important;
+    padding-top: 3px !important;
+}
+@media (max-width: 900px) {
+    body.na-app .topbar {
+        height: 60px !important;
+        flex-basis: 60px !important;
+        padding: 10px 16px 0 60px !important;
+        box-shadow: none !important;
+        border: 0 !important;
+    }
+}
 </style>
 <link rel="stylesheet" href="{{ asset('css/national-admin-sidebar.css') }}">

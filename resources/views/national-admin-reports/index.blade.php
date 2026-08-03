@@ -28,15 +28,15 @@ body {
 button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 900 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
 button:hover, button:focus { background-color: #c7da30 !important; color: white !important; border-color: #38b6ff !important; outline: none; }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
-.topbar { width: 100%; background: white; border-bottom: 1px solid white; display: flex; align-items: center; justify-content: flex-end; padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-.profile { display: flex; align-items: center; gap: 0.8rem; }
-.profile-avatar { width: 42px; height: 42px; border-radius: 50%; background: #ececec; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 6px rgba(51,51,63,0.08); }
+.topbar { width: 100%; background: #fff; border: 0; display: flex; align-items: flex-start; justify-content: flex-end; padding: 24px 39px 0; position: relative; z-index: 10; box-shadow: none; height: 78px; flex: 0 0 78px; min-height: 0; }
+.profile { display: flex; align-items: flex-start; gap: 12px; }
+.profile-avatar { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; background: transparent; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: none; }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile .meta { text-align: right; }
+.profile .meta { text-align: right; padding-top: 4px; line-height: 1.08; }
 .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
 .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-.profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
-main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
+.profile .meta .role { margin-top: 2px; font-weight: 400; color: #4a4a4a; font-size: 13px; }
+main { flex: 1; padding: 3px 2.5rem 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
 h1 { margin: 0 0 1.5rem; font-weight: 900 !important; font-size: 32px !important; font-family: 'Montserrat', sans-serif !important; letter-spacing: 0.03em; text-transform: uppercase !important; color: #545454 !important; text-align: center; }
 .table-wrap {
     width: 100%;

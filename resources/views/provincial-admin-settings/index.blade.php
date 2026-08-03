@@ -6,7 +6,7 @@
     <title>Settings | Tekete SafeSpace – Provincial Admin</title>
     <x-favicon />
    
-     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -19,13 +19,14 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Montserrat', sans-serif; color: var(--gray-dark); background: white; display: flex; min-height: 100vh; width: 100%; min-width: 0; overflow-x: hidden; overflow-y: hidden; }
         a { text-decoration: none; }
-        h2,h3 { font-family: 'Poppins', sans-serif; color: #000; margin-bottom: 1rem; }
+        h2,h3 { font-family: 'Montserrat', sans-serif; color: #000; margin-bottom: 1rem; }
 
        button:not(.menu-icon):not(.submit-btn):not(.delete-btn){
             background-color: white !important;
             color: #38b6ff !important;
             border: 2px solid #c7da30 !important;
-            font-weight: 900 !important;
+            font-weight: 700 !important;
+            font-size: 15px !important;
             font-family: 'Montserrat', sans-serif !important;
             padding: 0.75rem 1rem !important;
             border-radius: 0.5rem !important;
@@ -94,9 +95,11 @@
             }
             
             .topbar {
-                padding: 0.75rem 1rem;
-                height: auto;
-                min-height: 56px;
+                height: 60px;
+                flex-basis: 60px;
+                padding: 10px 16px 0 60px;
+                box-shadow: none;
+                border: 0;
             }
             
             .profile .meta span {
@@ -191,7 +194,11 @@
             }
             
             .topbar {
-                padding: 0.5rem;
+                height: 60px;
+                flex-basis: 60px;
+                padding: 10px 16px 0 60px;
+                box-shadow: none;
+                border: 0;
             }
             
             .profile {
@@ -230,35 +237,46 @@
         }
 
         /* Main Panel */
-        .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-height: 0; min-width: 0; }
+        .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-height: 0; min-width: 0; background: #fff; overflow: hidden; }
         .topbar {
             width: 100%;
             background: #fff;
-            border-bottom: 1px solid #eaeaea;
+            border: 0;
             display: flex;
             justify-content: flex-end;
-            align-items: center;
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
+            align-items: flex-start;
+            padding: 24px 39px 0;
+            position: relative;
             z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: none;
+            height: 78px;
+            flex: 0 0 78px;
+            min-height: 0;
         }
-        .profile { display: flex; align-items: center; gap: 0.8rem; }
+        .profile { display: flex; align-items: flex-start; gap: 12px; }
         .profile-avatar {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: #ececec; overflow: hidden;
+            width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%;
+            background: transparent; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 1px 6px rgba(51,51,63,0.08);
+            box-shadow: none;
         }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile .meta { text-align: right; }
+        .profile .meta { text-align: right; padding-top: 4px; line-height: 1.08; }
+        .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
         .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-        .profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
+        .profile .meta .role { margin-top: 2px; font-weight: 400; color: #4a4a4a; font-size: 13px; }
 
         /* Main Content */
-        main { flex: 1; padding: 2rem; background: #fff; overflow-y: auto; min-height: 0; min-width: 0; }
-        h1 { font-size: 28px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 2rem; }
+        main { flex: 1; padding: 3px 2rem 2rem; background: #fff; overflow-y: auto; min-height: 0; min-width: 0; }
+        h1 {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #545454;
+        }
 
         .card {
             background: #fff;
@@ -270,12 +288,14 @@
         }
 
         .form-group { margin-bottom: 1.5rem; }
-        label { display: block; font-weight: 900; margin-bottom: 0.5rem; }
+        label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; color: #545454; }
         input {
             width: 100%;
             padding: 1rem;
-            font-size: 1rem;
+            font-size: 15px;
+            font-weight: 400;
             font-family: 'Montserrat', sans-serif;
+            color: #545454;
             border: 3px solid var(--lime);
             border-radius: 0.5rem;
         }
@@ -293,7 +313,8 @@
             display: inline-block;
             background:#c7da30;
             color: #000;
-            font-weight: 900;
+            font-size: 15px;
+            font-weight: 700;
             border-radius: 9999px;
             padding: 0.5rem 1.5rem;
             user-select: none;
@@ -304,9 +325,9 @@ button.submit-btn {
     border: 4px solid #c7da30;
     border-radius: 100px;
     color: #38b6ff !important;
-    font-weight: 900;
+    font-weight: 700;
     padding: 0.75rem 5rem;
-    font-size: 1rem;
+    font-size: 15px;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: flex;
@@ -399,7 +420,7 @@ button.submit-btn {
                             </div>
                         </div>
                         <div style="display:flex; flex-direction:column;">
-                            <p style="margin-bottom:0.75rem; font-weight:900;">Update Profile Picture</p>
+                            <p style="margin-bottom:0.75rem; font-size:15px; font-weight:700; color:#545454;">Update Profile Picture</p>
                             <label class="file-label">
                                  Choose File
                                         <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
@@ -412,14 +433,14 @@ button.submit-btn {
                                     @endif
                                     
                                     @error('profile_picture')
-                                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
                                     @enderror
                         </div>
                     </div>
 
                     <div style="text-align:right; flex: 1; min-width: 150px;">
-                        <h2 style="font-size:1.5rem; font-weight:900; margin:0;">{{ $user->name }}</h2>
-                        <p style="color:#4b5563; margin:0;">Administrator</p>
+                        <h2 style="margin:0;">{{ $user->name }}</h2>
+                        <p style="color:#4b5563; margin:0; font-size:13px;">Administrator</p>
                     </div>
                 </div>
 
@@ -431,7 +452,7 @@ button.submit-btn {
                     type="text" value="{{ old('name', $user->name) }}" 
                     placeholder="Enter your full name">
                     @error('name')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -444,17 +465,17 @@ button.submit-btn {
                     <label for="phone">Phone Number</label>
                     <input id="phone_number" name="phone_number" type="text" value="{{ old('phone', $user->phone_number ?  $user->phone_number : '') }}" placeholder="0821234567">
                     @error('phone')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <h3 style="font-size:1.5rem; font-weight:900; text-align:center; margin-bottom:1.5rem;">Update Password</h3>
+                <h3 style="text-align:center; margin-bottom:1.5rem;">Update Password</h3>
 
                 <div class="form-group">
                     <label for="current_password">Old Password</label>
                     <input id="current_password" name="current_password" type="password">
                     @error('current_password')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -462,7 +483,7 @@ button.submit-btn {
                     <label for="new_password">New Password</label>
                     <input id="new_password" name="new_password" type="password">
                     @error('new_password')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -470,7 +491,7 @@ button.submit-btn {
                     <label for="new_password_confirmation">Confirm Password</label>
                     <input id="new_password_confirmation" name="new_password_confirmation" type="password">
                     @error('new_password_confirmation')
-                        <p style="color:#dc2626; font-size:0.875rem;">{{ $message }}</p>
+                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
                     @enderror
                 </div>
 

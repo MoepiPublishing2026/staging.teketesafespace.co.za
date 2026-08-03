@@ -48,23 +48,23 @@ button:not(.menu-icon):not(.modal-close):not(.status-select) {
 button:not(.menu-icon):not(.modal-close):hover { background-color: #c7da30 !important; color: white !important; }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 .topbar {
-    width: 100%; background: white; border-bottom: 1px solid #eaeaea;
-    display: flex; align-items: center; justify-content: flex-end;
-    padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08); min-height: 64px;
+    width: 100%; background: #fff; border: 0;
+    display: flex; align-items: flex-start; justify-content: flex-end;
+    padding: 24px 39px 0; position: relative; z-index: 10;
+    box-shadow: none; height: 78px; flex: 0 0 78px; min-height: 0;
 }
-.profile { display: flex; align-items: center; gap: 0.8rem; }
+.profile { display: flex; align-items: flex-start; gap: 12px; }
 .profile-avatar {
-    width: 42px; height: 42px; border-radius: 50%; background: #ececec;
+    width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; background: transparent;
     overflow: hidden; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 1px 6px rgba(51,51,63,0.08);
+    box-shadow: none;
 }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.profile .meta { text-align: right; }
+.profile .meta { text-align: right; padding-top: 4px; line-height: 1.08; }
 .profile .meta > span:first-child { color: #38b6ff; font-size: 18px; font-weight: 700; }
 .profile .meta span { display: block; line-height: 1.3; font-weight: 700; color: #232323; }
-.profile .meta .role { font-weight: 400; color: #4a4a4a; font-size: 0.9rem; }
-main { flex: 1; padding: 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
+.profile .meta .role { margin-top: 2px; font-weight: 400; color: #4a4a4a; font-size: 13px; }
+main { flex: 1; padding: 3px 2.5rem 2.5rem; background: #fff; overflow-y: auto; min-width: 0; }
 h1 {
     margin: 0 0 1.5rem; font-weight: 900 !important; font-size: 32px !important;
     letter-spacing: 0.03em; text-transform: uppercase !important; color: #545454 !important; text-align: center;
