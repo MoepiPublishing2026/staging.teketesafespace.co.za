@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Reports | Tekete SafeSpace – National Admin</title>
     <x-favicon />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
 :root {
     --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -24,8 +23,8 @@ body {
     overflow-y: hidden;
 }
 
-.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 900 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
-button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 900 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+.sidebar-link, button, select, input, label { font-size: 15px !important; font-weight: 400 !important; color: #545454 !important; font-family: 'Montserrat', sans-serif !important; }
+button { background-color: white !important; color: #38b6ff !important; border: 3px solid #c7da30 !important; font-weight: 700 !important; font-family: 'Montserrat', sans-serif !important; padding: 0.75rem 1rem !important; border-radius: 0.5rem !important; cursor: pointer !important; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
 button:hover, button:focus { background-color: #c7da30 !important; color: white !important; border-color: #38b6ff !important; outline: none; }
 .main-panel { flex: 1 1 0; display: flex; flex-direction: column; height: 100vh; min-width: 0; }
 .topbar { width: 100%; background: #fff; border: 0; display: flex; align-items: flex-start; justify-content: flex-end; padding: 24px 39px 0; position: relative; z-index: 10; box-shadow: none; height: 78px; flex: 0 0 78px; min-height: 0; }
@@ -159,11 +158,11 @@ tbody tr:last-child td { border-bottom: none; }
 
 /* ── Filter Panel ──────────────────────────────────────────────── */
 .filter-panel { background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 18px 20px; margin-bottom: 24px; }
-.filter-label { font-family: 'Montserrat', sans-serif; font-size: 11px !important; font-weight: 700 !important; color: #6b7280 !important; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; display: block; }
-.filter-input { width: 100%; border: 2px solid #e5e7eb !important; border-radius: 8px; padding: 7px 10px !important; font-size: 13px !important; font-family: 'Montserrat', sans-serif !important; color: #111 !important; background: white !important; transition: border-color 0.2s; outline: none; box-sizing: border-box; font-weight: 400 !important; margin: 0 !important; display: block; }
+.filter-label { font-family: 'Montserrat', sans-serif; font-size: 13px !important; font-weight: 700 !important; color: #545454 !important; text-transform: none; letter-spacing: 0; margin-bottom: 5px; display: block; }
+.filter-input { width: 100%; border: 2px solid #e5e7eb !important; border-radius: 8px; padding: 7px 10px !important; font-size: 15px !important; font-family: 'Montserrat', sans-serif !important; color: #545454 !important; background: white !important; transition: border-color 0.2s; outline: none; box-sizing: border-box; font-weight: 400 !important; margin: 0 !important; display: block; }
 .filter-input:focus { border-color: #c7da30 !important; box-shadow: 0 0 0 3px rgba(199,218,48,0.15); }
 .search-wrap { position: relative; margin-bottom: 18px; }
-.search-wrap input { width: 100%; border: 2px solid #c7da30 !important; border-radius: 30px; padding: 10px 20px 10px 44px !important; font-size: 14px !important; font-family: 'Montserrat', sans-serif !important; color: #111 !important; background: white !important; outline: none; transition: box-shadow 0.2s; box-sizing: border-box; font-weight: 400 !important; margin: 0 !important; }
+.search-wrap input { width: 100%; border: 2px solid #c7da30 !important; border-radius: 30px; padding: 10px 20px 10px 44px !important; font-size: 15px !important; font-family: 'Montserrat', sans-serif !important; color: #545454 !important; background: white !important; outline: none; transition: box-shadow 0.2s; box-sizing: border-box; font-weight: 400 !important; margin: 0 !important; }
 .search-wrap input:focus { box-shadow: 0 0 0 3px rgba(199,218,48,0.2); }
 .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #aaa; pointer-events: none; font-size: 15px; }
 .filter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; align-items: end; }
@@ -271,14 +270,14 @@ body.na-app .profile .meta {
 
 body.na-app .profile .meta > span:first-child {
     color: var(--reports-blue) !important;
-    font-size: 16px !important;
+    font-size: 18px !important;
     font-weight: 700 !important;
 }
 
 body.na-app .profile .meta .role {
     margin-top: 2px;
-    color: #656565 !important;
-    font-size: 15px !important;
+    color: #4a4a4a !important;
+    font-size: 13px !important;
     font-weight: 400 !important;
 }
 
@@ -303,17 +302,19 @@ body.na-app main#main-content {
 }
 
 body.na-app main#main-content > h1 {
-    margin: 0 0 4px;
-    color: #4a4a4a !important;
-    font-size: 17px !important;
-    font-weight: 700 !important;
-    line-height: 1.25;
-    text-align: left;
+    margin: 0 0 1.5rem !important;
+    color: #545454 !important;
+    font-size: 32px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
 }
 
 body.na-app .filter-panel {
-    margin: 0 0 13px;
-    padding: 11px 14px 7px;
+    margin: 0 0 1.25rem;
+    padding: 1rem 1.15rem;
     border: 2px solid var(--reports-lime) !important;
     border-radius: 10px;
     background: #f5f5f5;
@@ -321,7 +322,7 @@ body.na-app .filter-panel {
 }
 
 body.na-app .search-wrap {
-    margin-bottom: 7px;
+    margin-bottom: 0.85rem;
 }
 
 body.na-app .search-icon {
@@ -330,21 +331,21 @@ body.na-app .search-icon {
 
 body.na-app .search-wrap input {
     width: 100%;
-    height: 23px;
+    height: 40px;
     margin: 0 !important;
-    padding: 0 14px !important;
+    padding: 0 16px !important;
     border: 2px solid var(--reports-lime) !important;
     border-radius: 999px;
     background: #fff !important;
-    color: #333 !important;
-    font-size: 9px !important;
+    color: #545454 !important;
+    font-size: 15px !important;
     font-weight: 400 !important;
 }
 
 body.na-app .filter-grid {
     display: grid;
     grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: 7px;
+    gap: 0.75rem;
     align-items: end;
 }
 
@@ -354,14 +355,14 @@ body.na-app .filter-grid > div {
 
 body.na-app .filter-label {
     display: block;
-    height: 11px;
-    margin: 0 0 3px;
+    height: auto;
+    margin: 0 0 0.35rem;
     overflow: hidden;
-    color: #60646a !important;
-    font-size: 7px !important;
+    color: #545454 !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
     letter-spacing: 0;
-    line-height: 11px;
+    line-height: 1.3;
     white-space: nowrap;
 }
 
@@ -369,18 +370,18 @@ body.na-app .filter-input,
 body.na-app #refreshBtn {
     box-sizing: border-box;
     width: 100%;
-    height: 23px;
+    height: 40px;
     margin: 0 !important;
-    padding: 0 5px !important;
+    padding: 0 0.65rem !important;
     border-radius: 6px !important;
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 8px !important;
+    font-size: 15px !important;
 }
 
 body.na-app .filter-input {
     border: 2px solid var(--reports-lime) !important;
     background: #fff !important;
-    color: #555 !important;
+    color: #545454 !important;
     font-weight: 400 !important;
 }
 
@@ -388,12 +389,12 @@ body.na-app #refreshBtn {
     border: 0 !important;
     background: var(--reports-blue) !important;
     color: #fff !important;
-    font-weight: 400 !important;
+    font-weight: 700 !important;
 }
 
 body.na-app .active-filter-badge {
-    padding: 1px 6px;
-    font-size: 7px;
+    padding: 0.25rem 0.55rem;
+    font-size: 11px;
 }
 
 body.na-app .table-wrap {
@@ -412,38 +413,38 @@ body.na-app .table-wrap table {
     border-collapse: collapse;
     table-layout: fixed;
     background: #e5e5e5;
-    color: #303030;
-    font-size: 8px;
+    color: #545454;
+    font-size: 13px !important;
 }
 
 body.na-app .table-wrap thead {
     background: #c4df20;
     color: #fff;
-    font-size: 8px;
-    letter-spacing: 0;
-    text-transform: none;
+    font-size: 11px !important;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
 }
 
 body.na-app .table-wrap th {
-    height: 36px;
-    padding: 0 5px;
+    height: 40px;
+    padding: 0 0.5rem;
     border-right: 1px solid rgba(255,255,255,.9);
     border-bottom: 0;
     color: #fff;
-    font-size: 8px;
-    font-weight: 400;
+    font-size: 11px !important;
+    font-weight: 700 !important;
     text-align: center;
 }
 
 body.na-app .table-wrap td {
-    height: 32px;
-    padding: 0 6px;
+    height: 40px;
+    padding: 0 0.5rem;
     overflow: hidden;
     border-right: 1px solid rgba(255,255,255,.9);
     border-bottom: 1px solid #fff;
-    color: #303030;
-    font-size: 8px;
-    font-weight: 400;
+    color: #545454;
+    font-size: 13px !important;
+    font-weight: 400 !important;
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -478,8 +479,8 @@ body.na-app .status-badge {
     border-radius: 999px;
     background: #fff3a6;
     color: #9b8749;
-    font-size: 8px;
-    font-weight: 400;
+    font-size: 11px !important;
+    font-weight: 700 !important;
     line-height: 1.2;
     text-transform: none;
 }
@@ -503,9 +504,9 @@ body.na-app .page-link {
     border: 2px solid var(--reports-lime);
     border-radius: 50%;
     background: #fff;
-    color: #222;
-    font-size: 14px;
-    font-weight: 400;
+    color: #545454;
+    font-size: 15px !important;
+    font-weight: 400 !important;
     line-height: 1;
 }
 

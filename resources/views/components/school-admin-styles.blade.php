@@ -1,7 +1,146 @@
 {{-- Shared School Admin sidebar styles — include last in <head> on Dashboard, Reports, False Reports, Settings --}}
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('css/school-admin-sidebar.css') }}">
 <link rel="stylesheet" href="{{ asset('css/school-admin-mobile.css') }}">
 <style>
+/*
+ * School Admin type scale (matches provincial/national)
+ * xs 11 | sm 13 | base 15 | md 18 | lg 22 | xl 32
+ * regular 400 | semibold 600 | bold 700 | black 900
+ */
+body.sa-app {
+    --sa-font: 'Montserrat', sans-serif;
+    --sa-text: #545454;
+    --sa-text-muted: #5f6b7b;
+    --sa-accent: #38b6ff;
+    --sa-size-xs: 11px;
+    --sa-size-sm: 13px;
+    --sa-size-base: 15px;
+    --sa-size-md: 18px;
+    --sa-size-lg: 22px;
+    --sa-size-xl: 32px;
+    --sa-weight-regular: 400;
+    --sa-weight-semibold: 600;
+    --sa-weight-bold: 700;
+    --sa-weight-black: 900;
+}
+
+body.sa-app,
+body.sa-app .main-panel,
+body.sa-app main,
+body.sa-app .dashboard-scroll,
+body.sa-app button,
+body.sa-app select,
+body.sa-app input,
+body.sa-app textarea,
+body.sa-app label,
+body.sa-app table,
+body.sa-app th,
+body.sa-app td,
+body.sa-app h1,
+body.sa-app h2,
+body.sa-app h3,
+body.sa-app h4,
+body.sa-app p,
+body.sa-app span,
+body.sa-app a,
+body.sa-app .subtitle {
+    font-family: var(--sa-font) !important;
+}
+
+body.sa-app {
+    font-size: var(--sa-size-base) !important;
+    font-weight: var(--sa-weight-regular) !important;
+    color: var(--sa-text) !important;
+    line-height: 1.5;
+}
+
+body.sa-app .main-panel,
+body.sa-app main,
+body.sa-app .dashboard-scroll {
+    font-size: var(--sa-size-base) !important;
+    font-weight: var(--sa-weight-regular) !important;
+    color: var(--sa-text) !important;
+}
+
+body.sa-app h1 {
+    margin: 0 0 1.5rem !important;
+    font-size: var(--sa-size-xl) !important;
+    font-weight: var(--sa-weight-black) !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    color: var(--sa-text) !important;
+    text-align: center !important;
+    line-height: 1.25 !important;
+}
+
+body.sa-app h2 {
+    font-size: var(--sa-size-md) !important;
+    font-weight: var(--sa-weight-bold) !important;
+    color: var(--sa-accent) !important;
+    line-height: 1.3 !important;
+}
+body.sa-app h3 {
+    font-size: var(--sa-size-base) !important;
+    font-weight: var(--sa-weight-bold) !important;
+    color: var(--sa-text) !important;
+    line-height: 1.3 !important;
+}
+
+body.sa-app .subtitle {
+    font-size: var(--sa-size-sm) !important;
+    font-weight: var(--sa-weight-regular) !important;
+    color: var(--sa-text-muted) !important;
+    margin-bottom: 2rem !important;
+    text-align: center;
+}
+
+body.sa-app .profile .meta > span:first-child {
+    color: var(--sa-accent) !important;
+    font-size: var(--sa-size-md) !important;
+    font-weight: var(--sa-weight-bold) !important;
+}
+body.sa-app .profile .meta span {
+    font-size: var(--sa-size-md) !important;
+    font-weight: var(--sa-weight-bold) !important;
+    color: #232323 !important;
+    line-height: 1.3 !important;
+}
+body.sa-app .profile .meta .role {
+    font-size: var(--sa-size-sm) !important;
+    font-weight: var(--sa-weight-regular) !important;
+    color: #4a4a4a !important;
+}
+
+body.sa-app label {
+    font-size: var(--sa-size-sm) !important;
+    font-weight: var(--sa-weight-bold) !important;
+    color: var(--sa-text) !important;
+}
+body.sa-app select,
+body.sa-app input,
+body.sa-app textarea {
+    font-size: var(--sa-size-base) !important;
+    font-weight: var(--sa-weight-regular) !important;
+    font-family: var(--sa-font) !important;
+    color: var(--sa-text) !important;
+}
+body.sa-app button:not(.menu-icon) {
+    font-size: var(--sa-size-base) !important;
+    font-weight: var(--sa-weight-bold) !important;
+    font-family: var(--sa-font) !important;
+}
+
+body.sa-app table {
+    font-size: var(--sa-size-sm) !important;
+    font-weight: var(--sa-weight-regular) !important;
+}
+body.sa-app thead,
+body.sa-app th {
+    font-size: var(--sa-size-xs) !important;
+    font-weight: var(--sa-weight-bold) !important;
+}
+
 /* Inline block loads after linked CSS so these rules always win */
 body.sa-app #sa-sidebar.school-admin-sidebar,
 body.sa-app .school-admin-sidebar.sidebar {
@@ -130,6 +269,10 @@ body.sa-app .sidebar-overlay.active {
     }
 
     body.sa-app .menu-icon { display: flex !important; }
+
+    body.sa-app h1 {
+        font-size: var(--sa-size-lg) !important;
+    }
 }
 
 /* Seamless topbar — flush with page content (no bar/border/shadow) */

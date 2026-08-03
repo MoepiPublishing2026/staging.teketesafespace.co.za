@@ -6,7 +6,7 @@
     <title>Settings | Tekete SafeSpace – School Admin</title>
     <x-favicon />
    
-     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
@@ -19,7 +19,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Montserrat', sans-serif; color: var(--gray-dark); background: white; display: flex; min-height: 100vh; width: 100%; min-width: 0; overflow-x: hidden; overflow-y: hidden; }
         a { text-decoration: none; }
-        h2,h3 { font-family: 'Poppins', sans-serif; color: #000; margin-bottom: 1rem; }
+        h2,h3 { font-family: 'Montserrat', sans-serif; color: #000; margin-bottom: 1rem; }
 
        button:not(.menu-icon):not(.submit-btn):not(.delete-btn){
             background-color: white !important;
@@ -266,7 +266,15 @@
 
         /* Main Content */
         main { flex: 1; padding: 3px 2rem 2rem; background: #fff; overflow-y: auto; min-height: 0; min-width: 0; }
-        h1 { font-size: 28px; font-weight: 700; text-transform: uppercase; text-align: center; margin-bottom: 2rem; }
+        h1 {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #545454;
+        }
 
         .card {
             background: #fff;

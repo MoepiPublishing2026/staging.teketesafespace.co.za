@@ -6,7 +6,7 @@
     <title>Tekete SafeSpace School Admin Dashboard</title>
     <x-favicon />
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
        :root {
@@ -330,7 +330,7 @@ h2 {
     background: white;
     color: #1f2933;
     cursor: default;
-    font-family: 'Century Gothic';
+    font-family: 'Montserrat', sans-serif;
     box-shadow: 0 4px 8px rgba(199, 218, 48, 0.2);
     border: 2px solid var(--sidebar-border);
 }
