@@ -3,7 +3,7 @@
 @php
     $currentRoute = request()->route()?->getName() ?? '';
     $isDashboard = $currentRoute === 'admin.dashboard';
-    $isReports = in_array($currentRoute, ['admin.reports', 'admin.reports.show'], true);
+    $isReports = in_array($currentRoute, ['admin.reports', 'admin.reports.index', 'admin.reports.show'], true);
     $isFalseReports = $currentRoute === 'admin.false-reports';
     $isSettings = $currentRoute === 'admin.settings';
     $showExportPdf = $isDashboard || $isReports;
@@ -13,30 +13,33 @@
 <style>
 /* Loaded with sidebar in <body> so page-level head CSS cannot override link colors */
 body.sa-app aside#sa-sidebar.school-admin-sidebar {
-    width: 235px !important;
+    position: relative !important;
+    width: 185px !important;
+    min-width: 185px !important;
+    height: 100vh !important;
     background-color: #ffffff !important;
-    border-right: 1px solid #eaeaea !important;
+    border-right: 3px solid #d7d7d7 !important;
     display: flex !important;
     flex-direction: column !important;
-    padding-top: 120px !important;
+    padding-top: 151px !important;
     flex-shrink: 0 !important;
 }
 body.sa-app aside#sa-sidebar .sidebar-logo {
-    position: fixed !important;
-    top: 40px !important;
-    left: 40px !important;
-    width: 100px !important;
+    position: absolute !important;
+    top: 46px !important;
+    left: 28px !important;
+    width: 140px !important;
     height: auto !important;
     z-index: 1001 !important;
 }
 body.sa-app aside#sa-sidebar .sidebar-logo img {
-    width: 115px !important;
+    width: 140px !important;
     height: auto !important;
     display: block !important;
 }
 body.sa-app aside#sa-sidebar .sidebar-list {
     list-style: none !important;
-    padding: 0 0 0 22px !important;
+    padding: 0 0 0 28px !important;
     margin: 0 !important;
 }
 body.sa-app aside#sa-sidebar .sidebar-list li {
@@ -46,14 +49,16 @@ body.sa-app aside#sa-sidebar .sidebar-list li {
 }
 body.sa-app aside#sa-sidebar nav a.sidebar-link {
     display: block !important;
-    width: 92% !important;
+    width: 118px !important;
+    min-height: 31px !important;
     font-size: 15px !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
     color: #545454 !important;
     font-family: 'Montserrat', sans-serif !important;
-    padding: 11px 18px !important;
-    margin-bottom: 17px !important;
-    border-radius: 8px !important;
+    padding: 5px 8px !important;
+    margin-bottom: 8px !important;
+    border-radius: 4px !important;
+    line-height: 21px !important;
     text-decoration: none !important;
     transition: all 0.25s ease !important;
     box-sizing: border-box !important;
@@ -69,7 +74,42 @@ body.sa-app aside#sa-sidebar nav a.sidebar-link.active {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     background: linear-gradient(to right, #38b6ff, #38b6ff) !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
+}
+@media (max-width: 900px) {
+    body.sa-app aside#sa-sidebar.school-admin-sidebar {
+        position: fixed !important;
+        width: min(300px, 88vw) !important;
+        min-width: min(300px, 88vw) !important;
+        padding-top: max(0.75rem, env(safe-area-inset-top, 0px)) !important;
+        border-right: 1px solid rgba(226, 232, 240, 0.95) !important;
+    }
+
+    body.sa-app aside#sa-sidebar .sidebar-logo {
+        display: none !important;
+        position: sticky !important;
+        top: 0 !important;
+        left: auto !important;
+        width: 100% !important;
+        padding: 12px 12px 0 !important;
+        justify-content: flex-end !important;
+    }
+
+    body.sa-app aside#sa-sidebar.open .sidebar-logo {
+        display: flex !important;
+    }
+
+    body.sa-app aside#sa-sidebar .sidebar-logo img {
+        width: 95px !important;
+    }
+
+    body.sa-app aside#sa-sidebar nav a.sidebar-link {
+        width: 92% !important;
+        min-height: 0 !important;
+        padding: 0.85rem 18px !important;
+        margin-bottom: 0.35rem !important;
+        border-radius: 10px !important;
+    }
 }
 </style>
 @endonce

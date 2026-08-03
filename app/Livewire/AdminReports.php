@@ -382,7 +382,9 @@ class AdminReports extends Component
             $query->where('status', $this->filterStatus);
         }
 
-        $reports = $query->latest()->paginate(15);
+        // Twelve rows matches the compact school-admin report table without
+        // pushing pagination below a standard laptop viewport.
+        $reports = $query->latest()->paginate(12);
 
         // Dropdown options
         $typeOptions = AbuseType::orderBy('type_name')->get();
