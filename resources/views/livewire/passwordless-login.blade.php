@@ -209,7 +209,7 @@
                                    border-4 border-solid border-[#c7da30]
                                    rounded-[100px] text-[#38b6ff]
                                    shadow-md transition-opacity hover:opacity-90 disabled:opacity-60">
-                        <span wire:loading.remove wire:target="sendOtp">SendOTP</span>
+                        <span wire:loading.remove wire:target="sendOtp">Send OTP</span>
                         <span wire:loading wire:target="sendOtp">Sending OTP…</span>
                     </button>
                     <p wire:loading wire:target="sendOtp" class="text-sm text-gray-500 -mt-4">This can take up to a minute. Please wait.</p>

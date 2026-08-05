@@ -236,12 +236,11 @@
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                        @else
+@else
                             <div class="w-full" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
                                 <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
                                 <select wire:model.live="grade" id="grade"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white"
-                                    required>
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
                                     <option value="">-- Select Grade --</option>
                                     @if (!blank($age))
                                         @foreach ($this->applicableGrades as $gradeOption)
@@ -326,12 +325,11 @@
                             @enderror
                         </div>
 
-                        @if ($isAnonymous)
+@if ($isAnonymous)
                             <div class="w-full" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
                                 <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
                                 <select wire:model.live="grade" id="grade"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white"
-                                    required>
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
                                     <option value="">-- Select Grade --</option>
                                     @if (!blank($age))
                                         @foreach ($this->applicableGrades as $gradeOption)
