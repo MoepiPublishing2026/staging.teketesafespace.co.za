@@ -614,7 +614,7 @@
         </section>
 
         <section class="panel map-panel" aria-label="Reports by District Geographic Heatmap">
-            <h2>Reports by Province &amp; District (Geographic)</h2>
+            <h2>Reports by Province (Geographic)</h2>
             <div id="province-map" class="district-map-container">
                 <div class="district-map-status" id="provinceMapStatus">Loading map…</div>
                 <div class="district-map-key" id="provinceMapKey" style="display:none;">
