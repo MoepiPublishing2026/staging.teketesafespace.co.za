@@ -386,7 +386,7 @@ public function submitReport()
             [$min, $max] = $this->gradeAgeRanges[$this->grade];
 
             if ($this->age < $min || $this->age > $max) {
-                $this->addError('age', "Allowed age for {$this->grade} is {$min} & {$max}");
+                $this->addError('age', "Allowed age for {$this->grade} is {$min} to {$max}");
                 return;
             }
 
