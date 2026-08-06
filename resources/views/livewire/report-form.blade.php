@@ -232,9 +232,12 @@
                                     class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
                                     style="display:none;"></div>
                             </div>
-                            @error('schoolName')
+@error('schoolName')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
+                            <p id="schoolNotExistError" class="text-red-600 text-[12px] mt-1" style="display:none;">
+                                The school does not exist.
+                            </p>
                         </div>
 
                         @if ($isAnonymous)
@@ -567,15 +570,17 @@
             const LS_KEY = 'schools_cache_v3';
             const CACHE_TTL = 24 * 60 * 60 * 1000;
 
-            const input = document.getElementById('schoolSearch');
+const input = document.getElementById('schoolSearch');
             const dropdown = document.getElementById('schoolDropdown');
             const hiddenName = document.getElementById('schoolName');
             const hiddenId = document.getElementById('schoolId');
+            const notExistError = document.getElementById('schoolNotExistError');
 
             let schools = [];
             let items = [];
             let focused = -1;
             let timer = null;
+            let existsTimer = null;
 
             let validSchoolSelected = false;
 
@@ -628,7 +633,7 @@
                 }).catch(() => {});
             })();
 
-            function searchPrefix(q, limit = 12) {
+function searchPrefix(q, limit = 12) {
                 if (!q) return [];
                 const low = q.toLowerCase();
                 const out = [];
@@ -638,6 +643,39 @@
                     if (s.name.toLowerCase().startsWith(low)) out.push(s);
                 }
                 return out;
+            }
+
+            function schoolExists(name) {
+                if (!name) return false;
+                const low = name.trim().toLowerCase();
+                return schools.some(function(s) {
+                    return s && s.name && s.name.trim().toLowerCase() === low;
+                });
+            }
+
+            function clearNotExistError() {
+                if (notExistError) notExistError.style.display = 'none';
+            }
+
+            function checkSchoolExists(showError) {
+                clearTimeout(existsTimer);
+                const q = input.value.trim();
+                if (!q || validSchoolSelected) {
+                    clearNotExistError();
+                    return;
+                }
+                // Check after a short delay so it runs when the user finishes typing
+                existsTimer = setTimeout(function() {
+                    if (validSchoolSelected) {
+                        clearNotExistError();
+                        return;
+                    }
+                    if (!schoolExists(q)) {
+                        if (notExistError) notExistError.style.display = 'block';
+                    } else {
+                        clearNotExistError();
+                    }
+                }, 400);
             }
 
             function render(arr) {
@@ -680,8 +718,12 @@
                 document.getElementById('schoolProvince').value =
                     it.province ?? '';
 
-                // The school was selected from the database
+// The school was selected from the database
                 validSchoolSelected = true;
+
+                // Clear any pending "school does not exist" error
+                clearTimeout(existsTimer);
+                clearNotExistError();
 
                 // Notify Livewire
                 hiddenName.dispatchEvent(
@@ -727,18 +769,22 @@
                     })
                 );
 
-                clearTimeout(timer);
+clearTimeout(timer);
 
                 const q = this.value.trim();
 
                 if (q.length < 1) {
                     clearSuggestions();
+                    clearNotExistError();
                     return;
                 }
 
                 timer = setTimeout(() => {
                     render(searchPrefix(q, 20));
                 }, 120);
+
+                // Show "school does not exist" error when the user finishes typing
+                checkSchoolExists();
             });
 
             function updateFocus() {

@@ -155,7 +155,7 @@
         <div class="flex flex-col items-center justify-center text-center px-4">
             <!-- Heading -->
             <h1 class="text-[24px] sm:text-[24px] font-bold text-black uppercase mb-6 sm:mb-8">
-                Types of Report
+                Types of Reports
             </h1>
 
             <!-- Reporting Status -->
