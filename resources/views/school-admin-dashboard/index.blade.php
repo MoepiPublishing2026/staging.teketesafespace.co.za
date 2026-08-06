@@ -1312,16 +1312,11 @@ const statuses = Object.entries(dataset.statusCounts || {})
                 categoryPercentage: 0.55
             }]
         },
-        options: {
+       options: {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             layout: { padding: { right: statusLayoutPad, left: 4 } },
-            onClick: (event, elements) => {
-                if (elements && elements.length && statusLabels[elements[0].index] !== undefined) {
-                    navigateWithFilter(statusLabels[elements[0].index]);
-                }
-            },
             interaction: {
                 mode: 'nearest',
                 intersect: false,
