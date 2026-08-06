@@ -37,6 +37,7 @@ class EditReport extends Component
     public $age;
     public $isAnonymous;
     public $schoolPhase;
+    public $schoolProvince;
 
     public $schoolSearch = ''; 
     public $schoolSuggestions = [];
@@ -95,11 +96,12 @@ class EditReport extends Component
         $this->schoolName = $this->report->school_name;
         $this->schoolSearch = $this->report->school_name;
 
-        // Try to find the school to set the phase
+        // Try to find the school to set the phase and province
         if ($this->schoolName) {
-            $school = \App\Models\School::where('school_name', $this->schoolName)->first();
+            $school = $this->findSchoolByName($this->schoolName);
             if ($school) {
                 $this->schoolPhase = $school->phase_ped;
+                $this->schoolProvince = $school->province;
             }
         }
 
@@ -190,16 +192,32 @@ class EditReport extends Component
    public function updatedSchoolName($value)
 {
     if (!empty($value)) {
-        $school = \App\Models\School::where('school_name', $value)->first();
+        $school = $this->findSchoolByName($value);
         if ($school) {
             $this->schoolPhase = $school->phase_ped;
+            $this->schoolProvince = $school->province;
         } else {
-            $this->schoolPhase = null; // reset if school not found
+            // reset if school not found
+            $this->schoolPhase = null;
+            $this->schoolProvince = null;
         }
         // Re-evaluate grade based on new phase
         $this->updatedAge($this->age);
     }
 }
+
+    /**
+     * Resolve a school by an exact (case-insensitive) name match. Partial matches are
+     * deliberately not accepted so an unknown school can never resolve to a real one.
+     */
+    private function findSchoolByName($schoolName)
+    {
+        if (blank($schoolName)) {
+            return null;
+        }
+
+        return \App\Models\School::whereRaw('LOWER(school_name) = LOWER(?)', [trim($schoolName)])->first();
+    }
 
    public function updatedAge($value)
 {
@@ -273,11 +291,14 @@ class EditReport extends Component
 
     public function selectSchool($schoolName, $phase = null)
     {
+        $school = $this->findSchoolByName($schoolName);
+
         $this->schoolName = $schoolName;
         $this->schoolSearch = $schoolName;
-        $this->schoolPhase = $phase;
+        $this->schoolPhase = $phase ?? $school?->phase_ped;
+        $this->schoolProvince = $school?->province;
         $this->showSchoolDropdown = false;
-        
+
         $this->updatedAge($this->age);
     }
 
@@ -287,7 +308,6 @@ class EditReport extends Component
     {
         return [
             'fullName.regex' => 'The full name may only contain letters and spaces.',
-            'schoolName.regex' => 'The school name may only contain letters and spaces.',
             
             'description.required' => 'Additional details are required when "Other" is selected.',
             'description.max' => 'Additional details may not be greater than 500 characters.',
@@ -323,10 +343,33 @@ class EditReport extends Component
             'location' => 'required|string|max:100|min:5',
             'grade' => 'required|string|max:255',
             'email' => 'nullable|email:rfc,dns|max:255',
-            'schoolName' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/u',
+            'schoolName' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (! $this->findSchoolByName($value)) {
+                        $fail('The school you entered was not found in our database. Please select a school from the list.');
+                    }
+                },
+            ],
             'fullName' => $this->isAnonymous ? 'nullable|string' : 'required|string|max:50|regex:/^[a-zA-Z\s]+$/u',
             'age' => 'nullable|numeric|min:0|max:115',
         ]);
+
+        // Re-resolve from the database rather than trusting the component state, which
+        // can be stale if the province was never refreshed after the school changed.
+        $school = $this->findSchoolByName($this->schoolName);
+        $this->schoolProvince = $school?->province;
+
+        if ($this->schoolProvince && ! str_contains(strtolower($this->location), strtolower($this->schoolProvince))) {
+            $this->addError(
+                'location',
+                "The address must be in {$this->schoolProvince} because the selected school is located there."
+            );
+
+            return;
+        }
 
         $wasAppeal = ($this->report->status === 'false-report');
 
@@ -341,6 +384,13 @@ class EditReport extends Component
             'full_name' => $this->isAnonymous ? $this->report->full_name : $this->fullName,
             'age' => $this->age,
         ]);
+
+        // Keep the school foreign keys aligned with the newly chosen school name.
+        if ($school) {
+            $this->report->school_id = $school->school_id;
+            $this->report->province_id = $school->province_id;
+            $this->report->district_id = $school->district_id;
+        }
 
         $newPaths = [];
         foreach ($this->image as $file) {
