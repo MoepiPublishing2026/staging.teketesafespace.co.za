@@ -47,6 +47,12 @@
             ">
 
                 
+                <a href="javascript:void(0);"
+                    onclick="window.history.back();"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Back
+                </a>
+
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
@@ -172,9 +178,12 @@
         <p class="text-[17px] text-black leading-relaxed mt-9">
             A confidential platform designed to protect and empower learners
             and employees to speak out—with the option to report anonymously.
-            Your voice matters. Your identity is protected. <br>
+            The app is zero-rated, ensuring users can access and submit reports
+            without incurring data costs. Your voice matters. Your identity is protected. <br>
             Whether you choose to report with your name or anonymously,
-            Tekete SafeSpace by Moepi Publishing ensures every report is handled with confidentiality and urgency.
+            Tekete SafeSpace by Moepi Publishing ensures every report is handled with confidentiality, urgency,
+            and at no data cost to the user.
+
         </p>
     </section>
 
