@@ -446,18 +446,6 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
 
 
 
-        // The dropdown normally populates schoolId, but it can be left empty if the
-        // suggestion was never clicked. Recover it from an unambiguous name match so
-        // a correctly typed school does not block the submission.
-        if (blank($this->schoolId) && filled($this->schoolName)) {
-            $matchedSchool = School::whereRaw('LOWER(school_name) = LOWER(?)', [trim($this->schoolName)])->first();
-
-            if ($matchedSchool) {
-                $this->schoolId = $matchedSchool->school_id;
-                $this->schoolPhase = $this->schoolPhase ?: $matchedSchool->phase_ped;
-            }
-        }
-
         $this->validate();
 
         $report = null;        $caseNumber = null;
@@ -550,27 +538,15 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
 
                 $report->save();
             });
-        } catch (\Exception $e) {
-            Log::error('Report Submission Error: ' . $e->getMessage());
-            session()->flash('error_message', 'Something went wrong. Please try again.');
+            
+            
+            
+            
 
-            return;
-        }
-
-        // The report is already committed at this point, so a mail failure must
-        // never be reported back as a failed submission or the reporter loses
-        // their case number and re-submits.
-        if ($this->reporterEmail) {
-            $recipient = $this->reporterEmail;
-
-            dispatch(function () use ($recipient, $caseNumber) {
-                try {
-                    Mail::to($recipient)->send(new CaseNumberNotification($caseNumber));
-                } catch (\Throwable $e) {
-                    Log::error("Failed to email case number {$caseNumber}: " . $e->getMessage());
-                }
-            })->afterResponse();
-        }
+            // Notify reporter
+            if ($this->reporterEmail) {
+                Mail::to($this->reporterEmail)->send(new CaseNumberNotification($caseNumber));
+            }
 /*
             // Notify only the assigned school admin
             if ($report) {
@@ -590,21 +566,26 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
                 }
             }
 */
-        session()->flash('success_message', 'Your report has been submitted successfully! Case number: ' . $caseNumber);
+            session()->flash('success_message', 'Your report has been submitted successfully! Case number: ' . $caseNumber);
 
-        $this->reset([
-            'subtypeID',
-            'description',
-            'reporterEmail',
-            'phoneNumber',
-            'image',
-            'fullName',
-            'age',
-            'location',
-            'grade',
-            'schoolName',
-            'schoolSearch',
-        ]);
+            $this->reset([
+                'subtypeID',
+                'description',
+                'reporterEmail',
+                'phoneNumber',
+                'image',
+                'fullName',
+                'age',
+                'location',
+                'grade',
+                'schoolName',
+                'schoolSearch',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Report Submission Error: ' . $e->getMessage());
+            session()->flash('error_message', 'Something went wrong. Please try again.');
+        }
     }
   
   
