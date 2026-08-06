@@ -33,7 +33,10 @@
             ">
 
                 
-
+                  <a href="javascript:void(0);" onclick="window.history.back();"
+                        class="transition-colors hover:!text-[#c7da30]" style="color: black; text-decoration: none;">
+                        Back
+                    </a>
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
@@ -99,6 +102,10 @@
         </div>
 
         <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+
+              <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+              <a href="javascript:void(0);"
+       onclick="window.history.back(); toggleMobileMenu();"class="block py-3 text-[#38b6ff]"> Back</a>
 
             <a href="{{ route('landing-page') }}"
                onclick="toggleMobileMenu()"

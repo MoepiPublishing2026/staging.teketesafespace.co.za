@@ -337,8 +337,11 @@ protected array $phaseGrades = [
             'schoolName.required' => 'Please select or enter the Name of School.', 
             'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
 
-            'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
             'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
+'subtypeID.required' => 'The subtype ID field is required.',
+            'location.required' => 'Please enter the Address.',
+            'grade.required' => 'Please select a Grade.',
         ];
     }
      public function updatedPhoneNumber($value)
@@ -383,7 +386,7 @@ public function submitReport()
             [$min, $max] = $this->gradeAgeRanges[$this->grade];
 
             if ($this->age < $min || $this->age > $max) {
-                $this->addError('age', "Allowed age for {$this->grade} is {$min} & {$max}");
+                $this->addError('age', "Allowed age for {$this->grade} is {$min} to {$max}");
                 return;
             }
 
