@@ -117,6 +117,12 @@
             ">
 
 
+                <a href="javascript:void(0);"
+                    onclick="window.history.back();"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Back
+                </a>
+
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
@@ -284,22 +290,11 @@
                         </a>
 
                         <!-- Huawei AppGallery -->
-                        <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" class="store-btn">
-                            <span class="store-icon">
-                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="mh1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FF4D4D"/><stop offset="100%" style="stop-color:#FF0000"/></linearGradient>
-                                    </defs>
-                                    <path fill="url(#mh1)" d="M12 2C10.5 2 9.5 3.2 9.5 4.5c0 1.4.8 2.5 2.5 3.5 1.7-1 2.5-2.1 2.5-3.5C14.5 3.2 13.5 2 12 2z"/>
-                                    <path fill="url(#mh1)" d="M12 22c1.5 0 2.5-1.2 2.5-2.5 0-1.4-.8-2.5-2.5-3.5-1.7 1-2.5 2.1-2.5 3.5C9.5 20.8 10.5 22 12 22z"/>
-                                    <path fill="url(#mh1)" d="M2 12c0 1.5 1.2 2.5 2.5 2.5 1.4 0 2.5-.8 3.5-2.5-1-1.7-2.1-2.5-3.5-2.5C3.2 9.5 2 10.5 2 12z"/>
-                                    <path fill="url(#mh1)" d="M22 12c0-1.5-1.2-2.5-2.5-2.5-1.4 0-2.5.8-3.5 2.5 1 1.7 2.1 2.5 3.5 2.5C20.8 14.5 22 13.5 22 12z"/>
-                                </svg>
-                            </span>
-                            <span class="store-text">
-                                <span class="top-line">EXPLORE IT ON</span>
-                                <span class="bottom-line">AppGallery</span>
-                            </span>
+                        <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener">
+                            <img
+                                src="{{ asset('images/appgallery-huawei.png') }}"
+                                alt="Explore it on AppGallery"
+                                class="w-[150px] h-auto hover:opacity-80 transition">
                         </a>
 
                     </div>
@@ -348,22 +343,11 @@
                     </a>
 
                     <!-- Huawei AppGallery -->
-                    <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" class="store-btn store-btn-lg">
-                        <span class="store-icon">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="dh1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#FF4D4D"/><stop offset="100%" style="stop-color:#FF0000"/></linearGradient>
-                                </defs>
-                                <path fill="url(#dh1)" d="M12 2C10.5 2 9.5 3.2 9.5 4.5c0 1.4.8 2.5 2.5 3.5 1.7-1 2.5-2.1 2.5-3.5C14.5 3.2 13.5 2 12 2z"/>
-                                <path fill="url(#dh1)" d="M12 22c1.5 0 2.5-1.2 2.5-2.5 0-1.4-.8-2.5-2.5-3.5-1.7 1-2.5 2.1-2.5 3.5C9.5 20.8 10.5 22 12 22z"/>
-                                <path fill="url(#dh1)" d="M2 12c0 1.5 1.2 2.5 2.5 2.5 1.4 0 2.5-.8 3.5-2.5-1-1.7-2.1-2.5-3.5-2.5C3.2 9.5 2 10.5 2 12z"/>
-                                <path fill="url(#dh1)" d="M22 12c0-1.5-1.2-2.5-2.5-2.5-1.4 0-2.5.8-3.5 2.5 1 1.7 2.1 2.5 3.5 2.5C20.8 14.5 22 13.5 22 12z"/>
-                            </svg>
-                        </span>
-                        <span class="store-text">
-                            <span class="top-line">EXPLORE IT ON</span>
-                            <span class="bottom-line">AppGallery</span>
-                        </span>
+                    <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener">
+                        <img
+                            src="{{ asset('images/appgallery-huawei.png') }}"
+                            alt="Explore it on AppGallery"
+                            class="w-[150px] h-auto hover:opacity-80 transition">
                     </a>
 
                 </div>
@@ -371,7 +355,7 @@
             </div>
 
             <!-- Desktop Graphics -->
-           <div class="hidden lg:block absolute right-[-300px] top-20 z-10 pointer-events-none">
+<div class="hidden lg:block absolute right-[-300px] top-20 z-10 pointer-events-none">
     <img src="{{ asset('images/futuristic digital frame tech.png') }}" class="w-[460px]  h-[400px] object-cover object-left [clip-path:inset(0_50%_0_0)]">
 </div>
             <div class="hidden lg:block absolute right-[120px] -top-36 z-20 pointer-events-none">
@@ -382,7 +366,7 @@
     </section>
 
     <!-- FOOTER -->
-<footer class="relative w-full bg-[#757573] text-white px-4 py-5 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:gap-2 lg:px-[2vw] lg:py-[1.5vh] mt-auto z-30 font-[Montserrat]">
+<footer class="relative w-full bg-[#757573] text-white px-4 py-6 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:gap-2 lg:px-[2vw] mt-auto z-30 font-[Montserrat]">
             <p class="text-[13px] leading-5 text-center font-normal text-white min-[640px]:text-[14px] lg:text-[16px] min-[640px]:text-left w-full min-[640px]:w-auto">
                 &copy; {{ date('Y') }} Tekete safespace from moepi<br class="min-[640px]:hidden">Publishing.all rights reserved.
             </p>
