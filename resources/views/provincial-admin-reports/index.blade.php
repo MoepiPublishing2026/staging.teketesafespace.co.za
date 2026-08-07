@@ -789,7 +789,7 @@ body.pa-app .page-link[aria-current="page"] {
                     type="text"
                     name="search"
                     value="{{ request('search') }}"
-                    placeholder="Search by name, email, case number, description"
+                    placeholder="Search by  email, case number, description"
                     autocomplete="off"
                 />
             </div>

@@ -908,8 +908,8 @@ const searchInput = document.querySelector('input[name="search"]');
 let allSubtypeOptions = null;
 let typeSelect, subtypeSelect;
 
-const PLACEHOLDER_DEFAULT = 'Search by name, email, case number, school, description…';
-const PLACEHOLDER_ANON    = 'Search by email, case number, school, description…';
+const PLACEHOLDER_DEFAULT = 'Search by  email, case number,  description…';
+const PLACEHOLDER_ANON    = 'Search by email, case number, description…';
 
 function exportPDF() {
     const element = document.getElementById('main-content');

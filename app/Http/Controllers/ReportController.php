@@ -67,9 +67,7 @@ class ReportController extends Controller
             $query->where(function ($q) use ($s) {
                 $q->where('case_number',      'like', "%{$s}%")
                   ->orWhere('reporter_email', 'like', "%{$s}%")
-                  ->orWhere('full_name',      'like', "%{$s}%")
-                  ->orWhere('description',    'like', "%{$s}%")
-                  ->orWhere('school_name',    'like', "%{$s}%");
+                  ->orWhere('description',    'like', "%{$s}%");
             });
         }
 
