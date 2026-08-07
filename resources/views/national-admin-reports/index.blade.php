@@ -936,8 +936,15 @@ const subtypesByType = {
 // ── Subtype filtering ─────────────────────────────────────────────
 function filterSubtypes() {
     if (allSubtypeOptions === null) {
-        allSubtypeOptions = Array.from(subtypeSelect.options).filter(opt => opt.value !== '');
+        allSubtypeOptions = Array.from(subtypeSelect.options)
+            .filter(opt => opt.value !== '')
+            .map(opt => {
+                const clone = opt.cloneNode(true);
+                clone.removeAttribute('selected'); // don't let stale server-rendered selection leak into future rebuilds
+                return clone;
+            });
     }
+
 
     const selectedType = typeSelect.value;
     const placeholder = subtypeSelect.options[0];
@@ -1012,7 +1019,7 @@ document.addEventListener('DOMContentLoaded', function () {
             refreshBtn.addEventListener('click', function () {
                 filterForm.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
                 filterForm.querySelectorAll('input[type="text"], input[type="date"], input[type="hidden"]').forEach(function (input) { input.value = ''; });
-                filterSubtypes();
+                filterSubtypes('');
                 syncAnonNameState();
                 filterForm.submit();
             });
