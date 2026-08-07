@@ -121,16 +121,14 @@ class ReportController extends Controller
 
 
         // Date range (new field names: date_from/date_to — kept alongside old from_date/to_date)
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->input('date_from'));
-        } elseif ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->input('from_date'));
-        }
+        $dateFrom = $request->input('date_from') ?? $request->input('from_date');
+        $dateTo   = $request->input('date_to')   ?? $request->input('to_date');
 
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->input('date_to'));
-        } elseif ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->input('to_date'));
+        if ($dateFrom) {
+            $query->where('created_at', '>=', \Carbon\Carbon::parse($dateFrom)->startOfDay());
+        }
+        if ($dateTo) {
+            $query->where('created_at', '<=', \Carbon\Carbon::parse($dateTo)->endOfDay());
         }
 
         $reports = $query->latest()->paginate(12)->withQueryString();

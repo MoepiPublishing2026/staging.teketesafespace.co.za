@@ -545,13 +545,15 @@ body.na-app .page-link[aria-current="page"] {
             {{-- Search Bar --}}
             <div class="search-wrap">
                 <span class="search-icon"><i class="fas fa-search"></i></span>
-                <input
-                    type="text"
+                <input type="text"
                     name="search"
+                    class="filter-input"
+                    placeholder="Search case number, email, description..."
                     value="{{ request('search') }}"
-                    placeholder="Search by name, email, case number, school, description…"
-                    autocomplete="off"
-                />
+                    @if(request('is_anonymous') == '1') disabled @endif
+                    style="{{ request('is_anonymous') == '1' ? 'opacity:0.4;cursor:not-allowed;background:#f3f4f6;' : '' }}"
+                    title="{{ request('is_anonymous') == '1' ? 'Not available for anonymous reports' : '' }}"
+                >
             </div>
 
             {{-- Filter Grid --}}
