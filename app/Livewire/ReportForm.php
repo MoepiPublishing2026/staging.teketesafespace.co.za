@@ -323,7 +323,8 @@ protected array $phaseGrades = [
             },
         ],
         'schoolId' => [
-                'required',
+                'required_with:schoolName',
+                'nullable',
                 'exists:schools,school_id',
             ],
         ];
@@ -332,16 +333,20 @@ protected array $phaseGrades = [
     protected function messages()
     {
         return [
-            'description.max' => 'Words exceeding limit of 500 ',
-            'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
+            'fullName.required' => 'Please enter your Full Name.',
+            'age.required' => 'Please enter your Age.',
             'schoolName.required' => 'Please select or enter the Name of School.', 
-            'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
-
-'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+            'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
+            'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+            'schoolId.required_with' => 'The school you entered was not found in our database. Please select a school from the list.',
             'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
-'subtypeID.required' => 'The subtype ID field is required.',
+            'subtypeID.required' => 'Please select a Sub-type.',
             'location.required' => 'Please enter the Address.',
+            'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
             'grade.required' => 'Please select a Grade.',
+            'phoneNumber.required' => 'Please enter your Phone Number.',
+            'reporterEmail.required' => 'Please enter your Email Address.',
+            'description.max' => 'Words exceeding limit of 500 ',
         ];
     }
      public function updatedPhoneNumber($value)
@@ -355,9 +360,7 @@ public function submitReport()
     {
  ini_set('max_execution_time', 500);
 
- $this->validate([
-        'location' => 'required|string',
-    ]);
+ $this->validate();
 
     if ($this->schoolProvince) {
 
@@ -443,10 +446,6 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         $this->dispatch('restart-timer');
         return; 
     }
-
-
-
-        $this->validate();
 
         $report = null;        $caseNumber = null;
         

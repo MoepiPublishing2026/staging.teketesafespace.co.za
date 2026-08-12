@@ -235,6 +235,9 @@
 @error('schoolName')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
+                            @error('schoolId')
+                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+                            @enderror
                             <p id="schoolNotExistError" class="text-red-600 text-[12px] mt-1" style="display:none;">
                                 The school does not exist.
                             </p>
