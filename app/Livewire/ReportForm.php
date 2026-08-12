@@ -323,8 +323,7 @@ protected array $phaseGrades = [
             },
         ],
         'schoolId' => [
-                'required_with:schoolName',
-                'nullable',
+                'required',
                 'exists:schools,school_id',
             ],
         ];
@@ -333,20 +332,16 @@ protected array $phaseGrades = [
     protected function messages()
     {
         return [
-            'fullName.required' => 'Please enter your Full Name.',
-            'age.required' => 'Please enter your Age.',
-            'schoolName.required' => 'Please select or enter the Name of School.', 
-            'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
-            'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
-            'schoolId.required_with' => 'The school you entered was not found in our database. Please select a school from the list.',
-            'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
-            'subtypeID.required' => 'Please select a Sub-type.',
-            'location.required' => 'Please enter the Address.',
-            'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
-            'grade.required' => 'Please select a Grade.',
-            'phoneNumber.required' => 'Please enter your Phone Number.',
-            'reporterEmail.required' => 'Please enter your Email Address.',
             'description.max' => 'Words exceeding limit of 500 ',
+            'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
+            'schoolName.required' => 'Please select or enter the Name of School.', 
+            'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
+
+'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+            'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
+'subtypeID.required' => 'The subtype ID field is required.',
+            'location.required' => 'Please enter the Address.',
+            'grade.required' => 'Please select a Grade.',
         ];
     }
      public function updatedPhoneNumber($value)
@@ -360,7 +355,7 @@ public function submitReport()
     {
  ini_set('max_execution_time', 500);
 
- $this->validate();
+$this->validate();
 
     if ($this->schoolProvince) {
 
@@ -408,6 +403,8 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
     $cleanPhone = preg_replace('/\D/', '', $this->phoneNumber); // Remove non-digits
     $cleanName = trim($this->fullName);
 
+    // 🔑 ADD THIS LINE HERE: Only run the check if at least one detail is provided
+if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty($cleanName))) {
     // 2. THE ENHANCED SUSPENSION CHECK
     // Search for ANY existing report that has a future suspension date 
     // and matches ANY of the provided identifiers.
@@ -446,6 +443,11 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         $this->dispatch('restart-timer');
         return; 
     }
+    }
+
+
+
+        $this->validate();
 
         $report = null;        $caseNumber = null;
         

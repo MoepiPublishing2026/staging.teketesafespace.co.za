@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full"> <!-- Header -->
+<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full pt-24 sm:pt-28"> <!-- Header -->
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
 
