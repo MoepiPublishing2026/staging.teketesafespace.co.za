@@ -134,7 +134,7 @@ body.pa-app aside#pa-sidebar nav a.sidebar-link.active {
             <li>
                 <a href="{{ url('/provincial/heatmap') }}"
                    class="sidebar-link{{ $isHeatmap ? ' active' : '' }}">
-                    Heat-map
+                    Heat-Map
                 </a>
             </li>
             <li>

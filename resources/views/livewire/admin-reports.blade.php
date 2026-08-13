@@ -141,7 +141,7 @@
 
 .school-reports-shell .filter-panel {
     margin: 0 0 13px;
-    padding: 11px 14px 7px;
+    padding: 20px 24px 20px;
     border: 2px solid var(--reports-lime) !important;
     border-radius: 10px !important;
     background: #f5f5f5 !important;
@@ -149,8 +149,9 @@
 }
 
 .school-reports-shell .search-wrap {
-    margin-bottom: 4px;
+    margin-bottom: 18px;
 }
+
 
 .school-reports-shell .search-wrap input {
     box-sizing: border-box;
@@ -178,15 +179,19 @@
 
 .school-reports-shell .filter-grid {
     display: grid;
-    grid-template-columns: 0.85fr 1.2fr 1fr 1.1fr 1.1fr 1fr 1fr 1fr 1.05fr;
-    gap: 7px;
+    grid-template-columns: 0.85fr 1.2fr 1fr 1.1fr 1.1fr 1fr 1fr 1fr ;
+    gap: 10px;
     align-items: end;
 }
 
 .school-reports-shell .filter-grid > div {
     min-width: 0;
 }
-
+.school-reports-shell .refresh-row {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 15px;
+}
 .school-reports-shell .filter-label {
     display: block;
     height: 11px;
@@ -236,16 +241,16 @@
 }
 
 .school-reports-shell #refreshBtn {
-    width: 100%;
-    height: 23px;
+    width: 160px;
+    height: 50px;
     border: 0 !important;
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--reports-blue) !important;
     color: #ffffff !important;
     cursor: pointer;
     font-family: inherit;
-    font-size: 8px;
-    font-weight: 400;
+    font-size: 14px;
+    font-weight: 700;
     transition: background-color 0.2s ease;
 }
 
@@ -330,15 +335,15 @@
 .school-reports-shell .status-pill {
     display: inline-block;
     max-width: 100%;
-    padding: 4px 8px;
-    overflow: hidden;
+    padding: 5px 10px;
+    overflow: visible;
     border-radius: 999px;
     background: #fff3a6;
-    color: #9b8749;
-    font-size: 8px;
-    font-weight: 400;
-    line-height: 1.2;
-    text-overflow: ellipsis;
+    color: #333333 !important;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-overflow: clip;
     white-space: nowrap;
 }
 
@@ -741,11 +746,14 @@
                         </select>
                     </div>
 
-                    <div>
-                        <span class="filter-label" aria-hidden="true">&nbsp;</span>
-                        <button type="button" id="refreshBtn" wire:click="clearFilters">Refresh Table</button>
-                    </div>
+                    
                 </div>
+
+                <div class="refresh-row">
+    <button type="button" id="refreshBtn" wire:click="clearFilters">
+        Refresh Table
+    </button>
+</div>
             </section>
 
             <div class="reports-table-wrap">
