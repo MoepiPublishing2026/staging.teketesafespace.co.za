@@ -48,6 +48,8 @@ class ReportForm extends Component
     public $schoolSearch = ''; 
     public $schoolSuggestions = [];
     public $showSchoolDropdown = false;
+    public $schoolSelected = false; // 🔑 Add this flag
+    public $justSelected = false; // 🔑 Add this flag
     public $latestReport;
     
      
@@ -166,17 +168,76 @@ protected array $phaseGrades = [
     /**
      * Resolve school phase when school name is updated
      */
-   public function updatedSchoolName($value)
+ /**
+     * Triggered automatically as the user types. 
+     * Resets selection so manual typing is invalid.
+     */
+   /**
+     * Triggered automatically as the user types. 
+     * Resets selection so manual typing is invalid, unless it matches the selected school.
+     */
+ public function updatedSchoolSearch($value)
 {
-    if (!empty($value)) {
-        $school = \App\Models\School::where('school_name', $value)->first();
-        if ($school) {
-            $this->schoolPhase = $school->phase_ped;
-        } else {
-            $this->schoolPhase = null; // reset if school not found
+    // 🔑 If we just selected via click, ignore this incoming property sync entirely
+    if ($this->justSelected) {
+        return;
+    }
+
+    $trimmedValue = trim($value);
+    $this->schoolName = $trimmedValue;
+
+    // If they typed something that matches a school exact, select it
+    if (!empty($trimmedValue)) {
+        $matchingSchool = School::whereRaw('LOWER(school_name) = LOWER(?)', [$trimmedValue])->first();
+        
+        if ($matchingSchool) {
+            $this->schoolSelected = true;
+            $this->schoolName = $matchingSchool->school_name;
+            $this->schoolSearch = $matchingSchool->school_name;
+            $this->schoolPhase = $matchingSchool->phase_ped;
+            $this->schoolSuggestions = [];
+            $this->showSchoolDropdown = false;
+            $this->updatedAge($this->age);
+            return; 
         }
-        // Re-evaluate grade based on new phase
+    }
+
+    // Otherwise, they are typing manually -> invalidate selection
+    $this->schoolSelected = false; 
+    $this->schoolPhase = null;
+
+    if (strlen($trimmedValue) >= 2) {
+        $this->schoolSuggestions = School::where('school_name', 'LIKE', '%' . $trimmedValue . '%')
+            ->limit(10)
+            ->get();
+        $this->showSchoolDropdown = true;
+    } else {
+        $this->schoolSuggestions = [];
+        $this->showSchoolDropdown = false;
+    }
+}
+
+public function selectSchool($schoolId)
+{
+    $school = School::where('school_id', $schoolId)->first();
+
+    if ($school) {
+        // 🔑 Set flag FIRST so updatedSchoolSearch ignores the incoming sync
+        $this->justSelected = true;
+
+        $this->schoolName = $school->school_name; 
+        $this->schoolSearch = $school->school_name; 
+        $this->schoolPhase = $school->phase_ped;
+        $this->schoolSelected = true; 
+        
+        $this->schoolSuggestions = [];
+        $this->showSchoolDropdown = false;
+        
         $this->updatedAge($this->age);
+
+        // 🔑 Reset the lock flag on the next tick/moment so normal typing works again later
+        $this->dispatch('$refresh');
+        $this->justSelected = false;
     }
 }
 
@@ -259,7 +320,7 @@ protected array $phaseGrades = [
             'email',
             'max:50',
             // MODIFIED REGEX to REQUIRE at least one letter in the local part
-                'regex:/^(?=[a-zA-Z0-9._%+-]*[a-zA-Z])([a-zA-Z0-9._%+-]+)\@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+(com|uk|co\.za|org|net|gov|edu|mil|int|biz|info|mobi|name|aero|jobs|museum|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tr|tt|tv|tw|tz|ua|ug|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)$/i',
+                'regex:/^(?=[a-zA-Z0-9.%+-]*[a-zA-Z])([a-zA-Z0-9.%+-]+)\@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+(com|uk|co\.za|org|net|gov|edu|mil|int|biz|info|mobi|name|aero|jobs|museum|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tr|tt|tv|tw|tz|ua|ug|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)$/i',
         ],
 
             'phoneNumber' => [
@@ -308,38 +369,40 @@ protected array $phaseGrades = [
             },
         ],
             'grade' => 'required|string|max:100',
-            'schoolName' => [
-            'required',
-            'string',
-            'max:100',
-            // New general regex allows the user to type anything (min 2, max 100)
-            'regex:/^.{2,100}$/u',
-            function($attribute, $value, $fail) {
-                // This custom rule checks for forbidden characters (numbers, etc.) on submission.
-                // It checks for any character that is NOT an allowed letter, space, comma, period, hyphen, apostrophe, or ampersand.
-                if (preg_match('/[^a-zA-Z\s.,\-\'&]/', $value)) {
-                    $fail('The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.');
-                }
-            },
-        ],
-        'schoolId' => [
-                'required',
-                'exists:schools,school_id',
-            ],
-        ];
+         'schoolName' => [
+    'required',
+    function ($attribute, $value, $fail) {
+        // If the field is empty, let the 'required' rule handle the error message
+        if (empty(trim($value))) {
+            return;
+        }
+
+        // Fallback check: If they typed it manually but it matches a real school, auto-bless it
+        if (!$this->schoolSelected) {
+            $matchingSchool = School::whereRaw('LOWER(school_name) = LOWER(?)', [trim($value)])->first();
+            if ($matchingSchool) {
+                $this->schoolSelected = true;
+                $this->schoolPhase = $matchingSchool->phase_ped;
+                return;
+            }
+        }
+
+        // If it's not empty and hasn't been validly selected or matched
+        if (!$this->schoolSelected) {
+            $fail('Please select a school from the dropdown list instead of typing it manually.');
+        }
+    },
+],
+    ]; // End of rules array
     }
 
-    protected function messages()
+ protected function messages()
     {
         return [
             'description.max' => 'Words exceeding limit of 500 ',
-            'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
-            'schoolName.required' => 'Please select or enter the Name of School.', 
+            'schoolName.required' => 'Please select a school from the dropdown list.', 
             'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
-
-'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
-            'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
-'subtypeID.required' => 'The subtype ID field is required.',
+            'subtypeID.required' => 'The subtype ID field is required.',
             'location.required' => 'Please enter the Address.',
             'grade.required' => 'Please select a Grade.',
         ];
