@@ -805,7 +805,8 @@ body.na-app .page-link[aria-current="page"] {
             <p><strong>Latest Reason:</strong> <span id="modalReason"></span></p>
             <p><strong>Description:</strong></p>
             <div id="modalDescription" style="margin-bottom:1rem;"></div>
-            <p><strong>Attachments:</strong> <span id="modalAttachments"></span></p>
+            <p><strong>Attachments:</strong></p>
+            <div id="modalAttachments" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;"></div>
             <br>
             <button type="button" class="modal-close" aria-label="Close" onclick="closeReportModal()">Close</button>
         </div>
@@ -826,6 +827,47 @@ function openReportModal(reportId) {
         document.getElementById('modalSchool').textContent     = report.school || 'N/A';
         document.getElementById('modalGrade').textContent      = report.grade || 'N/A';
         document.getElementById('modalStatus').textContent     = report.status ? report.status.replace(/-/g, ' ') : 'N/A';
+        // Add:
+        const attachmentContainer = document.getElementById('modalAttachments');
+        attachmentContainer.innerHTML = '';
+
+        if (report.attachments && report.attachments.length > 0) {
+            report.attachments.forEach(function(filePath) {
+                const ext       = filePath.split('.').pop().toLowerCase();
+                const publicUrl = '/storage/' + filePath.replace(/^\/+/, '');
+                let elem;
+
+                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
+                    elem = document.createElement('img');
+                    elem.src   = publicUrl;
+                    elem.alt   = 'Attachment';
+                    elem.style.cssText = 'width:80px;height:80px;margin-right:10px;border:2px solid #c7da30;border-radius:8px;object-fit:cover;cursor:zoom-in;';
+                    elem.onclick = function(e) {
+                        e.stopPropagation();
+                        openLightbox(this.src);
+                    };
+                } else if (['mp4','mov','avi','wmv'].includes(ext)) {
+                    elem = document.createElement('video');
+                    elem.controls  = true;
+                    elem.style.cssText = 'width:160px;height:100px;margin-right:10px;border-radius:8px;';
+                    const source   = document.createElement('source');
+                    source.src     = publicUrl;
+                    source.type    = 'video/' + ext;
+                    elem.appendChild(source);
+                } else {
+                    elem = document.createElement('a');
+                    elem.href      = publicUrl;
+                    elem.target    = '_blank';
+                    elem.textContent = filePath.split('/').pop();
+                    elem.style.cssText = 'color:#4c8eda;text-decoration:underline;margin-right:10px;display:inline-block;';
+                }
+
+                attachmentContainer.appendChild(elem);
+            });
+        } else {
+            attachmentContainer.textContent = 'No attachments.';
+        }
+
         document.getElementById('modalReason').textContent     = report.latest_status_reason || 'No status history recorded.';
         document.getElementById('modalDescription').textContent = report.description || '';
 
@@ -1213,9 +1255,19 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function openLightbox(src) {
-    document.getElementById('lightboxImg').src = src;
-    const lb = document.getElementById('lightbox');
-    lb.style.display = 'flex';
+    const overlay = document.createElement('div');
+    overlay.setAttribute('data-lightbox', '');
+    overlay.setAttribute('tabindex', '-1');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+    overlay.onclick = () => overlay.remove();
+
+    const img = document.createElement('img');
+    img.src   = src;
+    img.style.cssText = 'max-height:90vh;max-width:90vw;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,0.5);';
+
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+    overlay.focus();
 }
 
 function closeLightbox() {
