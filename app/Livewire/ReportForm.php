@@ -355,9 +355,7 @@ public function submitReport()
     {
  ini_set('max_execution_time', 500);
 
- $this->validate([
-        'location' => 'required|string',
-    ]);
+$this->validate();
 
     if ($this->schoolProvince) {
 
@@ -405,6 +403,8 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
     $cleanPhone = preg_replace('/\D/', '', $this->phoneNumber); // Remove non-digits
     $cleanName = trim($this->fullName);
 
+    // 🔑 ADD THIS LINE HERE: Only run the check if at least one detail is provided
+if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty($cleanName))) {
     // 2. THE ENHANCED SUSPENSION CHECK
     // Search for ANY existing report that has a future suspension date 
     // and matches ANY of the provided identifiers.
@@ -442,6 +442,7 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         
         $this->dispatch('restart-timer');
         return; 
+    }
     }
 
 
