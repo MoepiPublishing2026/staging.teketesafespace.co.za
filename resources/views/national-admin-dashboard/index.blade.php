@@ -1288,7 +1288,7 @@ const statuses = Object.entries(dataset.statusCounts || {})
     },
     options: {
       indexAxis: "y", responsive: true, maintainAspectRatio: false,
-      layout: { padding: { right: 50, left: 4 } },
+      layout: { padding: { right: 50, left: 12 } },
       interaction: {
         mode: 'nearest',
         intersect: false,
@@ -1365,7 +1365,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const parsedDataset = dataElem ? JSON.parse(dataElem.textContent || '{}') : {};
   statusReportsMap = parsedDataset.statusReports || {};
   allReportsList = parsedDataset.allReports || [];
+
   renderOverviewCharts(parsedDataset);
+
+  // Re-layout once the actual webfont has loaded, so tick-label
+  // width is measured correctly instead of using the fallback font
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      Object.values(chartRegistry).forEach(chart => chart.update());
+    });
+  }
+
   const firstCard = document.querySelector('.metric-card.status-total');
   if (firstCard) firstCard.classList.add('active');
 });

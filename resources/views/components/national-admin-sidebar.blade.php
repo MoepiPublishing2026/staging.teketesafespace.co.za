@@ -24,7 +24,7 @@
             <li>
                 <a href="{{ url('/national-admin/heatmap') }}"
                    class="sidebar-link {{ request()->is('national-admin/heatmap') ? 'active' : '' }}">
-                    Heat-map
+                    Heat-Map
                 </a>
             </li>
             <li>
@@ -33,7 +33,7 @@
                     My Profile
                 </a>
             </li>
-            @if ($showExportPdf)
+            @if ($showExportPdf) 
                 <li>
                     <a href="#"
                        class="sidebar-link"
