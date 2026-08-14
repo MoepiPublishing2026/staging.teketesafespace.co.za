@@ -17,6 +17,11 @@
                         style="color: black; text-decoration: none;">Home</a>
                     <a href="{{ route('about-us') }}" class="transition-colors hover:!text-[#c7da30]"
                         style="color: black; text-decoration: none;">About Us</a>
+                    <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                        class="transition-colors hover:!text-[#c7da30]"
+                        style="color: black; text-decoration: none;">Workshops</a>
+                    <a href="{{ route('news') }}" class="transition-colors hover:!text-[#c7da30]"
+                        style="color: black; text-decoration: none;">News</a>
                     <a href="{{ route('contact-us') }}" class="transition-colors hover:!text-[#c7da30]"
                         style="color: black; text-decoration: none;">Contact Us</a>
                 </div>
@@ -325,8 +330,9 @@
 
                             <div>
                                 <label for="phoneNumber" class="text-[11px] text-black">Phone Number</label>
-                                <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
-                                    placeholder="e.g. 076 566 8901"
+                                <input type="text" wire:model.live="phoneNumber" id="phoneNumber"
+                                    maxlength="10" inputmode="numeric"
+                                    placeholder="e.g. 0821234567"
                                     class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black">
                                 @error('phoneNumber')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
@@ -379,8 +385,8 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div>
                                 <label for="location" class="text-[11px] text-black">Location</label>
-                                <input type="text" wire:model="location" id="location"
-                                    placeholder="Where did this happen?"
+                                <input type="text" wire:model.blur="location" id="location"
+                                    placeholder="e.g. 123 Main Street, Gauteng"
                                     class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black">
                                 @error('location')
                                     <p class="text-red-600 text-[12px]">{{ $message }}</p>
@@ -395,7 +401,8 @@
                                         class="w-full h-[50px] border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14px] text-black">
                                     <input type="hidden" id="schoolName" wire:model.live="schoolName"
                                         name="schoolName">
-                                    <input type="hidden" id="schoolId" name="schoolId" value="">
+                                    <input type="hidden" id="schoolProvince" wire:model.live="schoolProvince">
+                                    <input type="hidden" id="schoolId" name="schoolId" wire:model="schoolId" value="">
                                     <div id="schoolDropdown"
                                         class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
                                         style="display:none;"></div>
@@ -601,7 +608,17 @@
                 input.value = it.name;
                 hiddenName.value = it.name;
                 hiddenId.value = it.id ?? '';
+
+                const provinceEl = document.getElementById('schoolProvince');
+                if (provinceEl) {
+                    provinceEl.value = it.province ?? '';
+                    provinceEl.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+
                 document.getElementById('schoolName').dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+                hiddenId.dispatchEvent(new Event('input', {
                     bubbles: true
                 }));
                 clearSuggestions();
@@ -610,6 +627,11 @@
             input.addEventListener('input', function() {
                 hiddenName.value = '';
                 hiddenId.value = '';
+                const provinceEl = document.getElementById('schoolProvince');
+                if (provinceEl) {
+                    provinceEl.value = '';
+                    provinceEl.dispatchEvent(new Event('input', { bubbles: true }));
+                }
                 clearTimeout(timer);
                 const q = this.value.trim();
                 if (q.length < 1) {

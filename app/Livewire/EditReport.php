@@ -37,6 +37,8 @@ class EditReport extends Component
     public $age;
     public $isAnonymous;
     public $schoolPhase;
+    public $schoolProvince;
+    public $schoolId;
 
     public $schoolSearch = ''; 
     public $schoolSuggestions = [];
@@ -95,15 +97,17 @@ class EditReport extends Component
         $this->schoolName = $this->report->school_name;
         $this->schoolSearch = $this->report->school_name;
 
-        // Try to find the school to set the phase
+        // Try to find the school to set the phase and province
         if ($this->schoolName) {
-            $school = \App\Models\School::where('school_name', $this->schoolName)->first();
+            $school = $this->findSchoolByName($this->schoolName);
             if ($school) {
                 $this->schoolPhase = $school->phase_ped;
+                $this->schoolProvince = $school->province;
+                $this->schoolId = $school->school_id;
             }
         }
 
-        $this->phoneNumber = $this->report->phone_number;
+        $this->phoneNumber = preg_replace('/\D/', '', (string) $this->report->phone_number);
         $this->fullName = $this->report->full_name;
         $this->age = $this->report->age;
         $this->isAnonymous = $this->report->is_anonymous;
@@ -190,16 +194,41 @@ class EditReport extends Component
    public function updatedSchoolName($value)
 {
     if (!empty($value)) {
-        $school = \App\Models\School::where('school_name', $value)->first();
+        $school = $this->findSchoolByName($value);
         if ($school) {
             $this->schoolPhase = $school->phase_ped;
+            $this->schoolProvince = $school->province;
+            $this->schoolId = $school->school_id;
         } else {
-            $this->schoolPhase = null; // reset if school not found
+            $this->schoolPhase = null;
+            $this->schoolProvince = null;
+            $this->schoolId = null;
         }
         // Re-evaluate grade based on new phase
         $this->updatedAge($this->age);
+    } else {
+        $this->schoolPhase = null;
+        $this->schoolProvince = null;
+        $this->schoolId = null;
     }
 }
+
+    /**
+     * Exact (case-insensitive) school match only — unknown names must not resolve.
+     */
+    private function findSchoolByName($schoolName)
+    {
+        if (blank($schoolName)) {
+            return null;
+        }
+
+        return \App\Models\School::whereRaw('LOWER(school_name) = LOWER(?)', [trim($schoolName)])->first();
+    }
+
+    public function updatedPhoneNumber($value)
+    {
+        $this->phoneNumber = preg_replace('/\D/', '', (string) $value);
+    }
 
    public function updatedAge($value)
 {
@@ -273,11 +302,15 @@ class EditReport extends Component
 
     public function selectSchool($schoolName, $phase = null)
     {
+        $school = $this->findSchoolByName($schoolName);
+
         $this->schoolName = $schoolName;
         $this->schoolSearch = $schoolName;
-        $this->schoolPhase = $phase;
+        $this->schoolPhase = $phase ?? $school?->phase_ped;
+        $this->schoolProvince = $school?->province;
+        $this->schoolId = $school?->school_id;
         $this->showSchoolDropdown = false;
-        
+
         $this->updatedAge($this->age);
     }
 
@@ -287,8 +320,11 @@ class EditReport extends Component
     {
         return [
             'fullName.regex' => 'The full name may only contain letters and spaces.',
-            'schoolName.regex' => 'The school name may only contain letters and spaces.',
-            
+            'schoolName.required' => 'Please select or enter the Name of School.',
+            'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
+            'location.required' => 'Please enter the Address.',
+            'phoneNumber.digits' => 'The phone number must be exactly 10 digits.',
+            'phoneNumber.regex' => 'Please enter a valid South African phone number starting with 0.',
             'description.required' => 'Additional details are required when "Other" is selected.',
             'description.max' => 'Additional details may not be greater than 500 characters.',
         ];
@@ -296,6 +332,18 @@ class EditReport extends Component
 
     public function updateReport()
     {
+        $this->phoneNumber = preg_replace('/\D/', '', (string) $this->phoneNumber);
+
+        // Recover schoolId from an exact name match if the dropdown was not clicked.
+        if (blank($this->schoolId) && filled($this->schoolName)) {
+            $matchedSchool = $this->findSchoolByName($this->schoolName);
+            if ($matchedSchool) {
+                $this->schoolId = $matchedSchool->school_id;
+                $this->schoolPhase = $this->schoolPhase ?: $matchedSchool->phase_ped;
+                $this->schoolProvince = $this->schoolProvince ?: $matchedSchool->province;
+            }
+        }
+
             // Block submission if age doesn't match school phase
     if (!empty($this->schoolPhase) && $this->age !== null && $this->age !== '') {
         $applicableGrades = $this->getApplicableGradesProperty();
@@ -320,13 +368,64 @@ class EditReport extends Component
             'subtypeID' => 'required|numeric|exists:subtypes,id',
             'otherSubtypeText' => 'nullable',
             'description' => $isOther ? 'required|string|max:500' : 'nullable|string|max:500',
-            'location' => 'required|string|max:100|min:5',
+            'location' => [
+                'required',
+                'string',
+                'max:100',
+                'min:5',
+                'regex:/^\d+\s+[A-Za-z0-9\s\-]+,\s*[A-Za-z\s\-]+$/',
+                function ($attribute, $value, $fail) {
+                    $addressCharacters = '[a-zA-Z0-9\s,.\-()\/]';
+                    if (preg_match('/[a-zA-Z]' . $addressCharacters . '*\d/', trim($value))) {
+                        $fail('The '.$attribute.' format is incorrect. (e.g., 204 Pretorius, not Pretorius 204).');
+                    }
+                },
+            ],
             'grade' => 'required|string|max:255',
             'email' => 'nullable|email:rfc,dns|max:255',
-            'schoolName' => 'required|string|max:255|regex:/^[a-zA-Z\s]+$/u',
+            'phoneNumber' => [
+                'required',
+                'digits:10',
+                'regex:/^\s*0(1[01234578]|2[12378]|3[1234569]|4[0123456789]|5[134678]|6[0-8]|7[1-9]|8[1-467])(\s*\d){7}\s*$/',
+                function ($attribute, $value, $fail) {
+                    if (preg_match('/[a-zA-Z]/', $value)) {
+                        $fail('Invalid phone number format. Only numbers and spaces are allowed.');
+                    }
+                    if (preg_match('/^(\d)\1{9}$/', $value)) {
+                        $fail('The '.$attribute.' cannot contain all the same digits.');
+                    }
+                },
+            ],
+            'schoolName' => [
+                'required',
+                'string',
+                'max:100',
+                'regex:/^.{2,100}$/u',
+                function ($attribute, $value, $fail) {
+                    if (preg_match('/[^a-zA-Z\s.,\-\'&]/', $value)) {
+                        $fail('The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.');
+                    }
+                    if (! $this->findSchoolByName($value)) {
+                        $fail('The school you entered was not found in our database. Please select a school from the list.');
+                    }
+                },
+            ],
             'fullName' => $this->isAnonymous ? 'nullable|string' : 'required|string|max:50|regex:/^[a-zA-Z\s]+$/u',
             'age' => 'nullable|numeric|min:0|max:115',
         ]);
+
+        // Re-resolve province from the database rather than trusting stale component state.
+        $school = $this->findSchoolByName($this->schoolName);
+        $this->schoolProvince = $school?->province;
+
+        if ($this->schoolProvince && ! str_contains(strtolower((string) $this->location), strtolower($this->schoolProvince))) {
+            $this->addError(
+                'location',
+                "The address must be in {$this->schoolProvince} because the selected school is located there."
+            );
+
+            return;
+        }
 
         $wasAppeal = ($this->report->status === 'false-report');
 
@@ -341,6 +440,12 @@ class EditReport extends Component
             'full_name' => $this->isAnonymous ? $this->report->full_name : $this->fullName,
             'age' => $this->age,
         ]);
+
+        if ($school) {
+            $this->report->school_id = $school->school_id;
+            $this->report->province_id = $school->province_id;
+            $this->report->district_id = $school->district_id;
+        }
 
         $newPaths = [];
         foreach ($this->image as $file) {
