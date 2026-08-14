@@ -99,7 +99,7 @@ class AdminReports extends Component
         $this->reportToUpdate  = $report;
         $this->newStatus       = $newStatus;
         $this->adminName       = $user->name;
-        $this->timestamp       = now()->format('Y M d H:i');
+        $this->timestamp       = now()->setTimezone('Africa/Johannesburg')->format('F d, Y H:i');
         $this->showReasonModal = true;
     }
 
