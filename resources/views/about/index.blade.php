@@ -66,10 +66,7 @@
                         Workshops
                     </a>
 
-                 <a href="{{ route('news') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    News
-                </a>
+                 
 
                 <a href="{{ route('contact-us') }}"
                     class="text-black  transition-colors hover:!text-[#c7da30]">
@@ -140,11 +137,7 @@
         Workshops
     </a>
 
-    <a href="{{ route('news') }}"
-       onclick="toggleMobileMenu()"
-       class="block py-3 text-[#38b6ff]">
-        News
-    </a>
+    
 
     <a href="{{ route('contact-us') }}"
        onclick="toggleMobileMenu()"

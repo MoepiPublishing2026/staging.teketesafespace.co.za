@@ -51,10 +51,6 @@
                         Workshops
                     </a>
 
-                 <a href="{{ route('news') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    News
-                </a>
 
                 <a href="{{ route('contact-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
@@ -113,13 +109,7 @@
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     About Us
                 </a>
-                
-<a href="{{ route('news') }}"
-   onclick="toggleMobileMenu()"
-   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
-   style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
-    News
-</a>
+   
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
                     class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
