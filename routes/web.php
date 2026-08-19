@@ -11,8 +11,6 @@ use App\Livewire\PasswordlessLogin;
 use App\Livewire\AdminHome;
 use App\Livewire\CheckStatus;
 use App\Livewire\EditReport;
-use App\Livewire\NewsIndex;
-use App\Livewire\NewsFeed;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NationalAdminDashboardController;
@@ -170,32 +168,9 @@ Route::middleware(['auth', 'role:district'])->group(function () {
 });
 
 // ==========================================
-// PUBLIC NEWSLETTER MANAGEMENT (TOTAL SEPARATE TABLE ADMIN)
-// ==========================================
-Route::prefix('newsletter-manager')->group(function () {
-    Route::get('/login', [App\Http\Controllers\NewsletterController::class, 'showLogin'])->name('newsletter.login');
-    Route::post('/login', [App\Http\Controllers\NewsletterController::class, 'handleLogin'])->name('newsletter.login.submit');
-    Route::post('/logout', [App\Http\Controllers\NewsletterController::class, 'logout'])->name('newsletter.logout');
-    Route::get('/forgot-password', [App\Http\Controllers\NewsletterController::class, 'showForgotPassword'])->name('newsletter.password.request');
-    Route::post('/forgot-password', [App\Http\Controllers\NewsletterController::class, 'resetPassword'])->name('newsletter.password.update');
-
-    Route::middleware(['auth:newsletter'])->name('admin.newsletter.')->group(function () {
-        Route::get('/', [App\Http\Controllers\NewsletterController::class, 'index'])->name('index');
-        Route::get('/create', [App\Http\Controllers\NewsletterController::class, 'create'])->name('create');
-        Route::post('/store', [App\Http\Controllers\NewsletterController::class, 'store'])->name('store');
-        Route::get('/{newsletter}/edit', [App\Http\Controllers\NewsletterController::class, 'edit'])->name('edit');
-        Route::put('/{newsletter}', [App\Http\Controllers\NewsletterController::class, 'update'])->name('update');
-        Route::delete('/{newsletter}', [App\Http\Controllers\NewsletterController::class, 'destroy'])->name('destroy');
-    });
-});
 
 // ABOUT US PAGE
 Route::view('/about-us', 'about.index')->name('about-us');
-// LIVEWIRE NEWS PAGE
-Route::get('/news', NewsIndex::class)->name('news');
-
-
-Route::get('/news-feed', '\App\Livewire\NewsFeed')->name('news.feed');
 
 
 

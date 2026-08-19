@@ -20,9 +20,7 @@
                     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
                         class="transition-colors hover:!text-[#c7da30]"
                         style="color: black; text-decoration: none;">Workshops</a>
-                    <a href="{{ route('news') }}" class="transition-colors hover:!text-[#c7da30]"
-                        style="color: black; text-decoration: none;">News</a>
-                    <a href="{{ route('contact-us') }}" class="transition-colors hover:!text-[#c7da30]"
+                       <a href="{{ route('contact-us') }}" class="transition-colors hover:!text-[#c7da30]"
                         style="color: black; text-decoration: none;">Contact Us</a>
                 </div>
                 <div class="md:hidden">
@@ -85,12 +83,7 @@
                 Workshops
             </a>
 
-            <a href="{{ route('news') }}"
-               onclick="toggleMobileMenu()"
-               class="block py-3 text-[#38b6ff]">
-                News
-            </a>
-
+           
             <a href="{{ route('contact-us') }}"
                onclick="toggleMobileMenu()"
                class="block py-3 text-[#38b6ff]">
