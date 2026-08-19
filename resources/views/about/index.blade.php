@@ -170,7 +170,7 @@
 
         <p class="text-[17px] text-black leading-relaxed mt-9">
             A confidential platform designed to protect and empower learners
-            and employees to speak out—with the option to report anonymously.
+            and employees to speak out, with the option to report anonymously.
             The app is zero-rated, ensuring users can access and submit reports
             without incurring data costs. Your voice matters. Your identity is protected. <br>
             Whether you choose to report with your name or anonymously,
@@ -259,7 +259,7 @@
 
             <div class="text-center w-full">
                 <p class="font-bold text-black text-[18px] mb-2 text-center">3. Empowerment Through Voice</p>
-                <p>Silence often comes from fear. We exist to give learners their voice back — to allow them to speak their truth, raise concerns, and ask for help without shame or judgment. Every voice matters.</p>
+                <p>Silence often comes from fear. We exist to give learners their voice back, to allow them to speak their truth, raise concerns, and ask for help without shame or judgment. Every voice matters.</p>
             </div>
 
             <div class="text-center w-full">
@@ -269,7 +269,7 @@
 
             <div class="text-center w-full">
                 <p class="font-bold text-black text-[18px] mb-2 text-center">5. Technology with Integrity</p>
-                <p>Our platform is digital, encrypted, and POPIA-compliant — but more importantly, it is designed with human dignity at the center. Technology should never replace care, but it can strengthen and extend it.</p>
+                <p>Our platform is digital, encrypted, and POPIA-compliant, but more importantly, it is designed with human dignity at the center. Technology should never replace care, but it can strengthen and extend it.</p>
             </div>
 
         </div>
