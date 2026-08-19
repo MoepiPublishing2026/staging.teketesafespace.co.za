@@ -61,14 +61,7 @@ class ProvincialAdminReportsController extends Controller
             });
         }
 
-       if ($request->filled('full_name')) {
-    $n = trim($request->full_name);
-
-    $query->where(function ($q) use ($n) {
-        $q->where('full_name', 'like', "%{$n}%")
-          ->orWhere('reporter_email', 'like', "%{$n}%");
-    });
-}
+    
         // ── Case number search (backward compatibility) ──────────────────
         if ($request->filled('case_number')) {
             $query->where('case_number', 'LIKE', '%' . $request->input('case_number') . '%');
