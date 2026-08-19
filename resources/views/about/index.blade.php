@@ -264,7 +264,7 @@
 
             <div class="text-center w-full">
                 <p class="font-bold text-black text-[18px] mb-2 text-center">4. Equity & Inclusion</p>
-                <p>Every learner, regardless of gender, background, or circumstance, deserves equal access to support and protection. We pay special attention to the unique vulnerabilities of girls, LGBTQ+ youth, and others who are often left behind.</p>
+                <p>Every learner, regardless of gender, background, or circumstance, deserves equal access to support and protection. We pay special attention to the unique vulnerabilities of girls, LGBTQ+, youth, and others who are often left behind.</p>
             </div>
 
             <div class="text-center w-full">
