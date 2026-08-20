@@ -1,4 +1,5 @@
-<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full">
+<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full max-w-full overflow-x-hidden box-border"
+     style="-webkit-text-size-adjust: 100%; text-size-adjust: 100%;">
     <!-- Header -->
    <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
@@ -84,10 +85,11 @@
 <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
     <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
 
-    <div class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
+    <div id="mobile-menu-slide"
+        class="fixed top-0 right-0 h-full w-64 max-w-[80vw] bg-white shadow-lg">
 
         <div class="flex items-center justify-start px-4 pt-16 pb-4">
-            <button onclick="toggleMobileMenu()"
+            <button type="button" onclick="toggleMobileMenu()"
                 class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
                 <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round"
@@ -99,10 +101,9 @@
         </div>
 
         <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-
-              <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-              <a href="javascript:void(0);"
-       onclick="window.history.back(); toggleMobileMenu();"class="block py-3 text-[#38b6ff]"> Back</a>
+            <a href="javascript:void(0);"
+               onclick="window.history.back(); toggleMobileMenu();"
+               class="block py-3 text-[#38b6ff]">Back</a>
 
             <a href="{{ route('landing-page') }}"
                onclick="toggleMobileMenu()"
@@ -122,36 +123,32 @@
                 Workshops
             </a>
 
-          
             <a href="{{ route('contact-us') }}"
                onclick="toggleMobileMenu()"
                class="block py-3 text-[#38b6ff]">
                 Contact Us
             </a>
-
-
         </nav>
-
     </div>
 </div>
 
     <!-- Main Section -->
-   <div class="min-h-screen bg-white flex flex-col font-[Montserrat]
+   <div class="flex-1 bg-white flex flex-col font-[Montserrat]
             justify-center items-center
-            w-full
-            pt-[90px]
+            w-full max-w-full min-w-0 overflow-x-hidden
+            pt-[88px] pb-6
             sm:pt-[100px]
             md:pt-[110px]
             lg:pt-[120px]">
         <!-- Main Content -->
-        <div class="flex flex-col items-center justify-center text-center px-4">
+        <div class="flex flex-col items-center justify-center text-center w-full max-w-full min-w-0 px-3 sm:px-4">
             <!-- Heading -->
-            <h1 class="text-[24px] sm:text-[24px] font-bold text-black uppercase mb-6 sm:mb-8">
+            <h1 class="text-[20px] sm:text-[24px] font-bold text-black uppercase mb-4 sm:mb-8">
                 Types of Reports
             </h1>
 
             <!-- Reporting Status -->
-            <p class="text-[15px] sm:text-[15px] font-bold text-black mb-6">
+            <p class="text-[13px] sm:text-[15px] font-bold text-black mb-4 sm:mb-6 px-2">
                 @if ($isAnonymous)
                     You are reporting anonymously
                 @else
@@ -161,28 +158,31 @@
 
             <!-- Outer Box -->
             <div
-                class="w-full max-w-[698px] border-2 border-[#c7da30] rounded-xl bg-white p-6 sm:p-10 flex flex-col items-center justify-center">
+                class="w-full max-w-[698px] min-w-0 border-2 border-[#c7da30] rounded-xl bg-white p-3 sm:p-6 md:p-10 flex flex-col items-center justify-center box-border">
                 <!-- Abuse Type Buttons -->
-                <div class="grid grid-cols-2 gap-x-3 sm:gap-x-6 md:gap-x-12 gap-y-4 sm:gap-y-6 w-full justify-items-center">
+                <div class="grid grid-cols-2 gap-x-2 sm:gap-x-6 md:gap-x-12 gap-y-3 sm:gap-y-6 w-full min-w-0 justify-items-stretch sm:justify-items-center">
     @foreach ($abuseTypes as $abuseType)
 
         <button
             wire:click="selectAbuseType({{ $abuseType->id }})"
             class="
                 w-full
-                max-w-[140px]
+                min-w-0
+                max-w-full
                 sm:max-w-[180px]
                 md:max-w-[220px]
                 lg:w-[240px]
 
-                min-h-[52px]
+                min-h-[48px]
                 sm:min-h-[58px]
                 md:min-h-[65px]
 
-                px-2
+                px-1.5
+                py-2
                 sm:px-4
 
-                border-4
+                border-2
+                sm:border-4
                 border-[#c7da30]
                 rounded-full
 
@@ -193,12 +193,13 @@
                 text-center
                 text-[#00AEEF]
 
-                text-[12px]
+                text-[11px]
                 sm:text-[14px]
                 md:text-[16px]
 
-                leading-tight
+                leading-[1.15]
                 break-words
+                [overflow-wrap:anywhere]
 
                 transition
                 duration-200">
@@ -213,42 +214,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer style="width: 100%; background-color: #808080; color: white; padding: 1.5rem 0; margin-top: 4rem;">
-       <div class="flex flex-col md:flex-row justify-between items-center gap-6 px-6 lg:px-8 w-full"
-     style="font-family: 'Montserrat', sans-serif; font-size: 16px;">
-            <div>
-                <p>&copy; {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.</p>
-            </div>
-            <div class="flex items-center justify-center flex-wrap gap-4 min-[520px]:gap-2 lg:gap-[1vw]">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/youtube.png') }}"
-                        class="w-9 min-[520px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0 hover:opacity-80 transition"
-                        alt="YouTube">
-                </a>
-                <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X"
-                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn"
-                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook"
-                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram"
-                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
-                </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok"
-                        class="w-5 h-5 min-[520px]:w-4 min-[520px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[520px]:min-w-0">
-                </a>
-            </div>
-
-    </footer>
+    <x-site-footer />
 </div>
 
 <script>
