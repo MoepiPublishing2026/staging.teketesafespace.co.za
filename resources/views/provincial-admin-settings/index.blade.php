@@ -462,12 +462,24 @@ button.submit-btn {
                 </div>
 
                 <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input id="phone_number" name="phone_number" type="text" value="{{ old('phone', $user->phone_number ?  $user->phone_number : '') }}" placeholder="0821234567">
-                    @error('phone')
-                        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
-                    @enderror
-                </div>
+    <label for="phone_number">Phone Number</label>
+
+    <input
+        id="phone_number"
+        name="phone_number"
+        type="text"
+        value="{{ old('phone_number', $user->phone_number ?? '') }}"
+        placeholder="0821234567"
+        pattern="[0-9]{10}"
+        title="Only 10 numbers are allowed"
+        inputmode="numeric"
+        required
+    >
+
+    @error('phone_number')
+        <p style="color:#dc2626; font-size:13px;">{{ $message }}</p>
+    @enderror
+</div>
 
                 <h3 style="text-align:center; margin-bottom:1.5rem;">Update Password</h3>
 
