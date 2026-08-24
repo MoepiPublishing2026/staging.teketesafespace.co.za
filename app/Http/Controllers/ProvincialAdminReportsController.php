@@ -127,9 +127,15 @@ class ProvincialAdminReportsController extends Controller
         }
 
         // ── Anonymous filter ─────────────────────────────────────────────
-        if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '') {
-            $query->where('is_anonymous', (int) $request->input('is_anonymous'));
-        }
+// Only apply this filter when the user explicitly selects
+// Anonymous (1) or Identified (0).
+$anonymousFilter = $request->input('is_anonymous');
+
+if ($anonymousFilter === '1') {
+    $query->where('is_anonymous', 1);
+} elseif ($anonymousFilter === '0') {
+    $query->where('is_anonymous', 0);
+}
 
         // ── Date range filter ────────────────────────────────────────────
         if ($request->filled('date_from')) {
