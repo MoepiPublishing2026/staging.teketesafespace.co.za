@@ -50,27 +50,23 @@ class SchoolAdminDashboardController extends AdminController
                 // Sort: Creche first, then Grade R, then numeric grades
                 $gradeLower = strtolower(trim($grade));
                 
-                // Creche comes first (handle misspellings: creche, crèche, cretch, crèch, etc.)
                 if (preg_match('/^cr[èe]?ch?e?$/i', $gradeLower) || $gradeLower === 'cretch') {
                     return -2;
                 }
                 
-                // Grade R comes next
                 if ($gradeLower === 'r' || $gradeLower === 'grade r' || $gradeLower === 'pre-primary' || $gradeLower === 'pre-grade') {
                     return -1;
                 }
                 
-                // Handle numeric grades
                 if (is_numeric($grade)) {
                     return (int)$grade;
                 }
                 
-                // Handle "Grade X" format
                 if (preg_match('/^grade\s*(\d+)$/i', $gradeLower, $matches)) {
                     return (int)$matches[1];
                 }
                 
-                return 999; // Non-numeric grades at the end
+                return 999;
             })
             ->values()
             ->toArray();
@@ -92,13 +88,23 @@ class SchoolAdminDashboardController extends AdminController
                 if (is_numeric($minAge) && is_numeric($maxAge)) {
                     $reportsQuery->whereBetween('age', [(int)$minAge, (int)$maxAge]);
                 }
+            } elseif (is_numeric($ageRange)) {
+                $reportsQuery->where('age', (int)$ageRange);
             }
         }
-        // Only apply grade filter if a specific grade is selected (not "Any Grade")
-        // When empty or null, show all grades (no filter applied)
+
+        // Grade Filter (Supports single select or comma-separated string)
         if (!empty($gradeFilter) && trim($gradeFilter) !== '') {
-            $reportsQuery->where('grade', $gradeFilter);
+            if (is_array($gradeFilter)) {
+                $reportsQuery->whereIn('grade', $gradeFilter);
+            } elseif (str_contains($gradeFilter, ',')) {
+                $gradeArray = array_map('trim', explode(',', $gradeFilter));
+                $reportsQuery->whereIn('grade', $gradeArray);
+            } else {
+                $reportsQuery->where('grade', trim($gradeFilter));
+            }
         }
+
         if ($fromDate) {
             $reportsQuery->whereDate('created_at', '>=', $fromDate);
         }
@@ -122,7 +128,7 @@ class SchoolAdminDashboardController extends AdminController
             'false-report',
         ];
 
-        // Count reports per canonical status (legacy DB values map into six buckets + false-report)
+        // Count reports per canonical status
         $statusCounts = array_fill_keys($statusOrder, 0);
         foreach ($reports as $report) {
             $bucket = Report::normalizeStatusForDashboard($report->status);
@@ -138,9 +144,7 @@ class SchoolAdminDashboardController extends AdminController
         });
         $monthlyCounts = array_map(fn($month) => $monthlyGroups->has($month) ? $monthlyGroups[$month]->count() : 0, $months);
 
-        // --- Fix: Build abuse type labels & counts based on the currently displayed reports ---
-        // This ensures charts/tables only show abuse types present in the filtered reports.
-        // However, we still pass $allAbuseTypes to the view for the filter dropdown.
+        // Build abuse type labels & counts based on filtered reports
         $abuseTypeIdsInReports = $reports->pluck('abuse_type_id')->filter()->unique()->values()->toArray();
 
         if (!empty($abuseTypeIdsInReports)) {
@@ -148,7 +152,6 @@ class SchoolAdminDashboardController extends AdminController
                 ->orderBy('type_name')
                 ->get();
         } else {
-            // No reports -> empty collection (avoid showing all types on charts)
             $abuseTypesForDisplay = collect();
         }
 
@@ -164,7 +167,7 @@ class SchoolAdminDashboardController extends AdminController
             'identified' => $reports->where('is_anonymous', 0)->count(),
         ];
 
-        // Top abuse types by report count (for this school) - limit to those with at least 1 report
+        // Top abuse types by report count
         $topAbuseTypes = $reports->filter(fn($report) => optional($report->abuseType)->type_name !== null)
             ->groupBy(fn($report) => $report->abuseType->type_name)
             ->map(fn($group) => $group->count())
@@ -173,13 +176,12 @@ class SchoolAdminDashboardController extends AdminController
             ->take(8)
             ->toArray();
 
-        // Percentages for abuse types (for extras modal table)
+        // Percentages for abuse types
         $totalAbuseReports = array_sum($abuseTypeCounts);
         $abuseTypePercentages = $totalAbuseReports > 0
             ? array_map(fn($c) => round(($c / $totalAbuseReports) * 100, 2), $abuseTypeCounts)
             : array_fill(0, count($abuseTypeCounts), 0);
 
-        // Total count of all abuse types in the system (always 6)
         $totalAbuseTypesCount = $allAbuseTypes->count();
 
         // Active filters for UI chips
@@ -192,7 +194,8 @@ class SchoolAdminDashboardController extends AdminController
             $activeFilters[] = "Age: $ageRange";
         }
         if (!empty($gradeFilter) && trim($gradeFilter) !== '') {
-            $activeFilters[] = "Grade: $gradeFilter";
+            $gradeLabel = is_array($gradeFilter) ? implode(', ', $gradeFilter) : $gradeFilter;
+            $activeFilters[] = "Grade: $gradeLabel";
         }
         if ($fromDate) {
             $activeFilters[] = "From: $fromDate";
@@ -201,7 +204,7 @@ class SchoolAdminDashboardController extends AdminController
             $activeFilters[] = "To: $toDate";
         }
 
-        // Prepare status reports group for modal (keys match headline cards)
+        // Prepare status reports payload
         $statusReportPayload = $reports->groupBy(fn ($report) => Report::normalizeStatusForDashboard($report->status))->map(fn ($collection) =>
             $collection->map(fn ($report) => [
                 'case_number' => $report->case_number,
@@ -211,7 +214,7 @@ class SchoolAdminDashboardController extends AdminController
             ])->values()
         )->toArray();
 
-        // Prepare all reports payload for modal
+        // Prepare all reports payload
         $allReportsPayload = $reports->map(fn($report) => [
             'case_number' => $report->case_number,
             'status' => $report->status,
@@ -219,7 +222,7 @@ class SchoolAdminDashboardController extends AdminController
             'created_at' => optional($report->created_at)->format('Y M d'),
         ])->values()->toArray();
 
-        // Prepare anonymous reports payload for modal
+        // Prepare anonymous reports payload
         $anonymousReportsPayload = $reports->where('is_anonymous', 1)->map(fn($report) => [
             'case_number' => $report->case_number,
             'status' => $report->status,
@@ -227,7 +230,7 @@ class SchoolAdminDashboardController extends AdminController
             'created_at' => optional($report->created_at)->format('Y M d'),
         ])->values()->toArray();
 
-        // Prepare identified reports payload for modal
+        // Prepare identified reports payload
         $identifiedReportsPayload = $reports->where('is_anonymous', 0)->map(fn($report) => [
             'case_number' => $report->case_number,
             'status' => $report->status,
@@ -235,7 +238,7 @@ class SchoolAdminDashboardController extends AdminController
             'created_at' => optional($report->created_at)->format('Y M d'),
         ])->values()->toArray();
 
-        // False reports summary for dashboard card (identify repeat reporters)
+        // False reports summary
         $falseReportsForSchool = $reports->filter(fn ($r) => Report::normalizeStatusForDashboard($r->status) === 'false-report');
         $falseReportTotal = $falseReportsForSchool->count();
         $repeatByEmail = $falseReportsForSchool->filter(fn($r) => !empty(trim($r->reporter_email ?? '')))
@@ -261,17 +264,14 @@ class SchoolAdminDashboardController extends AdminController
             'gradeFilter' => $gradeFilter,
             'fromDate' => $fromDate,
             'toDate' => $toDate,
-            // Keep dropdown options complete
             'abuseTypes' => $allAbuseTypes,
             'grades' => $grades,
             'summaryCounts' => ['total' => $totalReports, 'statuses' => $statusCounts],
             'months' => $months,
             'monthlyCounts' => $monthlyCounts,
-            // Provide labels & counts based on filtered reports
             'abuseTypeLabels' => $abuseTypeLabels,
             'abuseTypeCounts' => $abuseTypeCounts,
             'abuseTypePercentages' => $abuseTypePercentages,
-
             'anonymousCounts' => $anonymousCounts,
             'statusCounts' => $statusCounts,
             'topAbuseTypes' => $topAbuseTypes,
@@ -283,6 +283,9 @@ class SchoolAdminDashboardController extends AdminController
             'identifiedReportsPayload' => $identifiedReportsPayload,
             'falseReportSummary' => $falseReportSummary,
         ]);
+
+        // In your Controller filter method
+        return redirect()->route('school-admin-reports.index', $request->only(['report_type', 'is_anonymous']));
     }
 
     public function falseReports(Request $request)
@@ -300,14 +303,12 @@ class SchoolAdminDashboardController extends AdminController
             abort(404, 'School not found');
         }
 
-        // Get all false reports for this school
         $falseReports = Report::with(['abuseType', 'subtype'])
             ->where('school_name', $schoolName)
             ->whereCanonicalDashboardStatus('false-report')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Analyze patterns: Group by email
         $emailPatterns = [];
         foreach ($falseReports as $report) {
             if (!empty($report->reporter_email)) {
@@ -319,12 +320,10 @@ class SchoolAdminDashboardController extends AdminController
             }
         }
 
-        // Filter emails with multiple false reports
         $suspiciousEmails = array_filter($emailPatterns, function($reports) {
             return count($reports) > 1;
         });
 
-        // Analyze patterns: Group by name
         $namePatterns = [];
         foreach ($falseReports as $report) {
             if (!empty($report->full_name)) {
@@ -336,12 +335,10 @@ class SchoolAdminDashboardController extends AdminController
             }
         }
 
-        // Filter names with multiple false reports
         $suspiciousNames = array_filter($namePatterns, function($reports) {
             return count($reports) > 1;
         });
 
-        // Analyze patterns: Group by phone number
         $phonePatterns = [];
         foreach ($falseReports as $report) {
             if (!empty($report->phone_number)) {
@@ -355,26 +352,15 @@ class SchoolAdminDashboardController extends AdminController
             }
         }
 
-        // Filter phones with multiple false reports
         $suspiciousPhones = array_filter($phonePatterns, function($reports) {
             return count($reports) > 1;
         });
 
-        // Sort by count (descending)
-        uasort($suspiciousEmails, function($a, $b) {
-            return count($b) - count($a);
-        });
+        uasort($suspiciousEmails, fn($a, $b) => count($b) - count($a));
+        uasort($suspiciousNames, fn($a, $b) => count($b) - count($a));
+        uasort($suspiciousPhones, fn($a, $b) => count($b) - count($a));
 
-        uasort($suspiciousNames, function($a, $b) {
-            return count($b) - count($a);
-        });
-
-        uasort($suspiciousPhones, function($a, $b) {
-            return count($b) - count($a);
-        });
-
-        // Get action filter
-        $actionFilter = $request->input('action', 'all'); // all, email, name, phone
+        $actionFilter = $request->input('action', 'all');
 
         return view('school-admin-dashboard.false-reports', [
             'school' => $school,
@@ -407,12 +393,10 @@ class SchoolAdminDashboardController extends AdminController
 
         $report = Report::findOrFail($reportId);
 
-        // Security check: ensure report belongs to admin's school
         if (! $user->canAccessSchoolReport($report)) {
             abort(403, 'Unauthorized');
         }
 
-        // Update status to false-report
         $report->status = 'false-report';
         $report->latest_status_reason = $request->input('reason', 'Flagged as false report by admin');
         $report->save();
