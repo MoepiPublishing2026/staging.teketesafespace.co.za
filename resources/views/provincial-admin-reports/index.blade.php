@@ -574,22 +574,25 @@ body.pa-app .table-wrap {
     width: 100%;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
     border: 0;
     border-radius: 0;
     background: #e5e5e5;
+    -webkit-overflow-scrolling: touch;
 }
 
 body.pa-app .table-wrap table {
     display: table;
-    width: 100% !important;
-    min-width: 780px;
+    width: max-content !important;
+    min-width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: auto !important;
     background: #e5e5e5;
     color: #545454;
     font-size: 13px !important;
 }
 
+/* Table Header */
 body.pa-app .table-wrap thead {
     background: #c4df20;
     color: #fff;
@@ -600,39 +603,87 @@ body.pa-app .table-wrap thead {
 
 body.pa-app .table-wrap th {
     height: 40px;
-    padding: 0 0.5rem;
+    padding: 0 12px;
     border-right: 1px solid rgba(255,255,255,.9);
     border-bottom: 0;
     color: #fff;
     font-size: 11px !important;
     font-weight: 700 !important;
     text-align: center;
+
+    /* Do not cut header text */
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
 }
 
+/* Table Cells */
 body.pa-app .table-wrap td {
     height: 40px;
-    padding: 0 0.5rem;
-    overflow: hidden;
+    padding: 0 12px;
     border-right: 1px solid rgba(255,255,255,.9);
     border-bottom: 1px solid #fff;
     color: #545454;
     font-size: 13px !important;
     font-weight: 400 !important;
     text-align: center;
-    text-overflow: ellipsis;
+
+    /* Show complete information */
     white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
 }
 
-body.pa-app .table-wrap th:nth-child(1) { width: 10%; }
-body.pa-app .table-wrap th:nth-child(2) { width: 12%; }
-body.pa-app .table-wrap th:nth-child(3) { width: 9%; }
-body.pa-app .table-wrap th:nth-child(4) { width: 9%; }
-body.pa-app .table-wrap th:nth-child(5) { width: 13%; }
-body.pa-app .table-wrap th:nth-child(6) { width: 8%; }
-body.pa-app .table-wrap th:nth-child(7) { width: 11%; }
-body.pa-app .table-wrap th:nth-child(8) { width: 13%; }
-body.pa-app .table-wrap th:nth-child(9) { width: 8%; }
-body.pa-app .table-wrap th:nth-child(10) { width: 7%; }
+/* Give each column enough space */
+body.pa-app .table-wrap th:nth-child(1),
+body.pa-app .table-wrap td:nth-child(1) {
+    min-width: 130px;
+}
+
+body.pa-app .table-wrap th:nth-child(2),
+body.pa-app .table-wrap td:nth-child(2) {
+    min-width: 150px;
+}
+
+body.pa-app .table-wrap th:nth-child(3),
+body.pa-app .table-wrap td:nth-child(3) {
+    min-width: 110px;
+}
+
+body.pa-app .table-wrap th:nth-child(4),
+body.pa-app .table-wrap td:nth-child(4) {
+    min-width: 130px;
+}
+
+body.pa-app .table-wrap th:nth-child(5),
+body.pa-app .table-wrap td:nth-child(5) {
+    min-width: 180px;
+}
+
+body.pa-app .table-wrap th:nth-child(6),
+body.pa-app .table-wrap td:nth-child(6) {
+    min-width: 100px;
+}
+
+body.pa-app .table-wrap th:nth-child(7),
+body.pa-app .table-wrap td:nth-child(7) {
+    min-width: 150px;
+}
+
+body.pa-app .table-wrap th:nth-child(8),
+body.pa-app .table-wrap td:nth-child(8) {
+    min-width: 180px;
+}
+
+body.pa-app .table-wrap th:nth-child(9),
+body.pa-app .table-wrap td:nth-child(9) {
+    min-width: 110px;
+}
+
+body.pa-app .table-wrap th:nth-child(10),
+body.pa-app .table-wrap td:nth-child(10) {
+    min-width: 130px;
+}
 
 body.pa-app .table-wrap td:first-child {
     font-weight: 700;
