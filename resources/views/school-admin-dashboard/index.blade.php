@@ -387,6 +387,8 @@ form.filters {
 
 form.filters select,
 form.filters input[type="date"],
+form.filters input[type="number"],
+form.filters input[type="text"],
 form.filters button {
     padding: 0.65rem 0.85rem;
     border-radius: 0.75rem;
@@ -708,48 +710,25 @@ canvas {
                 </option>
             @endforeach
         </select>
+        <div>
+            <label class="filter-label">Age</label>
+            <input type="number" class="filter-input" name="age_range"
+                id="ageInput"
+                placeholder="e.g. 14"
+                min="5" max="18"
+                value="{{ request('age') }}"
+                oninput="syncGradeFromAge(this.value)">
+        </div>
 
-        <select name="age_range" onchange="this.form.submit()">
-            <option value="">Any Age</option>
-            @foreach (['0-10','11-15','16-20','21-22'] as $range)
-                <option value="{{ $range }}" {{ $ageRange == $range ? 'selected' : '' }}>
-                    {{ $range }}
-                </option>
-            @endforeach
-        </select>
-        <select name="grade" onchange="this.form.submit()">
-            <option value="" {{ empty($gradeFilter) ? 'selected' : '' }}>Any Grade</option>
-            @foreach ($grades as $grade)
-                @php
-                    $gradeLower = strtolower(trim($grade));
-                    $displayGrade = $grade;
-                    
-                    // Fix spelling: Cretch -> Creche
-                    if (preg_match('/^cr[èe]?t?ch?e?$/i', $gradeLower) || $gradeLower === 'cretch') {
-                        $displayGrade = 'Creche';
-                    }
-                    // Format Grade R
-                    elseif ($gradeLower === 'r' || $gradeLower === 'grade r') {
-                        $displayGrade = 'Grade R';
-                    }
-                    // Format numeric grades
-                    elseif (is_numeric($grade)) {
-                        $displayGrade = 'Grade ' . $grade;
-                    }
-                    // Format "Grade X" format (ensure proper capitalization)
-                    elseif (preg_match('/^grade\s*(\d+)$/i', $gradeLower, $matches)) {
-                        $displayGrade = 'Grade ' . $matches[1];
-                    }
-                    // Capitalize first letter for other grades
-                    else {
-                        $displayGrade = ucfirst($grade);
-                    }
-                @endphp
-                <option value="{{ $grade }}" {{ !empty($gradeFilter) && $gradeFilter == $grade ? 'selected' : '' }}>
-                    {{ $displayGrade }}
-                </option>
-            @endforeach
-        </select>
+        <div>
+            <label class="filter-label">Grade</label>
+            <input type="hidden" id="gradeHidden" value="{{ request('grade') }}">
+            <input type="text" name="grade" class="filter-input" id="gradeDisplay"
+                placeholder="Auto-filled from age"
+                readonly
+                style="background:#f3f4f6; cursor:not-allowed; opacity:0.7;"
+                value="{{ request('grade') }}">
+        </div>
         <label>
             From
             <input type="date" name="date_from" value="{{ $fromDate }}" onchange="this.form.submit()">
@@ -760,6 +739,29 @@ canvas {
         </label>
         <button type="button" id="refreshBtn">Refresh Table</button>
     </form>
+
+    <script>
+        const ageToGrade = {
+            5: 'Grade R',  6: 'Grade 1',  7: 'Grade 2',  8: 'Grade 3',
+            9: 'Grade 4',  10: 'Grade 5', 11: 'Grade 6', 12: 'Grade 7',
+            13: 'Grade 8', 14: 'Grade 9', 15: 'Grade 10', 16: 'Grade 11',
+            17: 'Grade 12', 18: 'Grade 12'
+        };
+
+        function syncGradeFromAge(age) {
+            const grade   = ageToGrade[parseInt(age)] ?? '';
+            document.getElementById('gradeDisplay').value = grade;
+            document.getElementById('gradeHidden').value  = grade;
+        }
+
+        // Run on page load to sync if age is already in URL
+        (function() {
+            const ageInput = document.getElementById('ageInput');
+            if (ageInput && ageInput.value) syncGradeFromAge(ageInput.value);
+        })();
+
+    </script>
+
     @if(!empty($activeFilters))
         <div class="filter-chips" aria-label="Active filters">
             @foreach ($activeFilters as $chip)
@@ -963,20 +965,25 @@ canvas {
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script>
+
         Chart.register(ChartDataLabels);
 
-        document.getElementById('refreshBtn').addEventListener('click', function () {
+document.getElementById('refreshBtn').addEventListener('click', function () {
     const form = document.getElementById('filtersForm');
-    // Clear all selects except hidden inputs
+    if (!form) return;
+
+    // Reset all select dropdowns to default option
     form.querySelectorAll('select').forEach(select => {
         select.selectedIndex = 0;
-        select.disabled = false;  // enable in case disabledrenderOverviewCharts
+        select.disabled = false;
     });
-    // Clear all date inputs
-    form.querySelectorAll('input[type="date"]').forEach(input => {
+
+    // Clear date, number, and text inputs
+    form.querySelectorAll('input[type="date"], input[type="number"], input[type="text"]').forEach(input => {
         input.value = '';
     });
-    // Submit the form after clearing
+
+    // Submit the form to reload clean data
     form.submit();
 });
 
@@ -1452,8 +1459,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const firstCard = document.querySelector('.metric-card.status-total');
     if (firstCard) firstCard.classList.add('active');
-});
 
+    // Automatically submit form when filters change
+    const filtersForm = document.getElementById('filtersForm');
+    if (filtersForm) {
+        let debounceTimer;
+
+        // 1. Instant submit for Select dropdowns and Date pickers
+        filtersForm.querySelectorAll('select, input[type="date"]').forEach(input => {
+            input.addEventListener('change', function () {
+                filtersForm.submit();
+            });
+        });
+
+        // 2. Debounced submit for Age, Text, and Number inputs
+        filtersForm.querySelectorAll('input[type="number"], input[type="text"]').forEach(input => {
+            input.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                // Waits 600ms after user stops typing before submitting
+                debounceTimer = setTimeout(() => {
+                    filtersForm.submit();
+                }, 600);
+            });
+        });
+    }
+});
    
    // Navigate preserving all active filters and adding/updating 'status' filter
 function navigateWithFilter(status) {
