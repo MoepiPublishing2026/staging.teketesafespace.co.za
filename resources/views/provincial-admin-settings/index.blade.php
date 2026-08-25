@@ -309,17 +309,24 @@
         .profile-placeholder svg { width: 64px; height: 64px; color: #6b7280; }
 
         .file-label {
-            cursor: pointer;
-            display: inline-block;
-            background:#c7da30;
-            color: #000;
-            font-size: 15px;
-            font-weight: 700;
-            border-radius: 9999px;
-            padding: 0.5rem 1.5rem;
-            user-select: none;
-            margin-top: 0.5rem;
-        }
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #c7da30;
+    color: #000;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 9999px;
+    padding: 0.5rem 1.5rem;
+    min-width: 130px;
+    height: 42px;
+    user-select: none;
+    margin-top: 0.5rem;
+    text-align: center;
+    line-height: 1;
+}
 
 button.submit-btn {
     border: 4px solid #c7da30;
@@ -421,10 +428,16 @@ button.submit-btn {
                         </div>
                         <div style="display:flex; flex-direction:column;">
                             <p style="margin-bottom:0.75rem; font-size:15px; font-weight:700; color:#545454;">Update Profile Picture</p>
-                            <label class="file-label">
-                                 Choose File
-                                        <input type="file" name="profile_picture" id="profile-picture-input" accept="image/*" style="display:none;">
-                                    </label>
+                           <label for="profile-picture-input" class="file-label">
+    Choose File
+    <input 
+        type="file" 
+        name="profile_picture" 
+        id="profile-picture-input" 
+        accept="image/*" 
+        style="display:none;"
+    >
+</label>
                                     
                                     @if($user->profile_picture)
                                         <button type="button" onclick="deleteProfilePicture()" class="delete-btn">
