@@ -1486,24 +1486,33 @@ document.addEventListener('DOMContentLoaded', function () {
 });
    
    // Navigate preserving all active filters and adding/updating 'status' filter
-function navigateWithFilter(status) {
-    const url = new URL("{{ url('/admin/reports') }}", window.location.origin);
-    const params = new URLSearchParams(window.location.search);
+function navigateWithFilter(extraParams = {}) {
+    const params = new URLSearchParams();
 
-    // Preserve all current filters except 'status'
-    params.forEach((value, key) => {
-        if (key !== 'status') {
-            url.searchParams.append(key, value);
+    // 1. Capture selected filters from the active form on the dashboard
+    const filterForm = document.getElementById('filtersForm');
+    if (filterForm) {
+        const formData = new FormData(filterForm);
+        for (const [key, value] of formData.entries()) {
+            if (value !== null && value !== '' && value !== undefined) {
+                params.append(key, value);
+            }
+        }
+    } else {
+        // Fallback: Read active filters directly from URL if form isn't present
+        const currentUrlParams = new URLSearchParams(window.location.search);
+        currentUrlParams.forEach((val, key) => params.append(key, val));
+    }
+
+    // 2. Attach or override extra params (e.g. is_anonymous: 1 or 0)
+    Object.keys(extraParams).forEach(key => {
+        if (extraParams[key] !== null && extraParams[key] !== undefined) {
+            params.set(key, extraParams[key]);
         }
     });
 
-    if (status && status !== 'total') {
-        url.searchParams.set('status', status);
-    } else {
-        url.searchParams.delete('status');
-    }
-
-    window.location.href = url.toString();
+    // 3. Redirect to the reports index route with combined parameters
+    window.location.href = `/admin/reports?${params.toString()}`;
 }
 
 // Navigate preserving all active filters and adding/updating 'is_anonymous' filter
@@ -1582,12 +1591,12 @@ function openExtrasModal(type) {
         titleEl.textContent = 'Anonymous Reports';
         const count = (data.anonymousCounts || {}).anonymous || 0;
         bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports submitted anonymously: <strong>' + count.toLocaleString() + '</strong></p>' +
-            '<button type="button" onclick="navigateWithFilterByAnonymous(1); closeExtrasModal();" class="extras-modal-btn">View Anonymous Reports</button>';
+            '<button type="button" onclick="navigateWithFilter({ is_anonymous: 1 }); closeExtrasModal();" class="extras-modal-btn">View Anonymous Reports</button>';
     } else if (type === 'identified') {
         titleEl.textContent = 'Identified Reports';
         const count = (data.anonymousCounts || {}).identified || 0;
         bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports where the reporter was identified: <strong>' + count.toLocaleString() + '</strong></p>' +
-            '<button type="button" onclick="navigateWithFilterByAnonymous(0); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
+            '<button type="button" onclick="navigateWithFilter({ is_anonymous: 0 }); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
     } else if (type === 'abuse-types') {
         titleEl.textContent = 'Types Of Report Tracked';
         const labels = data.abuseLabels || [];
