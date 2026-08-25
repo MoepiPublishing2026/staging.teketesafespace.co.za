@@ -116,19 +116,19 @@
                 Report a Case
             </h1>
 
-            @if ($isAnonymous)
-                <p class="text-center text-[15px] font-[700] text-black mb-1">
-                    You are reporting anonymously
-                </p>
-            @else
-                <p class="text-center text-[15px] font-[700] text-black mb-1">
-                    You are reporting with your details
-                </p>
-            @endif
+           @if ($isAnonymous)
+    <p class="hidden sm:block text-center text-[15px] font-[700] text-black mb-1">
+        You are reporting anonymously
+    </p>
+@else
+    <p class="hidden sm:block text-center text-[15px] font-[700] text-black mb-1">
+        You are reporting with your details
+    </p>
+@endif
 
-            <p class="text-center text-[15px] text-black mb-6 sm:mb-8">
-                Report Type: {{ $selectedAbuseTypeName }}
-            </p>
+           <p class="text-center text-[15px] font-bold sm:font-normal text-black mb-6 sm:mb-8">
+    Report Type: {{ $selectedAbuseTypeName }}
+</p>
 
             @if (session('success_message'))
                 <div x-data="{ open: true }" x-show="open"
