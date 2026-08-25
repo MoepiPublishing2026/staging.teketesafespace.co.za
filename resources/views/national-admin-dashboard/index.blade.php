@@ -1480,19 +1480,9 @@ window.agePyramidData = {
 
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script>
-function exportPDF() {
-  const element = document.getElementById('main-content');
-  if (!element) { alert("Main content not found!"); return; }
-  html2pdf().from(element).set({
-    margin: 10,
-    filename: 'National-admin-dashboard.pdf',
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-  }).save();
-}
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ asset('js/national-admin-pdf-export.js') }}?v=4"></script>
 
 <x-national-admin-sidebar-script />
 
