@@ -2014,18 +2014,27 @@ function navigateWithFilterByAnonymous(isAnonymous) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
     function exportPDF() {
-        const element = document.getElementById('main-content');
-        if (!element) {
-            alert("Main content not found!");
-            return;
-        }
-        html2pdf().from(element).set({
-            margin: 10,
-            filename: 'provincial-admin-dashboard.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-        }).save();
-    }
+    const el = document.getElementById('main-content');
+    const originalHeight = el.style.height;
+    const originalOverflow = el.style.overflow;
+    
+    el.style.height = 'auto';
+    el.style.overflow = 'visible';
+    document.querySelector('.dashboard-scroll').style.height = 'auto';
+    document.querySelector('.dashboard-scroll').style.overflow = 'visible';
+
+    html2pdf().from(el).set({
+        margin: 5,
+        filename: 'provincial-admin-dashboard.pdf',
+        html2canvas: { scale: 2, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).save().then(() => {
+        el.style.height = originalHeight;
+        el.style.overflow = originalOverflow;
+        document.querySelector('.dashboard-scroll').style.height = '';
+        document.querySelector('.dashboard-scroll').style.overflow = '';
+    });
+}
 </script>
 
 </body>
