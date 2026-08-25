@@ -57,8 +57,13 @@ class ProvincialAdminReportsController extends Controller
 
                 ->orWhereHas('subtype', function ($subtype) use ($s) {
                     $subtype->where('sub_type_name', 'like', "%{$s}%");
+                })
+                ->orWhere(function ($nameQ) use ($s) {
+                    $nameQ->where('is_anonymous', 0)
+                        ->where('full_name', 'like', "%{$s}%");
                 });
             });
+
         }
 
     
@@ -92,13 +97,17 @@ class ProvincialAdminReportsController extends Controller
                 }
             }
         }
-
+      
         // ── Grade filter ─────────────────────────────────────────────────
         if ($request->filled('grade')) {
             $query->where('grade', $request->input('grade'));
         }
-
-        // ── School filter ────────────────────────────────────────────────
+                // ── Full name filter (identified reports only) ─────────────────
+        if ($fn = trim($request->input('full_name', ''))) {
+            $query->where('is_anonymous', 0)
+                ->where('full_name', 'like', "%{$fn}%");
+        }
+                // ── School filter ────────────────────────────────────────────────
         if ($request->filled('school_id')) {
             $query->where('school_id', $request->input('school_id'));
         } elseif ($sc = trim($request->input('school_name', ''))) {
@@ -126,67 +135,72 @@ class ProvincialAdminReportsController extends Controller
             }
         }
 
+
+
+    
+
+
         // ── Anonymous filter ─────────────────────────────────────────────
-// Only apply this filter when the user explicitly selects
-// Anonymous (1) or Identified (0).
-$anonymousFilter = $request->input('is_anonymous');
+        // Only apply this filter when the user explicitly selects
+        // Anonymous (1) or Identified (0).
+        $anonymousFilter = $request->input('is_anonymous');
 
-if ($anonymousFilter === '1') {
-    $query->where('is_anonymous', 1);
-} elseif ($anonymousFilter === '0') {
-    $query->where('is_anonymous', 0);
-}
-
-        // ── Date range filter ────────────────────────────────────────────
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->input('date_from'));
-        } elseif ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->input('from_date'));
+        if ($anonymousFilter === '1') {
+            $query->where('is_anonymous', 1);
+        } elseif ($anonymousFilter === '0') {
+            $query->where('is_anonymous', 0);
         }
 
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->input('date_to'));
-        } elseif ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->input('to_date'));
-        }
+                // ── Date range filter ────────────────────────────────────────────
+                if ($request->filled('date_from')) {
+                    $query->whereDate('created_at', '>=', $request->input('date_from'));
+                } elseif ($request->filled('from_date')) {
+                    $query->whereDate('created_at', '>=', $request->input('from_date'));
+                }
 
-        // ── Paginate ─────────────────────────────────────────────────────
-        $reports = $query->latest()->paginate(12)->withQueryString();
+                if ($request->filled('date_to')) {
+                    $query->whereDate('created_at', '<=', $request->input('date_to'));
+                } elseif ($request->filled('to_date')) {
+                    $query->whereDate('created_at', '<=', $request->input('to_date'));
+                }
 
-        // ── Dropdown options ─────────────────────────────────────────────
-        $typeOptions = AbuseType::orderBy('type_name')->get();
-        $subtypeOptions = Subtype::orderBy('abuse_type_id')->orderBy('sub_type_name')->get();
+                // ── Paginate ─────────────────────────────────────────────────────
+                $reports = $query->latest()->paginate(12)->withQueryString();
 
-        $gradeOptions = Report::where('province_id', $province_id)
-            ->whereNotNull('grade')
-            ->where('grade', '!=', '')
-            ->distinct()
-            ->pluck('grade')
-            ->sort(function ($a, $b) {
-                $order = [
-                    'Creche'   => 0, 'Grade R'  => 1, 'Grade 1'  => 2,
-                    'Grade 2'  => 3, 'Grade 3'  => 4, 'Grade 4'  => 5,
-                    'Grade 5'  => 6, 'Grade 6'  => 7, 'Grade 7'  => 8,
-                    'Grade 8'  => 9, 'Grade 9'  => 10, 'Grade 10' => 11,
-                    'Grade 11' => 12, 'Grade 12' => 13,
-                ];
-                $posA = $order[$a] ?? 99;
-                $posB = $order[$b] ?? 99;
-                return $posA <=> $posB;
-            })
-            ->values()
-            ->toArray();
+                // ── Dropdown options ─────────────────────────────────────────────
+                $typeOptions = AbuseType::orderBy('type_name')->get();
+                $subtypeOptions = Subtype::orderBy('abuse_type_id')->orderBy('sub_type_name')->get();
 
-        $schoolName = request('school_id')
-            ? School::find(request('school_id'))?->school_name ?? ''
-            : request('school_name', '');
+                $gradeOptions = Report::where('province_id', $province_id)
+                    ->whereNotNull('grade')
+                    ->where('grade', '!=', '')
+                    ->distinct()
+                    ->pluck('grade')
+                    ->sort(function ($a, $b) {
+                        $order = [
+                            'Creche'   => 0, 'Grade R'  => 1, 'Grade 1'  => 2,
+                            'Grade 2'  => 3, 'Grade 3'  => 4, 'Grade 4'  => 5,
+                            'Grade 5'  => 6, 'Grade 6'  => 7, 'Grade 7'  => 8,
+                            'Grade 8'  => 9, 'Grade 9'  => 10, 'Grade 10' => 11,
+                            'Grade 11' => 12, 'Grade 12' => 13,
+                        ];
+                        $posA = $order[$a] ?? 99;
+                        $posB = $order[$b] ?? 99;
+                        return $posA <=> $posB;
+                    })
+                    ->values()
+                    ->toArray();
 
-        $schoolOptions = School::orderBy('school_name')->get();
+                $schoolName = request('school_id')
+                    ? School::find(request('school_id'))?->school_name ?? ''
+                    : request('school_name', '');
 
-        return view('provincial-admin-reports.index', compact(
-            'reports', 'province', 'typeOptions', 'subtypeOptions', 
-            'gradeOptions', 'schoolOptions', 'schoolName'
-        ));
+                $schoolOptions = School::orderBy('school_name')->get();
+
+                return view('provincial-admin-reports.index', compact(
+                    'reports', 'province', 'typeOptions', 'subtypeOptions', 
+                    'gradeOptions', 'schoolOptions', 'schoolName'
+                ));
     }
 
     public function show($id, Request $request)
