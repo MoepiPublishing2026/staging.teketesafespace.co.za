@@ -68,14 +68,15 @@ return [
    'rules' => [
     'file',
     'max:102400',
-    'mimetypes:video/mp4,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/ogg,image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword'
+    'mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/webm,video/3gpp,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/x-wav,audio/ogg,audio/m4a,audio/x-m4a,image/jpeg,image/png,image/gif,image/webp,image/bmp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-word.document.macroEnabled.12,application/vnd.openxmlformats-officedocument.wordprocessingml.template,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/zip,application/x-zip-compressed,text/plain'
 ],
 
     'directory' => 'livewire-tmp',
     'middleware' => 'throttle:5,1',  // 5 uploads/minute
     'preview_mimes' => [
         'png', 'gif', 'bmp', 'svg', 'jpg', 'jpeg', 'pdf',
-        'mp4', 'mov', 'avi', 'wmv', 'mp3', 'm4a', 'ogg', 'wav', 'webm'
+        'mp4', 'mov', 'avi', 'wmv', 'mp3', 'm4a', 'ogg', 'wav', 'webm',
+        'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'
     ],
     'max_upload_time' => 5,  // 5 minutes per file
 ],
