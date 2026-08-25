@@ -67,13 +67,30 @@ body.na-app .menu-icon:focus-visible {
   body.na-app .national-admin-sidebar .sidebar-logo {
     display: none;
     position: sticky;
-    top: 0;
-    left: auto;
     width: 100%;
-    padding: 12px 12px 0;
+    height: 46px;
+    margin-top: max(10px, calc(var(--na-safe-top) + 6px));
+    padding: 0 12px 0 64px;
     background: transparent;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: flex-start;
   }
+  @media (max-width: 600px) {
+   body.na-app .menu-icon {
+     width: 44px;
+     height: 44px;
+     font-size: 20px;
+   }
+ 
+  body.na-app .national-admin-sidebar .sidebar-logo {
+    height: 44px;
+  }
+
+   body.na-app .national-admin-sidebar .sidebar-logo img {
+     width: 85px;
+     height: auto;
+   }
+
 
   body.na-app .national-admin-sidebar.open .sidebar-logo {
     display: flex;
