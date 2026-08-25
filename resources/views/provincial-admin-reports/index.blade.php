@@ -1068,15 +1068,19 @@ body.pa-app .page-link[aria-current="page"] {
 <script>
 // ── PDF Export ───────────────────────────────────────────────────
 function exportPDF() {
-    const element = document.getElementById('main-content');
-    if (!element) { alert("Main content not found!"); return; }
-    html2pdf().from(element).set({
-        margin: 10,
-        filename: 'provincial-admin-reports.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-    }).save();
-}
+        const element = document.getElementById('main-content');
+        if (!element) {
+            alert("Main content not found! Add id='main-content' to your <main> tag.");
+            return;
+        }
+
+        html2pdf().from(element).set({
+            margin: 10,
+            filename: 'provincial-admin-reports.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+        }).save();
+    }
 
 // ── Report detail modal ──────────────────────────────────────────
 function openReportModal(reportId) {

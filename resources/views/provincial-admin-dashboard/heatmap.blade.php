@@ -1204,15 +1204,19 @@
 
 <script>
 function exportPDF() {
-    const el = document.getElementById('main-content');
-    if (!el) return;
-    html2pdf().from(el).set({
-        margin: 10,
-        filename: 'heatmap-{{ Str::slug($province->province_name ?? "province") }}.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-    }).save();
-}
+        const element = document.getElementById('main-content');
+        if (!element) {
+            alert("Main content not found! Add id='main-content' to your <main> tag.");
+            return;
+        }
+
+        html2pdf().from(element).set({
+            margin: 10,
+            filename: 'provincial-admin-heatmap.pdf',
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+        }).save();
+    }
 </script>
 
 <x-provincial-admin-sidebar-script />
