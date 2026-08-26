@@ -410,27 +410,19 @@ us
     <div class="main-panel">
         <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sa-sidebar" type="button">&#9776;</button>
         <div class="topbar">
-            <div class="profile">
-                <div class="meta">
-                    <span>
-                        {{ auth()->user()->name ?? 'Administrator' }}
-                    </span>
-                    <span class="role">
-                        Administrator
-                    </span>
-                </div>
-                <div class="profile-avatar">
-                    @php
-                        $currentUser = auth()->user()->fresh();
-                    @endphp
-                    @if($currentUser && $currentUser->profile_picture)
-                        <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
-                    @else
-                        <span class="profile-avatar-initial">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}</span>
-                    @endif
-                </div>
+        <div class="profile">
+            <div class="meta">
+                <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                <span class="role">Administrator</span>
+            </div>
+            <div class="profile-avatar">
+                @php $currentUser = auth()->user()->fresh(); @endphp
+                @if($currentUser && $currentUser->profile_picture)
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                @endif
             </div>
         </div>
+    </div>
 
         <div class="dashboard-scroll">
             <h1>False Reports Analysis - {{ $school->school_name }}</h1>
