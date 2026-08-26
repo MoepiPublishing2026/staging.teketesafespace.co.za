@@ -664,27 +664,19 @@ canvas {
         <button class="menu-icon" id="sidebarToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sa-sidebar" type="button">&#9776;</button>
         <!-- Top bar with profile only (sticky) -->
         <div class="topbar">
-            <div class="profile">
-                <div class="meta">
-                    <span>
-                        {{ auth()->user()->name ?? 'Administrator' }}
-                    </span>
-                    <span class="role">
-                        Administrator
-                    </span>
-                </div>
-                <div class="profile-avatar">
-                    @php
-                        $currentUser = auth()->user()->fresh();
-                    @endphp
-                    @if($currentUser && $currentUser->profile_picture)
-                       <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
-                    @else
-                        <!-- Default gray circle, nothing inside -->
-                    @endif
-                </div>
+        <div class="profile">
+            <div class="meta">
+                <span>{{ auth()->user()->name ?? 'Administrator' }}</span>
+                <span class="role">Administrator</span>
+            </div>
+            <div class="profile-avatar">
+                @php $currentUser = auth()->user()->fresh(); @endphp
+                @if($currentUser && $currentUser->profile_picture)
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                @endif
             </div>
         </div>
+    </div>
 
 
         
