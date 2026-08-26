@@ -12,10 +12,10 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CaseNumberNotification;
-use App\Mail\IncidentReported;
+use App\Mail\IncidentReported; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rule; 
 use Carbon\Carbon;
 
 class ReportForm extends Component
@@ -32,8 +32,8 @@ class ReportForm extends Component
     public $newUploads = [];
 
 
-    public $standardSubtypes;
-    public $otherSubtype;
+    public $standardSubtypes; 
+    public $otherSubtype; 
     public $selectedAbuseTypeName;
 
     public $fullName;
@@ -45,14 +45,13 @@ class ReportForm extends Component
     public $schoolId;
     public $schoolPhase;
 
-    public $schoolSearch = '';
+    public $schoolSearch = ''; 
     public $schoolSuggestions = [];
-    public $showSchoolDropdown = false;
-    public $schoolSelected = false; // 🔑 Add this flag
-    public $justSelected = false; // 🔑 Add this flag
+    public $showSchoolDropdown = false;  
+  
     public $latestReport;
-
-
+    
+     
    // Updated Age ranges for grades - 5 grades per age range
 protected array $gradeAgeRanges = [
     'Creche' => [0, 5],
@@ -168,76 +167,17 @@ protected array $phaseGrades = [
     /**
      * Resolve school phase when school name is updated
      */
- /**
-     * Triggered automatically as the user types.
-     * Resets selection so manual typing is invalid.
-     */
-   /**
-     * Triggered automatically as the user types.
-     * Resets selection so manual typing is invalid, unless it matches the selected school.
-     */
- public function updatedSchoolSearch($value)
+   public function updatedSchoolName($value)
 {
-    // 🔑 If we just selected via click, ignore this incoming property sync entirely
-    if ($this->justSelected) {
-        return;
-    }
-
-    $trimmedValue = trim($value);
-    $this->schoolName = $trimmedValue;
-
-    // If they typed something that matches a school exact, select it
-    if (!empty($trimmedValue)) {
-        $matchingSchool = School::whereRaw('LOWER(school_name) = LOWER(?)', [$trimmedValue])->first();
-
-        if ($matchingSchool) {
-            $this->schoolSelected = true;
-            $this->schoolName = $matchingSchool->school_name;
-            $this->schoolSearch = $matchingSchool->school_name;
-            $this->schoolPhase = $matchingSchool->phase_ped;
-            $this->schoolSuggestions = [];
-            $this->showSchoolDropdown = false;
-            $this->updatedAge($this->age);
-            return;
+    if (!empty($value)) {
+        $school = \App\Models\School::where('school_name', $value)->first();
+        if ($school) {
+            $this->schoolPhase = $school->phase_ped;
+        } else {
+            $this->schoolPhase = null; // reset if school not found
         }
-    }
-
-    // Otherwise, they are typing manually -> invalidate selection
-    $this->schoolSelected = false;
-    $this->schoolPhase = null;
-
-    if (strlen($trimmedValue) >= 2) {
-        $this->schoolSuggestions = School::where('school_name', 'LIKE', '%' . $trimmedValue . '%')
-            ->limit(10)
-            ->get();
-        $this->showSchoolDropdown = true;
-    } else {
-        $this->schoolSuggestions = [];
-        $this->showSchoolDropdown = false;
-    }
-}
-
-public function selectSchool($schoolId)
-{
-    $school = School::where('school_id', $schoolId)->first();
-
-    if ($school) {
-        // 🔑 Set flag FIRST so updatedSchoolSearch ignores the incoming sync
-        $this->justSelected = true;
-
-        $this->schoolName = $school->school_name;
-        $this->schoolSearch = $school->school_name;
-        $this->schoolPhase = $school->phase_ped;
-        $this->schoolSelected = true;
-
-        $this->schoolSuggestions = [];
-        $this->showSchoolDropdown = false;
-
+        // Re-evaluate grade based on new phase
         $this->updatedAge($this->age);
-
-        // 🔑 Reset the lock flag on the next tick/moment so normal typing works again later
-        $this->dispatch('$refresh');
-        $this->justSelected = false;
     }
 }
 
@@ -320,13 +260,13 @@ public function selectSchool($schoolId)
             'email',
             'max:50',
             // MODIFIED REGEX to REQUIRE at least one letter in the local part
-                'regex:/^(?=[a-zA-Z0-9.%+-]*[a-zA-Z])([a-zA-Z0-9.%+-]+)\@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+(com|uk|co\.za|org|net|gov|edu|mil|int|biz|info|mobi|name|aero|jobs|museum|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tr|tt|tv|tw|tz|ua|ug|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)$/i',
+                'regex:/^(?=[a-zA-Z0-9._%+-]*[a-zA-Z])([a-zA-Z0-9._%+-]+)\@([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+(com|uk|co\.za|org|net|gov|edu|mil|int|biz|info|mobi|name|aero|jobs|museum|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tr|tt|tv|tw|tz|ua|ug|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)$/i',
         ],
 
             'phoneNumber' => [
-            'required',
+            'required', 
             'digits:10', // Ensures it's exactly 10 digits
-            // Regex simplified, as spaces are removed.
+            // Regex simplified, as spaces are removed. 
             // Ensures it starts with 0 and has 9 more digits (total 10)
            // Complex Regex for basic SA numbers starting with 0
 'regex:/^\s*0(1[01234578]|2[12378]|3[1234569]|4[0123456789]|5[134678]|6[0-8]|7[1-9]|8[1-467])(\s*\d){7}\s*$/',
@@ -340,16 +280,16 @@ public function selectSchool($schoolId)
                 }
             },
         ],
-          'image.*' => 'file|max:102400|mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/webm,video/3gpp,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/x-wav,audio/ogg,audio/m4a,audio/x-m4a,image/jpeg,image/png,image/gif,image/webp,image/bmp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-word.document.macroEnabled.12,application/vnd.openxmlformats-officedocument.wordprocessingml.template,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/zip,application/x-zip-compressed,text/plain',
-'newUploads.*' => 'file|max:102400|mimetypes:video/mp4,video/quicktime,video/x-msvideo,video/webm,video/3gpp,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/x-wav,audio/ogg,audio/m4a,audio/x-m4a,image/jpeg,image/png,image/gif,image/webp,image/bmp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-word.document.macroEnabled.12,application/vnd.openxmlformats-officedocument.wordprocessingml.template,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/zip,application/x-zip-compressed,text/plain',
+          'image.*' => 'file|max:102400|mimetypes:video/mp4,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/ogg,image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword',
+'newUploads.*' => 'file|max:102400|mimetypes:video/mp4,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/ogg,image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword',
 
 
             'fullName' => $this->isAnonymous ? 'nullable' : [
-                'required',
-                'string',
+                'required', 
+                'string', 
                 // Regex: Allows letters (A-Z, a-z), spaces (\s), hyphens (-), and apostrophes (').
                 // This prevents numbers and most special characters.
-                'regex:/^[a-zA-Z\s\-\']{2,50}$/',
+                'regex:/^[a-zA-Z\s\-\']{2,50}$/', 
             ],
             'age' => 'required|numeric|min:0|max:115',
             'location' => [
@@ -358,51 +298,49 @@ public function selectSchool($schoolId)
             'max:100',
             'min:5',
             'regex:/^\d+\s+[A-Za-z0-9\s\-]+,\s*[A-Za-z\s\-]+$/',
-
+            
             function ($attribute, $value, $fail) {
-
+               
                 $addressCharacters = '[a-zA-Z0-9\s,.\-()\/]';
-
+                
                 if (preg_match('/[a-zA-Z]' . $addressCharacters . '*\d/', trim($value))) {
                     $fail('The '.$attribute.' format is incorrect. (e.g., 204 Pretorius, not Pretorius 204).');
                 }
             },
         ],
             'grade' => 'required|string|max:100',
-         'schoolName' => [
-    'required',
-    function ($attribute, $value, $fail) {
-        // If the field is empty, let the 'required' rule handle the error message
-        if (empty(trim($value))) {
-            return;
-        }
-
-        // Fallback check: If they typed it manually but it matches a real school, auto-bless it
-        if (!$this->schoolSelected) {
-            $matchingSchool = School::whereRaw('LOWER(school_name) = LOWER(?)', [trim($value)])->first();
-            if ($matchingSchool) {
-                $this->schoolSelected = true;
-                $this->schoolPhase = $matchingSchool->phase_ped;
-                return;
-            }
-        }
-
-        // If it's not empty and hasn't been validly selected or matched
-        if (!$this->schoolSelected) {
-            $fail('Please select a school from the dropdown list instead of typing it manually.');
-        }
-    },
-],
-    ]; // End of rules array
+            'schoolName' => [
+            'required',
+            'string',
+            'max:100',
+            // New general regex allows the user to type anything (min 2, max 100)
+            'regex:/^.{2,100}$/u',
+            function($attribute, $value, $fail) {
+                // This custom rule checks for forbidden characters (numbers, etc.) on submission.
+                // It checks for any character that is NOT an allowed letter, space, comma, period, hyphen, apostrophe, or ampersand.
+                if (preg_match('/[^a-zA-Z\s.,\-\'&]/', $value)) {
+                    $fail('The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.');
+                }
+            },
+        ],
+        'schoolId' => [
+                'required',
+                'exists:schools,school_id',
+            ],
+        ];
     }
 
- protected function messages()
+    protected function messages()
     {
         return [
             'description.max' => 'Words exceeding limit of 500 ',
-            'schoolName.required' => 'Please select a school from the dropdown list.',
+            'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
+            'schoolName.required' => 'Please select or enter the Name of School.', 
             'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
-            'subtypeID.required' => 'The subtype ID field is required.',
+
+'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+            'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
+'subtypeID.required' => 'The subtype field is required.',
             'location.required' => 'Please enter the Address.',
             'grade.required' => 'Please select a Grade.',
         ];
@@ -410,15 +348,17 @@ public function selectSchool($schoolId)
      public function updatedPhoneNumber($value)
 {
     // Removes ALL non-digit characters (including spaces) for saving
-    $this->phoneNumber = preg_replace('/\D/', '', $value);
-}
+    $this->phoneNumber = preg_replace('/\D/', '', $value); 
+}   
 
 
 public function submitReport()
     {
  ini_set('max_execution_time', 500);
 
-$this->validate();
+ $this->validate([
+        'location' => 'required|string',
+    ]);
 
     if ($this->schoolProvince) {
 
@@ -466,10 +406,8 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
     $cleanPhone = preg_replace('/\D/', '', $this->phoneNumber); // Remove non-digits
     $cleanName = trim($this->fullName);
 
-    // 🔑 ADD THIS LINE HERE: Only run the check if at least one detail is provided
-if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty($cleanName))) {
     // 2. THE ENHANCED SUSPENSION CHECK
-    // Search for ANY existing report that has a future suspension date
+    // Search for ANY existing report that has a future suspension date 
     // and matches ANY of the provided identifiers.
     $blockCheck = \App\Models\Report::where(function($query) use ($cleanEmail, $cleanPhone, $cleanName) {
             if (!empty($cleanEmail)) {
@@ -489,7 +427,7 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
 
     if ($blockCheck) {
         $expiryDate = \Carbon\Carbon::parse($blockCheck->suspended_until);
-
+        
         if ($expiryDate->year >= 2037) {
             $message = "Your details have been permanently banned from submitting reports.";
         } else {
@@ -498,14 +436,13 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
         }
 
         session()->flash('error_message', $message);
-
+        
         if ($expiryDate->year < 2037) {
             session()->flash('expiry_date', $expiryDate->toIso8601String());
         }
-
+        
         $this->dispatch('restart-timer');
-        return;
-    }
+        return; 
     }
 
 
@@ -513,10 +450,10 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
         $this->validate();
 
         $report = null;        $caseNumber = null;
-
+        
         try {
         DB::transaction(function () use (&$report, &$caseNumber) {
-
+            
             // 1. Get Prefix and Date
             $prefix = $this->abuseTypePrefixes[$this->selectedAbuseTypeName] ?? 'XX'; // e.g., 'WP'
             $schoolIdentifier = $this->schoolName;
@@ -526,31 +463,31 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
             // Use a retry mechanism to find a unique sequential number
             $maxAttempts = 5;
             $attempt = 0;
-
+            
             do {
                 $attempt++;
-
+                
                 // 🔑 KEY CHANGE: Count reports for THIS SCHOOL across ALL TIME (no date constraint).
                 $totalSchoolReportsCount = Report::where('school_name', $schoolIdentifier)
                                             // ❌ REMOVED: ->whereDate('created_at', $today)
                                             ->count();
 
                 // The sequential number for the current report is the existing total count + 1
-                $sequentialCaseNumber = $totalSchoolReportsCount + $attempt;
-
+                $sequentialCaseNumber = $totalSchoolReportsCount + $attempt; 
+                
                 // 3. Format the count part to be 4 digits (e.g., 12 -> 0012)
                 $formattedCount = str_pad($sequentialCaseNumber, 4, '0', STR_PAD_LEFT);
-
+                
                 // 4. Combine into the final format (e.g., CASE-BU + 0013 + 2811)
                 $caseNumber = 'CASE-' . $prefix . $formattedCount . $datePart;
-
+                
                 // Check if this specific case number already exists
                 $exists = Report::where('case_number', $caseNumber)->exists();
-
+                
                 if (!$exists) {
                     break; // Found unique case number
                 }
-
+                
                 if ($attempt >= $maxAttempts) {
                     // Fallback: Add microtime for absolute uniqueness if standard attempts fail
                     $microseconds = substr(microtime(true), 11, 4);
@@ -578,12 +515,12 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
                     }
                 }                // Lookup school by name to get foreign key IDs
                 $school = $this->findSchoolByName($this->schoolName);
-
+                
                 $report = new Report();
                 $report->abuse_type_id = $this->abuseTypeID;
                 $report->subtype_id = $this->subtypeID;
                 $report->description = $this->description;
-                $report->image_path = !empty($imagePaths) ? json_encode($imagePaths) : null;
+                $report->image_path = !empty($imagePaths) ? json_encode($imagePaths) : null; 
                 $report->is_anonymous = $this->isAnonymous;
                 $report->case_number = $caseNumber;
                 $report->reporter_email = $this->reporterEmail;
@@ -602,10 +539,10 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
 
                 $report->save();
             });
-
-
-
-
+            
+            
+            
+            
 
             // Notify reporter
             if ($this->reporterEmail) {
@@ -618,7 +555,7 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
                     $schoolAdmins = User::where('role', 'school')
                         ->where('school_name', $report->school_name)
                         ->get();
-
+            
                     if ($schoolAdmins->isNotEmpty()) {
                         foreach ($schoolAdmins as $admin) {
                             Mail::to($admin->email)->send(new IncidentReported($report));
@@ -651,8 +588,8 @@ if (!empty($cleanEmail) || !empty($cleanPhone) || (!$this->isAnonymous && !empty
             session()->flash('error_message', 'Something went wrong. Please try again.');
         }
     }
-
-
+  
+  
   public function updatedNewUploads($files)
 {
     // Ensure it's an array
@@ -684,7 +621,7 @@ public function removeImage($index)
     private function findSchoolByName($schoolName)
     {
         $schoolName = trim($schoolName);
-
+        
         // Try exact match first
         $school = School::where('school_name', $schoolName)->first();
         if ($school) {
