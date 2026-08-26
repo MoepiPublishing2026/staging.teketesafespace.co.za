@@ -181,36 +181,37 @@
     </section>
 
     <section class="w-full bg-white py-16" style="padding-left: 2vw; padding-right: 2vw;">
-        <h2 class="text-[21px] text-black text-center font-semibold mb-16">
-            You can report any of the following through Tekete SafeSpace
-        </h2>
-
+       <h2 class="text-[24px] text-black text-left md:text-center font-bold mb-16">
+    You can report any of the following through Tekete safe space
+</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 text-left">
-            @php
-                $issues = [
-                    ['img' => 'Bullying.png', 'title' => 'Bullying'],
-                    ['img' => 'Substance  Abuse.png', 'title' => 'Substance Addiction'],
-                    ['img' => 'Sexual Abuse.png', 'title' => 'Suspected Sexual Harassment'],
-                    ['img' => 'weapons.png', 'title' => 'Weapons'],
-                    ['img' => 'pregnancy.png', 'title' => 'Teenage Pregnancy'],
-                    ['img' => 'other issues.png', 'title' => 'Other Issues'],
-                ];
-            @endphp
+         @php
+    $issues = [
+['img' => 'Bullying.png', 'title' => 'Bullying', 'class' => 'items-center text-center md:items-start md:text-left'],        ['img' => 'Substance  Abuse.png', 'title' => 'Substance Addiction', 'class' => ''],
+               ['img' => 'Sexual Abuse.png', 'title' => 'Suspected<br>Sexual Harassment', 'class' => 'items-center text-center md:items-start md:text-left'],
 
-            @foreach ($issues as $issue)
-                <a href="{{ route('choose-report-type') }}"
-                    class="flex flex-col items-start hover:opacity-80 transition">
+        ['img' => 'weapons.png', 'title' => 'Weapons', 'class' => 'items-start text-left pt-[24px] md:pt-0'],
+        ['img' => 'pregnancy.png', 'title' => 'Teenage<br>Pregnancy', 'class' => 'items-center text-center md:items-start md:text-left'],
+        ['img' => 'other issues.png', 'title' => 'Other Issues', 'class' => ''],
+    ];
+@endphp
 
-                    <div class="h-[80px] w-[80px] flex items-center justify-start mb-3">
-                        <img src="{{ asset('images/' . $issue['img']) }}" class="max-w-full max-h-full object-contain"
-                            alt="{{ $issue['title'] }}">
-                    </div>
+           @foreach ($issues as $issue)
+    
+       <div class="flex flex-col items-start {{ $issue['class'] }}">
 
-                    <p class="text-[16px] text-black leading-tight">
-                        {{ $issue['title'] }}
-                    </p>
-                </a>
-            @endforeach
+        <div class="h-[80px] w-[80px] flex items-center justify-start mb-3">
+<img src="{{ asset('images/' . $issue['img']) }}" 
+                 class="max-w-full max-h-full object-contain {{ $issue['title'] === 'Weapons' ? '-mt-[30px] md:mt-0' : '' }} {{ $issue['title'] === 'Other Issues' ? 'mt-[18px] md:mt-0' : '' }}" 
+                 alt="Issue Icon">
+        </div>
+
+        <!-- Added a conditional negative top margin to move the word Weapons up on mobile -->
+        <p class="text-[16px] text-black leading-tight {{ $issue['title'] === 'Weapons' ? '-mt-[6px] ml-[8px] md:mt-0' : '' }}{{ $issue['title'] === 'Substance Addiction' ? '-ml-[12px] md:ml-0' : '' }}">
+            {!! $issue['title'] !!}
+        </p>
+    </div>
+@endforeach
         </div>
     </section>
 
@@ -221,8 +222,8 @@
                 class="w-full h-full object-cover object-right [clip-path:inset(0_0_0_50%)]">
         </div>
 
-        <div class="pt-2 relative z-10">
-            <h3 class="text-[#c7da30] text-[29.9px] font-bold mb-3">
+        <div class="pt-2 -mt-10 sm:mt-0 relative z-10">
+            <h3 class="text-[#c7da30] text-[29.9px] font-bold mb-3 text-center md:text-left">
                 Who we serve:
             </h3>
 
@@ -235,8 +236,9 @@
             </ul>
         </div>
 
-        <div class="flex justify-center md:justify-end relative z-10">
-            <img src="{{ asset('images/Students holding phone.png') }}" class="w-[300px] h-[350px] rounded-lg shadow-md -translate-x-40">
+        <!-- Updated container and image classes for mobile centering -->
+        <div class="flex justify-center md:justify-end relative z-10 w-full">
+            <img src="{{ asset('images/Students holding phone.png') }}" class="w-[300px] h-[350px] rounded-lg shadow-md md:-translate-x-20">
         </div>
     </section>
 

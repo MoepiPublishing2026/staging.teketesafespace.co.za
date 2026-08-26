@@ -116,19 +116,19 @@
                 Report a Case
             </h1>
 
-            @if ($isAnonymous)
-                <p class="text-center text-[15px] font-[700] text-black mb-1">
-                    You are reporting anonymously
-                </p>
-            @else
-                <p class="text-center text-[15px] font-[700] text-black mb-1">
-                    You are reporting with your details
-                </p>
-            @endif
+           @if ($isAnonymous)
+    <p class="hidden sm:block text-center text-[15px] font-[700] text-black mb-1">
+        You are reporting anonymously
+    </p>
+@else
+    <p class="hidden sm:block text-center text-[15px] font-[700] text-black mb-1">
+        You are reporting with your details
+    </p>
+@endif
 
-            <p class="text-center text-[15px] text-black mb-6 sm:mb-8">
-                Report Type: {{ $selectedAbuseTypeName }}
-            </p>
+           <p class="text-center text-[15px] font-bold sm:font-normal text-black mb-6 sm:mb-8">
+    Report Type: {{ $selectedAbuseTypeName }}
+</p>
 
             @if (session('success_message'))
                 <div x-data="{ open: true }" x-show="open"
@@ -193,7 +193,40 @@
                 <form wire:submit.prevent="submitReport" enctype="multipart/form-data">
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 items-start">
-                        @if (!$isAnonymous)
+
+    {{-- SUB-TYPE FIRST --}}
+    @if ($standardSubtypes->isNotEmpty() || $otherSubtype)
+        <div class="w-full sm:col-span-2">
+            <label for="subtypeID" class="block text-[12px] text-black mb-1">
+                Sub-type
+            </label>
+
+            <select id="subtypeID"
+                wire:model.live="subtypeID"
+                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+
+                <option value="">-- Select a Subtype --</option>
+
+                @foreach ($standardSubtypes as $subtype)
+                    <option value="{{ $subtype->id }}">
+                        {{ $subtype->sub_type_name }}
+                    </option>
+                @endforeach
+
+                @if ($otherSubtype)
+                    <option value="{{ $otherSubtype->id }}">
+                        {{ $otherSubtype->sub_type_name }}
+                    </option>
+                @endif
+            </select>
+
+            @error('subtypeID')
+                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+    @endif
+
+    @if (!$isAnonymous)
                             <div class="w-full">
                                 <label for="fullName" class="block text-[12px] text-black mb-1">Full Name</label>
                                 <input type="text" wire:model="fullName" id="fullName"
@@ -305,24 +338,7 @@
                             @enderror
                         </div>
 
-                        @if ($standardSubtypes->isNotEmpty() || $otherSubtype)
-                            <div class="w-full">
-                                <label for="subtypeID" class="block text-[12px] text-black mb-1">Sub-type</label>
-                                <select id="subtypeID" wire:model.live="subtypeID"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
-                                    <option value="">-- Select a Subtype --</option>
-                                    @foreach ($standardSubtypes as $subtype)
-                                        <option value="{{ $subtype->id }}">{{ $subtype->sub_type_name }}</option>
-                                    @endforeach
-                                    @if ($otherSubtype)
-                                        <option value="{{ $otherSubtype->id }}">{{ $otherSubtype->sub_type_name }}</option>
-                                    @endif
-                                </select>
-                                @error('subtypeID')
-                                    <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        @endif
+                       
 
                         <div class="w-full">
                             <label for="location" class="block text-[12px] text-black mb-1">Address</label>
