@@ -666,7 +666,7 @@
                         id="report-search"
                         type="text"
                         wire:model.live.debounce.350ms="search"
-                        placeholder="Search by name, email, case number, description"
+                        placeholder="Search by email, case number, description"
                     />
                 </div>
 

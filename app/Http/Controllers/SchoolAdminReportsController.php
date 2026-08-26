@@ -58,6 +58,7 @@ class SchoolAdminReportsController extends AdminController
         if ($n = trim($request->input('full_name', ''))) {
             $query->where(function ($q) use ($n) {
                 $q->where('full_name',        'like', "%{$n}%")
+                ->where('is_anonymous', 0)
                 ->orWhere('reporter_email', 'like', "%{$n}%");
             });
         }

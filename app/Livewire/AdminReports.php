@@ -340,19 +340,19 @@ class AdminReports extends Component
             $query->where(function ($q) use ($s) {
                 $q->where('case_number',      'like', "%{$s}%")
                   ->orWhere('reporter_email', 'like', "%{$s}%")
-                  ->orWhere('full_name',      'like', "%{$s}%")
                   ->orWhere('description',    'like', "%{$s}%");
             });
         }
 
-        // Name / surname filter
+            // Name / surname filter
         if (trim($this->filterName) !== '') {
             $n = trim($this->filterName);
-            $query->where(function ($q) use ($n) {
-                $q->where('full_name',        'like', "%{$n}%")
-                  ->orWhere('reporter_email', 'like', "%{$n}%");
-            });
-        }
+            $query->where('is_anonymous', 0)
+                ->where(function ($q) use ($n) {
+                    $q->where('full_name', 'like', "%{$n}%")
+                        ->orWhere('reporter_email', 'like', "%{$n}%");
+                            });
+            }
 
         // Grade filter
         if ($this->filterGrade !== '') {
