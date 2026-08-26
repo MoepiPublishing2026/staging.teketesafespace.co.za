@@ -363,9 +363,9 @@ body.na-app .table-wrap {
 body.na-app .table-wrap table {
     display: table;
     width: 100% !important;
-    min-width: 780px;
+    min-width: 1100px;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: auto;
     background: #e5e5e5;
     color: #545454;
     font-size: 13px !important;
@@ -381,18 +381,21 @@ body.na-app .table-wrap thead {
 
 body.na-app .table-wrap th {
     height: 40px;
-    padding: 0 0.5rem;
+    padding: 0 12px;
     border-right: 1px solid rgba(255,255,255,.9);
     border-bottom: 0;
     color: #fff;
     font-size: 11px !important;
     font-weight: 700 !important;
     text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
 }
 
 body.na-app .table-wrap td {
     height: 40px;
-    padding: 0 0.5rem;
+    padding: 0 12px;
     overflow: hidden;
     border-right: 1px solid rgba(255,255,255,.9);
     border-bottom: 1px solid #fff;
@@ -404,16 +407,39 @@ body.na-app .table-wrap td {
     white-space: nowrap;
 }
 
-body.na-app .table-wrap th:nth-child(1) { width: 10%; }
-body.na-app .table-wrap th:nth-child(2) { width: 12%; }
-body.na-app .table-wrap th:nth-child(3) { width: 9%; }
-body.na-app .table-wrap th:nth-child(4) { width: 9%; }
-body.na-app .table-wrap th:nth-child(5) { width: 13%; }
-body.na-app .table-wrap th:nth-child(6) { width: 8%; }
-body.na-app .table-wrap th:nth-child(7) { width: 11%; }
-body.na-app .table-wrap th:nth-child(8) { width: 13%; }
-body.na-app .table-wrap th:nth-child(9) { width: 8%; }
-body.na-app .table-wrap th:nth-child(10) { width: 7%; }
+/* Case number and created date must stay fully visible */
+body.na-app .table-wrap th:nth-child(1),
+body.na-app .table-wrap td:nth-child(1),
+body.na-app .table-wrap th:nth-child(8),
+body.na-app .table-wrap td:nth-child(8),
+body.na-app .table-wrap th:nth-child(9),
+body.na-app .table-wrap td:nth-child(9),
+body.na-app .table-wrap th:nth-child(10),
+body.na-app .table-wrap td:nth-child(10) {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+body.na-app .table-wrap th:nth-child(1),
+body.na-app .table-wrap td:nth-child(1) { min-width: 168px; width: 13%; }
+body.na-app .table-wrap th:nth-child(2),
+body.na-app .table-wrap td:nth-child(2) { min-width: 110px; width: 10%; }
+body.na-app .table-wrap th:nth-child(3),
+body.na-app .table-wrap td:nth-child(3) { min-width: 110px; width: 10%; }
+body.na-app .table-wrap th:nth-child(4),
+body.na-app .table-wrap td:nth-child(4) { min-width: 120px; width: 11%; }
+body.na-app .table-wrap th:nth-child(5),
+body.na-app .table-wrap td:nth-child(5) { min-width: 140px; width: 14%; }
+body.na-app .table-wrap th:nth-child(6),
+body.na-app .table-wrap td:nth-child(6) { min-width: 88px; width: 8%; }
+body.na-app .table-wrap th:nth-child(7),
+body.na-app .table-wrap td:nth-child(7) { min-width: 130px; width: 12%; }
+body.na-app .table-wrap th:nth-child(8),
+body.na-app .table-wrap td:nth-child(8) { min-width: 160px; width: 13%; }
+body.na-app .table-wrap th:nth-child(9),
+body.na-app .table-wrap td:nth-child(9) { min-width: 90px; width: 8%; }
+body.na-app .table-wrap th:nth-child(10),
+body.na-app .table-wrap td:nth-child(10) { min-width: 108px; width: 9%; }
 
 body.na-app .table-wrap td:first-child {
     font-weight: 700;
@@ -493,7 +519,7 @@ body.na-app .page-link[aria-current="page"] {
     }
 
     body.na-app .table-wrap table {
-        min-width: 900px;
+        min-width: 1100px;
     }
 }
 
@@ -736,20 +762,20 @@ body.na-app .page-link[aria-current="page"] {
                 <tbody>
                     @forelse ($reports as $report)
                         <tr onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">
-                            <td>{{ $report->case_number ?? 'N/A' }}</td>
-                            <td>{{ $report->full_name ?? 'Anonymous' }}</td>
-                            <td>{{ $report->province->province_name ?? 'N/A' }}</td>
-                            <td>{{ $report->district->district_name ?? 'N/A' }}</td>
-                            <td>{{ $report->school->school_name ?? $report->school_name ?? 'N/A' }}</td>
+                            <td title="{{ $report->case_number ?? 'N/A' }}">{{ $report->case_number ?? 'N/A' }}</td>
+                            <td title="{{ $report->full_name ?? 'Anonymous' }}">{{ $report->full_name ?? 'Anonymous' }}</td>
+                            <td title="{{ $report->province->province_name ?? 'N/A' }}">{{ $report->province->province_name ?? 'N/A' }}</td>
+                            <td title="{{ $report->district->district_name ?? 'N/A' }}">{{ $report->district->district_name ?? 'N/A' }}</td>
+                            <td title="{{ $report->school->school_name ?? $report->school_name ?? 'N/A' }}">{{ $report->school->school_name ?? $report->school_name ?? 'N/A' }}</td>
                             <td>{{ $report->grade ?? 'N/A' }}</td>
-                            <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
+                            <td title="{{ $report->abuseType->type_name ?? 'N/A' }}">{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                             <td style="text-align: center;">
                                 <span class="status-badge status-{{ str_replace('_', '-', $report->status) }}">
                                     {{ str_replace(' ', '-', ucwords(str_replace(['-', '_'], ' ', $report->status))) }}
                                 </span>
                             </td>
                             <td>{{ $report->is_anonymous ? 'YES' : 'NO' }}</td>
-                            <td>{{ $report->created_at->format('Y-m-d') }}</td>
+                            <td title="{{ $report->created_at->format('Y-m-d') }}">{{ $report->created_at->format('Y-m-d') }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -942,7 +968,9 @@ document.addEventListener('keydown', e => {
 
 <script src="{{ asset('js/mobile-select-modal.js') }}"></script>
 <script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ asset('js/national-admin-pdf-export.js') }}?v=4"></script>
 <script>
 // ── Shared top-level state (declared ONCE) ──────────────────────
 const anonSelect  = document.querySelector('select[name="is_anonymous"]');
@@ -954,16 +982,6 @@ let typeSelect, subtypeSelect;
 
 const PLACEHOLDER_DEFAULT = 'Search by  email, case number,  description…';
 const PLACEHOLDER_ANON    = 'Search by email, case number, description…';
-
-function exportPDF() {
-    const element = document.getElementById('main-content');
-    if (!element) { alert("Main content not found!"); return; }
-    html2pdf().from(element).set({
-        margin: 10, filename: 'national-admin-reports.pdf',
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-    }).save();
-}
 
 const subtypesByType = {
     @foreach($typeOptions as $type)

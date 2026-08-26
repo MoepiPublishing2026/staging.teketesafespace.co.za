@@ -204,5 +204,190 @@ body.na-app .dashboard-scroll {
         border: 0 !important;
     }
 }
+
+/* PDF export: expand clipped scroll areas and hide interactive chrome */
+html.na-exporting,
+html.na-exporting body,
+html.na-exporting body.na-app {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    background: #fff !important;
+}
+html.na-exporting body.na-app .main-panel,
+html.na-exporting body.na-app main,
+html.na-exporting body.na-app .dashboard-scroll,
+html.na-exporting body.na-app main#main-content {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    flex: 0 0 auto !important;
+}
+html.na-exporting #main-content {
+    min-width: 1280px !important;
+    width: 1280px !important;
+    max-width: 1280px !important;
+    background: #fff !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+}
+
+/* Beat mobile media queries while capturing so the PDF matches desktop */
+html.na-exporting .chart-grid,
+#na-pdf-capture-host .chart-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+}
+html.na-exporting .chart-monthly,
+#na-pdf-capture-host .chart-monthly {
+    grid-column: 1 / 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+}
+html.na-exporting .chart-abuse-pie,
+#na-pdf-capture-host .chart-abuse-pie {
+    grid-column: 2 / 3 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+}
+html.na-exporting .chart-anonymous,
+#na-pdf-capture-host .chart-anonymous {
+    grid-column: 1 / 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+}
+html.na-exporting .chart-schools,
+#na-pdf-capture-host .chart-schools {
+    grid-column: 2 / 3 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+}
+html.na-exporting .chart-status,
+#na-pdf-capture-host .chart-status {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+    width: 70% !important;
+    justify-self: center !important;
+}
+html.na-exporting form.filters,
+#na-pdf-capture-host form.filters {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+}
+html.na-exporting .metrics-row > .metric-card,
+#na-pdf-capture-host .metrics-row > .metric-card {
+    flex: 0 0 115px !important;
+    min-width: 115px !important;
+    max-width: 115px !important;
+}
+html.na-exporting .table-wrap,
+html.na-exporting .heatmap-wrap,
+html.na-exporting .schools-table-wrap,
+html.na-exporting .district-map-key-rows {
+    overflow: visible !important;
+    max-height: none !important;
+}
+html.na-exporting .table-wrap table {
+    width: 100% !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+}
+html.na-exporting .table-wrap th,
+html.na-exporting .table-wrap td {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+html.na-exporting .pagination,
+html.na-exporting .heatmap-toolbar,
+html.na-exporting .heatmap-view-toggle,
+html.na-exporting .filter-clear,
+html.na-exporting #refreshBtn,
+html.na-exporting .district-map-tooltip,
+html.na-exporting .menu-icon,
+html.na-exporting .na-pdf-hide {
+    display: none !important;
+}
+html.na-exporting .na-pdf-canvas-snapshot,
+html.na-exporting .na-pdf-svg-snapshot,
+#na-pdf-capture-host .na-pdf-canvas-snapshot,
+#na-pdf-capture-host .na-pdf-svg-snapshot {
+    display: block !important;
+    max-width: 100%;
+}
+
+#na-pdf-capture-host {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 1280px;
+    padding: 24px 28px;
+    background: #fff;
+    z-index: 99990;
+    box-sizing: border-box;
+    overflow: visible;
+    pointer-events: none;
+}
+#na-pdf-capture-host .pagination,
+#na-pdf-capture-host .heatmap-toolbar,
+#na-pdf-capture-host .heatmap-view-toggle,
+#na-pdf-capture-host .filter-clear,
+#na-pdf-capture-host #refreshBtn,
+#na-pdf-capture-host .district-map-tooltip,
+#na-pdf-capture-host .menu-icon,
+#na-pdf-capture-host .na-pdf-hide {
+    display: none !important;
+}
+#na-pdf-capture-host .table-wrap,
+#na-pdf-capture-host .heatmap-wrap,
+#na-pdf-capture-host .schools-table-wrap,
+#na-pdf-capture-host .district-map-key-rows {
+    overflow: visible !important;
+    max-height: none !important;
+}
+
+#na-pdf-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    background: rgba(37, 63, 88, 0.45);
+    pointer-events: all;
+}
+#na-pdf-overlay.is-visible {
+    display: flex;
+}
+.na-pdf-overlay-card {
+    background: #fff;
+    border: 3px solid #c7da30;
+    border-radius: 12px;
+    padding: 1.25rem 1.75rem;
+    min-width: 260px;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+.na-pdf-overlay-card strong {
+    display: block;
+    color: #38b6ff;
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+}
+.na-pdf-overlay-card span {
+    display: block;
+    color: #545454;
+    font-size: 14px;
+    font-weight: 600;
+}
+body.na-pdf-busy {
+    cursor: wait;
+}
 </style>
 <link rel="stylesheet" href="{{ asset('css/national-admin-sidebar.css') }}">

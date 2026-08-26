@@ -18,6 +18,7 @@ class SchoolAdminReportsController extends AdminController
 {
     public function index(Request $request)
     {
+
         $user = Auth::user();
 
         if (!$user || $user->role !== 'school') {
@@ -40,26 +41,72 @@ class SchoolAdminReportsController extends AdminController
         $query = Report::with(['province', 'district', 'school', 'abuseType', 'subtype'])
             ->where('school_name', $schoolName);
 
-        // ── EXISTING filters ─────────────────────────────────────────
-
-        // Case number search (kept for backward compatibility)
+        // 1. Global / Case Number Search
         if ($request->filled('case_number')) {
             $query->where('case_number', 'LIKE', '%' . $request->input('case_number') . '%');
         }
 
-        // Existing filterable fields
-        $filterableFields = [
-            'status'     => 'status',
-            'abuse_type' => 'abuse_type_id',
-        ];
+        if ($s = trim($request->input('search', ''))) {
+            $query->where(function ($q) use ($s) {
+                $q->where('case_number',      'like', "%{$s}%")
+                ->orWhere('reporter_email', 'like', "%{$s}%")
+                ->orWhere('full_name',      'like', "%{$s}%")
+                ->orWhere('description',    'like', "%{$s}%");
+            });
+        }
 
-        foreach ($filterableFields as $input => $column) {
-            if ($request->filled($input)) {
-                $query->where($column, $request->input($input));
+        if ($n = trim($request->input('full_name', ''))) {
+            $query->where(function ($q) use ($n) {
+                $q->where('full_name',        'like', "%{$n}%")
+                ->where('is_anonymous', 0)
+                ->orWhere('reporter_email', 'like', "%{$n}%");
+            });
+        }
+
+        // 2. Status Filters
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        } elseif ($request->filled('filter_status')) {
+            $query->where('status', $request->input('filter_status'));
+        }
+
+        // 3. Abuse / Report Type Filter (Handles all common query param variations)
+        $typeInput = $request->input('abuse_type') 
+            ?? $request->input('abuse_type_id') 
+            ?? $request->input('type_id') 
+            ?? $request->input('report_type');
+
+        if (!empty($typeInput)) {
+            if (is_numeric($typeInput)) {
+                // Direct ID match
+                $query->where('abuse_type_id', (int) $typeInput);
+            } else {
+                // Name / String match via relationship or column
+                $query->where(function ($q) use ($typeInput) {
+                    $q->whereHas('abuseType', function ($subQuery) use ($typeInput) {
+                        $subQuery->where('type_name', $typeInput);
+                    })
+                    ->orWhere('report_type', $typeInput); // Fallback for raw string columns
+                });
             }
         }
 
-        // Age range filter
+        // 4. Subtype Filter
+        if ($request->filled('subtype_id')) {
+            $query->where('subtype_id', $request->input('subtype_id'));
+        }
+
+        // 5. Grade Filter
+        if ($request->filled('grade')) {
+            $query->where('grade', $request->input('grade'));
+        }
+
+        // 6. Anonymous Filter (Uses has() + strict check because '0' is falsy in PHP)
+        if ($request->has('is_anonymous') && $request->input('is_anonymous') !== '' && $request->input('is_anonymous') !== null) {
+            $query->where('is_anonymous', (int) $request->input('is_anonymous'));
+        }
+
+        // 7. Age Range Filter
         if ($request->filled('age_range')) {
             $ageRange = $request->input('age_range');
             if ($ageRange === '30+') {
@@ -72,64 +119,15 @@ class SchoolAdminReportsController extends AdminController
             }
         }
 
-        // ── NEW filters ──────────────────────────────────────────────
+        // 8. Date Range Filter (Handles date_from/date_to and from_date/to_date)
+        $dateFrom = $request->input('date_from') ?? $request->input('from_date');
+        $dateTo   = $request->input('date_to') ?? $request->input('to_date');
 
-        // Global search bar: case number, email, full name, description
-        if ($s = trim($request->input('search', ''))) {
-            $query->where(function ($q) use ($s) {
-                $q->where('case_number',      'like', "%{$s}%")
-                  ->orWhere('reporter_email', 'like', "%{$s}%")
-                  ->orWhere('full_name',      'like', "%{$s}%")
-                  ->orWhere('description',    'like', "%{$s}%");
-            });
+        if ($dateFrom) {
+            $query->whereDate('created_at', '>=', $dateFrom);
         }
-
-        // Name / surname filter
-        if ($n = trim($request->input('full_name', ''))) {
-            $query->where(function ($q) use ($n) {
-                $q->where('full_name',        'like', "%{$n}%")
-                  ->orWhere('reporter_email', 'like', "%{$n}%");
-            });
-        }
-
-        // Grade filter
-        if ($request->filled('grade')) {
-            $query->where('grade', $request->input('grade'));
-        }
-
-        // Report type filter (dashboard may pass abuse_type_id)
-        if ($request->filled('type_id')) {
-            $query->where('abuse_type_id', $request->input('type_id'));
-        } elseif ($request->filled('abuse_type_id')) {
-            $query->where('abuse_type_id', $request->input('abuse_type_id'));
-        }
-
-        // Subtype filter
-        if ($request->filled('subtype_id')) {
-            $query->where('subtype_id', $request->input('subtype_id'));
-        }
-
-        // Status dropdown (new panel name — works alongside existing 'status' field)
-        if (!$request->filled('status') && $request->filled('filter_status')) {
-            $query->where('status', $request->input('filter_status'));
-        }
-
-        // Anonymous filter — use has() not filled() because '0' is falsy
-        if ($request->filled('is_anonymous')) {
-            $query->where('is_anonymous', (int)$request->input('is_anonymous'));
-        }
-
-        // Date range (new field names: date_from/date_to — kept alongside old from_date/to_date)
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->input('date_from'));
-        } elseif ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->input('date_from'));
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->input('date_to'));
-        } elseif ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->input('date_to'));
+        if ($dateTo) {
+            $query->whereDate('created_at', '<=', $dateTo);
         }
 
         $reports = $query->latest()->paginate(20)->withQueryString();
@@ -139,8 +137,8 @@ class SchoolAdminReportsController extends AdminController
 
         $subtypeOptions = Subtype::orderBy('sub_type_name')
             ->when(
-                $request->filled('type_id'),
-                fn ($q) => $q->where('abuse_type_id', $request->input('type_id'))
+                !empty($typeId),
+                fn ($q) => $q->where('abuse_type_id', $typeId)
             )
             ->get();
 

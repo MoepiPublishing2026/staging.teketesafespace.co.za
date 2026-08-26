@@ -2016,9 +2016,10 @@ function navigateWithFilterByAnonymous(isAnonymous) {
     function exportPDF() {
         const element = document.getElementById('main-content');
         if (!element) {
-            alert("Main content not found!");
+            alert("Main content not found! Add id='main-content' to your <main> tag.");
             return;
         }
+
         html2pdf().from(element).set({
             margin: 10,
             filename: 'provincial-admin-dashboard.pdf',

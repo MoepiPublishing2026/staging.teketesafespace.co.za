@@ -142,6 +142,10 @@
             }
         }
 .delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     background-color: #ef4444 !important; /* red */
     color: #fff !important;
     border: none !important;
@@ -152,6 +156,7 @@
 
     font-weight: 900;
     cursor: pointer;
+    box-sizing: border-box;
 
     transition: background-color 0.2s ease;
 }
@@ -304,7 +309,10 @@
 
         .file-label {
             cursor: pointer;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             background:#c7da30;
             color: #000;
             font-weight: 900;
@@ -312,6 +320,7 @@
             padding: 0.5rem 1.5rem;
             user-select: none;
             margin-top: 0.5rem;
+            box-sizing: border-box;
         }
 
 button.submit-btn {
