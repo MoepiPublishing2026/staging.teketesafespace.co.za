@@ -710,25 +710,22 @@ canvas {
                 </option>
             @endforeach
         </select>
-        <div>
-            <label class="filter-label">Age</label>
-            <input type="number" class="filter-input" name="age_range"
-                id="ageInput"
-                placeholder="e.g. 14"
-                min="5" max="18"
-                value="{{ request('age') }}"
-                oninput="syncGradeFromAge(this.value)">
-        </div>
-
-        <div>
-            <label class="filter-label">Grade</label>
-            <input type="hidden" id="gradeHidden" value="{{ request('grade') }}">
-            <input type="text" name="grade" class="filter-input" id="gradeDisplay"
-                placeholder="Auto-filled from age"
-                readonly
-                style="background:#f3f4f6; cursor:not-allowed; opacity:0.7;"
-                value="{{ request('grade') }}">
-        </div>
+        <select name="age_range" id="ageSelect" onchange="syncGradeFromAge(this.value); this.form.submit();">
+            <option value="">Any Age</option>
+            @foreach ($ageOptions as $ageOption)
+                <option value="{{ $ageOption }}" {{ (string) $ageRange === (string) $ageOption ? 'selected' : '' }}>
+                    {{ $ageOption }}
+                </option>
+            @endforeach
+        </select>
+        <select name="grade" id="gradeSelect" onchange="this.form.submit()">
+            <option value="">Any Grade</option>
+            @foreach ($applicableGrades as $gradeOption)
+                <option value="{{ $gradeOption }}" {{ (string) $gradeFilter === (string) $gradeOption ? 'selected' : '' }}>
+                    {{ $gradeOption }}
+                </option>
+            @endforeach
+        </select>
         <label>
             From
             <input type="date" name="date_from" value="{{ $fromDate }}" onchange="this.form.submit()">
@@ -741,25 +738,62 @@ canvas {
     </form>
 
     <script>
-        const ageToGrade = {
-            5: 'Grade R',  6: 'Grade 1',  7: 'Grade 2',  8: 'Grade 3',
-            9: 'Grade 4',  10: 'Grade 5', 11: 'Grade 6', 12: 'Grade 7',
-            13: 'Grade 8', 14: 'Grade 9', 15: 'Grade 10', 16: 'Grade 11',
-            17: 'Grade 12', 18: 'Grade 12'
-        };
+        const gradeAgeRanges = @json(\App\Support\GradeAge::ranges());
+        const phaseGradesMap = @json(\App\Support\GradeAge::phaseGrades());
+        const schoolPhase = @json(isset($schoolPhase) ? strtoupper(trim((string) $schoolPhase)) : '');
 
-        function syncGradeFromAge(age) {
-            const grade   = ageToGrade[parseInt(age)] ?? '';
-            document.getElementById('gradeDisplay').value = grade;
-            document.getElementById('gradeHidden').value  = grade;
+        function applicableGradesForAge(ageValue) {
+            const phaseList = schoolPhase && phaseGradesMap[schoolPhase]
+                ? phaseGradesMap[schoolPhase]
+                : null;
+            const hasAge = ageValue !== '' && ageValue !== null && !Number.isNaN(parseInt(ageValue, 10));
+            const age = hasAge ? parseInt(ageValue, 10) : null;
+            const grades = [];
+
+            Object.keys(gradeAgeRanges).forEach(function (grade) {
+                const range = gradeAgeRanges[grade];
+                if (hasAge && (age < range[0] || age > range[1])) {
+                    return;
+                }
+                if (phaseList && phaseList.indexOf(grade) === -1) {
+                    return;
+                }
+                grades.push(grade);
+            });
+
+            return grades;
         }
 
-        // Run on page load to sync if age is already in URL
-        (function() {
-            const ageInput = document.getElementById('ageInput');
-            if (ageInput && ageInput.value) syncGradeFromAge(ageInput.value);
-        })();
+        function syncGradeFromAge(age) {
+            const select = document.getElementById('gradeSelect');
+            if (!select) return;
 
+            const previous = select.value;
+            const grades = applicableGradesForAge(age);
+            const keepPrevious = grades.indexOf(previous) !== -1;
+
+            select.innerHTML = '';
+            const anyOption = document.createElement('option');
+            anyOption.value = '';
+            anyOption.textContent = 'Any Grade';
+            select.appendChild(anyOption);
+
+            grades.forEach(function (grade) {
+                const option = document.createElement('option');
+                option.value = grade;
+                option.textContent = grade;
+                select.appendChild(option);
+            });
+
+            select.value = keepPrevious ? previous : '';
+
+            if (select._mobileSelectButton && select._mobileSelectButton.firstChild) {
+                const selected = select.options[select.selectedIndex];
+                select._mobileSelectButton.firstChild.textContent = selected
+                    ? selected.textContent.trim()
+                    : 'Any Grade';
+            }
+        }
     </script>
 
     @if(!empty($activeFilters))

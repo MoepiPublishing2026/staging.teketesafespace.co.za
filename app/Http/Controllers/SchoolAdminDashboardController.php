@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Report;
 use App\Models\School;
 use App\Models\AbuseType;
+use App\Support\GradeAge;
 use Carbon\Carbon;
 
 class SchoolAdminDashboardController extends AdminController
@@ -35,41 +36,11 @@ class SchoolAdminDashboardController extends AdminController
 
         // Load abuse types for the filter dropdown (always show all for selection)
         $allAbuseTypes = AbuseType::orderBy('type_name')->get();
-        
-        // Get available grades for this school - get all distinct grades
-        $grades = Report::where('school_name', $schoolName)
-            ->whereNotNull('grade')
-            ->where('grade', '!=', '')
-            ->distinct()
-            ->pluck('grade')
-            ->filter(function($grade) {
-                return !empty(trim($grade));
-            })
-            ->unique()
-            ->sortBy(function($grade) {
-                // Sort: Creche first, then Grade R, then numeric grades
-                $gradeLower = strtolower(trim($grade));
-                
-                if (preg_match('/^cr[èe]?ch?e?$/i', $gradeLower) || $gradeLower === 'cretch') {
-                    return -2;
-                }
-                
-                if ($gradeLower === 'r' || $gradeLower === 'grade r' || $gradeLower === 'pre-primary' || $gradeLower === 'pre-grade') {
-                    return -1;
-                }
-                
-                if (is_numeric($grade)) {
-                    return (int)$grade;
-                }
-                
-                if (preg_match('/^grade\s*(\d+)$/i', $gradeLower, $matches)) {
-                    return (int)$matches[1];
-                }
-                
-                return 999;
-            })
-            ->values()
-            ->toArray();
+
+        $schoolPhase = $school->phase_ped;
+        $ageForGrades = is_numeric($ageRange) ? (int) $ageRange : null;
+        $applicableGrades = GradeAge::applicableGrades($ageForGrades, $schoolPhase);
+        $ageOptions = GradeAge::applicableAges($schoolPhase);
 
         // Base reports query with eager loading (filtered by school)
         $reportsQuery = Report::with(['school', 'abuseType'])
@@ -80,10 +51,10 @@ class SchoolAdminDashboardController extends AdminController
         if ($abuseTypeFilter) {
             $reportsQuery->where('abuse_type_id', $abuseTypeFilter);
         }
-        if ($ageRange) {
+        if ($ageRange !== null && $ageRange !== '') {
             if ($ageRange === '30+') {
                 $reportsQuery->where('age', '>=', 30);
-            } elseif (strpos($ageRange, '-') !== false) {
+            } elseif (strpos((string) $ageRange, '-') !== false) {
                 [$minAge, $maxAge] = explode('-', $ageRange);
                 if (is_numeric($minAge) && is_numeric($maxAge)) {
                     $reportsQuery->whereBetween('age', [(int)$minAge, (int)$maxAge]);
@@ -190,7 +161,7 @@ class SchoolAdminDashboardController extends AdminController
             $abuseTypeName = $allAbuseTypes->firstWhere('id', $abuseTypeFilter)?->type_name ?? '';
             if ($abuseTypeName) $activeFilters[] = $abuseTypeName;
         }
-        if ($ageRange) {
+        if ($ageRange !== null && $ageRange !== '') {
             $activeFilters[] = "Age: $ageRange";
         }
         if (!empty($gradeFilter) && trim($gradeFilter) !== '') {
@@ -265,7 +236,9 @@ class SchoolAdminDashboardController extends AdminController
             'fromDate' => $fromDate,
             'toDate' => $toDate,
             'abuseTypes' => $allAbuseTypes,
-            'grades' => $grades,
+            'applicableGrades' => $applicableGrades,
+            'ageOptions' => $ageOptions,
+            'schoolPhase' => $schoolPhase,
             'summaryCounts' => ['total' => $totalReports, 'statuses' => $statusCounts],
             'months' => $months,
             'monthlyCounts' => $monthlyCounts,
