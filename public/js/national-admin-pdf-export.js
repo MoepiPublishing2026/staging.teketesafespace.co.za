@@ -1,6 +1,14 @@
 /**
  * National Admin PDF export.
  * Uses html2canvas + jsPDF directly (html2pdf.bundle does not expose either global).
+ *
+ * Pagination strategy: rather than screenshotting the whole page into one tall
+ * canvas and slicing it by pixel count (which can cut straight through a
+ * chart), each visual "block" (filters panel, metric-card row, a row of
+ * chart-cards, a standalone panel like a heatmap/map) is captured as its own
+ * image. Blocks are then packed onto PDF pages, starting a new page whenever
+ * the next block would not fit in the remaining space. A block is only ever
+ * pixel-sliced across pages if it is, by itself, taller than a full page.
  */
 (function () {
     'use strict';
@@ -11,6 +19,7 @@
     var A3_W = 420;
     var A3_H = 297;
     var MARGIN = 10;
+    var BLOCK_GAP_MM = 4;
 
     function wait(ms) {
         return new Promise(function (resolve) { setTimeout(resolve, ms); });
@@ -158,15 +167,23 @@
         }));
     }
 
+    // Off-screen clone laid out at a fixed width so what we measure for
+    // block/row boundaries is exactly what html2canvas renders — no more
+    // "virtual window width" mismatch between measurement and capture.
     function buildCaptureHost(source) {
         var existing = document.getElementById('na-pdf-capture-host');
         if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
 
         var host = document.createElement('div');
         host.id = 'na-pdf-capture-host';
+        host.style.position = 'absolute';
+        host.style.left = '-99999px';
+        host.style.top = '0';
+        host.style.background = '#ffffff';
+
         var clone = source.cloneNode(true);
         clone.removeAttribute('id');
-        clone.style.width = '100%';
+        clone.style.width = CAPTURE_WIDTH + 'px';
         clone.style.maxWidth = 'none';
         clone.style.minWidth = '0';
         clone.style.height = 'auto';
@@ -184,52 +201,158 @@
         return Math.max(1, Math.round(scale * 100) / 100);
     }
 
-    function canvasOptions(node) {
-        var width = Math.max(CAPTURE_WIDTH, node.scrollWidth || CAPTURE_WIDTH);
-        var height = Math.max(node.scrollHeight || 0, node.offsetHeight || 0, 1);
-        return {
-            scale: pickScale(width, height),
+    // Group elements that visually share a row (e.g. side-by-side chart-cards
+    // in a CSS grid) so they're captured — and therefore paginated — together.
+    function clusterRows(elements) {
+        var items = elements
+            .filter(function (el) { return el.nodeType === 1; })
+            .map(function (el) { return { el: el, rect: el.getBoundingClientRect() }; })
+            .sort(function (a, b) { return a.rect.top - b.rect.top; });
+        var rows = [];
+        items.forEach(function (item) {
+            var last = rows[rows.length - 1];
+            if (last && item.rect.top < last.bottom - 2) {
+                last.bottom = Math.max(last.bottom, item.rect.bottom);
+                last.top = Math.min(last.top, item.rect.top);
+            } else {
+                rows.push({ top: item.rect.top, bottom: item.rect.bottom });
+            }
+        });
+        return rows;
+    }
+
+    // Build an ordered list of capture blocks. Each block is either a whole
+    // element ({kind:'element', el}) or a cropped rectangle within a parent
+    // ({kind:'crop', ancestor, x, y, width, height}) — used for CSS-grid rows
+    // where there's no single DOM node wrapping just that row.
+    function buildBlocks(hostRoot) {
+        var blocks = [];
+        var scrollRoot = hostRoot.querySelector('.dashboard-scroll') || hostRoot;
+
+        Array.prototype.forEach.call(scrollRoot.children, function (section) {
+            if (!(section instanceof HTMLElement)) return;
+
+            var grid = section.classList.contains('chart-grid')
+                ? section
+                : (section.querySelector ? section.querySelector('.chart-grid') : null);
+
+            if (grid) {
+                Array.prototype.forEach.call(section.children, function (child) {
+                    if (child === grid || (child.classList && child.classList.contains('chart-grid'))) {
+                        var rows = clusterRows(Array.prototype.slice.call(child.children));
+                        var gridRect = child.getBoundingClientRect();
+                        rows.forEach(function (row) {
+                            blocks.push({
+                                kind: 'crop',
+                                ancestor: child,
+                                x: 0,
+                                y: row.top - gridRect.top,
+                                width: gridRect.width,
+                                height: row.bottom - row.top
+                            });
+                        });
+                    } else {
+                        blocks.push({ kind: 'element', el: child });
+                    }
+                });
+                return;
+            }
+
+            blocks.push({ kind: 'element', el: section });
+        });
+
+        if (!blocks.length) {
+            blocks.push({ kind: 'element', el: scrollRoot });
+        }
+
+        return blocks;
+    }
+
+    function captureBlock(block) {
+        var html2canvas = getHtml2Canvas();
+
+        if (block.kind === 'crop') {
+            if (block.width < 2 || block.height < 2) return Promise.resolve(null);
+            return html2canvas(block.ancestor, {
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                scale: pickScale(block.width, block.height),
+                x: block.x,
+                y: block.y,
+                width: block.width,
+                height: block.height
+            }).catch(function () { return null; });
+        }
+
+        var r = block.el.getBoundingClientRect();
+        if (r.width < 2 || r.height < 2) return Promise.resolve(null);
+        return html2canvas(block.el, {
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
-            scrollX: 0,
-            scrollY: 0,
-            width: width,
-            height: height,
-            windowWidth: width,
-            windowHeight: height
-        };
+            scale: pickScale(r.width, r.height)
+        }).catch(function () { return null; });
     }
 
-    function captureToCanvas(node) {
-        return getHtml2Canvas()(node, canvasOptions(node));
+    function captureAllBlocks(blocks) {
+        var canvases = [];
+        return blocks.reduce(function (p, block) {
+            return p.then(function () {
+                return captureBlock(block).then(function (canvas) {
+                    canvases.push(canvas);
+                });
+            });
+        }, Promise.resolve()).then(function () { return canvases; });
     }
 
-    function writePdfFromCanvas(canvas, filename) {
-        if (!canvas || !canvas.width || !canvas.height) {
-            throw new Error('Page capture was empty');
+    function whiteBg(pdf) {
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(0, 0, A3_W, A3_H, 'F');
+    }
+
+    // Places one block's canvas onto the PDF, starting a new page if it
+    // doesn't fit in the remaining space. Only pixel-slices across pages if
+    // the block alone is taller than one full page (rare — e.g. a very long
+    // table) — normal blocks are never split.
+    function addBlockToPdf(pdf, canvas, cursor, usableW, usableH) {
+        var imgHmm = (canvas.height / canvas.width) * usableW;
+
+        if (imgHmm <= usableH) {
+            if (cursor.y + imgHmm > MARGIN + usableH + 0.01) {
+                pdf.addPage([A3_W, A3_H], 'landscape');
+                whiteBg(pdf);
+                cursor.y = MARGIN;
+            }
+            pdf.addImage(canvas, 'JPEG', MARGIN, cursor.y, usableW, imgHmm);
+            cursor.y += imgHmm + BLOCK_GAP_MM;
+            return;
         }
 
-        var JsPDF = getJsPDF();
-        var usableW = A3_W - MARGIN * 2;
-        var usableH = A3_H - MARGIN * 2;
+        // Oversized block: give it fresh pages of its own.
+        if (cursor.y > MARGIN + 0.01) {
+            pdf.addPage([A3_W, A3_H], 'landscape');
+            whiteBg(pdf);
+            cursor.y = MARGIN;
+        }
+
         var imgW = canvas.width;
         var imgH = canvas.height;
         var pageHeightPx = Math.max(1, Math.floor(imgW * (usableH / usableW)));
-
-        var pdf = new JsPDF({ unit: 'mm', format: 'a3', orientation: 'landscape' });
         var y = 0;
-        var page = 0;
+        var first = true;
 
         while (y < imgH - 1) {
-            if (page > 0) pdf.addPage([A3_W, A3_H], 'landscape');
-            pdf.setFillColor(255, 255, 255);
-            pdf.rect(0, 0, A3_W, A3_H, 'F');
+            if (!first) {
+                pdf.addPage([A3_W, A3_H], 'landscape');
+                whiteBg(pdf);
+            }
+            first = false;
 
             var split = Math.min(imgH, y + pageHeightPx);
             var sliceH = Math.max(1, split - y);
-
             var slice = document.createElement('canvas');
             slice.width = imgW;
             slice.height = sliceH;
@@ -240,11 +363,28 @@
 
             var sliceMmH = (sliceH / imgW) * usableW;
             pdf.addImage(slice, 'JPEG', MARGIN, MARGIN, usableW, sliceMmH);
-
             y = split;
-            page += 1;
-            if (page > 40) break;
         }
+
+        // Force the next block onto a fresh page rather than trying to
+        // squeeze it under a partial last slice.
+        cursor.y = MARGIN + usableH + 1;
+    }
+
+    function writePdfFromBlocks(canvases, filename) {
+        var valid = canvases.filter(function (c) { return c && c.width && c.height; });
+        if (!valid.length) throw new Error('Page capture was empty');
+
+        var JsPDF = getJsPDF();
+        var usableW = A3_W - MARGIN * 2;
+        var usableH = A3_H - MARGIN * 2;
+        var pdf = new JsPDF({ unit: 'mm', format: 'a3', orientation: 'landscape' });
+        whiteBg(pdf);
+
+        var cursor = { y: MARGIN };
+        valid.forEach(function (canvas) {
+            addBlockToPdf(pdf, canvas, cursor, usableW, usableH);
+        });
 
         pdf.save(filename);
     }
@@ -292,16 +432,16 @@
             })
             .then(function () {
                 host = buildCaptureHost(element);
-                return wait(100);
+                // allow the fixed-width clone to lay out before we measure it
+                return wait(150);
             })
             .then(function () {
                 setOverlay(true, 'Building PDF\u2026');
-                return captureToCanvas(host).catch(function () {
-                    return captureToCanvas(element);
-                });
+                var blocks = buildBlocks(host);
+                return captureAllBlocks(blocks);
             })
-            .then(function (canvas) {
-                writePdfFromCanvas(canvas, filename);
+            .then(function (canvases) {
+                writePdfFromBlocks(canvases, filename);
             })
             .catch(function (err) {
                 if (typeof console !== 'undefined' && console.error) console.error(err);
