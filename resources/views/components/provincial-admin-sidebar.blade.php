@@ -143,7 +143,7 @@ body.pa-app aside#pa-sidebar nav a.sidebar-link.active {
                     My Profile
                 </a>
             </li>
-            @if ($showExportPdf)
+            @if ($showExportPdf  && !$isReports)
                 <li>
                     <a href="#"
                        class="sidebar-link"

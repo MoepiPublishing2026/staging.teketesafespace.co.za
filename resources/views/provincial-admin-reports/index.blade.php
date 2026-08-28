@@ -139,7 +139,6 @@ tbody tr:last-child td { border-bottom: none; }
     color: #374151;
     border: 1px solid #d1d5db;
 }
-
 .status-false-report {
     background-color: #f3e8ff;
     color: #6b21a8;
@@ -1204,7 +1203,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let filterDebounce = null;
 
     if (filterForm) {
-        filterForm.querySelectorAll('input[name="search"], input[name="full_name"], input[name="school_name"]').forEach(function (input) {
+        filterForm.querySelectorAll('input[name="search"], input[name="full_name"]').forEach(function (input) {
             input.addEventListener('input', function () {
                 clearTimeout(filterDebounce);
                 filterDebounce = setTimeout(function () { filterForm.submit(); }, 500);
