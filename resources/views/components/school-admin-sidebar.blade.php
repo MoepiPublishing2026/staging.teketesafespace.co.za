@@ -6,7 +6,7 @@
     $isReports = in_array($currentRoute, ['admin.reports', 'admin.reports.index', 'admin.reports.show'], true);
     $isFalseReports = $currentRoute === 'admin.false-reports';
     $isSettings = $currentRoute === 'admin.settings';
-    $showExportPdf = $isDashboard || $isReports;
+    $showExportPdf = $isDashboard;
 @endphp
 
 @once
@@ -144,7 +144,7 @@ body.sa-app aside#sa-sidebar nav a.sidebar-link.active {
                     My Profile
                 </a>
             </li>
-            @if ($showExportPdf = $isDashboard;)
+            @if ($showExportPdf)
                 <li>
                     <a href="#"
                        class="sidebar-link"
