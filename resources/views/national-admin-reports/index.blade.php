@@ -298,7 +298,7 @@ body.na-app .search-wrap input {
 
 body.na-app .filter-grid {
     display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
+    grid-template-columns: repeat(10, minmax(0, 1fr));
     gap: 0.75rem;
     align-items: end;
 }
@@ -311,7 +311,7 @@ body.na-app .filter-label {
     display: block;
     height: auto;
     margin: 0 0 0.35rem;
-    overflow: hidden;
+    overflow: visible;
     color: #545454 !important;
     font-size: 13px !important;
     font-weight: 700 !important;
@@ -340,10 +340,20 @@ body.na-app .filter-input {
 }
 
 body.na-app #refreshBtn {
+    width: 125px !important;
+    height: 50px !important;
+    margin: 0 !important;
+
     border: 0 !important;
+    border-radius: 6px !important;
+
     background: var(--reports-blue) !important;
     color: #fff !important;
+
+    font-size: 16px !important;
     font-weight: 700 !important;
+
+    display: block !important;
 }
 
 body.na-app .active-filter-badge {
@@ -423,7 +433,7 @@ body.na-app .table-wrap td:nth-child(10) {
 body.na-app .table-wrap th:nth-child(1),
 body.na-app .table-wrap td:nth-child(1) { min-width: 168px; width: 13%; }
 body.na-app .table-wrap th:nth-child(2),
-body.na-app .table-wrap td:nth-child(2) { min-width: 110px; width: 10%; }
+body.na-app .table-wrap td:nth-child(2) { min-width: 180px; width: 15%; }
 body.na-app .table-wrap th:nth-child(3),
 body.na-app .table-wrap td:nth-child(3) { min-width: 110px; width: 10%; }
 body.na-app .table-wrap th:nth-child(4),
@@ -499,7 +509,8 @@ body.na-app .page-link[aria-current="page"] {
 
 @media (min-width: 1400px) {
     body.na-app .filter-grid {
-        grid-template-columns: repeat(11, minmax(0, 1fr));
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        gap: 1rem;
     }
 }
 
@@ -697,14 +708,12 @@ body.na-app .page-link[aria-current="page"] {
                     @endforeach
                 </select>
                 </div>
-
-                
-
-                <div style="display:flex; align-items:flex-end;">
+<div style="display:flex; align-items:flex-end;">
                     <button type="button" id="refreshBtn">Refresh Table</button>
-                </div>
-
+            </div>
+            
             </div>{{-- end .filter-grid --}}
+                
 
             {{-- Active filter badges --}}
            @php
