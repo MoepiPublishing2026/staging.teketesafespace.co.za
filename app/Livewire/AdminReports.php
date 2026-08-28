@@ -45,6 +45,10 @@ class AdminReports extends Component
     public $filterStatus   = '';
     public $filterAnonymous = '';
 
+    protected $queryString = [
+        'filterAnonymous' => ['as' => 'is_anonymous', 'except' => ''],
+    ];
+
     // Reset pagination whenever a filter changes
     public function updatingSearch():         void { $this->resetPage(); }
     public function updatingFilterName():     void { $this->resetPage(); }
@@ -62,7 +66,44 @@ class AdminReports extends Component
 
     public function mount($filter = 'all')
     {
-        $this->filter = $filter;
+        $this->filter = $filter ?: 'all';
+        $this->hydrateFiltersFromQuery();
+    }
+
+    /**
+     * Apply dashboard query params so Anonymous / Identified cards
+     * land on the matching reports list. '0' must be handled explicitly
+     * because Livewire/Laravel can treat it as empty.
+     */
+    protected function hydrateFiltersFromQuery(): void
+    {
+        $anonymous = request()->query('is_anonymous');
+        if ($anonymous === '0' || $anonymous === '1' || $anonymous === 0 || $anonymous === 1) {
+            $this->filterAnonymous = (string) (int) $anonymous;
+            if ($this->filterAnonymous === '1') {
+                $this->filterName = '';
+            }
+        }
+
+        $grade = request()->query('grade');
+        if (is_string($grade) && $grade !== '') {
+            $this->filterGrade = $grade;
+        }
+
+        $from = request()->query('date_from');
+        if (is_string($from) && $from !== '') {
+            $this->filterDateFrom = $from;
+        }
+
+        $to = request()->query('date_to');
+        if (is_string($to) && $to !== '') {
+            $this->filterDateTo = $to;
+        }
+
+        $type = request()->query('type_id', request()->query('abuse_type'));
+        if ($type !== null && $type !== '') {
+            $this->filterType = (string) $type;
+        }
     }
     public function updatingFilterAnonymous($value): void {
         $this->resetPage();
