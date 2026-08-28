@@ -99,8 +99,9 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 18px;
             font-weight: 700;
-            margin: 0 0 1rem;
+            margin: 0 0 0.35rem;
         }
+        .map-source-note { margin: 0 0 1rem; font-size: 12px; color: #6b7280; font-weight: 500; }
         .subtitle { margin-bottom: 2rem; color: #5f6b7b; text-align: center; font-size: 13px; font-weight: 400; }
 
         .filter-panel {
@@ -233,6 +234,10 @@
         .heatmap-cell.heat-band-0 { background-color: #d1cb23; }
         .heatmap-cell.heat-band-1 { background-color: #fbbf0f; }
         .heatmap-cell.heat-band-2 { background-color: #ed1c24; }
+        .heatmap-total-cell { font-weight: 800; text-align: center; color: #111827; }
+        .heatmap-total-cell.heat-band-0 { background-color: #99b871; color: #fff; }
+        .heatmap-total-cell.heat-band-1 { background-color: #ffd700; color: #111827; }
+        .heatmap-total-cell.heat-band-2 { background-color: #d72323; color: #fff; }
         .heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
         .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
         .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
@@ -240,32 +245,38 @@
 
         .map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
         .district-map-container {
-            height: 640px;
+            height: min(920px, calc(100vh - 140px));
             width: 100%;
             max-width: 100%;
-            min-height: 420px;
+            min-height: 720px;
             border-radius: 0.5rem;
             overflow: hidden;
             position: relative;
             background: #f7f6f2;
         }
         .district-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; z-index: 1; }
-        .heat-glow-layer { pointer-events: none; overflow: visible; }
         .map-color-root {
             /* thin dark outer silhouette only — no per-district dark strokes */
             filter: drop-shadow(0 0 0.55px #111111);
         }
         .district-map-shape {
-            fill: transparent;
-            stroke: none;
+            stroke: rgba(255,255,255,0.95);
+            stroke-width: 1px;
+            stroke-linejoin: round;
+            fill-rule: evenodd;
+            vector-effect: non-scaling-stroke;
+            transition: stroke 0.15s ease, stroke-width 0.15s ease;
             pointer-events: all;
         }
         .district-map-shape.is-hover,
         .district-map-shape.is-key-hover {
-            fill: rgba(255,255,255,0.08);
+            stroke: #111827;
+            stroke-width: 1.75px;
         }
         .district-map-shape.is-selected {
-            fill: rgba(56,182,255,0.12);
+            stroke: #38b6ff;
+            stroke-width: 2px;
+            filter: drop-shadow(0 0 4px rgba(56,182,255,0.45));
         }
         .district-map-inner-border {
             fill: none;
@@ -298,17 +309,32 @@
             z-index: 5;
         }
         .district-map-tooltip {
-            display: none !important; /* reference map uses in-place labels only */
+            position: absolute; left: 0; top: 0;
+            transform: translate(-9999px, -9999px);
+            background: rgba(255,255,255,0.98);
+            border: 1px solid rgba(17,24,39,0.2);
+            border-radius: 10px;
+            padding: 8px 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            font-size: 12px;
+            color: #111827;
+            pointer-events: none;
+            z-index: 25;
+            max-width: 260px;
+            line-height: 1.2;
+            display: none;
         }
+        .district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
+        .district-map-tooltip .tt-sub { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
         .map-legend {
             position: absolute;
             bottom: 18px;
             right: 18px;
             z-index: 20;
-            background: transparent;
-            padding: 0;
-            border-radius: 0;
-            box-shadow: none;
+            background: rgba(255,255,255,0.92);
+            padding: 10px 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             font-size: 13px;
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
@@ -330,7 +356,7 @@
                 border: 0;
             }
             .dashboard-scroll { padding: 1rem; }
-            .district-map-container { height: 380px; min-height: 320px; }
+            .district-map-container { height: min(560px, 72vh); min-height: 440px; }
             h1 { font-size: 22px !important; padding: 0 0.5rem; }
             .heatmap-wrap { -webkit-overflow-scrolling: touch; overflow-x: auto; }
             .heatmap-table { font-size: 11px; }
@@ -360,12 +386,14 @@
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
+                @php $currentUser = auth()->user()->fresh(); @endphp
                 @if($currentUser && $currentUser->profile_picture)
-                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture"
-                         onerror="this.style.display='none'; this.parentElement.style.background='#ececec';">
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
                 @else
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color: #999;">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    <svg viewBox="0 0 52 52" role="img" aria-label="Default administrator profile picture">
+                        <circle cx="26" cy="26" r="26" fill="#e3e7ec"/>
+                        <ellipse cx="26" cy="20" rx="10" ry="12" fill="#647184"/>
+                        <path d="M8 47c2-11 9-17 18-17s16 6 18 17c-5 3-11 5-18 5S13 50 8 47Z" fill="#647184"/>
                     </svg>
                 @endif
             </div>
@@ -501,7 +529,13 @@
                                         <span class="heatmap-cell-pct" style="display:none;">{{ $pct }}%</span>
                                     </td>
                                 @endforeach
-                                <td class="heatmap-row" style="font-weight:800;">{{ number_format($heatmapRowTotals[$districtName] ?? 0) }}</td>
+                                @php
+                                    $rowTotal = (int) ($heatmapRowTotals[$districtName] ?? 0);
+                                    $rowBand = ($rowTotal <= 0 || $rowTotal <= (int) ($mapDistrictBandLowMax ?? 0))
+                                        ? 0
+                                        : ($rowTotal <= (int) ($mapDistrictBandMediumMax ?? 0) ? 1 : 2);
+                                @endphp
+                                <td class="heatmap-total-cell heat-band-{{ $rowBand }}">{{ number_format($rowTotal) }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -539,6 +573,7 @@
 
         <section class="panel map-panel" aria-label="Reports by District Geographic Heatmap">
             <h2>Geographic Distribution — {{ $province->province_name }}</h2>
+            <p class="map-source-note">District lines are Department of Basic Education education-district boundaries.</p>
             <div id="district-map" class="district-map-container">
                 <div class="district-map-status" id="districtMapStatus">Loading map…</div>
                 <div class="district-map-tooltip" id="districtMapTooltip" style="display:none;">
@@ -546,9 +581,15 @@
                     <div class="tt-sub" id="districtMapTooltipSub"></div>
                 </div>
                 <div class="map-legend" aria-label="Heatmap legend">
-                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium</span></div>
-                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low</span></div>
+                    @php
+                        $mapLow = (int) ($mapDistrictBandLowMax ?? 0);
+                        $mapMed = (int) ($mapDistrictBandMediumMax ?? 0);
+                    @endphp
+                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High · {{ number_format($mapMed + 1) }}+</span></div>
+                    @if($mapMed > $mapLow)
+                        <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium · {{ number_format($mapLow + 1) }}–{{ number_format($mapMed) }}</span></div>
+                    @endif
+                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low · 0–{{ number_format($mapLow) }}</span></div>
                 </div>
             </div>
         </section>
@@ -685,27 +726,32 @@
     const HEAT_MED = '#ffd700';
     const HEAT_HIGH = '#d72323';
 
-    /** Continuous soft field — fades to transparent so green base shows through. */
-    function heatGlowStops(bandIdx) {
+    function heatColor(bandIdx) {
+        if (bandIdx === 2) return HEAT_HIGH;
+        if (bandIdx === 1) return HEAT_MED;
+        return HEAT_LOW;
+    }
+
+    function heatGradientStops(bandIdx) {
         if (bandIdx === 2) {
             return [
-                { offset: '0%', color: HEAT_HIGH, opacity: '0.95' },
-                { offset: '20%', color: '#ef4a2a', opacity: '0.85' },
-                { offset: '42%', color: '#f5b400', opacity: '0.7' },
-                { offset: '62%', color: HEAT_MED, opacity: '0.45' },
-                { offset: '82%', color: HEAT_MED, opacity: '0.15' },
-                { offset: '100%', color: HEAT_LOW, opacity: '0' },
+                { offset: '0%', color: HEAT_HIGH },
+                { offset: '100%', color: '#ef4a2a' },
+            ];
+        }
+        if (bandIdx === 1) {
+            return [
+                { offset: '0%', color: HEAT_MED },
+                { offset: '100%', color: '#c5d46e' },
             ];
         }
         return [
-            { offset: '0%', color: HEAT_MED, opacity: '0.8' },
-            { offset: '38%', color: HEAT_MED, opacity: '0.45' },
-            { offset: '72%', color: '#c5d46e', opacity: '0.15' },
-            { offset: '100%', color: HEAT_LOW, opacity: '0' },
+            { offset: '0%', color: HEAT_LOW },
+            { offset: '100%', color: HEAT_LOW },
         ];
     }
 
-    function districtGlowRadius(bb, bandIdx) {
+    function districtGradientRadius(bb) {
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
         const corners = [
@@ -719,26 +765,27 @@
             const d = Math.hypot(pt[0] - cx, pt[1] - cy);
             if (d > maxDist) maxDist = d;
         });
-        // Wide enough that neighboring districts share one continuous wash
-        const scale = bandIdx === 2 ? 3.6 : 2.8;
-        return Math.max(maxDist * scale, 22);
+        return Math.max(maxDist * 1.05, 8);
     }
 
-    function appendHeatGlow(path, bandIdx, heatLayer, defs, svgNS, gradSeq) {
-        if (bandIdx < 1) return gradSeq;
-
+    function applyDistrictFill(path, bandIdx, defs, svgNS, gradSeq) {
+        const solid = heatColor(bandIdx);
         let bb;
         try {
             bb = path.getBBox();
         } catch (e) {
+            path.setAttribute('fill', solid);
             return gradSeq;
         }
-        if (bb.width <= 0 || bb.height <= 0) return gradSeq;
+        if (!(bb.width > 0) || !(bb.height > 0)) {
+            path.setAttribute('fill', solid);
+            return gradSeq;
+        }
 
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
-        const r = districtGlowRadius(bb, bandIdx);
-        const gradId = 'pa-hg-' + gradSeq;
+        const r = districtGradientRadius(bb);
+        const gradId = 'pa-df-' + gradSeq;
 
         const grad = document.createElementNS(svgNS, 'radialGradient');
         grad.setAttribute('id', gradId);
@@ -748,23 +795,14 @@
         grad.setAttribute('r', String(r));
         grad.setAttribute('spreadMethod', 'pad');
 
-        heatGlowStops(bandIdx).forEach(function (stopDef) {
+        heatGradientStops(bandIdx).forEach(function (stopDef) {
             const stop = document.createElementNS(svgNS, 'stop');
             stop.setAttribute('offset', stopDef.offset);
             stop.setAttribute('stop-color', stopDef.color);
-            stop.setAttribute('stop-opacity', stopDef.opacity);
             grad.appendChild(stop);
         });
         defs.appendChild(grad);
-
-        const circle = document.createElementNS(svgNS, 'circle');
-        circle.setAttribute('cx', String(cx));
-        circle.setAttribute('cy', String(cy));
-        circle.setAttribute('r', String(r));
-        circle.setAttribute('fill', 'url(#' + gradId + ')');
-        circle.setAttribute('class', 'heat-glow-blob');
-        heatLayer.appendChild(circle);
-
+        path.setAttribute('fill', 'url(#' + gradId + ')');
         return gradSeq + 1;
     }
 
@@ -777,6 +815,61 @@
         }
         if (parts.length === 2) return parts;
         return [text];
+    }
+
+    function labelBox(cx, cy, boxW, boxH) {
+        return {
+            left: cx - boxW / 2,
+            right: cx + boxW / 2,
+            top: cy - boxH / 2,
+            bottom: cy + boxH / 2,
+        };
+    }
+
+    function labelsOverlap(a, b, gap) {
+        return a.left < b.right + gap
+            && a.right + gap > b.left
+            && a.top < b.bottom + gap
+            && a.bottom + gap > b.top;
+    }
+
+    function findClearLabelPoint(originX, originY, boxW, boxH, placed, bb) {
+        const gap = 1.1;
+        const stepX = Math.max(boxW * 0.28, 1.35);
+        const stepY = Math.max(boxH * 0.55, 1.25);
+
+        function isClear(x, y) {
+            const box = labelBox(x, y, boxW, boxH);
+            for (let i = 0; i < placed.length; i++) {
+                if (labelsOverlap(box, placed[i], gap)) return false;
+            }
+            return true;
+        }
+
+        function inDistrict(x, y) {
+            return x >= bb.x && x <= bb.x + bb.width && y >= bb.y && y <= bb.y + bb.height;
+        }
+
+        if (isClear(originX, originY)) return { x: originX, y: originY };
+
+        const dirs = [
+            [0, -1], [0, 1], [1, 0], [-1, 0],
+            [0.7, -1], [-0.7, -1], [0.7, 1], [-0.7, 1],
+            [1, -0.7], [-1, -0.7], [1, 0.7], [-1, 0.7],
+            [1, -1], [-1, -1], [1, 1], [-1, 1],
+        ];
+
+        let outsideClear = null;
+        for (let ring = 1; ring <= 36; ring++) {
+            for (let d = 0; d < dirs.length; d++) {
+                const x = originX + dirs[d][0] * stepX * ring;
+                const y = originY + dirs[d][1] * stepY * ring;
+                if (!isClear(x, y)) continue;
+                if (inDistrict(x, y)) return { x: x, y: y };
+                if (!outsideClear) outsideClear = { x: x, y: y };
+            }
+        }
+        return outsideClear || { x: originX, y: originY };
     }
 
     function heatBandIndexFromCount(count) {
@@ -798,7 +891,7 @@
     function showTooltip(clientX, clientY, title, count) {
         if (!tooltipEl || !tooltipTitleEl || !tooltipSubEl) return;
         tooltipTitleEl.textContent = String(title || '');
-        tooltipSubEl.textContent = '';
+        tooltipSubEl.textContent = Number(count).toLocaleString() + (Number(count) === 1 ? ' report' : ' reports');
         tooltipEl.style.display = 'block';
         moveTooltip(clientX, clientY);
     }
@@ -818,7 +911,7 @@
 
     async function loadMapItems() {
         const bust = Date.now();
-        return fetchJson(mapAssetBase + '/' + provinceSlug + '.json?v=' + bust);
+        return fetchJson(mapAssetBase + '/' + provinceSlug + '.education.json?v=' + bust);
     }
 
     const countsByNorm = {};
@@ -831,41 +924,55 @@
     });
 
     const GEO_DB_PREFIXES = {
+        'alfred nzo east': ['alfred nzo east'],
+        'alfred nzo west': ['alfred nzo west'],
+        'amathole east': ['amathole east'],
+        'amathole west': ['amathole west'],
         'buffalo city': ['buffalo city'],
-        'amathole': ['amathole'],
-        'alfred nzo': ['alfred nzo'],
-        'or tambo': ['or tambo'],
-        'chris hani': ['chris hani'],
+        'chris hani east': ['chris hani east'],
+        'chris hani west': ['chris hani west'],
         'joe gqabi': ['joe gqabi'],
-        'manguang': ['motheo', 'metro central'],
-        'motheo': ['motheo', 'metro central'],
+        'nelson mandela': ['nelson mandela'],
+        'or tambo coastal': ['or tambo coastal'],
+        'or tambo inland': ['or tambo inland'],
+        'sarah baartman': ['sarah baartman'],
+        'manguang': ['motheo'],
+        'motheo': ['motheo'],
         'lejweleputswa': ['lejweleputswa', 'letjweleputswa'],
         'thabo mofutsanyana': ['thabo mofutsanyana'],
         'fezile dabi': ['fezile dabi'],
         'xhariep': ['xhariep'],
-        // Gauteng uses granular education districts in gauteng.json (exact name match).
-        // Do not alias metros → many districts (that bundles Tshwane/Johannesburg/etc.).
-        'ethekwini': ['ethekwini', 'pinetown', 'umlazi'],
         'amajuba': ['amajuba'],
         'harry gwala': ['harry gwala'],
         'ilembe': ['ilembe'],
         'king cetshwayo': ['king cetshwayo'],
+        'pinetown': ['pinetown'],
+        'ugu': ['ugu'],
         'umgungundlovu': ['umgungundlovu'],
         'umkhanyakude': ['umkhanyakude'],
+        'umlazi': ['umlazi'],
         'umzinyathi': ['umzinyathi'],
         'uthukela': ['uthukela'],
         'zululand': ['zululand'],
-        'ehlanzeni': ['ehlanzeni'],
+        'ehlanzeni': ['ehlanzeni', 'bohlabela'],
         'gert sibande': ['gert sibande'],
         'nkangala': ['nkangala'],
-        'capricorn': ['capricorn'],
-        'mopani': ['mopani'],
-        'sekhukhune': ['sekhukhune'],
-        'vhembe': ['vhembe'],
+        'capricorn north': ['capricorn north'],
+        'capricorn south': ['capricorn south'],
+        'mogalakwena': ['mogalakwena'],
+        'mopani east': ['mopani east'],
+        'mopani west': ['mopani west'],
+        'sekhukhune east': ['sekhukhune east'],
+        'sekhukhune south': ['sekhukhune south'],
+        'vhembe east': ['vhembe east'],
+        'vhembe west': ['vhembe west'],
         'waterberg': ['waterberg'],
         'cape winelands': ['cape winelands'],
-        'central karoo': ['eden and central karoo', 'central karoo'],
-        'eden': ['eden and central karoo', 'eden'],
+        'eden and central karoo': ['eden and central karoo'],
+        'metro central': ['metro central'],
+        'metro east': ['metro east'],
+        'metro north': ['metro north'],
+        'metro south': ['metro south'],
         'overberg': ['overberg'],
         'west coast': ['west coast'],
         'frances baard': ['frances baard'],
@@ -873,9 +980,12 @@
         'namakwa': ['namakwa'],
         'pixley ka seme': ['pixley ka seme'],
         'zf mgcawu': ['zf mgcawu'],
+        'siyanda': ['zf mgcawu'],
         'ngaka modiri molema': ['ngaka modiri molema'],
+        'bojanala': ['bojanala'],
         'bojanala platinum': ['bojanala'],
         'dr kenneth kaunda': ['dr kenneth kaunda'],
+        'dr ruth s mompati': ['dr ruth s mompati', 'dr ruth segomotsi mompati'],
         'dr ruth segomotsi mompati': ['dr ruth s mompati', 'dr ruth segomotsi mompati'],
     };
 
@@ -906,17 +1016,18 @@
     function countForDbNames(dbNames) {
         const names = Array.isArray(dbNames) ? dbNames : [];
         if (!names.length) return null;
-        const vals = [];
         const seen = {};
+        let matched = false;
+        let total = 0;
         names.forEach(function (n) {
             const k = keyName(n);
             if (!k || seen[k]) return;
             seen[k] = true;
-            vals.push(Number(countsByNorm[k]) || 0);
+            if (countsByNorm[k] === undefined) return;
+            matched = true;
+            total += Number(countsByNorm[k]) || 0;
         });
-        if (!vals.length) return 0;
-        // Multi-mapped regions (Metro / Region) use max so we don't double-count.
-        return names.length > 1 ? Math.max.apply(null, vals) : vals[0];
+        return matched ? total : null;
     }
 
     function countForGeo(rawGeoName, dbNames) {
@@ -970,8 +1081,9 @@
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('d', pathD);
         path.setAttribute('class', 'district-map-shape' + (bandIdx === 2 ? ' district-map-shape-dark' : ''));
+        path.setAttribute('fill-rule', 'evenodd');
         path.setAttribute('data-heat-band', String(bandIdx));
-        path.setAttribute('fill', 'transparent');
+        path.setAttribute('fill', heatColor(bandIdx));
         path.setAttribute('fill-opacity', '1');
         path.setAttribute('data-shape-kind', 'district');
         path.setAttribute('data-district-id', districtId ? String(districtId) : '');
@@ -1008,17 +1120,13 @@
             g.setAttribute('class', 'za-map-root');
             svg.appendChild(g);
 
-            // Reference stack: seamless green+heat (clipped) → hit paths → labels
-            // (no white grid / district wireframe lines)
+            // Choropleth fills stay inside each district path (no spilling glow)
             const colorRoot = document.createElementNS(svgNS, 'g');
             colorRoot.setAttribute('class', 'map-color-root');
-            const heatLayer = document.createElementNS(svgNS, 'g');
-            heatLayer.setAttribute('class', 'heat-glow-layer');
             districtLayer = document.createElementNS(svgNS, 'g');
             districtLayer.setAttribute('class', 'district-layer');
             g.appendChild(colorRoot);
-            colorRoot.appendChild(heatLayer);
-            g.appendChild(districtLayer);
+            colorRoot.appendChild(districtLayer);
 
             districtItems.forEach(function (it) {
                 appendDistrictShape(it, districtLayer, svgNS);
@@ -1032,7 +1140,7 @@
                 try {
                     const mapBb = g.getBBox();
                     if (mapBb.width > 0 && mapBb.height > 0) {
-                        const pad = 36;
+                        const pad = 12;
                         svg.setAttribute('viewBox',
                             (mapBb.x - pad) + ' ' + (mapBb.y - pad) + ' ' +
                             (mapBb.width + pad * 2) + ' ' + (mapBb.height + pad * 2));
@@ -1048,33 +1156,26 @@
                     clip.appendChild(clipPath);
                 });
                 defs.appendChild(clip);
-                const clipUrl = 'url(#pa-province-clip)';
-                colorRoot.setAttribute('clip-path', clipUrl);
+                colorRoot.setAttribute('clip-path', 'url(#pa-province-clip)');
 
-                // Seamless green base (one field — no per-district fill seams)
-                let mapBb;
-                try { mapBb = districtLayer.getBBox(); } catch (e) { mapBb = null; }
-                if (mapBb && mapBb.width > 0) {
+                let mapBbFill;
+                try { mapBbFill = districtLayer.getBBox(); } catch (e) { mapBbFill = null; }
+                if (mapBbFill && mapBbFill.width > 0) {
                     const base = document.createElementNS(svgNS, 'rect');
-                    base.setAttribute('x', String(mapBb.x - 2));
-                    base.setAttribute('y', String(mapBb.y - 2));
-                    base.setAttribute('width', String(mapBb.width + 4));
-                    base.setAttribute('height', String(mapBb.height + 4));
+                    base.setAttribute('x', String(mapBbFill.x - 2));
+                    base.setAttribute('y', String(mapBbFill.y - 2));
+                    base.setAttribute('width', String(mapBbFill.width + 4));
+                    base.setAttribute('height', String(mapBbFill.height + 4));
                     base.setAttribute('fill', HEAT_LOW);
                     base.setAttribute('class', 'map-green-base');
-                    colorRoot.insertBefore(base, heatLayer);
+                    base.setAttribute('pointer-events', 'none');
+                    colorRoot.insertBefore(base, districtLayer);
                 }
 
                 let gradSeq = 0;
-                const shapes = Array.prototype.slice.call(
-                    districtLayer.querySelectorAll('.district-map-shape')
-                );
-                [1, 2].forEach(function (band) {
-                    shapes.forEach(function (path) {
-                        const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
-                        if (bandIdx !== band) return;
-                        gradSeq = appendHeatGlow(path, bandIdx, heatLayer, defs, svgNS, gradSeq);
-                    });
+                districtLayer.querySelectorAll('.district-map-shape').forEach(function (path) {
+                    const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
+                    gradSeq = applyDistrictFill(path, bandIdx, defs, svgNS, gradSeq);
                 });
 
                 const labelAnchors = {};
@@ -1117,29 +1218,12 @@
 
                     const lines = labelLines(text);
                     const longest = lines.reduce(function (a, b) { return a.length >= b.length ? a : b; }, '');
-                    let fs = Math.min(bb.height * 0.125, bb.width / (longest.length * 0.65), 2.7);
-                    fs = Math.max(1.45, fs);
-
-                    let boxW = longest.length * fs * 0.52;
-                    let boxH = fs * 1.15 * lines.length;
-
-                    for (let attempt = 0; attempt < 8; attempt++) {
-                        let hit = false;
-                        const left = cx - boxW / 2;
-                        const top = cy - boxH / 2;
-                        for (let i = 0; i < placed.length; i++) {
-                            const p = placed[i];
-                            if (left < p.right && left + boxW > p.left && top < p.bottom && top + boxH > p.top) {
-                                hit = true;
-                                cy += (attempt % 2 === 0 ? 1 : -1) * (fs * 0.8 + attempt * 0.28);
-                                fs = Math.max(1.25, fs * 0.94);
-                                boxW = longest.length * fs * 0.52;
-                                boxH = fs * 1.15 * lines.length;
-                                break;
-                            }
-                        }
-                        if (!hit) break;
-                    }
+                    const fs = 1.7;
+                    const boxW = Math.max(longest.length * fs * 0.62, fs * 3);
+                    const boxH = fs * 1.32 * lines.length;
+                    const pt = findClearLabelPoint(cx, cy, boxW, boxH, placed, bb);
+                    cx = pt.x;
+                    cy = pt.y;
 
                     const textEl = document.createElementNS(svgNS, 'text');
                     textEl.setAttribute('x', String(cx));
@@ -1147,13 +1231,12 @@
                     textEl.setAttribute('text-anchor', 'middle');
                     textEl.setAttribute('dominant-baseline', 'middle');
                     textEl.setAttribute('font-size', String(fs));
-                    textEl.setAttribute('stroke-width', String(Math.max(0.28, fs * 0.17)));
                     textEl.setAttribute('class', 'map-label-district');
 
                     if (lines.length === 1) {
                         textEl.textContent = lines[0];
                     } else {
-                        const lh = fs * 1.15;
+                        const lh = fs * 1.32;
                         const startY = cy - (lh * (lines.length - 1)) / 2;
                         lines.forEach(function (line, idx) {
                             const tspan = document.createElementNS(svgNS, 'tspan');
@@ -1179,15 +1262,23 @@
                     if (!isDistrict) {
                         if (hovered) hovered.classList.remove('is-hover');
                         hovered = null;
+                        hideTooltip();
                         return;
                     }
                     if (hovered && hovered !== target) hovered.classList.remove('is-hover');
                     hovered = target;
                     hovered.classList.add('is-hover');
+                    showTooltip(
+                        event.clientX,
+                        event.clientY,
+                        target.getAttribute('data-district-label'),
+                        target.getAttribute('data-count')
+                    );
                 });
                 svg.addEventListener('mouseleave', function () {
                     if (hovered) hovered.classList.remove('is-hover');
                     hovered = null;
+                    hideTooltip();
                 });
 
                 if (statusEl) statusEl.style.display = 'none';
