@@ -419,6 +419,12 @@ us
                 @php $currentUser = auth()->user()->fresh(); @endphp
                 @if($currentUser && $currentUser->profile_picture)
                     <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
+                @else
+                    <svg viewBox="0 0 52 52" role="img" aria-label="Default administrator profile picture">
+                        <circle cx="26" cy="26" r="26" fill="#e3e7ec"/>
+                        <ellipse cx="26" cy="20" rx="10" ry="12" fill="#647184"/>
+                        <path d="M8 47c2-11 9-17 18-17s16 6 18 17c-5 3-11 5-18 5S13 50 8 47Z" fill="#647184"/>
+                    </svg>
                 @endif
             </div>
         </div>
