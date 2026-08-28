@@ -144,7 +144,7 @@ body.sa-app aside#sa-sidebar nav a.sidebar-link.active {
                     My Profile
                 </a>
             </li>
-            @if ($showExportPdf)
+            @if ($showExportPdf = $isDashboard;)
                 <li>
                     <a href="#"
                        class="sidebar-link"
