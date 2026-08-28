@@ -1,6 +1,6 @@
 {{-- Shared National Admin Sidebar — Dashboard, Reports, Heat-map, Settings --}}
 @php
-    $showExportPdf = request()->is('national-admin/dashboard', 'national-admin/reports', 'national-admin/heatmap');
+    $showExportPdf = request()->is('national-admin/dashboard', 'national-admin/heatmap');
 @endphp
 
 <aside class="sidebar national-admin-sidebar" id="na-sidebar">
