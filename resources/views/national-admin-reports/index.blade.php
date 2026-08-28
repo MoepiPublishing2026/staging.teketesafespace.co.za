@@ -1066,11 +1066,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const filterForm = document.getElementById('filterForm');
     let filterDebounce = null;
 
+            // Restore focus + cursor position after an auto-submit reload
+    (function restoreFocusAfterReload() {
+        try {
+            const raw = sessionStorage.getItem('reportsFilterFocus');
+            if (!raw) return;
+            sessionStorage.removeItem('reportsFilterFocus');
+            const { name, start, end } = JSON.parse(raw);
+            const el = filterForm && filterForm.querySelector('[name="' + name + '"]');
+            if (el) {
+                el.focus();
+                if (typeof el.setSelectionRange === 'function') {
+                    el.setSelectionRange(start, end);
+                }
+            }
+        } catch (e) {}
+    })();
+
     if (filterForm) {
-        filterForm.querySelectorAll('input[name="search"], input[name="full_name"], input[name="school_name"]').forEach(function (input) {
+        filterForm.querySelectorAll('input[name="search"], input[name="full_name"]').forEach(function (input) {
             input.addEventListener('input', function () {
                 clearTimeout(filterDebounce);
-                filterDebounce = setTimeout(function () { filterForm.submit(); }, 500);
+                const name = this.name;
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                filterDebounce = setTimeout(function () {
+                    try {
+                        sessionStorage.setItem('reportsFilterFocus', JSON.stringify({ name, start, end }));
+                    } catch (e) {}
+                    filterForm.submit();
+                }, 500);
             });
         });
 
