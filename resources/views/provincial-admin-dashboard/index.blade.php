@@ -2027,12 +2027,70 @@ function navigateWithFilterByAnonymous(isAnonymous) {
             return;
         }
 
-        html2pdf().from(element).set({
-            margin: 10,
+        // 1. Convert active <canvas> elements to fixed-size static PNGs
+        const canvasElements = element.querySelectorAll('canvas');
+        const tempImages = [];
+
+        canvasElements.forEach(canvas => {
+            // Capture physical pixel bounds instead of style attributes (e.g. "100%")
+            const rect = canvas.getBoundingClientRect();
+            
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png', 1.0);
+            
+            // Lock dimensions explicitly so the layout flow doesn't collapse
+            img.style.width = `${rect.width}px`;
+            img.style.height = `${rect.height}px`;
+            img.style.display = 'block';
+            img.className = 'temp-pdf-img pdf-keep-together';
+
+            // Apply isolation directly on chart card container
+            if (canvas.parentElement) {
+                canvas.parentElement.style.pageBreakInside = 'avoid';
+                canvas.parentElement.style.breakInside = 'avoid';
+            }
+
+            // Swap canvas with static image
+            canvas.parentNode.insertBefore(img, canvas);
+            canvas.style.display = 'none';
+
+            tempImages.push({ canvas, img });
+        });
+
+        // 2. Configure html2pdf options with pagebreak avoidance and scroll reset
+        const options = {
+            margin: [10, 10, 10, 10], // [top, left, bottom, right] in mm
             filename: 'provincial-admin-dashboard.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-        }).save();
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true,
+                logging: false,
+                scrollY: 0,
+                scrollX: 0
+            },
+            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' },
+            pagebreak: { 
+                mode: ['avoid-all', 'css', 'legacy'],
+                avoid: ['.card', '.chart-card', '.pdf-keep-together', 'canvas', '.temp-pdf-img', 'tr']
+            }
+        };
+
+        // 3. Render PDF and restore live charts on complete or catch error
+        html2pdf().set(options).from(element).save().then(() => {
+            restoreCanvas();
+        }).catch(err => {
+            console.error('PDF Export Error:', err);
+            restoreCanvas();
+        });
+
+        function restoreCanvas() {
+            tempImages.forEach(({ canvas, img }) => {
+                canvas.style.display = '';
+                if (img && img.parentNode) {
+                    img.parentNode.removeChild(img);
+                }
+            });
+        }
     }
 </script>
 
