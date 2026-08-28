@@ -381,9 +381,9 @@
         }
         .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
         .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-        .map-legend-swatch.low { background: radial-gradient(circle, #a8d05f 0%, #a8d05f 100%); }
-        .map-legend-swatch.medium { background: radial-gradient(circle, #f9c80e 0%, #f9c80e 70%, #a8d05f 100%); }
-        .map-legend-swatch.high { background: radial-gradient(circle, #d80f18 0%, #ef2b2d 35%, #f26a21 52%, #f9c80e 78%, #a8d05f 100%); }
+        .map-legend-swatch.low { background: #a8d05f; }
+        .map-legend-swatch.medium { background: #f9c80e; }
+        .map-legend-swatch.high { background: #d80f18; }
 
         @media (max-width: 900px) {
             .main-panel { margin-left: 0 !important; width: 100%; }
@@ -786,21 +786,23 @@
             .trim();
     }
 
+    function heatColor(bandIdx) {
+        if (bandIdx === 2) return '#d80f18';
+        if (bandIdx === 1) return '#f9c80e';
+        return '#a8d05f';
+    }
+
     function heatGradientStops(bandIdx) {
         if (bandIdx === 2) {
             return [
                 { offset: '0%', color: '#d80f18' },
-                { offset: '35%', color: '#ef2b2d' },
-                { offset: '52%', color: '#f26a21' },
-                { offset: '78%', color: '#f9c80e' },
-                { offset: '100%', color: '#a8d05f' },
+                { offset: '100%', color: '#ef2b2d' },
             ];
         }
         if (bandIdx === 1) {
             return [
                 { offset: '0%', color: '#f9c80e' },
-                { offset: '80%', color: '#f9c80e' },
-                { offset: '100%', color: '#a8d05f' },
+                { offset: '100%', color: '#f5b400' },
             ];
         }
         return [
@@ -831,7 +833,7 @@
         try {
             bb = path.getBBox();
         } catch (e) {
-            path.setAttribute('fill', bandIdx === 2 ? '#d80f18' : (bandIdx === 1 ? '#f9c80e' : '#a8d05f'));
+            path.setAttribute('fill', heatColor(bandIdx));
             return gradSeq;
         }
 
@@ -860,23 +862,31 @@
         return gradSeq + 1;
     }
 
-    function computeHeatBandThresholds(counts) {
-        const positive = (counts || []).map(function (c) { return Number(c) || 0; })
-            .filter(function (c) { return c > 0; })
-            .sort(function (a, b) { return a - b; });
-        const n = positive.length;
-        if (n === 0) return { lowMax: 0, mediumMax: 0 };
-        if (n === 1) return { lowMax: 0, mediumMax: positive[0] };
-        const iLow = Math.max(0, Math.floor(n / 3) - 1);
-        const iMed = Math.max(iLow, Math.floor((2 * n) / 3) - 1);
-        return { lowMax: positive[iLow], mediumMax: positive[iMed] };
-    }
-
     function heatBandIndexFromCount(count) {
         const c = Number(count) || 0;
-        if (c <= 0 || c <= mapBandLowMax) return 0;
-        if (c <= mapBandMediumMax) return 1;
-        return 2;
+        if (c <= 0 || paintedCountMax <= 0) return 0;
+        const t = c / paintedCountMax;
+        if (t >= 0.67) return 2;
+        if (t >= 0.34) return 1;
+        return 0;
+    }
+
+    let paintedCountMax = 0;
+    function applyPaintedCountBands(districtLayer) {
+        const paths = Array.prototype.slice.call(districtLayer.querySelectorAll('.district-map-shape'));
+        paintedCountMax = 0;
+        paths.forEach(function (path) {
+            const c = Number(path.getAttribute('data-count') || 0);
+            if (c > paintedCountMax) paintedCountMax = c;
+        });
+        mapBandLowMax = paintedCountMax * 0.34;
+        mapBandMediumMax = paintedCountMax * 0.67;
+        paths.forEach(function (path) {
+            const bandIdx = heatBandIndexFromCount(path.getAttribute('data-count'));
+            path.setAttribute('data-heat-band', String(bandIdx));
+            if (bandIdx === 2) path.classList.add('district-map-shape-dark');
+            else path.classList.remove('district-map-shape-dark');
+        });
     }
 
     function moveTooltip(clientX, clientY) {
@@ -890,8 +900,9 @@
 
     function showTooltip(clientX, clientY, title, count) {
         if (!tooltipEl || !tooltipTitleEl || !tooltipSubEl) return;
+        const n = Number(count) || 0;
         tooltipTitleEl.textContent = String(title || '');
-        tooltipSubEl.textContent = '';
+        tooltipSubEl.textContent = n.toLocaleString() + (n === 1 ? ' report' : ' reports');
         tooltipEl.style.display = 'block';
         moveTooltip(clientX, clientY);
     }
@@ -910,9 +921,10 @@
     }
 
     async function loadMapItems() {
+        const bust = Date.now();
         const districtBundles = await Promise.all(
             PROVINCE_GEO_SLUGS.map(function (slug) {
-                return fetchJson(mapAssetBase + '/' + slug + '.json').catch(function () { return []; });
+                return fetchJson(mapAssetBase + '/' + slug + '.json?v=' + bust).catch(function () { return []; });
             })
         );
         const districts = districtBundles.flat().filter(function (it) {
@@ -951,7 +963,12 @@
         'thabo mofutsanyana': ['thabo mofutsanyana'],
         'fezile dabi': ['fezile dabi'],
         'xhariep': ['xhariep'],
-        // Gauteng education districts are granular in gauteng.json — exact name match only.
+        // Gauteng national map uses the 5 metros; counts roll up from GDE education districts.
+        'tshwane': ['gauteng north', 'tshwane north', 'tshwane west', 'tshwane south'],
+        'johannesburg': ['johannesburg north', 'johannesburg west', 'johannesburg central', 'johannesburg east', 'johannesburg south'],
+        'ekurhuleni': ['ekurhuleni north', 'ekurhuleni south', 'gauteng east'],
+        'west rand': ['gauteng west'],
+        'sedibeng': ['sedibeng west', 'sedibeng east'],
         'ethekwini': ['ethekwini', 'pinetown', 'umlazi'],
         'amajuba': ['amajuba'],
         'harry gwala': ['harry gwala'],
@@ -1003,8 +1020,28 @@
         return false;
     }
 
+    function countForDbNames(dbNames) {
+        const names = Array.isArray(dbNames) ? dbNames : [];
+        if (!names.length) return null;
+        const seen = {};
+        let matched = false;
+        let total = 0;
+        names.forEach(function (n) {
+            const k = keyName(n);
+            if (!k || seen[k]) return;
+            seen[k] = true;
+            if (countsByNorm[k] === undefined) return;
+            matched = true;
+            total += Number(countsByNorm[k]) || 0;
+        });
+        return matched ? total : null;
+    }
+
     const geoCountCache = {};
-    function countForGeo(rawGeoName) {
+    function countForGeo(rawGeoName, dbNames) {
+        const fromDb = countForDbNames(dbNames);
+        if (fromDb !== null) return fromDb;
+
         const geoKey = keyName(rawGeoName);
         if (geoCountCache[geoKey] !== undefined) return geoCountCache[geoKey];
 
@@ -1024,7 +1061,12 @@
         return total;
     }
 
-    function primaryDistrictIdForGeo(rawGeoName) {
+    function primaryDistrictIdForGeo(rawGeoName, dbNames) {
+        const names = Array.isArray(dbNames) && dbNames.length ? dbNames : [rawGeoName];
+        for (let i = 0; i < names.length; i++) {
+            const k = keyName(names[i]);
+            if (districtIdByNorm[k]) return districtIdByNorm[k];
+        }
         const geoKey = keyName(rawGeoName);
         if (districtIdByNorm[geoKey]) return districtIdByNorm[geoKey];
         const norms = Object.keys(districtIdByNorm || {});
@@ -1050,9 +1092,11 @@
         const rawName = (it && it.name) ? String(it.name).trim() : '';
         if (!pathD || !rawName) return;
 
-        const count = countForGeo(rawName);
+        const dbNames = (it && Array.isArray(it.db_names)) ? it.db_names : [];
+        const count = countForGeo(rawName, dbNames);
         const displayLabel = resolveDbDistrictLabel(rawName);
         const bandIdx = heatBandIndexFromCount(count);
+        const districtId = primaryDistrictIdForGeo(rawName, dbNames);
 
         const path = document.createElementNS(svgNS, 'path');
         path.setAttribute('d', pathD);
@@ -1061,7 +1105,7 @@
         path.setAttribute('fill', '#a8d05f');
         path.setAttribute('fill-opacity', '1');
         path.setAttribute('data-shape-kind', 'district');
-        path.setAttribute('data-district-id', primaryDistrictIdForGeo(rawName) ? String(primaryDistrictIdForGeo(rawName)) : '');
+        path.setAttribute('data-district-id', districtId ? String(districtId) : '');
         path.setAttribute('data-district-label', displayLabel);
         path.setAttribute('data-count', String(count));
         path.style.cursor = 'default';
@@ -1114,11 +1158,10 @@
             g.appendChild(districtLayer);
             g.appendChild(provinceBorderLayer);
 
-            // Use backend-provided band thresholds (computed from the filtered dataset).
-
             districtItems.forEach(function (it) {
                 appendDistrictShape(it, districtLayer, svgNS);
             });
+            applyPaintedCountBands(districtLayer);
             outlineItems.forEach(function (it) {
                 appendProvinceBorder(it, provinceBorderLayer, svgNS, pathsForLabels);
             });
