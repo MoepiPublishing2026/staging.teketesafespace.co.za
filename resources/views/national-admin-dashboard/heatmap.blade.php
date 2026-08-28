@@ -419,12 +419,14 @@
                 <span class="role">Administrator</span>
             </div>
             <div class="profile-avatar">
+                @php $currentUser = auth()->user()->fresh(); @endphp
                 @if($currentUser && $currentUser->profile_picture)
-                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture"
-                         onerror="this.style.display='none'; this.parentElement.style.background='#ececec';">
+                    <img src="{{ $currentUser->profile_picture_url }}" alt="Profile Picture" class="profile-pic">
                 @else
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="color: #999;">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    <svg viewBox="0 0 52 52" role="img" aria-label="Default administrator profile picture">
+                        <circle cx="26" cy="26" r="26" fill="#e3e7ec"/>
+                        <ellipse cx="26" cy="20" rx="10" ry="12" fill="#647184"/>
+                        <path d="M8 47c2-11 9-17 18-17s16 6 18 17c-5 3-11 5-18 5S13 50 8 47Z" fill="#647184"/>
                     </svg>
                 @endif
             </div>
