@@ -245,7 +245,9 @@ class ProvincialHeatMapController extends Controller
         }
 
         $mapDistrictNameToId = $heatmapDistrictNameToId;
-        [$mapDistrictBandLowMax, $mapDistrictBandMediumMax] = $this->balancedBandThresholds(array_values($mapDistrictCounts));
+        // Colour by magnitude of district totals (same 1/3–2/3 cuts as the table),
+        // not by “top third of districts” — otherwise 5 reports can paint as red next to 278.
+        [$mapDistrictBandLowMax, $mapDistrictBandMediumMax] = $this->rangeScaledBandThresholds(array_values($mapDistrictCounts));
         $filteredReportsTotal = (clone $baseQuery)->count();
 
         return view('provincial-admin-dashboard.heatmap', [
