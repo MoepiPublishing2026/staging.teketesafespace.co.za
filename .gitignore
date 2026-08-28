@@ -4,3 +4,7 @@ storage/framework/cache/*
 storage/logs/*
 vendor/*
 .history/*
+scripts/data/education_districts/*.shp
+scripts/data/education_districts/*.shx
+scripts/data/education_districts/*.dbf
+scripts/data/education_districts/*.prj
