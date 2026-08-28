@@ -1687,19 +1687,44 @@ if (isMobile) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
     function exportPDF() {
-        const element = document.getElementById('main-content'); // ✅ grabs main content only
-        if (!element) {
-            alert("Main content not found! Add id='main-content' to your <main> tag.");
-            return;
-        }
+    const element = document.getElementById('main-content');
+    if (!element) return;
 
-        html2pdf().from(element).set({
-            margin: 10,
-            filename: 'school-admin-dashboard.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-        }).save();
-    }
+    // 1. Convert all canvas graphs to base64 images temporarily
+    const canvasElements = element.querySelectorAll('canvas');
+    const tempImages = [];
+
+    canvasElements.forEach(canvas => {
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/png', 1.0);
+        img.style.width = canvas.style.width || '100%';
+        img.style.height = canvas.style.height || 'auto';
+        img.className = 'temp-pdf-img keep-together';
+
+        // Swap canvas with dynamic image
+        canvas.parentNode.insertBefore(img, canvas);
+        canvas.style.display = 'none';
+
+        tempImages.push({ canvas, img });
+    });
+
+    // 2. Generate PDF with clean rasterized images
+    const options = {
+        margin: 10,
+        filename: 'school-admin-dashboard.pdf',
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' },
+        pagebreak: { mode: ['avoid-all', 'css'] }
+    };
+
+    html2pdf().set(options).from(element).save().then(() => {
+        // 3. Restore original canvas elements after download
+        tempImages.forEach(({ canvas, img }) => {
+            canvas.style.display = '';
+            img.remove();
+        });
+    });
+}
 </script>
 
     
