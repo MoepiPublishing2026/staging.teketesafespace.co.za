@@ -581,23 +581,170 @@ form.filters button {
 .grid-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0.5rem; }
 .grid-three { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
 
+
 .modal-backdrop {
-    position: fixed; inset: 0;
+    position: fixed;
+    inset: 0;
     background: rgba(17, 24, 39, 0.58);
-    display: none; align-items: center; justify-content: center; z-index: 50;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 9999;
+    padding: 1.5rem;
 }
-.modal-backdrop.active { display: flex; }
+
+.modal-backdrop.active {
+    display: flex;
+}
+
+/* Main popup */
 .modal-card {
-    width: min(960px, 92vw);
-    max-height: 85vh;
+    width: min(1250px, 92vw);
+    max-width: 1250px;
+
+    max-height: 82vh;
     overflow-y: auto;
-    background: white;
+
+    background: #ffffff;
+
+    border: 2px solid #c7da30;
     border-radius: 1.25rem;
-    padding: 2rem;
-    box-shadow: 0 32px 64px rgba(15, 23, 42, 0.35);
+
+    padding: 2rem 2.5rem;
+
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.30);
+
+    animation: popupAppear 0.22s ease-out;
 }
-.modal-card h3 { margin: 0 0 1rem; font-size: 1.5rem; font-weight: 700; color: var(--green-dark); }
-.modal-close { background: none; border: none; font-size: 1.5rem; color: #ef4444; cursor: pointer; }
+
+/* Popup animation */
+@keyframes popupAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Popup title */
+.modal-card h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #555555;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Close button */
+.modal-close {
+    width: 56px;
+    height: 56px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+    border: 2px solid #c7da30;
+    border-radius: 10px;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: #38b6ff;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #c7da30;
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+
+
+#statusModal .modal-card > div:nth-child(2) {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 1.25rem;
+}
+
+#statusModal table {
+    width: 100%;
+    min-width: 850px;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Header */
+#statusModal table thead th {
+    background: #f1f2f5;
+
+    color: #3f3f3f;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    text-align: left;
+
+    padding: 0.9rem 1rem;
+
+    border-bottom: 2px solid #dfe2e6;
+}
+
+/* Body */
+#statusModal table tbody td {
+    color: #555555;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    padding: 0.95rem 1rem;
+
+    border-bottom: 1px solid #e0e3e7;
+
+    vertical-align: middle;
+}
+
+/* Column widths */
+#statusModal table th:nth-child(1),
+#statusModal table td:nth-child(1) {
+    width: 36%;
+}
+
+#statusModal table th:nth-child(2),
+#statusModal table td:nth-child(2) {
+    width: 25%;
+}
+
+#statusModal table th:nth-child(3),
+#statusModal table td:nth-child(3) {
+    width: 18%;
+}
+
+#statusModal table th:nth-child(4),
+#statusModal table td:nth-child(4) {
+    width: 21%;
+}
+
+/* Row hover */
+#statusModal table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+
 .extras-modal-btn {
     padding: 0.5rem 1rem; background: #38b6ff; color: white;
     border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Montserrat', sans-serif;
@@ -605,6 +752,7 @@ form.filters button {
 .extras-modal-btn:hover { background: #0c8cb3; }
 
 .filter-separator { border: none; border-bottom: 2px solid silver; margin: 0 0 1rem 0; }
+
 
 .filters button#refreshBtn {
     color: white; border: none; padding: 0.65rem 0.85rem;
@@ -783,36 +931,65 @@ form.filters button {
             @endif
         </section>
 
-        <section class="metrics-row" aria-label="Headline metrics">
-            <div class="metric-card status-total" onclick="navigateWithFilter('total')">
-                <span class="card-title">Total Reports</span>
-                <div class="card-value">{{ number_format($summaryCounts['total'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-awaiting" onclick="navigateWithFilter('awaiting-resolution')">
-                <span class="card-title">Awaiting Resolution</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-forwarded" onclick="navigateWithFilter('forwarded')">
-                <span class="card-title">Forwarded</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['forwarded'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-review" onclick="navigateWithFilter('under-review')">
-                <span class="card-title">Under Review</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['under-review'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-closed" onclick="navigateWithFilter('closed')">
-                <span class="card-title">Closed</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['closed'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-unresolved" onclick="navigateWithFilter('unresolved')">
-                <span class="card-title">Unresolved</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['unresolved'] ?? 0) }}</div>
-            </div>
-            <div class="metric-card status-false" onclick="navigateWithFilter('false-report')">
-                <span class="card-title">False-Report</span>
-                <div class="card-value">{{ number_format($summaryCounts['statuses']['false-report'] ?? 0) }}</div>
-            </div>
-        </section>
+      <section class="metrics-row" aria-label="Headline metrics">
+
+    <div class="metric-card status-total"
+         onclick="openStatusModal('total')">
+        <span class="card-title">Total Reports</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['total'] ?? 0) }}
+        </div>
+    </div>
+
+    <div class="metric-card status-awaiting"
+         onclick="openStatusModal('awaiting-resolution')">
+        <span class="card-title">Awaiting Resolution</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['statuses']['awaiting-resolution'] ?? 0) }}
+        </div>
+    </div>
+
+    <div class="metric-card status-forwarded"
+         onclick="openStatusModal('forwarded')">
+        <span class="card-title">Forwarded</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['statuses']['forwarded'] ?? 0) }}
+        </div>
+    </div>
+
+    <div class="metric-card status-review"
+         onclick="openStatusModal('under-review')">
+        <span class="card-title">Under Review</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['statuses']['under-review'] ?? 0) }}
+        </div>
+    </div>
+
+    <div class="metric-card status-closed"
+         onclick="openStatusModal('closed')">
+        <span class="card-title">Closed</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['statuses']['closed'] ?? 0) }}
+        </div>
+    </div>
+
+    <div class="metric-card status-unresolved"
+         onclick="openStatusModal('unresolved')">
+        <span class="card-title">Unresolved</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['statuses']['unresolved'] ?? 0) }}
+        </div>
+    </div>
+
+    <div class="metric-card status-false"
+         onclick="openStatusModal('false-report')">
+        <span class="card-title">False-Report</span>
+        <div class="card-value">
+            {{ number_format($summaryCounts['statuses']['false-report'] ?? 0) }}
+        </div>
+    </div>
+
+</section>
 
         <section class="extras-row" aria-label="Extra metrics">
             <div class="metric-card extras-anonymous" onclick="openExtrasModal('anonymous')">
