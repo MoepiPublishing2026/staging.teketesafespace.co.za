@@ -193,37 +193,30 @@
     </div>
 </div>
     <!-- PAGE CONTENT -->
-   <section class="pt-30 sm:pt-36 md:pt-40 pb-4 px-4 sm:px-10 lg:px-16 relative overflow-hidden">
-          <div class="relative max-w-[1280px] mx-auto min-h-[500px]">
+<section class="pt-0 sm:pt-36 md:pt-40 pb-0 px-4 sm:px-4 lg:px-16 relative overflow-hidden">
+              <div class="relative max-w-[1280px] mx-auto min-h-[500px]">
 
             <div class="relative z-20 max-w-[500px]">
 
                 <img src="{{ asset('images/futuristic digital frame tech.png') }}"
-    class="lg:hidden absolute top-[540px] right-[-150px] max-h-[320px] w-[250px] object-cover object-top pointer-events-none z-0 opacity-90">       <h1 class="font-[Montserrat] font-bold text-[40px] sm:text-[50px] text-[#000000] text-center lg:text-left underline decoration-[#c7da30] decoration-[7px] underline-offset-4 mb-8">CONTACT US</h1>
-              <br>
+    class="lg:hidden absolute top-[540px] right-[-150px] max-h-[320px] w-[250px] object-cover object-top pointer-events-none z-0 opacity-90">    
+<h1 class="font-[Montserrat] font-bold text-[40px] sm:text-[50px] text-[#000000] text-center lg:text-left underline decoration-[#c7da30] decoration-[7px] underline-offset-4 mb-2 pt-32 lg:pt-0">CONTACT US</h1>       
 
-              <div class="lg:hidden flex flex-col gap-3 mb-6">
-    <div class="flex items-center gap-6 border border-gray-300 bg-white rounded-2xl px-5 py-2 w-full">
-        <div class="w-[40px] h-[40px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
+              <div class="lg:hidden flex flex-col gap-3 mb-0 pt-12 lg:pt-0">
+<div class="flex items-center justify-start gap-2 border border-gray-300 bg-white rounded-md px-4 py-1.5 w-full">        <div class="w-[30px] h-[30px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 text-[#c7da30]" fill="currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         </div>
        <a href="tel:0872656716"class="text-[16px] text-[#000000] hover:text-[#c7da30]">087 265 6716
       </a>
     </div>
 
-    <div class="flex items-center gap-6 border border-gray-300 bg-white rounded-2xl px-5 py-2 w-full">
-        <div class="w-[40px] h-[40px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
+<div class="flex items-center justify-start gap-2 border border-gray-300 bg-white rounded-md px-4 py-1.5 w-full">        <div class="w-[30px] h-[30px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
             <svg class="w-5 h-5 text-[#c7da30]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-4V6l8 5 8-4v2z"/></svg>
         </div>
         <a href="mailto:support@tekete.co.za" class="text-[16px] text-[#000000] hover:text-[#c7da30] break-all">support@tekete.co.za</a>
     </div>
 
-    <div class="flex items-center gap-6 border border-gray-300 bg-white rounded-2xl px-5 py-2 w-full">
-        <div class="w-[40px] h-[40px] rounded-full bg-[#f0f2f5] flex items-center justify-center flex-shrink-0">
-            <svg class="w-5 h-5 text-[#c7da30]" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-4V6l8 5 8-4v2z"/></svg>
-        </div>
-        <a href="mailto:sales@teketesafespace.co.za" class="text-[16px] text-[#000000] hover:text-[#c7da30] break-all">sales@teketesafespace.co.za</a>
-    </div>
+      
 </div>
                 <div class="hidden lg:block">
                     <div class="flex items-center gap-10 mb-4">
@@ -241,32 +234,32 @@
                        <img src="{{ asset('images/email icon.png') }}" class="w-[26px] h-[18px] hidden">                    </div>
                 </div>
 
-                <br>
-                <br>
-             <h2 class="font-[Montserrat] text-[18px] sm:text-[24px] text-[#000000] mb-4 text-center lg:text-left">
-                        Download the Tekete Safe Space App
-                </h2>
+               
+<h2 class="font-[Montserrat] text-[18px] sm:text-[24px] text-[#000000] mb-4 text-center lg:text-left pt-10 sm:pt-12">    Download the Tekete Safe Space App
+</h2>
 
                 <!-- ===== MOBILE BUTTONS ===== -->
-                <div class="lg:hidden relative mt-10 pb-4">
-                 <div class="flex flex-col items-center gap-3">
+                <div class="lg:hidden relative mt-4 sm:mt-10 pb-2 sm:pb-4">
+                <div class="flex flex-col items-center ml-6 sm:ml-20 gap-3">
 
-                        <!-- Apple -->
-                        <a href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank" class="store-btn">
-                            <span class="store-icon">
-                                <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                                </svg>
-                            </span>
-                            <span class="store-text">
-                                <span class="top-line">Download on the</span>
-                                <span class="bottom-line">App Store</span>
-                            </span>
-                        </a>
+                   <!-- Apple -->
+<a href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank" class="store-btn w-[220px] origin-center scale-[1.35] -ml-4 my-4">
+    
+    <!-- The span is inside the 'a' tag, with ml-2 added here -->
+    <span class="store-icon scale-[2] ml-[-4px]">
+        <svg  viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+    </span>
+
+    <span class="store-text">
+        <span class="top-line !text-[10px]">Download on the</span>
+<span class="bottom-line !text-[20px]" style="font-weight: 450;">App Store</span>
+</a>
 
                         <!-- Google Play -->
-                        <a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" class="store-btn">
-                            <span class="store-icon">
+<a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" class="store-btn origin-right scale-[1.35] translate-x-4 my-4">                       
+         <span class="store-icon scale-[1.5]">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
                                         <linearGradient id="mg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00C3FF"/><stop offset="100%" style="stop-color:#1DE9B6"/></linearGradient>
@@ -280,25 +273,25 @@
                                     <path fill="url(#mg4)" d="M3.18.24A2 2 0 0 1 5.18.18l12.38 7.18-3.48 3.64z"/>
                                 </svg>
                             </span>
-                            <span class="store-text">
-                                <span class="top-line">GET IT ON</span>
-                                <span class="bottom-line">Google Play</span>
+                            <span class= "store-text ">
+                                <span class="top-line !text-[10px]">GET IT ON</span>
+                                <span class="bottom-line !text-[16px]" style="font-weight: 450;">Google Play</span>
                             </span>
                         </a>
 
                         <!-- Huawei AppGallery -->
-                        <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener">
+                        <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener "class="-ml-4 inline-block">
                             <img
                                 src="{{ asset('images/appgallery-huawei.png') }}"
                                 alt="Explore it on AppGallery"
-                                class="w-[150px] h-auto hover:opacity-80 transition">
+                                class="w-[210px] h-[86px] object-contain">
                         </a>
 
                     </div>
                 </div>
 
                 <!-- Mobile Phone image -->
-                <div class="lg:hidden flex mt-2 mb-2">
+                <div class="lg:hidden flex mt-1 mb-1">
 <img src="{{ asset('images/social media phone1.png') }}" class="hidden lg:block absolute top-[320px] right-[-80px] w-[260px] sm:w-[320px] h-auto pointer-events-none z-10">                </div>
 
                 <!-- ===== DESKTOP BUTTONS ===== -->
@@ -339,13 +332,13 @@
                         </span>
                     </a>
 
-                    <!-- Huawei AppGallery -->
-                    <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener">
-                        <img
-                            src="{{ asset('images/appgallery-huawei.png') }}"
-                            alt="Explore it on AppGallery"
-                            class="w-[150px] h-auto hover:opacity-80 transition">
-                    </a>
+                   <!-- Huawei AppGallery -->
+                      <!-- Huawei AppGallery (Desktop) -->
+<a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener" class="inline-block my-4">
+    <img src="{{ asset('images/appgallery-huawei.png') }}"
+         alt="Explore it on AppGallery"
+         class="w-[200px] h-[76px] object-contain hover:opacity-80 transition">
+</a>
 
                 </div>
 

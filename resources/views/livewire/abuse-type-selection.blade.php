@@ -144,7 +144,7 @@
         <div class="flex flex-col items-center justify-center text-center w-full max-w-full min-w-0 px-3 sm:px-4">
             <!-- Heading -->
             <h1 class="text-[20px] sm:text-[24px] font-bold text-black uppercase mb-4 sm:mb-8">
-                Types of Reports
+                Types of Report
             </h1>
 
             <!-- Reporting Status -->
@@ -160,7 +160,7 @@
             <div
                 class="w-full max-w-[698px] min-w-0 border-2 border-[#c7da30] rounded-xl bg-white p-3 sm:p-6 md:p-10 flex flex-col items-center justify-center box-border">
                 <!-- Abuse Type Buttons -->
-                <div class="grid grid-cols-2 gap-x-2 sm:gap-x-6 md:gap-x-12 gap-y-3 sm:gap-y-6 w-full min-w-0 justify-items-stretch sm:justify-items-center">
+                <div class="grid grid-cols-2 gap-x-7 sm:gap-x-6 md:gap-x-12 gap-y-3 sm:gap-y-6 w-full min-w-0 justify-items-stretch sm:justify-items-center">
     @foreach ($abuseTypes as $abuseType)
 
         <button
