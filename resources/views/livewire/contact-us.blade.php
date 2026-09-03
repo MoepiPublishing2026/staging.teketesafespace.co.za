@@ -370,13 +370,10 @@
         </div>
     </section>
 
-   <!-- Footer -->
-   <footer class="relative w-full bg-[#757573] text-white py-8 mt-auto z-30 font-[Montserrat]" style="margin-top: 4rem; width: 100vw; max-width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-<div class="w-full px-4 min-[640px]:px-6 flex flex-col items-start justify-center text-left gap-6 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:items-center lg:px-[1vw]">
-                <p class="text-[13px] leading-5 font-normal text-white min-[640px]:text-[14px] lg:text-[16px] w-full min-[640px]:w-auto flex justify-center min-[640px]:justify-start">
-                <span class="text-center min-[640px]:text-left">
-                    &copy; {{ date('Y') }} Tekete SafeSpace From Moepi <br class="min-[640px]:hidden">Publishing. All rights reserved.
-                </span>
+ <!-- FOOTER -->
+<footer class="relative w-full bg-[#757573] text-white px-4 py-6 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:gap-2 lg:px-[2vw] mt-auto z-30 font-[Montserrat]">
+            <p class="text-[13px] leading-5 text-center font-normal text-white min-[640px]:text-[14px] lg:text-[16px] min-[640px]:text-left w-full min-[640px]:w-auto">
+                &copy; {{ date('Y') }} Tekete SafeSpace From Moepi<br class="min-[640px]:hidden">Publishing.All rights reserved.
             </p>
             <div class="flex items-center justify-center flex-wrap gap-4 min-[640px]:gap-2 lg:gap-[1vw]">
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
@@ -384,6 +381,9 @@
                 </a>
                 <a href="https://www.X.com/moepipublishing" target="_blank">
                     <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
+                </a>
+                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
+                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
                 </a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
                     <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
@@ -396,7 +396,6 @@
                 </a>
             </div>
     </footer>
-
    <script>
     function toggleMobileMenu() {
         const menu = document.getElementById('mobile-menu');
