@@ -9,9 +9,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <style>
+        @media (max-width: 767px) {
+            .about-hero-mobile { display: flex; }
+            .about-hero-desktop { display: none !important; }
+        }
+        @media (min-width: 768px) {
+            .about-hero-mobile { display: none !important; }
+            .about-hero-desktop { display: flex; }
+        }
+    </style>
 </head>
 
-<body class="bg-white text-gray-800 font-[Montserrat] overflow-x-hidden pt-20 sm:pt-24 lg:pt-28">
+<body class="bg-white text-gray-800 font-[Montserrat] overflow-x-hidden pt-16 md:pt-24 lg:pt-28">
 
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
@@ -148,29 +158,37 @@
 </nav>
     </div>
 </div>
-    <section class="pt-24 w-full bg-white py-16" style="padding-left: 2vw; padding-right: 2vw;">
-        <div class="w-full flex flex-row items-center gap-2 sm:gap-3">
+    <section class="pt-6 md:pt-24 w-full bg-white pb-10 md:py-16 px-6 lg:px-8">
+        {{-- Mobile: stacked, centered icon + title --}}
+        <div class="about-hero-mobile flex-col items-center text-center w-full">
+            <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
+                class="block mx-auto w-[190px] mb-8">
+            <h2 class="text-[28px] font-extrabold text-black leading-[1.15] mb-3 text-center">
+                ABOUT TEKETE<br>SAFESPACE
+            </h2>
+            <div class="h-[6px] bg-[#c7da30] w-[200px] mx-auto"></div>
+        </div>
+
+        {{-- Desktop: icon beside title --}}
+        <div class="about-hero-desktop w-full flex-row items-center gap-2 sm:gap-3">
             <div class="flex justify-start shrink-0">
                 <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
-                    class="w-[90px] sm:w-[140px] md:w-[220px] lg:w-[280px] -mr-3 sm:-mr-4 lg:-mr-6">
+                    class="w-[220px] lg:w-[280px] -mr-4 lg:-mr-6">
             </div>
             <div class="flex-1 min-w-0 text-left">
-                <h2 class="text-[22px] sm:text-[32px] md:text-[44px] lg:text-[50px] font-extrabold text-[#333333] mb-2 leading-tight">
+                <h2 class="text-[44px] lg:text-[50px] font-extrabold text-[#333333] mb-2 leading-tight">
                     ABOUT TEKETE SAFESPACE
                 </h2>
-
-                <div
-                    class="h-[6px] bg-[#c7da30]
-                    w-full max-w-[280px] sm:max-w-[400px] md:max-w-[620px] lg:max-w-[700px] xl:max-w-[740px]">
-                </div>
+                <div class="h-[6px] bg-[#c7da30] w-full max-w-[620px] lg:max-w-[740px]"></div>
             </div>
         </div>
 
-        <div class="mt-8 space-y-4 text-[17px] text-black leading-relaxed">
+        <div class="mt-8 md:mt-8 space-y-4 text-[15px] md:text-[17px] text-black leading-relaxed text-left">
             <p>
                 A confidential platform designed to protect and empower learners
                 and employees to speak out—with the option to report anonymously.
-                Your voice matters. Your identity is protected.
+                The app is zero-rated, ensuring users can access and submit reports
+                without incurring data costs. Your voice matters. Your identity is protected.
             </p>
             <p>
                 Whether you choose to report with your name or anonymously,
