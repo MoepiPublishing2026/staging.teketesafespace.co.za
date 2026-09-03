@@ -190,7 +190,7 @@
             @endif
 
             <div class="mx-auto border-2 border-[#c6d933] rounded-[10px] bg-white w-full max-w-[640px] p-4 sm:p-10">
-                <form wire:submit.prevent="submitReport" enctype="multipart/form-data">
+                <form wire:submit.prevent="submitReport" enctype="multipart/form-data" novalidate>
 
                     <div class="grid grid-cols-2 gap-x-3 sm:gap-x-8 gap-y-4 sm:gap-y-6 items-start">
 
@@ -399,7 +399,6 @@
                             @endif
                         </label>
                         <textarea wire:model="description" id="description" rows="4" maxlength="200"
-                            @if ($isOtherSubtypeSelected) required @endif
                             class="w-full border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white h-[120px] sm:h-[126px]"></textarea>
                         @error('description')
                             <p class="text-red-600 text-[12px]">{{ $message }}</p>
