@@ -37,6 +37,27 @@
             margin: 0;
         }
 
+        /* Prevent overlapping during html2canvas page slicing */
+        .no-pdf-break, 
+        .heatmap-table-container,
+        .geo-map-container,
+        .card {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        /* Force block display so flexbox doesn't collapse during screenshot */
+        #main-content {
+            display: block !important;
+        }
+
+        /* Target the SVG or Canvas map container specifically */
+        #district-geo-map svg,
+        #district-geo-map canvas {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
         .main-panel {
             flex: 1 1 0;
             display: flex;
@@ -235,9 +256,9 @@
         .heatmap-cell.heat-band-1 { background-color: #fbbf0f; }
         .heatmap-cell.heat-band-2 { background-color: #ed1c24; }
         .heatmap-total-cell { font-weight: 800; text-align: center; color: #111827; }
-        .heatmap-total-cell.heat-band-0 { background-color: #99b871; color: #fff; }
-        .heatmap-total-cell.heat-band-1 { background-color: #ffd700; color: #111827; }
-        .heatmap-total-cell.heat-band-2 { background-color: #d72323; color: #fff; }
+        .heatmap-total-cell.heat-band-0 { background-color: #d1cb23; color: #fff; }
+        .heatmap-total-cell.heat-band-1 { background-color: #f9c212; color: #111827; }
+        .heatmap-total-cell.heat-band-2 { background-color: #ed1c24; color: #fff; }
         .heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
         .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
         .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
@@ -342,9 +363,9 @@
         .map-legend-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #111111; margin-top: 8px; }
         .map-legend-row:first-child { margin-top: 0; }
         .map-legend-swatch { width: 18px; height: 18px; border-radius: 2px; border: none; }
-        .map-legend-swatch.high { background: #d72323; }
-        .map-legend-swatch.medium { background: #ffd700; }
-        .map-legend-swatch.low { background: #99b871; }
+        .map-legend-swatch.high { background: #ed1c24; }
+        .map-legend-swatch.medium { background: #f9c212; }
+        .map-legend-swatch.low { background: #d1cb23; }
 
         @media (max-width: 900px) {
             .main-panel { margin-left: 0 !important; width: 100%; }
@@ -1294,20 +1315,81 @@
 </script>
 
 <script>
-function exportPDF() {
-        const element = document.getElementById('main-content');
-        if (!element) {
-            alert("Main content not found! Add id='main-content' to your <main> tag.");
-            return;
-        }
-
-        html2pdf().from(element).set({
-            margin: 10,
-            filename: 'provincial-admin-heatmap.pdf',
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-        }).save();
+async function exportPDF() {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) {
+        alert("Main content not found! Add id='main-content' to your wrapper element.");
+        return;
     }
+
+    // Replace 'geo-map-container' with the ID of your map div container
+    const mapContainer = document.getElementById('geo-map-container') || document.querySelector('.geo-map-container');
+    let tempImgElement = null;
+
+    if (mapContainer) {
+        try {
+            let mapImageData = null;
+
+            // SCENARIO A: Map is drawn with SVG (e.g. D3.js, Highcharts, or SVG vector map)
+            const svgElement = mapContainer.querySelector('svg');
+            if (svgElement) {
+                const svgData = new XMLSerializer().serializeToString(svgElement);
+                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+                const URL = window.URL || window.webkitURL || window;
+                mapImageData = URL.createObjectURL(svgBlob);
+            } 
+            // SCENARIO B: Map is drawn on Canvas (Leaflet / Mapbox / Chart.js)
+            else {
+                const mapCanvas = await html2canvas(mapContainer, {
+                    useCORS: true,
+                    allowTaint: false,
+                    scale: 2
+                });
+                mapImageData = mapCanvas.toDataURL('image/png');
+            }
+
+            // Create temporary image tag replacing the live interactive map
+            if (mapImageData) {
+                tempImgElement = document.createElement('img');
+                tempImgElement.src = mapImageData;
+                tempImgElement.style.width = mapContainer.offsetWidth + 'px';
+                tempImgElement.style.height = mapContainer.offsetHeight + 'px';
+                tempImgElement.style.objectFit = 'contain';
+
+                mapContainer.style.display = 'none';
+                mapContainer.parentNode.insertBefore(tempImgElement, mapContainer);
+            }
+        } catch (err) {
+            console.error("Failed to convert map element for PDF generation:", err);
+        }
+    }
+
+    // Configure html2pdf to prevent text/row overlapping
+    const opt = {
+        margin:       [10, 10, 10, 10], // top, left, bottom, right in mm
+        filename:     '{{ $mapProvinceSlug }}-provincial-heatmap.pdf',
+        html2canvas:  { 
+            scale: 2, 
+            useCORS: true, 
+            allowTaint: false,
+            logging: false
+        },
+        jsPDF:        { unit: 'mm', format: 'a3', orientation: 'landscape' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    // Run PDF Generation
+    await html2pdf().set(opt).from(mainContent).save();
+
+    // Restore live map DOM state
+    if (mapContainer && tempImgElement) {
+        tempImgElement.remove();
+        mapContainer.style.display = '';
+        if (window.map && typeof window.map.invalidateSize === 'function') {
+            window.map.invalidateSize();
+        }
+    }
+}
 </script>
 
 <x-provincial-admin-sidebar-script />
