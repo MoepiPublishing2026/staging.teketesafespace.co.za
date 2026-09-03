@@ -284,7 +284,7 @@
                             <img
                                 src="{{ asset('images/appgallery-huawei.png') }}"
                                 alt="Explore it on AppGallery"
-                                class="w-[210px] h-[86px] object-contain">
+                                class="w-[210px] h-[70px] object-fill">
                         </a>
 
                     </div>
