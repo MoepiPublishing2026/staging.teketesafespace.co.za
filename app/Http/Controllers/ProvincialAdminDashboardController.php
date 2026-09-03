@@ -78,8 +78,10 @@ class ProvincialAdminDashboardController extends Controller
             $reportsQuery->whereDate('created_at', '<=', $toDate);
         }
 
-        // Get reports
-        $reports = $reportsQuery->get();
+        // Newest first so card modals open on the latest cases
+        $reports = $reportsQuery->orderByDesc('created_at')->get()
+            ->sortByDesc(fn ($report) => optional($report->created_at)?->timestamp ?? 0)
+            ->values();
 
         // Count total reports
         $totalReports = $reports->count();
@@ -165,39 +167,36 @@ class ProvincialAdminDashboardController extends Controller
             $activeFilters[] = "To: $toDate";
         }
 
-        // Prepare status reports group for modal (keys match headline status cards)
-        $statusReportPayload = $reports->groupBy(fn ($report) => Report::normalizeStatusForDashboard($report->status))->map(fn($collection) =>
-            $collection->map(fn($report) => [
+        $toModalRow = function ($report) {
+            return [
                 'case_number' => $report->case_number,
                 'status' => $report->status,
                 'abuse_type' => optional($report->abuseType)->type_name,
                 'created_at' => optional($report->created_at)->format('Y-m-d'),
-            ])->values()
+                'created_ts' => optional($report->created_at)?->timestamp ?? 0,
+            ];
+        };
+
+        $newestFirstRows = function ($collection) use ($toModalRow) {
+            return $collection
+                ->sortByDesc(fn ($report) => optional($report->created_at)?->timestamp ?? 0)
+                ->map($toModalRow)
+                ->values();
+        };
+
+        // Prepare status reports group for modal (keys match headline status cards)
+        $statusReportPayload = $reports->groupBy(fn ($report) => Report::normalizeStatusForDashboard($report->status))->map(fn ($collection) =>
+            $newestFirstRows($collection)->toArray()
         )->toArray();
 
         // Prepare all reports payload for modal
-        $allReportsPayload = $reports->map(fn($report) => [
-            'case_number' => $report->case_number,
-            'status' => $report->status,
-            'abuse_type' => optional($report->abuseType)->type_name,
-            'created_at' => optional($report->created_at)->format('Y-m-d'),
-        ])->values()->toArray();
+        $allReportsPayload = $newestFirstRows($reports)->toArray();
 
         // Prepare anonymous reports payload for modal
-        $anonymousReportsPayload = $reports->where('is_anonymous', 1)->map(fn($report) => [
-            'case_number' => $report->case_number,
-            'status' => $report->status,
-            'abuse_type' => optional($report->abuseType)->type_name,
-            'created_at' => optional($report->created_at)->format('Y-m-d'),
-        ])->values()->toArray();
+        $anonymousReportsPayload = $newestFirstRows($reports->where('is_anonymous', 1))->toArray();
 
         // Prepare identified reports payload for modal
-        $identifiedReportsPayload = $reports->where('is_anonymous', 0)->map(fn($report) => [
-            'case_number' => $report->case_number,
-            'status' => $report->status,
-            'abuse_type' => optional($report->abuseType)->type_name,
-            'created_at' => optional($report->created_at)->format('Y-m-d'),
-        ])->values()->toArray();
+        $identifiedReportsPayload = $newestFirstRows($reports->where('is_anonymous', 0))->toArray();
 
         /* -----------------------------------------
          * HEATMAP: District × Abuse Type (within province)

@@ -9,9 +9,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+    <style>
+        @media (max-width: 767px) {
+            .about-hero-mobile { display: flex; }
+            .about-hero-desktop { display: none !important; }
+        }
+        @media (min-width: 768px) {
+            .about-hero-mobile { display: none !important; }
+            .about-hero-desktop { display: flex; }
+        }
+    </style>
 </head>
 
-<body class="bg-white text-gray-800 font-[Montserrat] overflow-x-hidden pt-20 sm:pt-24 lg:pt-28">
+<body class="bg-white text-gray-800 font-[Montserrat] overflow-x-hidden pt-16 md:pt-24 lg:pt-28">
 
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
@@ -148,74 +158,77 @@
 </nav>
     </div>
 </div>
-    <section class="pt-24 w-full bg-white py-16" style="padding-left: 2vw; padding-right: 2vw;">
-        <div class="w-full flex flex-col lg:flex-row items-center gap-12">
-<div class="flex justify-center lg:justify-start">
+    <section class="pt-6 md:pt-24 w-full bg-white pb-10 md:py-16 px-6 lg:px-8">
+        {{-- Mobile: stacked, centered icon + title --}}
+        <div class="about-hero-mobile flex-col items-center text-center w-full">
+            <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
+                class="block mx-auto w-[190px] mb-8">
+            <h2 class="text-[28px] font-extrabold text-black leading-[1.15] mb-3 text-center">
+                ABOUT TEKETE<br>SAFESPACE
+            </h2>
+            <div class="h-[6px] bg-[#c7da30] w-[200px] mx-auto"></div>
+        </div>
+
+        {{-- Desktop: icon beside title --}}
+        <div class="about-hero-desktop w-full flex-row items-center gap-2 sm:gap-3">
+            <div class="flex justify-start shrink-0">
                 <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
-                    class="w-[220px] md:w-[260px] lg:w-[300px] -mt-14 lg:mt-0">
+                    class="w-[220px] lg:w-[280px] -mr-4 lg:-mr-6">
             </div>
-            <div class="flex-1 text-center lg:text-left">
-                <h2 class="text-[32px] sm:text-[40px] md:text-[50px] font-extrabold text-[#333333] mb-6 -mt-10">
+            <div class="flex-1 min-w-0 text-left">
+                <h2 class="text-[44px] lg:text-[50px] font-extrabold text-[#333333] mb-2 leading-tight">
                     ABOUT TEKETE SAFESPACE
                 </h2>
-
-                <div
-                    class="h-[6px] bg-[#c7da30] 
-                    w-[280px] sm:w-[400px] md:w-[620px] lg:w-[700px] xl:w-[740px]
-                    mx-auto lg:mx-0 mt-3 md:-mt-10">
-                </div>
-
+                <div class="h-[6px] bg-[#c7da30] w-full max-w-[620px] lg:max-w-[740px]"></div>
             </div>
         </div>
 
-        <p class="text-[17px] text-black leading-relaxed mt-9">
-            A confidential platform designed to protect and empower learners
-            and employees to speak out—with the option to report anonymously.
-            The app is zero-rated, ensuring users can access and submit reports
-            without incurring data costs. Your voice matters. Your identity is protected. <br>
-            Whether you choose to report with your name or anonymously,
-            Tekete SafeSpace by Moepi Publishing ensures every report is handled with confidentiality, urgency,
-            and at no data cost to the user.
-
-        </p>
+        <div class="mt-8 md:mt-8 space-y-4 text-[15px] md:text-[17px] text-black leading-relaxed text-left">
+            <p>
+                A confidential platform designed to protect and empower learners
+                and employees to speak out—with the option to report anonymously.
+                The app is zero-rated, ensuring users can access and submit reports
+                without incurring data costs. Your voice matters. Your identity is protected.
+            </p>
+            <p>
+                Whether you choose to report with your name or anonymously,
+                Tekete SafeSpace by Moepi Publishing ensures every report is handled with confidentiality and urgency.
+            </p>
+        </div>
     </section>
 
     <section class="w-full bg-white py-16" style="padding-left: 2vw; padding-right: 2vw;">
        <h2 class="text-[24px] text-black text-left md:text-center font-bold mb-16">
-    You can report any of the following through Tekete safe space
+    You can report any of the following through Tekete SafeSpace
 </h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-10 text-left">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
          @php
     $issues = [
-['img' => 'Bullying.png', 'title' => 'Bullying', 'class' => 'items-center text-center md:items-start md:text-left'],        ['img' => 'Substance  Abuse.png', 'title' => 'Substance Addiction', 'class' => ''],
-               ['img' => 'Sexual Abuse.png', 'title' => 'Suspected<br>Sexual Harassment', 'class' => 'items-center text-center md:items-start md:text-left'],
-
-        ['img' => 'weapons.png', 'title' => 'Weapons', 'class' => 'items-start text-left pt-[24px] md:pt-0'],
-        ['img' => 'pregnancy.png', 'title' => 'Teenage<br>Pregnancy', 'class' => 'items-center text-center md:items-start md:text-left'],
-        ['img' => 'other issues.png', 'title' => 'Other Issues', 'class' => ''],
+        ['img' => 'Bullying.png', 'title' => 'Bullying'],
+        ['img' => 'Substance  Abuse.png', 'title' => 'Substance Abuse'],
+        ['img' => 'Sexual Abuse.png', 'title' => 'Sexual Abuse or Harassment'],
+        ['img' => 'weapons.png', 'title' => 'Weapons'],
+        ['img' => 'pregnancy.png', 'title' => 'Teenage Pregnancy'],
+        ['img' => 'other issues.png', 'title' => 'Other Issues'],
     ];
 @endphp
 
            @foreach ($issues as $issue)
-    
-       <div class="flex flex-col items-start {{ $issue['class'] }}">
-
-        <div class="h-[80px] w-[80px] flex items-center justify-start mb-3">
-<img src="{{ asset('images/' . $issue['img']) }}" 
-                 class="max-w-full max-h-full object-contain {{ $issue['title'] === 'Weapons' ? '-mt-[30px] md:mt-0' : '' }} {{ $issue['title'] === 'Other Issues' ? 'mt-[18px] md:mt-0' : '' }}" 
-                 alt="Issue Icon">
+       <div class="flex flex-col items-center text-center">
+        <div class="h-[80px] w-[80px] flex items-center justify-center mb-3">
+            <img src="{{ asset('images/' . $issue['img']) }}"
+                 class="max-w-full max-h-full object-contain"
+                 alt="{{ $issue['title'] }}">
         </div>
-
-        <!-- Added a conditional negative top margin to move the word Weapons up on mobile -->
-        <p class="text-[16px] text-black leading-tight {{ $issue['title'] === 'Weapons' ? '-mt-[6px] ml-[8px] md:mt-0' : '' }}{{ $issue['title'] === 'Substance Addiction' ? '-ml-[12px] md:ml-0' : '' }}">
-            {!! $issue['title'] !!}
+        <p class="text-[16px] text-black leading-tight min-h-[40px]">
+            {{ $issue['title'] }}
         </p>
     </div>
 @endforeach
         </div>
     </section>
 
-    <section class="relative bg-white w-full pb-12 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-10 items-start" style="padding-left: 2vw; padding-right: 2vw;">
+    <section class="relative bg-white w-full pb-12 grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_230px] gap-8 items-start overflow-visible" style="padding-left: 2vw; padding-right: 2vw;">
 
         <div class="hidden lg:block absolute -left-56 top-[100%] -translate-y-1/2 w-[400px] h-[400px] pointer-events-none z-10">
             <img src="{{ asset('images/futuristic digital frame tech.png') }}" alt="Tech Frame Half"
@@ -231,14 +244,14 @@
                 <li>Learners — A safe way to speak out without fear.</li>
                 <li>Parents — Peace of mind knowing concerns can be raised.</li>
                 <li>Teachers & Staff — A trusted channel for reporting misconduct.</li>
-                <li>Schools — A structured system to build safer, more accountable learning environments.</li>
-                <li>Organisations — A safer working environment for both employer and employee.</li>
+                <li>Schools — A structured system to build safer environments.</li>
+                <li>Organisations — A safer working environment.</li>
             </ul>
         </div>
 
         <!-- Updated container and image classes for mobile centering -->
-        <div class="flex justify-center md:justify-end relative z-10 w-full">
-            <img src="{{ asset('images/Students holding phone.png') }}" class="w-[300px] h-[350px] rounded-lg shadow-md md:-translate-x-20">
+        <div class="flex justify-center md:justify-end relative z-10 w-full max-w-[230px] mx-auto md:mx-0">
+            <img src="{{ asset('images/Students holding phone.png') }}" alt="Students holding phone" class="rounded-lg shadow-md object-contain" style="width: 230px; height: auto; max-width: 100%;">
         </div>
     </section>
 

@@ -117,16 +117,16 @@
             </h1>
 
            @if ($isAnonymous)
-    <p class="hidden sm:block text-center text-[15px] font-[700] text-black mb-1">
+    <p class="sm:block text-center text-[15px] font-[700] text-black mb-1">
         You are reporting anonymously
     </p>
 @else
-    <p class="hidden sm:block text-center text-[15px] font-[700] text-black mb-1">
+    <p class="sm:block text-center text-[15px] font-[700] text-black mb-1">
         You are reporting with your details
     </p>
 @endif
 
-           <p class="text-center text-[15px] font-bold sm:font-normal text-black mb-6 sm:mb-8">
+           <p class="text-center text-[15px]  sm:font-normal text-black mb-6 sm:mb-8">
     Report Type: {{ $selectedAbuseTypeName }}
 </p>
 
@@ -189,21 +189,21 @@
                 </div>
             @endif
 
-            <div class="mx-auto border-2 border-[#c6d933] rounded-[10px] bg-white w-full max-w-[640px] p-6 sm:p-10">
-                <form wire:submit.prevent="submitReport" enctype="multipart/form-data">
+            <div class="mx-auto border-2 border-[#c6d933] rounded-[10px] bg-white w-full max-w-[640px] p-4 sm:p-10">
+                <form wire:submit.prevent="submitReport" enctype="multipart/form-data" novalidate>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 items-start">
+                    <div class="grid grid-cols-2 gap-x-3 sm:gap-x-8 gap-y-4 sm:gap-y-6 items-start">
 
     {{-- SUB-TYPE FIRST --}}
     @if ($standardSubtypes->isNotEmpty() || $otherSubtype)
-        <div class="w-full sm:col-span-2">
+        <div class="w-full col-span-2">
             <label for="subtypeID" class="block text-[12px] text-black mb-1">
                 Sub-type
             </label>
 
             <select id="subtypeID"
                 wire:model.live="subtypeID"
-                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
 
                 <option value="">-- Select a Subtype --</option>
 
@@ -230,7 +230,7 @@
                             <div class="w-full">
                                 <label for="fullName" class="block text-[12px] text-black mb-1">Full Name</label>
                                 <input type="text" wire:model="fullName" id="fullName"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white">
                                 @error('fullName')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
@@ -239,7 +239,7 @@
                             <div class="w-full">
                                 <label for="age" class="block text-[12px] text-black mb-1">Age</label>
                                 <input type="number" wire:model.live="age" id="age" min="0" max="115"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white">
                                 @error('age')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
@@ -250,7 +250,7 @@
                             <label for="schoolSearch" class="block text-[12px] text-black mb-1">Name of School</label>
                             <div class="relative" wire:ignore>
                                 <input type="text" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" id="schoolSearch" placeholder="Start typing school name..."
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white"
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[10.5px] sm:placeholder:text-[14px] text-black bg-white"
                                     pattern="^[a-zA-Z\s.,\-&amp;']+$"
                                     title="The School Name can only contain letters, spaces, hyphens (-), apostrophes ('), commas (,), periods (.), and the ampersand (&amp;)."
                                     maxlength="100">
@@ -276,7 +276,7 @@
                             <div class="w-full">
                                 <label for="age" class="block text-[12px] text-black mb-1">Age</label>
                                 <input type="number" wire:model.live="age" id="age" min="0" max="115"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white">
                                 @error('age')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
@@ -285,7 +285,7 @@
                             <div class="w-full" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
                                 <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
                                 <select wire:model.live="grade" id="grade"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
                                     <option value="">-- Select Grade --</option>
                                     @if (!blank($age))
                                         @foreach ($this->applicableGrades as $gradeOption)
@@ -319,8 +319,8 @@
                         <div class="w-full">
                             <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
                             <input type="text" wire:model.lazy="phoneNumber" id="phoneNumber"
-                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white"
-                                placeholder="e.g. 0789 345 687" maxlength="15">
+                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
+                                placeholder="e.g. 0789345687" maxlength="15">
                             @error('phoneNumber')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
@@ -329,7 +329,7 @@
                         <div class="w-full">
                             <label for="reporterEmail" class="block text-[12px] text-black mb-1">Email Address</label>
                             <input type="email" wire:model.lazy="reporterEmail" id="reporterEmail"
-                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white"
+                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. example@gmail.com"
                                 title="Please enter a valid email address (e.g., user@domain.com, user@domain.co.za)"
                                 maxlength="50">
@@ -343,10 +343,10 @@
                         <div class="w-full">
                             <label for="location" class="block text-[12px] text-black mb-1">Address</label>
                             <input type="text" wire:model="location" id="location"
-                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white"
-                                placeholder="e.g. 123 street name, Province"
+                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[10.5px] sm:placeholder:text-[14px] text-black bg-white"
+                                placeholder="e.g. 123 Main St, Gauteng"
                                 pattern="^\d+\s+[A-Za-z\s\-']+,\s*[A-Za-z\s\-']+$"
-                                title="Format: StreetNumber Street Name, Province (e.g. 123 Main Street, Gauteng)"
+                                title="Format: StreetNumber Street Name, Province (e.g. 123 Main St, Gauteng)"
                                 maxlength="100">
                             @error('location')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
@@ -357,7 +357,7 @@
                             <div class="w-full" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
                                 <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
                                 <select wire:model.live="grade" id="grade"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-3 text-[14.8px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
                                     <option value="">-- Select Grade --</option>
                                     @if (!blank($age))
                                         @foreach ($this->applicableGrades as $gradeOption)
@@ -399,8 +399,7 @@
                             @endif
                         </label>
                         <textarea wire:model="description" id="description" rows="4" maxlength="200"
-                            @if ($isOtherSubtypeSelected) required @endif
-                            class="w-full border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14.8px] text-black bg-white h-[120px] sm:h-[126px]"></textarea>
+                            class="w-full border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white h-[120px] sm:h-[126px]"></textarea>
                         @error('description')
                             <p class="text-red-600 text-[12px]">{{ $message }}</p>
                         @enderror

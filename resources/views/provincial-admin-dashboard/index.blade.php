@@ -1203,6 +1203,43 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 }
 .district-map-tooltip .tt-title { font-weight: 900; font-size: 12px; }
 .district-map-tooltip .tt-sub { font-weight: 700; font-size: 11px; color: #4b5563; margin-top: 2px; }
+/* Top Reporting Schools table */
+.schools-table-wrap {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.schools-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.schools-table th,
+.schools-table td {
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+    vertical-align: top;
+}
+
+/* Give the School column most of the available space */
+.schools-table th:first-child,
+.schools-table td:first-child {
+    width: 80%;
+    padding-right: 1rem;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+/* Keep Reports column narrower */
+.schools-table th:last-child,
+.schools-table td:last-child {
+    width: 20%;
+    white-space: nowrap;
+}
+
+
     </style>
     <x-provincial-admin-styles />
 </head>
@@ -1546,6 +1583,10 @@ function openStatusModal(status) {
     } else if (statusReportsMap[status]) {
         reports = statusReportsMap[status];
     }
+
+    reports = Array.isArray(reports) ? [...reports] : [];
+    reports.sort((a, b) => (Number(b.created_ts) || 0) - (Number(a.created_ts) || 0)
+        || String(b.created_at || '').localeCompare(String(a.created_at || '')));
 
     const tbody = document.getElementById('statusModalBody');
     const title = document.getElementById('statusModalTitle');
