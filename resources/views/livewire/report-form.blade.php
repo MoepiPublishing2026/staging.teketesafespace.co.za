@@ -139,7 +139,7 @@
                              h-[300px] sm:h-[342px] p-4 text-center shadow-lg relative">
 
                         <p class="text-[18px] sm:text-[19px] text-black mb-4">
-                            REPORT SUBMITTED SUCCESSFULLY!
+                            REPORT SUBMITTED SUCCESSFULL!
                         </p>
 
                         <img src="{{ asset('images/tick.png') }}" alt="Success Tick"
