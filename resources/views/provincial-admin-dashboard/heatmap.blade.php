@@ -12,7 +12,7 @@
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
             --theme-dark: #0c8cb3ff;
             --red: #ed1c24;
-            --yellow: #fbbf0f;
+            --yellow: #f9c212;
             --blue: #3b82f6;
             --green: #d1cb23;
             --bg: white;
@@ -262,7 +262,7 @@
         .heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
         .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
         .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
-        .heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #d1cb23 0%, #fbbf0f 50%, #ed1c24 100%); border: 1px solid #111827; }
+        .heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #d1cb23 0%, #f9c212 50%, #ed1c24 100%); border: 1px solid #111827; }
 
         .map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
         .district-map-container {
@@ -743,9 +743,9 @@
             .replace(/ekhurhuleni/i, 'Ekurhuleni');
     }
 
-    const HEAT_LOW = '#99b871';
-    const HEAT_MED = '#ffd700';
-    const HEAT_HIGH = '#d72323';
+    const HEAT_LOW = '#d1cb23';
+    const HEAT_MED = '#f9c212';
+    const HEAT_HIGH = '#ed1c24';
 
     function heatColor(bandIdx) {
         if (bandIdx === 2) return HEAT_HIGH;
