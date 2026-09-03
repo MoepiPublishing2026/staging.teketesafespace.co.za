@@ -12,7 +12,7 @@
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
             --theme-dark: #0c8cb3ff;
             --red: #ed1c24;
-            --yellow: #fbbf0f;
+            --yellow: #f9c212;
             --blue: #3b82f6;
             --green: #d1cb23;
             --bg: white;
@@ -743,9 +743,9 @@
             .replace(/ekhurhuleni/i, 'Ekurhuleni');
     }
 
-    const HEAT_LOW = '#99b871';
-    const HEAT_MED = '#ffd700';
-    const HEAT_HIGH = '#d72323';
+    const HEAT_LOW = '#d1cb23';
+    const HEAT_MED = '#f9c212';
+    const HEAT_HIGH = '#ed1c24';
 
     function heatColor(bandIdx) {
         if (bandIdx === 2) return HEAT_HIGH;
