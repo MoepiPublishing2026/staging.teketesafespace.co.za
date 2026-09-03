@@ -25,7 +25,7 @@
 
 
                     <a href="{{ route('landing-page') }}"
-                        class="text-black transition-colors font-bold hover:!text-[#c7da30]">
+                        class="text-black transition-colors hover:!text-[#c7da30]">
                         Home
                     </a>
 
@@ -81,7 +81,7 @@
 
    <a href="{{ route('landing-page') }}"
     @click="menuOpen = false"
-    class="block py-3 font-bold text-[#38b6ff]">
+    class="block py-3 text-[#38b6ff]">
     Home
 </a>
 
@@ -146,10 +146,10 @@
 
         </section>
 
-   <!-- FOOTER -->
+     <!-- FOOTER -->
 <footer class="relative w-full bg-[#757573] text-white px-4 py-6 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:gap-2 lg:px-[2vw] mt-auto z-30 font-[Montserrat]">
             <p class="text-[13px] leading-5 text-center font-normal text-white min-[640px]:text-[14px] lg:text-[16px] min-[640px]:text-left w-full min-[640px]:w-auto">
-                &copy; {{ date('Y') }} Tekete safespace from moepi<br class="min-[640px]:hidden">Publishing.all rights reserved.
+                &copy; {{ date('Y') }} Tekete SafeSpace From Moepi <br class="min-[640px]:hidden">Publishing. All rights reserved.
             </p>
             <div class="flex items-center justify-center flex-wrap gap-4 min-[640px]:gap-2 lg:gap-[1vw]">
                 <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">

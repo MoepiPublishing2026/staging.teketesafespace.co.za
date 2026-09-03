@@ -40,7 +40,7 @@ class ReportForm extends Component
     public $age;
     public $location;
     public $schoolProvince;
-    public $grade;
+    public $grade = '';
     public $schoolName;
     public $schoolId;
     public $schoolPhase;
@@ -198,10 +198,10 @@ protected array $phaseGrades = [
         if (!empty($applicableGrades)) {
             $this->resetErrorBag('age');
 
-            // Check if current grade is still valid for the new age
-            if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
-                // FORCE the selection to the first available grade
-                $this->grade = $applicableGrades[0];
+            // Keep the current grade only if it is still valid for the new age.
+            // Do not auto-select a grade — the user must choose one.
+            if (!blank($this->grade) && !in_array($this->grade, $applicableGrades)) {
+                $this->grade = '';
             }
         } else {
             $this->grade = '';
@@ -215,8 +215,8 @@ protected array $phaseGrades = [
         $applicableGrades = $this->applicableGrades;
 
         if (!empty($applicableGrades)) {
-            if (blank($this->grade) || !in_array($this->grade, $applicableGrades)) {
-                $this->grade = $applicableGrades[0];
+            if (!blank($this->grade) && !in_array($this->grade, $applicableGrades)) {
+                $this->grade = '';
             }
         } else {
             $this->grade = '';
@@ -225,8 +225,14 @@ protected array $phaseGrades = [
 
     public function updatedGrade()
     {
-        if (is_numeric($this->age)) {
-            $this->updatedAge($this->age);
+        // Selecting "-- Select Grade --" must stay empty so submit can require a grade.
+        if (blank($this->grade) || !is_numeric($this->age)) {
+            return;
+        }
+
+        $applicableGrades = $this->applicableGrades;
+        if (!empty($applicableGrades) && !in_array($this->grade, $applicableGrades)) {
+            $this->grade = '';
         }
     }
 
@@ -324,7 +330,8 @@ protected array $phaseGrades = [
             },
         ],
         'schoolId' => [
-                'required',
+                Rule::requiredIf(fn () => filled($this->schoolName)),
+                'nullable',
                 'exists:schools,school_id',
             ],
         ];
@@ -335,14 +342,16 @@ protected array $phaseGrades = [
         return [
             'description.max' => 'Words exceeding limit of 500 ',
             'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
-            'schoolName.required' => 'Please select or enter the Name of School.', 
+            'schoolName.required' => 'School field required',
             'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
-
-'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
+            'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
             'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
-'subtypeID.required' => 'The subtype field is required.',
+            'subtypeID.required' => 'The subtype field is required.',
             'location.required' => 'Please enter the Address.',
             'grade.required' => 'Please select a Grade.',
+            'phoneNumber.required' => 'The phone number field is required.',
+            'age.required' => 'The age field is required.',
+            'reporterEmail.required' => 'The reporter email field is required.',
         ];
     }
      public function updatedPhoneNumber($value)
@@ -356,9 +365,7 @@ public function submitReport()
     {
  ini_set('max_execution_time', 500);
 
- $this->validate([
-        'location' => 'required|string',
-    ]);
+        $this->validate();
 
     if ($this->schoolProvince) {
 
@@ -444,10 +451,6 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         $this->dispatch('restart-timer');
         return; 
     }
-
-
-
-        $this->validate();
 
         $report = null;        $caseNumber = null;
         
