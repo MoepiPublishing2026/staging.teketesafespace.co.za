@@ -789,9 +789,9 @@
     }
 
     function heatColor(bandIdx) {
-        if (bandIdx === 2) return '#d80f18';
-        if (bandIdx === 1) return '#f9c80e';
-        return '#a8d05f';
+        if (bandIdx === 2) return '#ed1c24';
+        if (bandIdx === 1) return '#f9c212';
+        return '#d1cb23';
     }
 
     function heatGradientStops(bandIdx) {
