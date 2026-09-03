@@ -253,12 +253,12 @@
     </span>
 
     <span class="store-text">
-        <span class="top-line !text-[10px]">Download on the</span>
+        <span class="top-line !text-[10px]"style="font-weight: 600;">Download on the</span>
 <span class="bottom-line !text-[20px]" style="font-weight: 450;">App Store</span>
 </a>
 
                         <!-- Google Play -->
-<a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" class="store-btn origin-right scale-[1.35] translate-x-4 my-4">                       
+<a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" class="store-btn origin-right scale-[1.35] translate-x-4 mt-1 my-4">                       
          <span class="store-icon scale-[1.5]">
                                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
@@ -274,18 +274,33 @@
                                 </svg>
                             </span>
                             <span class= "store-text ">
-                                <span class="top-line !text-[10px]">GET IT ON</span>
+                                <span class="top-line !text-[10px]"style="font-weight: 600;">GET IT ON</span>
                                 <span class="bottom-line !text-[16px]" style="font-weight: 450;">Google Play</span>
                             </span>
                         </a>
 
-                        <!-- Huawei AppGallery -->
-                        <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener "class="-ml-4 inline-block">
-                            <img
-                                src="{{ asset('images/appgallery-huawei.png') }}"
-                                alt="Explore it on AppGallery"
-                                class="w-[210px] h-[70px] object-fill">
-                        </a>
+<!-- Huawei AppGallery -->
+<a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener" class="-ml-4 -mt-2 inline-block my-4">
+    <svg class="w-[210px] h-[80px] hover:opacity-85 transition" viewBox="0 0 450 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Badge Background -->
+        <rect width="450" height="150" rx="28" fill="black"/>
+        
+        <!-- Red Icon Box -->
+        <rect x="24" y="24" width="102" height="102" rx="20" fill="#C7000B"/>
+        
+        <!-- Huawei Bag Handle (Flipped Curve) -->
+        <path d="M57 48C57 56.2843 63.7157 63 72 63C80.2843 63 87 56.2843 87 48" stroke="white" stroke-width="5" stroke-linecap="round"/>
+        
+        <!-- HUAWEI Text inside Red Box -->
+        <text x="75" y="98" fill="white" font-family="'Montserrat', Arial, sans-serif" font-size="16" font-weight="bold" letter-spacing="2" text-anchor="middle">HUAWEI</text>
+        
+        <!-- Text: EXPLORE IT ON -->
+        <text x="146" y="61" fill="white" font-family="'Montserrat', Arial, sans-serif" font-size="28" font-weight="600" letter-spacing="1">EXPLORE IT ON</text>
+        
+        <!-- Text: AppGallery -->
+        <text x="144" y="112" fill="white" font-family="'Montserrat', Arial, sans-serif" font-size="52" font-weight="450" letter-spacing="-0.5">AppGallery</text>
+    </svg>
+</a>
 
                     </div>
                 </div>
