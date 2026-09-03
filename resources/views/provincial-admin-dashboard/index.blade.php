@@ -1584,6 +1584,10 @@ function openStatusModal(status) {
         reports = statusReportsMap[status];
     }
 
+    reports = Array.isArray(reports) ? [...reports] : [];
+    reports.sort((a, b) => (Number(b.created_ts) || 0) - (Number(a.created_ts) || 0)
+        || String(b.created_at || '').localeCompare(String(a.created_at || '')));
+
     const tbody = document.getElementById('statusModalBody');
     const title = document.getElementById('statusModalTitle');
     tbody.innerHTML = '';
