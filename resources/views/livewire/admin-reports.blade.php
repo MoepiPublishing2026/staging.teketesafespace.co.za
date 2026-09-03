@@ -772,10 +772,10 @@
                     </thead>
                     <tbody>
                         @forelse ($reports as $report)
-                            @php
-                                $displayName = $report->is_anonymous
-                                    ? 'Anonymous'
-                                    : ($report->reporter_email ?: ($report->full_name ?: 'N/A'));
+                          @php
+                                $displayName = $report->is_anonymous 
+                                    ? 'Anonymous' 
+                                    :  $report->full_name;
                             @endphp
                             <tr wire:click="showReport({{ $report->id }})">
                                 <td class="case-number">{{ $report->case_number }}</td>
