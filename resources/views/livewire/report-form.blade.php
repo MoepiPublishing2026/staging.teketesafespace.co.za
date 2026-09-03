@@ -150,19 +150,22 @@
                             {{ str_replace('Your report has been submitted successfully! Case number: ', '', session('success_message')) }}
                         </p>
 
-                        <button
-                            @click="
-                            open = false;
-                            document.querySelector('form').reset();
-                            window.livewire.emit('resetForm');
-                        "
-                            class="w-[190px] h-[56px] sm:h-[64px]
-                               border-4 border-solid border-[#c7da30]
-                               rounded-[100px] text-[#38b6ff] 
-                               text-[15px] font-normal transition duration-200 
-                               hover:opacity-80 shadow-md flex items-center justify-center">
-                            Close
-                        </button>
+                       <button
+   
+    @click="
+    open = false;
+    document.querySelector('form').reset();
+    window.livewire.emit('resetForm');
+"
+    class="w-[228px] sm:w-[190px] h-[60px] sm:h-[64px]
+       border-2 sm:border-4 border-solid border-[#c7da30]
+       rounded-[100px] text-[#38b6ff] 
+       text-[16px] sm:text-[15px] font-semibold sm:font-normal transition duration-200 
+       hover:opacity-80 sm:shadow-md flex items-center justify-center bg-white">
+    <span class="sm:hidden">OK</span>
+    <span class="hidden sm:inline">Close</span>
+</button>
+
                     </div>
                 </div>
             @endif
