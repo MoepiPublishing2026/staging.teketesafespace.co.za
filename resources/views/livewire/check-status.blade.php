@@ -156,7 +156,7 @@
             </div>
 
             <!-- ================= SEARCH CARD ================= -->
-            <div class="w-full border-4 border-[#c7da30] rounded-2xl p-4 sm:p-8 bg-white">
+            <div class="w-full border-2 sm:border-4 border-[#c7da30] rounded-2xl p-4 sm:p-8 bg-white">
 
                 <form wire:submit.prevent="checkStatus" class="space-y-4 w-full">
                     <div>
@@ -181,16 +181,17 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full py-4 px-4 border-4 border-[#c7da30] rounded-full text-[#38b6ff] hover:opacity-90 transition font-[Montserrat] text-lg">
-                        Search
-                    </button>
+    class="w-full py-4 px-4 border-2 sm:border-4 border-[#c7da30] rounded-full text-[#38b6ff] hover:opacity-90 transition font-[Montserrat] text-lg">
+    Search
+</button>
+
                 </form>
 
                 <!-- ================= STATUS SECTION ================= -->
                 <h2 class="text-lg sm:text-xl font-bold text-center uppercase mt-8 mb-4 font-[Montserrat]">YOUR CASE
                     STATUS</h2>
 
-                <div class="border-4 border-[#c7da30] rounded-xl p-4 sm:p-6 min-h-[200px] relative font-[Montserrat]">
+               <div class="border-2 sm:border-4 border-[#c7da30] rounded-xl p-4 sm:p-6 min-h-[200px] relative font-[Montserrat]">
 
                     @if (!empty($message))
                         <div class="text-red-500 font-medium text-center mb-4">
