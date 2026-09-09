@@ -342,7 +342,7 @@ protected array $phaseGrades = [
         return [
             'description.max' => 'Words exceeding limit of 500 ',
             'schoolName.regex' => 'The School Name can only contain letters, spaces, hyphens, apostrophes, commas, periods, and the ampersand (&). Numbers and other special characters are not allowed.',
-            'schoolName.required' => 'School field required',
+            'schoolName.required' => 'School field is required',
             'location.regex' => 'Address must be in the format: Street Number Street Name, Province (e.g. 123 Main Street, Gauteng)',
             'schoolId.required' => 'The school you entered was not found in our database. Please select a school from the list.',
             'schoolId.exists' => 'The school you entered was not found in our database. Please select a school from the list.',
