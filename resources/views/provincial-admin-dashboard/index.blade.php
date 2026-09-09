@@ -1401,7 +1401,7 @@ section[aria-label="Analytics"] .chart-status-host canvas {
                 $monthlyTrendHostH = (int) max(260, min(440, 170 + $monthlyPointCount * 12));
                 $anonymousHostH = (int) max(280, min(400, 300));
                 $abuseTypeCount = max(count($abuseTypeLabels ?? []), 1);
-                $abusePieHostHeight = max(360, min(520, 220 + $abuseTypeCount * 18));
+                $abusePieHostHeight = max(330, min(400, 210 + $abuseTypeCount * 14));
             @endphp
             <section class="chart-grid" aria-label="Dashboard charts overview">
 
@@ -2051,90 +2051,259 @@ function navigateWithFilterByAnonymous(isAnonymous) {
 </script>
 <x-provincial-admin-sidebar-script />
 
-<script src="{{ asset('js/mobile-select-modal.js') }}"></script>
-<script src="https://kit.fontawesome.com/2c36e9b7b9.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="{{ asset('js/provincial-admin-dashboard-pdf-export.js') }}?v=1"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="{{ asset('js/provincial-dashboard-pdf-export-core.js') }}?v=1"></script>
-<script src="{{ asset('js/national-admin-pdf-export.js') }}?v=5"></script>
+<script src="{{ asset('js/provincial-admin-dashboard-pdf-export.js') }}?v=2"></script>
 <script>
-    function exportPDF() {
-        const element = document.getElementById('main-content');
-        if (!element) {
-            alert("Main content not found! Add id='main-content' to your <main> tag.");
+function exportPDF() {
+
+    const element = document.getElementById('main-content');
+
+    if (!element) {
+        alert('Dashboard content not found.');
+        return;
+    }
+
+    /*
+     * ============================================================
+     * PREPARE DASHBOARD FOR PDF
+     * ============================================================
+     */
+
+    // Save original styles so the dashboard can be restored afterwards
+    const originalStyles = {
+        width: element.style.width,
+        maxWidth: element.style.maxWidth,
+        overflow: element.style.overflow,
+        overflowY: element.style.overflowY,
+        overflowX: element.style.overflowX,
+        height: element.style.height,
+        padding: element.style.padding
+    };
+
+    // Add PDF mode
+    document.body.classList.add('pdf-export-mode');
+
+    /*
+     * The dashboard normally scrolls vertically.
+     * For PDF export we want the ENTIRE dashboard rendered.
+     */
+    element.style.width = '1280px';
+    element.style.maxWidth = '1280px';
+    element.style.overflow = 'visible';
+    element.style.overflowY = 'visible';
+    element.style.overflowX = 'visible';
+    element.style.height = 'auto';
+
+    /*
+     * ============================================================
+     * CONVERT CHART CANVAS ELEMENTS TO IMAGES
+     * ============================================================
+     */
+
+    const canvasElements = element.querySelectorAll('canvas');
+    const tempImages = [];
+
+    canvasElements.forEach(canvas => {
+
+        const rect = canvas.getBoundingClientRect();
+
+        if (rect.width === 0 || rect.height === 0) {
             return;
         }
 
-        // 1. Convert active <canvas> elements to fixed-size static PNGs
-        const canvasElements = element.querySelectorAll('canvas');
-        const tempImages = [];
+        const img = document.createElement('img');
 
-        canvasElements.forEach(canvas => {
-            // Capture physical pixel bounds instead of style attributes (e.g. "100%")
-            const rect = canvas.getBoundingClientRect();
-            
-            const img = document.createElement('img');
-            img.src = canvas.toDataURL('image/png', 1.0);
-            
-            // Lock dimensions explicitly so the layout flow doesn't collapse
-            img.style.width = `${rect.width}px`;
-            img.style.height = `${rect.height}px`;
-            img.style.display = 'block';
-            img.className = 'temp-pdf-img pdf-keep-together';
+        img.src = canvas.toDataURL('image/png', 1.0);
 
-            // Apply isolation directly on chart card container
-            if (canvas.parentElement) {
-                canvas.parentElement.style.pageBreakInside = 'avoid';
-                canvas.parentElement.style.breakInside = 'avoid';
-            }
+        img.style.display = 'block';
+        img.style.width = `${rect.width}px`;
+        img.style.height = `${rect.height}px`;
+        img.style.maxWidth = '100%';
+        img.style.objectFit = 'contain';
 
-            // Swap canvas with static image
-            canvas.parentNode.insertBefore(img, canvas);
-            canvas.style.display = 'none';
+        img.className = 'pdf-chart-image';
 
-            tempImages.push({ canvas, img });
+        canvas.style.display = 'none';
+
+        canvas.parentNode.insertBefore(img, canvas);
+
+        tempImages.push({
+            canvas: canvas,
+            img: img
         });
+    });
 
-        // 2. Configure html2pdf options with pagebreak avoidance and scroll reset
-        const options = {
-            margin: [10, 10, 10, 10], // [top, left, bottom, right] in mm
-            filename: 'provincial-admin-dashboard.pdf',
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                logging: false,
-                scrollY: 0,
-                scrollX: 0
-            },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' },
-            pagebreak: { 
-                mode: ['avoid-all', 'css', 'legacy'],
-                avoid: ['.card', '.chart-card', '.pdf-keep-together', 'canvas', '.temp-pdf-img', 'tr']
-            }
-        };
+    /*
+     * ============================================================
+     * PDF OPTIONS
+     * ============================================================
+     */
 
-        // 3. Render PDF and restore live charts on complete or catch error
-        html2pdf().set(options).from(element).save().then(() => {
-            restoreCanvas();
-        }).catch(err => {
-            console.error('PDF Export Error:', err);
-            restoreCanvas();
-        });
+    const options = {
 
-        function restoreCanvas() {
-            tempImages.forEach(({ canvas, img }) => {
-                canvas.style.display = '';
-                if (img && img.parentNode) {
-                    img.parentNode.removeChild(img);
+        filename: 'provincial-admin-dashboard.pdf',
+
+        margin: [8, 8, 8, 8],
+
+        image: {
+            type: 'jpeg',
+            quality: 0.98
+        },
+
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false,
+
+            scrollX: 0,
+            scrollY: 0,
+
+            windowWidth: 1280,
+
+            onclone: function(clonedDocument) {
+
+                const clonedElement =
+                    clonedDocument.getElementById('main-content');
+
+                if (!clonedElement) return;
+
+                /*
+                 * Make the cloned dashboard a normal
+                 * full-height document.
+                 */
+                clonedElement.style.width = '1280px';
+                clonedElement.style.maxWidth = '1280px';
+                clonedElement.style.height = 'auto';
+                clonedElement.style.overflow = 'visible';
+
+                /*
+                 * Make sure the dashboard does not inherit
+                 * mobile/responsive layout while exporting.
+                 */
+                clonedDocument.body.classList.add('pdf-export-mode');
+
+                /*
+                 * Keep chart cards together where possible,
+                 * WITHOUT using avoid-all.
+                 */
+                clonedDocument
+                    .querySelectorAll('.chart-card')
+                    .forEach(card => {
+
+                        card.style.breakInside = 'avoid';
+                        card.style.pageBreakInside = 'avoid';
+                    });
+
+                /*
+                 * Keep the metrics together.
+                 */
+                clonedDocument
+                    .querySelectorAll('.metrics-row, .extras-row')
+                    .forEach(row => {
+
+                        row.style.breakInside = 'avoid';
+                        row.style.pageBreakInside = 'avoid';
+                    });
+
+                /*
+                 * Keep filters together.
+                 */
+                const filters =
+                    clonedDocument.querySelector(
+                        'section[aria-label="Filters"]'
+                    );
+
+                if (filters) {
+                    filters.style.breakInside = 'avoid';
+                    filters.style.pageBreakInside = 'avoid';
                 }
-            });
-        }
-    }
-</script>
+            }
+        },
 
+        jsPDF: {
+            unit: 'mm',
+            format: 'a3',
+            orientation: 'landscape',
+            compress: true
+        },
+
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT use:
+         *
+         * mode: ['avoid-all', 'css', 'legacy']
+         *
+         * because that is what was causing the large
+         * blank areas and separate chart pages.
+         */
+        pagebreak: {
+            mode: ['css', 'legacy']
+        }
+    };
+
+    /*
+     * ============================================================
+     * GENERATE PDF
+     * ============================================================
+     */
+
+    html2pdf()
+        .set(options)
+        .from(element)
+        .save()
+
+        .then(() => {
+            restoreDashboard();
+        })
+
+        .catch(error => {
+
+            console.error(
+                'Provincial Dashboard PDF Export Error:',
+                error
+            );
+
+            alert(
+                'There was a problem generating the PDF. Please try again.'
+            );
+
+            restoreDashboard();
+        });
+
+
+    /*
+     * ============================================================
+     * RESTORE DASHBOARD
+     * ============================================================
+     */
+
+    function restoreDashboard() {
+
+        tempImages.forEach(item => {
+
+            if (item.canvas) {
+                item.canvas.style.display = '';
+            }
+
+            if (item.img && item.img.parentNode) {
+                item.img.parentNode.removeChild(item.img);
+            }
+        });
+
+        element.style.width = originalStyles.width;
+        element.style.maxWidth = originalStyles.maxWidth;
+        element.style.overflow = originalStyles.overflow;
+        element.style.overflowY = originalStyles.overflowY;
+        element.style.overflowX = originalStyles.overflowX;
+        element.style.height = originalStyles.height;
+        element.style.padding = originalStyles.padding;
+
+        document.body.classList.remove('pdf-export-mode');
+    }
+}
+</script>
 </body>
 </html>
