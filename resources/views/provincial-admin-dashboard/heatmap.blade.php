@@ -1313,31 +1313,50 @@
         });
 })();
 </script>
-
 <script>
 async function exportPDF() {
     const mainContent = document.getElementById('main-content');
+
     if (!mainContent) {
         alert("Main content not found! Add id='main-content' to your wrapper element.");
         return;
     }
 
-    // Replace 'geo-map-container' with the ID of your map div container
-    const mapContainer = document.getElementById('geo-map-container') || document.querySelector('.geo-map-container');
+    // Find the map container generically — by id first, falling back to class.
+    // Also try finding any .district-map-svg directly in case the container
+    // markup ever changes, matching the national page's approach.
+    const mapContainer = document.getElementById('district-map') || document.querySelector('.district-map-container');
     let tempImgElement = null;
+    let mapExportFailed = false;
 
     if (mapContainer) {
+        const svgElement = mapContainer.querySelector('svg.district-map-svg') || mapContainer.querySelector('svg');
+
         try {
             let mapImageData = null;
 
-            // SCENARIO A: Map is drawn with SVG (e.g. D3.js, Highcharts, or SVG vector map)
-            const svgElement = mapContainer.querySelector('svg');
+            // SCENARIO A: Map is drawn with SVG
             if (svgElement) {
-                const svgData = new XMLSerializer().serializeToString(svgElement);
-                const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-                const URL = window.URL || window.webkitURL || window;
-                mapImageData = URL.createObjectURL(svgBlob);
-            } 
+                // Bail out early and loudly if the map hasn't actually loaded yet
+                // (e.g. still shows "Loading map…" / fetch failed) rather than
+                // silently exporting a blank area.
+                const hasShapes = svgElement.querySelector('.district-map-shape');
+                if (!hasShapes) {
+                    console.warn('Map SVG found but has no district shapes — map may still be loading or failed to fetch.');
+                }
+
+                const clone = svgElement.cloneNode(true);
+                const box = svgElement.getBoundingClientRect();
+                const w = Math.max(1, Math.round(box.width || svgElement.clientWidth || 800));
+                const h = Math.max(1, Math.round(box.height || svgElement.clientHeight || 520));
+                clone.setAttribute('width', String(w));
+                clone.setAttribute('height', String(h));
+                clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+                const svgData = new XMLSerializer().serializeToString(clone);
+                const svg64 = btoa(unescape(encodeURIComponent(svgData)));
+                mapImageData = 'data:image/svg+xml;base64,' + svg64;
+            }
             // SCENARIO B: Map is drawn on Canvas (Leaflet / Mapbox / Chart.js)
             else {
                 const mapCanvas = await html2canvas(mapContainer, {
@@ -1348,29 +1367,56 @@ async function exportPDF() {
                 mapImageData = mapCanvas.toDataURL('image/png');
             }
 
-            // Create temporary image tag replacing the live interactive map
+            // Create temporary image tag replacing the live interactive map.
+            // Attach load/error handlers BEFORE setting src (only once), so we
+            // never miss a fast-resolving data URI and never rely on a second
+            // no-op src assignment.
             if (mapImageData) {
                 tempImgElement = document.createElement('img');
-                tempImgElement.src = mapImageData;
                 tempImgElement.style.width = mapContainer.offsetWidth + 'px';
                 tempImgElement.style.height = mapContainer.offsetHeight + 'px';
                 tempImgElement.style.objectFit = 'contain';
+                tempImgElement.style.display = 'block';
+
+                await new Promise((resolve) => {
+                    // Resolve on both load AND error so one bad image doesn't
+                    // hang the whole export — but log the error so it's not silent.
+                    tempImgElement.onload = resolve;
+                    tempImgElement.onerror = function (e) {
+                        console.error('Map image failed to decode for PDF export:', e);
+                        mapExportFailed = true;
+                        resolve();
+                    };
+                    tempImgElement.src = mapImageData;
+                    // Handle the case where the browser decodes synchronously
+                    // and fires load before this handler assignment completes.
+                    if (tempImgElement.complete && tempImgElement.naturalWidth > 0) {
+                        resolve();
+                    }
+                });
 
                 mapContainer.style.display = 'none';
                 mapContainer.parentNode.insertBefore(tempImgElement, mapContainer);
             }
         } catch (err) {
+            mapExportFailed = true;
             console.error("Failed to convert map element for PDF generation:", err);
         }
+    } else {
+        console.warn('Map container not found — exporting without map replacement.');
+    }
+
+    if (mapExportFailed) {
+        console.warn('Proceeding with PDF export despite map capture issue — check console above for details.');
     }
 
     // Configure html2pdf to prevent text/row overlapping
     const opt = {
         margin:       [10, 10, 10, 10], // top, left, bottom, right in mm
         filename:     '{{ $mapProvinceSlug }}-provincial-heatmap.pdf',
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true, 
+        html2canvas:  {
+            scale: 2,
+            useCORS: true,
             allowTaint: false,
             logging: false
         },
@@ -1378,15 +1424,20 @@ async function exportPDF() {
         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
-    // Run PDF Generation
-    await html2pdf().set(opt).from(mainContent).save();
-
-    // Restore live map DOM state
-    if (mapContainer && tempImgElement) {
-        tempImgElement.remove();
-        mapContainer.style.display = '';
-        if (window.map && typeof window.map.invalidateSize === 'function') {
-            window.map.invalidateSize();
+    try {
+        // Run PDF Generation
+        await html2pdf().set(opt).from(mainContent).save();
+    } catch (err) {
+        console.error('PDF generation failed:', err);
+        alert('PDF export failed. Please refresh and try again.');
+    } finally {
+        // Restore live map DOM state regardless of success/failure above
+        if (mapContainer && tempImgElement) {
+            tempImgElement.remove();
+            mapContainer.style.display = '';
+            if (window.map && typeof window.map.invalidateSize === 'function') {
+                window.map.invalidateSize();
+            }
         }
     }
 }
