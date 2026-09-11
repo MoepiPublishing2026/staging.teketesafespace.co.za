@@ -904,14 +904,14 @@ body.pa-app .page-link[aria-current="page"] {
                 <div>
                     <label class="filter-label">Subtypes</label>
                     <select name="subtype_id" id="subtypeSelect" class="filter-input" onchange="this.form.submit()">
-                        <option value="">All Subtypes</option>
-                        @foreach($subtypeOptions as $sub)
-                            <option value="{{ $sub->id }}"
-                                    data-type="{{ $sub->abuse_type_id }}"
-                                    {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
-                                {{ $sub->sub_type_name }}
-                            </option>
-                        @endforeach
+                            <option value="">All Subtypes</option>
+                            @foreach($subtypeOptions->sortBy('sub_type_name') as $sub)
+                                <option value="{{ $sub->id }}"
+                                        data-type="{{ $sub->abuse_type_id }}"
+                                        {{ request('subtype_id') == $sub->id ? 'selected' : '' }}>
+                                    {{ $sub->sub_type_name }}
+                                </option>
+                            @endforeach
                     </select>
                 </div>
 
