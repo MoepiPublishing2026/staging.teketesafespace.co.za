@@ -11,12 +11,12 @@
         :root {
             --theme-gradient: linear-gradient(to right, #38b6ff, #38b6ff);
             --theme-dark: #0c8cb3ff;
-            --red: #ed1c24;
-            --yellow: #fbbf0f;
+            --red: #de241b;
+            --yellow: #fdd103;
             --blue: #3b82f6;
             --orange: #f97316;
             --gray: #2a2e32;
-            --green: #d1cb23;
+            --green: #b1c658;
             --bg: white;
             --text: #253f58ff;
         }
@@ -233,12 +233,12 @@
         .heatmap-cell {font-weight: 600; cursor: pointer; min-width: 50px; position: relative;color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.25);}
         .heatmap-cell.heatmap-cell-dark { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
         .heatmap-cell:hover { outline: 2px solid #38b6ff; z-index: 2; }
-        .heatmap-cell.heat-band-0 { background-color: #d1cb23; }
-        .heatmap-cell.heat-band-1 { background-color: #f9c212; }
-        .heatmap-cell.heat-band-2 { background-color: #ed1c24; }
+        .heatmap-cell.heat-band-0 { background-color: #b1c658; }
+        .heatmap-cell.heat-band-1 { background-color: #fdd103; }
+        .heatmap-cell.heat-band-2 { background-color: #de241b; }
         .heatmap-scale-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-top: 1rem; }
         .heatmap-scale { display: flex; align-items: center; gap: 0.5rem; font-size: 12px; color: #6b7280; }
-        .heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #d1cb23 0%, #f9c212 50%, #ed1c24 100%); border: 1px solid #111827; }
+        .heatmap-scale-bar { height: 14px; width: 180px; border-radius: 7px; background: linear-gradient(to right, #b1c658 0%, #fdd103 50%, #de241b 100%); border: 1px solid #111827; }
 
         .map-panel { background: white; border-radius: 1rem; padding: 1.25rem; border: 2px solid #c7da30; }
         .district-map-container {
@@ -381,9 +381,9 @@
         }
         .map-legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #111827; margin-top: 6px; }
         .map-legend-swatch { width: 16px; height: 16px; border-radius: 2px; border: 1px solid rgba(17,24,39,0.35); }
-        .map-legend-swatch.low { background: #d1cb23; }
-        .map-legend-swatch.medium { background: #f9c212; }
-        .map-legend-swatch.high { background: #d80f18; }
+        .map-legend-swatch.low { background: #b1c658; }
+        .map-legend-swatch.medium { background: #fdd103; }
+        .map-legend-swatch.high { background: #de241b; }
 
         @media (max-width: 900px) {
             .main-panel { margin-left: 0 !important; width: 100%; }
@@ -557,7 +557,7 @@
                                         $abuseTypeId = $provinceHeatmapAbuseTypeNameToId[$atype] ?? null;
                                         $pct = $provinceHeatmapPercentages[$provinceName][$colIdx] ?? 0;
                                         $intensity = ($provinceHeatmapMax ?? 1) > 0 ? min(1, $count / ($provinceHeatmapMax ?? 1)) : 0;
-                                        $colors = ['#d1cb23', '#f9c212', '#ed1c24'];
+                                        $colors = ['#b1c658', '#fdd103', '#de241b'];
                                         $colorIdx = $intensity >= 0.67 ? 2 : ($intensity >= 0.34 ? 1 : 0);
                                         $bgColor = $colors[$colorIdx];
                                         $isDark = $colorIdx === 2;
@@ -789,9 +789,9 @@
     }
 
     function heatColor(bandIdx) {
-        if (bandIdx === 2) return '#ed1c24';
-        if (bandIdx === 1) return '#f9c212';
-        return '#d1cb23';
+        if (bandIdx === 2) return '#de241b';
+        if (bandIdx === 1) return '#fdd103';
+        return '#b1c658';
     }
 
     function heatGradientStops(bandIdx) {
