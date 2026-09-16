@@ -108,7 +108,7 @@
 
                 <button wire:click="closeSuccessModal"
                     class="w-[190px] h-[56px] sm:h-[64px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] text-[15px] font-normal transition duration-200 hover:opacity-80 shadow-md flex items-center justify-center">
-                    OK
+                    Close
                 </button>
             </div>
         </div>
