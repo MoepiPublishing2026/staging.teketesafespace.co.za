@@ -502,7 +502,7 @@
             <div class="heatmap-toolbar">
                 <div class="heatmap-view-toggle" role="group" aria-label="View mode">
                     <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">COUNTS</button>
-                    <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">ROW%</button>
+                    <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">ROWS%</button>
                 </div>
             </div>
 

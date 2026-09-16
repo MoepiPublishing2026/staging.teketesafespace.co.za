@@ -268,7 +268,7 @@
         .heatmap-table tr.heatmap-row-active th.heatmap-row { background: #38b6ff; color: #fff; }
         .map-label-layer { pointer-events: none; user-select: none; }
         .map-label-layer text {
-            font-family: 'Montserrat', system-ui, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-weight: 900;
             paint-order: stroke fill;
             stroke: #ffffff;
@@ -526,7 +526,7 @@
             <div class="heatmap-toolbar">
                 <div class="heatmap-view-toggle" role="group" aria-label="View mode">
                     <button type="button" class="heatmap-view-btn active" data-view="count" aria-pressed="true">COUNTS</button>
-                    <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">ROW%</button>
+                    <button type="button" class="heatmap-view-btn" data-view="percent" aria-pressed="false">ROWS%</button>
                 </div>
             </div>
 
