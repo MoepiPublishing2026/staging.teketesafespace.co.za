@@ -1650,15 +1650,30 @@ function getValue(source, key, fallback) {
 function percentagesTo100(values) {
     const arr = values.map(Number);
     const total = arr.reduce((a, b) => a + b, 0);
+
     if (total === 0) return arr.map(() => 0);
+
+    // Calculate percentages to 1 decimal place
     const raw = arr.map(v => (v / total) * 100);
-    const floored = raw.map((r, i) => ({ i, floor: Math.floor(r), rem: r - Math.floor(r) }));
-    let sum = floored.reduce((s, x) => s + x.floor, 0);
-    const diff = 100 - sum;
-    floored.sort((a, b) => b.rem - a.rem);
-    for (let d = 0; d < diff; d++) floored[d].floor += 1;
-    floored.sort((a, b) => a.i - b.i);
-    return floored.map(x => x.floor);
+    const rounded = raw.map(v => Math.floor(v * 10) / 10);
+
+    // Calculate how much is still needed to reach exactly 100.0
+    let sum = rounded.reduce((a, b) => a + b, 0);
+    let diff = Math.round((100 - sum) * 10);
+
+    // Give the missing 0.1% portions to the largest remainders
+    const order = raw
+        .map((value, i) => ({
+            i,
+            remainder: value - rounded[i]
+        }))
+        .sort((a, b) => b.remainder - a.remainder);
+
+    for (let d = 0; d < diff; d++) {
+        rounded[order[d % order.length].i] += 0.1;
+    }
+
+    return rounded.map(v => Number(v.toFixed(1)));
 }
 
 /** Human-readable status for chart axis + tooltips */
