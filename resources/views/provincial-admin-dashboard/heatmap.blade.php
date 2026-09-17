@@ -593,8 +593,8 @@
         </section>
 
         <section class="panel map-panel" aria-label="Reports by District Geographic Heatmap">
-            <!-- <h2>Geographic Distribution — {{ $province->province_name }}</h2>
-            <p class="map-source-note">District lines are Department of Basic Education education-district boundaries.</p> -->
+            <h2>Geographic Distribution — {{ $province->province_name }}</h2>
+            <p class="map-source-note">District lines are Department of Basic Education education-district boundaries.</p>
             <div id="district-map" class="district-map-container">
                 <div class="district-map-status" id="districtMapStatus">Loading map…</div>
                 <div class="district-map-tooltip" id="districtMapTooltip" style="display:none;">
@@ -1405,6 +1405,23 @@ async function exportPDF() {
                 clone.setAttribute('width', String(w));
                 clone.setAttribute('height', String(h));
                 clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+                // A standalone data:image/svg+xml document has no access to
+                // the page's external <style> block, so every class-based
+                // rule (district borders, label outlines, the drop-shadow)
+                // silently drops out when this gets rasterized for the PDF.
+                // Embed the rules we actually need directly in the clone.
+                const inlineStyle = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+                inlineStyle.textContent = [
+                    '.district-map-shape{stroke:rgba(255,255,255,0.95);stroke-width:1px;',
+                    'stroke-linejoin:round;fill-rule:evenodd;vector-effect:non-scaling-stroke;}',
+                    '.map-color-root{filter:drop-shadow(0 0 0.55px #111111);}',
+                    '.map-label-layer text{font-family:"Montserrat",sans-serif;font-weight:600;',
+                    'paint-order:stroke fill;stroke:rgba(255,255,255,0.9);stroke-width:0.35px;',
+                    'stroke-linejoin:round;}',
+                    '.map-label-district{fill:#111111;}',
+                ].join('');
+                clone.insertBefore(inlineStyle, clone.firstChild);
 
                 const svgData = new XMLSerializer().serializeToString(clone);
                 const svg64 = btoa(unescape(encodeURIComponent(svgData)));
