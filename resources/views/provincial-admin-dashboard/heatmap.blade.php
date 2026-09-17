@@ -606,11 +606,11 @@
                         $mapLow = (int) ($mapDistrictBandLowMax ?? 0);
                         $mapMed = (int) ($mapDistrictBandMediumMax ?? 0);
                     @endphp
-                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High · {{ number_format($mapMed + 1) }}+</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch high" aria-hidden="true"></span><span>High </span></div>
                     @if($mapMed > $mapLow)
-                        <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium · {{ number_format($mapLow + 1) }}–{{ number_format($mapMed) }}</span></div>
+                        <div class="map-legend-row"><span class="map-legend-swatch medium" aria-hidden="true"></span><span>Medium </span></div>
                     @endif
-                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low · 0–{{ number_format($mapLow) }}</span></div>
+                    <div class="map-legend-row"><span class="map-legend-swatch low" aria-hidden="true"></span><span>Low </span></div>
                 </div>
             </div>
         </section>
@@ -772,7 +772,26 @@
         ];
     }
 
-    function districtGradientRadius(bb) {
+    // Glow stops for the blurred heat blobs: a hot core that fades out to
+    // fully transparent so neighbouring blobs blend together over the green
+    // base, the way a real heatmap "bleeds" across district lines.
+    function heatGlowStops(bandIdx) {
+        if (bandIdx === 2) {
+            return [
+                { offset: '0%', color: HEAT_HIGH, opacity: 0.95 },
+                { offset: '35%', color: '#ea4b1f', opacity: 0.8 },
+                { offset: '65%', color: HEAT_MED, opacity: 0.45 },
+                { offset: '100%', color: HEAT_MED, opacity: 0 },
+            ];
+        }
+        return [
+            { offset: '0%', color: HEAT_MED, opacity: 0.85 },
+            { offset: '55%', color: '#eec24f', opacity: 0.4 },
+            { offset: '100%', color: HEAT_LOW, opacity: 0 },
+        ];
+    }
+
+    function districtGlowRadius(bb) {
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
         const corners = [
@@ -786,27 +805,25 @@
             const d = Math.hypot(pt[0] - cx, pt[1] - cy);
             if (d > maxDist) maxDist = d;
         });
-        return Math.max(maxDist * 1.05, 8);
+        // Bigger than the district itself so the glow bleeds into its
+        // neighbours instead of stopping dead at the boundary line.
+        return Math.max(maxDist * 1.7, 10);
     }
 
-    function applyDistrictFill(path, bandIdx, defs, svgNS, gradSeq) {
-        const solid = heatColor(bandIdx);
+    function addHeatGlow(path, bandIdx, defs, glowLayer, svgNS, glowSeq, blurFilterId) {
+        if (bandIdx === 0) return glowSeq; // low districts: just show the green base, no glow
         let bb;
         try {
             bb = path.getBBox();
         } catch (e) {
-            path.setAttribute('fill', solid);
-            return gradSeq;
+            return glowSeq;
         }
-        if (!(bb.width > 0) || !(bb.height > 0)) {
-            path.setAttribute('fill', solid);
-            return gradSeq;
-        }
+        if (!(bb.width > 0) || !(bb.height > 0)) return glowSeq;
 
         const cx = bb.x + bb.width / 2;
         const cy = bb.y + bb.height / 2;
-        const r = districtGradientRadius(bb);
-        const gradId = 'pa-df-' + gradSeq;
+        const r = districtGlowRadius(bb);
+        const gradId = 'pa-glow-' + glowSeq;
 
         const grad = document.createElementNS(svgNS, 'radialGradient');
         grad.setAttribute('id', gradId);
@@ -816,15 +833,29 @@
         grad.setAttribute('r', String(r));
         grad.setAttribute('spreadMethod', 'pad');
 
-        heatGradientStops(bandIdx).forEach(function (stopDef) {
+        heatGlowStops(bandIdx).forEach(function (stopDef) {
             const stop = document.createElementNS(svgNS, 'stop');
             stop.setAttribute('offset', stopDef.offset);
             stop.setAttribute('stop-color', stopDef.color);
+            stop.setAttribute('stop-opacity', String(stopDef.opacity));
             grad.appendChild(stop);
         });
         defs.appendChild(grad);
-        path.setAttribute('fill', 'url(#' + gradId + ')');
-        return gradSeq + 1;
+
+        const blob = document.createElementNS(svgNS, 'circle');
+        blob.setAttribute('cx', String(cx));
+        blob.setAttribute('cy', String(cy));
+        blob.setAttribute('r', String(r));
+        blob.setAttribute('fill', 'url(#' + gradId + ')');
+        blob.setAttribute('filter', 'url(#' + blurFilterId + ')');
+        blob.setAttribute('pointer-events', 'none');
+        // High-band blobs painted after medium ones so hotspots read on top
+        if (bandIdx === 2) {
+            glowLayer.appendChild(blob);
+        } else {
+            glowLayer.insertBefore(blob, glowLayer.firstChild);
+        }
+        return glowSeq + 1;
     }
 
     function labelLines(text) {
@@ -1104,7 +1135,7 @@
         path.setAttribute('class', 'district-map-shape' + (bandIdx === 2 ? ' district-map-shape-dark' : ''));
         path.setAttribute('fill-rule', 'evenodd');
         path.setAttribute('data-heat-band', String(bandIdx));
-        path.setAttribute('fill', heatColor(bandIdx));
+        path.setAttribute('fill', HEAT_LOW);
         path.setAttribute('fill-opacity', '1');
         path.setAttribute('data-shape-kind', 'district');
         path.setAttribute('data-district-id', districtId ? String(districtId) : '');
@@ -1193,10 +1224,32 @@
                     colorRoot.insertBefore(base, districtLayer);
                 }
 
-                let gradSeq = 0;
+                // Blur radius scales with the overall map size so the glow
+                // reads the same on a small province and a big one.
+                const blurFilterId = 'pa-heat-blur';
+                const blurFilter = document.createElementNS(svgNS, 'filter');
+                blurFilter.setAttribute('id', blurFilterId);
+                blurFilter.setAttribute('x', '-100%');
+                blurFilter.setAttribute('y', '-100%');
+                blurFilter.setAttribute('width', '300%');
+                blurFilter.setAttribute('height', '300%');
+                const feBlur = document.createElementNS(svgNS, 'feGaussianBlur');
+                const blurStd = mapBbFill ? Math.max((mapBbFill.width + mapBbFill.height) / 2 * 0.018, 1.5) : 4;
+                feBlur.setAttribute('stdDeviation', String(blurStd));
+                blurFilter.appendChild(feBlur);
+                defs.appendChild(blurFilter);
+
+                const heatGlowLayer = document.createElementNS(svgNS, 'g');
+                heatGlowLayer.setAttribute('class', 'heat-glow-layer');
+                heatGlowLayer.setAttribute('clip-path', 'url(#pa-province-clip)');
+                // Insert right after colorRoot (green base + district outlines)
+                // so the glow sits on top of the map but under the labels.
+                g.insertBefore(heatGlowLayer, colorRoot.nextSibling);
+
+                let glowSeq = 0;
                 districtLayer.querySelectorAll('.district-map-shape').forEach(function (path) {
                     const bandIdx = Number(path.getAttribute('data-heat-band') || 0);
-                    gradSeq = applyDistrictFill(path, bandIdx, defs, svgNS, gradSeq);
+                    glowSeq = addHeatGlow(path, bandIdx, defs, heatGlowLayer, svgNS, glowSeq, blurFilterId);
                 });
 
                 const labelAnchors = {};
@@ -1353,6 +1406,23 @@ async function exportPDF() {
                 clone.setAttribute('height', String(h));
                 clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
+                // A standalone data:image/svg+xml document has no access to
+                // the page's external <style> block, so every class-based
+                // rule (district borders, label outlines, the drop-shadow)
+                // silently drops out when this gets rasterized for the PDF.
+                // Embed the rules we actually need directly in the clone.
+                const inlineStyle = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+                inlineStyle.textContent = [
+                    '.district-map-shape{stroke:rgba(255,255,255,0.95);stroke-width:1px;',
+                    'stroke-linejoin:round;fill-rule:evenodd;vector-effect:non-scaling-stroke;}',
+                    '.map-color-root{filter:drop-shadow(0 0 0.55px #111111);}',
+                    '.map-label-layer text{font-family:"Montserrat",sans-serif;font-weight:600;',
+                    'paint-order:stroke fill;stroke:rgba(255,255,255,0.9);stroke-width:0.35px;',
+                    'stroke-linejoin:round;}',
+                    '.map-label-district{fill:#111111;}',
+                ].join('');
+                clone.insertBefore(inlineStyle, clone.firstChild);
+
                 const svgData = new XMLSerializer().serializeToString(clone);
                 const svg64 = btoa(unescape(encodeURIComponent(svgData)));
                 mapImageData = 'data:image/svg+xml;base64,' + svg64;
@@ -1447,4 +1517,3 @@ async function exportPDF() {
 
 </body>
 </html>
- 
