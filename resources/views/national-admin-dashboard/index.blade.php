@@ -1281,161 +1281,199 @@ function getValue(source, key, fallback) {
 }
 
 function percentagesTo100(values) {
-  const arr = values.map(Number);
-  const total = arr.reduce((a, b) => a + b, 0);
-  if (total === 0) return arr.map(() => 0);
-  const raw = arr.map(v => (v / total) * 100);
-  const floored = raw.map((r, i) => ({ i, floor: Math.floor(r), rem: r - Math.floor(r) }));
-  let sum = floored.reduce((s, x) => s + x.floor, 0);
-  const diff = 100 - sum;
-  floored.sort((a, b) => b.rem - a.rem);
-  for (let d = 0; d < diff; d++) floored[d].floor += 1;
-  floored.sort((a, b) => a.i - b.i);
-  return floored.map(x => x.floor);
+    const arr = values.map(Number);
+    const total = arr.reduce((a, b) => a + b, 0);
+
+    if (total === 0) return arr.map(() => 0);
+
+    // Calculate percentages to 1 decimal place
+    const raw = arr.map(v => (v / total) * 100);
+    const rounded = raw.map(v => Math.floor(v * 10) / 10);
+
+    // Calculate how much is still needed to reach exactly 100.0
+    let sum = rounded.reduce((a, b) => a + b, 0);
+    let diff = Math.round((100 - sum) * 10);
+
+    // Give the missing 0.1% portions to the largest remainders
+    const order = raw
+        .map((value, i) => ({
+            i,
+            remainder: value - rounded[i]
+        }))
+        .sort((a, b) => b.remainder - a.remainder);
+
+    for (let d = 0; d < diff; d++) {
+        rounded[order[d % order.length].i] += 0.1;
+    }
+
+    return rounded.map(v => Number(v.toFixed(1)));
 }
 
-/** Human-readable status for chart axis + tooltips (matches dashboard filters) */
+/** Human-readable status for chart axis + tooltips */
 function formatStatusLabel(slug) {
-  if (slug == null || slug === '') return '';
-  const key = String(slug);
-  const map = {
-    'awaiting-resolution': 'Awaiting Resolution',
-    'under-review': 'Under Review',
-    'forwarded': 'Forwarded',
-    'closed': 'Closed',
-    'unresolved': 'Unresolved',
-    'false-report': 'False Report',
-  };
-  if (map[key]) return map[key];
-  return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    if (slug == null || slug === '') return '';
+    const key = String(slug);
+    const map = {
+        'awaiting-resolution': 'Awaiting Resolution',
+        'under-review': 'Under Review',
+        'forwarded': 'Forwarded',
+        'closed': 'Closed',
+        'unresolved': 'Unresolved',
+        'false-report': 'False Report',
+    };
+    if (map[key]) return map[key];
+    return key.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function renderOverviewCharts(dataset) {
-  const ctx = document.getElementById("statusChart")?.getContext("2d");
-  const customColors = ['#99c4d3','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4'];
-  const barColors = [];
-  const capColors = [];
-  if (ctx) {
-    customColors.forEach(color => {
-      const gradient = ctx.createLinearGradient(0, 0, 600, 0);
-      gradient.addColorStop(0, color);
-      gradient.addColorStop(1, color);
-      barColors.push(gradient);
-      capColors.push(color);
-    });
-  }
-
-  createChart('monthlyTrendChart', {
-    type: 'line',
-    data: {
-      labels: dataset.months || [],
-      datasets: [{
-        label: 'Reports',
-        data: dataset.monthlyCounts || [],
-        borderColor: '#ff66c4',
-        backgroundColor: 'rgba(236, 144, 224, 0.2)',
-        fill: true, tension: 0.3, borderWidth: 2, pointRadius: 4, pointHoverRadius: 6
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      layout: { padding: { top: 4, bottom: 22, left: 2, right: 6 } },
-      plugins: { legend: { display: true, position: 'top' } },
-      scales: {
-        x: { ticks: { color: '#4b5664', padding: 4 }, grid: { drawBorder: false } },
-        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { drawBorder: false } }
-      }
-    }
-  });
-
-  const abuseLabels = dataset.abuseLabels || [];
-  const abuseCountsRaw = dataset.abuseCounts || [];
-  const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
-  const abuseColors = ['#004c99','#fcb825','#00c382','#9b57cc','#81acef','#38b6ff','#ff66c4','#C0C0C0','#FF0000','#FFFF00'];
-  const abuseLegendPosition = 'bottom';
-  
-  createChart('abuseTypeChart', {
-    type: 'pie',
-    data: {
-      labels: abuseLabels,
-      datasets: [{ data: abuseCounts, backgroundColor: abuseColors.slice(0, Math.max(abuseLabels.length, 1)) }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: abuseLegendPosition === 'right'
-          ? { top: 8, right: 8, bottom: 8, left: 8 }
-          : { top: 4, right: 12, bottom: 4, left: 12 }
-      },
-      plugins: {
-        legend: {
-          position: abuseLegendPosition,
-          align: 'center',
-          fullSize: true,
-          labels: {
-            padding: abuseLegendPosition === 'right' ? 10 : 14,
-            boxWidth: 14,
-            boxHeight: 14,
-            usePointStyle: true,
-            maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
-            font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
-            generateLabels: function(chart) {
-              const data = chart.data; const ds = data.datasets[0];
-              const pcts = percentagesTo100(ds.data);
-              return data.labels.map((label, i) => ({
-                text: (label || '—') + ' (' + pcts[i] + '%)',
-                fillStyle: ds.backgroundColor[i],
-                strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
-                lineWidth: 1, hidden: false, index: i
-              }));
-            }
-          }
+    createChart('monthlyTrendChart', {
+        type: 'line',
+        data: {
+            labels: dataset.months || [],
+            datasets: [{
+                label: 'Reports',
+                data: dataset.monthlyCounts || [],
+                borderColor: '#ff66c4',
+                backgroundColor: 'rgba(236, 144, 224, 0.2)',
+                fill: true,
+                tension: 0.3,
+                borderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
         },
-        tooltip: { callbacks: { label: ctx => { const pcts = percentagesTo100(ctx.dataset.data); return `${ctx.label}: ${ctx.parsed} (${pcts[ctx.dataIndex]}%)`; } } },
-        datalabels: { display: false }
-      }
-    }
-  });
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { top: 4, bottom: 22, left: 2, right: 6 } },
+            plugins: { legend: { display: true, position: 'top' } },
+            scales: {
+                x: { ticks: { color: '#4b5664', padding: 4 }, grid: { drawBorder: false } },
+                y: { beginAtZero: true, ticks: { precision: 0 }, grid: { drawBorder: false } }
+            }
+        }
+    });
 
-  if (!ctx) return;
+    const abuseLabels = dataset.abuseLabels || [];
+    const abuseCountsRaw = dataset.abuseCounts || [];
+    const abuseCounts = abuseLabels.map((_, i) => abuseCountsRaw[i] ?? 0);
+    const abuseColors = ['#004c99', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4', '#C0C0C0', '#FF0000', '#FFFF00'];
 
-  const barPlugin = {
-    id: "barPlugin",
-    afterDatasetDraw(chart) {
-      const { ctx, chartArea } = chart;
-      const datasetMeta = chart.getDatasetMeta(0);
-      datasetMeta.data.forEach((bar, i) => {
-        const pct = parseFloat(chart.data.datasets[0].data[i]) || 0;
-        const percentage = pct.toFixed(1);
-        const fullX = chart.scales.x.getPixelForValue(100);
-        const filledX = chartArea.left + (parseFloat(percentage) / 100) * (fullX - chartArea.left);
-        const y = bar.y; const h = bar.height;
-        const emptyBarColors = ['#c1e6f3ff','#fdf0d4ff','#cbffeeff','#e6c8fcff','#c5d7f5ff','#cfeafaff','#f7bfe1ff'];
-        ctx.fillStyle = emptyBarColors[i % emptyBarColors.length];
-        ctx.fillRect(chartArea.left, y - h / 2, fullX - chartArea.left, h);
-        ctx.fillStyle = barColors[i % barColors.length];
-        ctx.fillRect(chartArea.left, y - h / 2, filledX - chartArea.left, h);
-        const capWidth = 40; const capHeight = 24;
-        let left = filledX;
-        if (filledX + capWidth > chartArea.right - 5) left = Math.max(chartArea.left, chartArea.right - capWidth - 5);
-        const mid = y;
-        ctx.beginPath();
-        ctx.moveTo(left, y - capHeight / 2);
-        ctx.lineTo(left + capWidth - 8, y - capHeight / 2);
-        ctx.lineTo(left + capWidth, mid);
-        ctx.lineTo(left + capWidth - 8, y + capHeight / 2);
-        ctx.lineTo(left, y + capHeight / 2);
-        ctx.closePath();
-        ctx.fillStyle = capColors[i % capColors.length];
-        ctx.fill();
-        ctx.fillStyle = "#fff"; ctx.font = "12px Montserrat"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-        ctx.fillText(percentage + "%", left + capWidth / 2 - 4, mid);
-      });
-    }
-  };
+    const abuseLegendPosition = 'bottom';
+    createChart('abuseTypeChart', {
+        type: 'pie',
+        data: {
+            labels: abuseLabels,
+            datasets: [{
+                data: abuseCounts,
+                backgroundColor: abuseColors.slice(0, Math.max(abuseLabels.length, 1))
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: abuseLegendPosition === 'right'
+                    ? { top: 8, right: 8, bottom: 8, left: 8 }
+                    : { top: 4, right: 12, bottom: 4, left: 12 }
+            },
+            plugins: {
+                legend: {
+                    position: abuseLegendPosition,
+                    align: 'center',
+                    fullSize: true,
+                    labels: {
+                        padding: abuseLegendPosition === 'right' ? 10 : 14,
+                        boxWidth: 14,
+                        boxHeight: 14,
+                        usePointStyle: true,
+                        maxWidth: abuseLegendPosition === 'bottom' ? 520 : 220,
+                        font: { size: abuseLabels.length > 10 ? 10 : 11, family: 'Montserrat' },
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            const ds = data.datasets[0];
+                            const pcts = percentagesTo100(ds.data);
+                            return data.labels.map((label, i) => ({
+                                text: (label || '—') + ' (' + pcts[i] + '%)',
+                                fillStyle: ds.backgroundColor[i],
+                                strokeStyle: ds.borderColor ? ds.borderColor[i] : ds.backgroundColor[i],
+                                lineWidth: 1,
+                                hidden: false,
+                                index: i
+                            }));
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const pcts = percentagesTo100(ctx.dataset.data);
+                            return `${ctx.label}: ${ctx.parsed} (${pcts[ctx.dataIndex]}%)`;
+                        }
+                    }
+                },
+                datalabels: { display: false }
+            }
+        }
+    });
 
-  const statusOrder = [
+    const statusCtx = document.getElementById('statusChart')?.getContext('2d');
+    const statusGradientColors = ['#99c4d3', '#fcb825', '#00c382', '#9b57cc', '#81acef', '#38b6ff', '#ff66c4'];
+    const statusBarColors = [];
+    const statusCapColors = [];
+    statusGradientColors.forEach((color) => {
+        if (statusCtx) {
+            const gradient = statusCtx.createLinearGradient(0, 0, 600, 0);
+            gradient.addColorStop(0, color);
+            gradient.addColorStop(1, color);
+            statusBarColors.push(gradient);
+        } else {
+            statusBarColors.push(color);
+        }
+        statusCapColors.push(color);
+    });
+
+    const statusBarPlugin = {
+        id: 'provincialStatusBarPlugin',
+        afterDatasetDraw(chart) {
+            const { ctx, chartArea } = chart;
+            const datasetMeta = chart.getDatasetMeta(0);
+            datasetMeta.data.forEach((bar, i) => {
+                const pct = parseFloat(chart.data.datasets[0].data[i]) || 0;
+                const percentage = pct.toFixed(1);
+                const fullX = chart.scales.x.getPixelForValue(100);
+                const filledX = chartArea.left + (parseFloat(percentage) / 100) * (fullX - chartArea.left);
+                const y = bar.y;
+                const h = bar.height;
+                const emptyBarColors = ['#c1e6f3ff', '#fdf0d4ff', '#cbffeeff', '#e6c8fcff', '#c5d7f5ff', '#cfeafaff', '#f7bfe1ff'];
+                ctx.fillStyle = emptyBarColors[i % emptyBarColors.length];
+                ctx.fillRect(chartArea.left, y - h / 2, fullX - chartArea.left, h);
+                ctx.fillStyle = statusBarColors[i % statusBarColors.length];
+                ctx.fillRect(chartArea.left, y - h / 2, filledX - chartArea.left, h);
+                const capWidth = 40;
+                const capHeight = 24;
+                let left = filledX;
+                if (filledX + capWidth > chartArea.right - 5) left = Math.max(chartArea.left, chartArea.right - capWidth - 5);
+                const mid = y;
+                ctx.beginPath();
+                ctx.moveTo(left, y - capHeight / 2);
+                ctx.lineTo(left + capWidth - 8, y - capHeight / 2);
+                ctx.lineTo(left + capWidth, mid);
+                ctx.lineTo(left + capWidth - 8, y + capHeight / 2);
+                ctx.lineTo(left, y + capHeight / 2);
+                ctx.closePath();
+                ctx.fillStyle = statusCapColors[i % statusCapColors.length];
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px Montserrat';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(percentage + '%', left + capWidth / 2 - 4, mid);
+            });
+        }
+    };
+
+    const statusOrder = [
     'awaiting-resolution',
     'forwarded',
     'under-review',
@@ -1451,73 +1489,77 @@ const statuses = Object.entries(dataset.statusCounts || {})
 
         return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
     });
-  const labels = statuses.map(s => s[0]);
-  const values = statuses.map(s => s[1]);
-  const reportTotal = values.reduce((a, b) => a + b, 0);
-  /* Bar length = share of all reports (0–100); tooltips use raw `values` counts */
-  const statusPctBars = values.map((v) => (reportTotal > 0 ? (v / reportTotal) * 100 : 0));
-  const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
+    const statusLabels = statuses.map(s => s[0]);
+    const statusValues = statuses.map(s => s[1]);
+   const statusPctBars = percentagesTo100(statusValues);
+    const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
+    const statusLayoutPad = window.matchMedia('(max-width: 600px)').matches ? 36 : 50;
 
-  createChart("statusChart", {
-    type: "bar", plugins: [barPlugin],
-    data: {
-      labels,
-      datasets: [{
-        label: '',
-        data: statusPctBars, backgroundColor: barColors,
-        borderRadius: { topLeft: 20, bottomLeft: 20, topRight: 0, bottomRight: 0 },
-        borderWidth: 0, barPercentage: 0.55, categoryPercentage: 0.55
-      }]
-    },
-    options: {
-      indexAxis: "y", responsive: true, maintainAspectRatio: false,
-      layout: { padding: { right: 50, left: 12 } },
-      interaction: {
-        mode: 'nearest',
-        intersect: false,
-        axis: 'y',
-      },
-      scales: {
-        x: {
-          display: false,
-          beginAtZero: true,
-          max: 100,
+    createChart('statusChart', {
+        type: 'bar',
+        plugins: [statusBarPlugin],
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                label: '',
+                data: statusPctBars,
+                backgroundColor: statusLabels.map((_, i) => statusBarColors[i % statusBarColors.length]),
+                borderRadius: { topLeft: 20, bottomLeft: 20, topRight: 0, bottomRight: 0 },
+                borderWidth: 0,
+                barPercentage: 0.55,
+                categoryPercentage: 0.55
+            }]
         },
-        y: {
-          ticks: {
-            color: '#333',
-            font: { size: tickFontSize, weight: '600', family: 'Montserrat' },
-            callback: function(value, index) {
-              const raw = labels[index] !== undefined ? labels[index] : labels[value];
-              return raw != null ? formatStatusLabel(raw) : '';
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: { padding: { right: statusLayoutPad, left: 4 } },
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'y'
             },
-          },
-        },
-      },
-      plugins: {
-        legend: { display: false },
-        datalabels: { display: false },
-        tooltip: {
-          displayColors: false,
-          backgroundColor: 'rgba(15, 23, 42, 0.94)',
-          titleFont: { size: 13, weight: '600', family: 'Montserrat' },
-          bodyFont: { size: 17, weight: '700', family: 'Montserrat' },
-          titleSpacing: 6,
-          bodySpacing: 4,
-          padding: 12,
-          cornerRadius: 10,
-          callbacks: {
-            title: (items) => (items.length ? formatStatusLabel(items[0].label) : ''),
-            label: (item) => {
-              const n = values[item.dataIndex];
-              return n != null ? Number(n).toLocaleString() : '';
+            scales: {
+                x: {
+                    display: false,
+                    beginAtZero: true,
+                    max: 100
+                },
+                y: {
+                    ticks: {
+                        color: '#333',
+                        font: { size: tickFontSize, weight: '600', family: 'Montserrat' },
+                        callback: function(value, index) {
+                            const raw = statusLabels[index] !== undefined ? statusLabels[index] : statusLabels[value];
+                            return raw != null ? formatStatusLabel(raw) : '';
+                        }
+                    }
+                }
             },
-          },
-        },
-      },
-    },
-  });
-
+            plugins: {
+                legend: { display: false },
+                datalabels: { display: false },
+                tooltip: {
+                    displayColors: false,
+                    backgroundColor: 'rgba(15, 23, 42, 0.94)',
+                    titleFont: { size: 13, weight: '600', family: 'Montserrat' },
+                    bodyFont: { size: 17, weight: '700', family: 'Montserrat' },
+                    titleSpacing: 6,
+                    bodySpacing: 4,
+                    padding: 12,
+                    cornerRadius: 10,
+                    callbacks: {
+                        title: (items) => (items.length ? formatStatusLabel(items[0].label) : ''),
+                        label: (item) => {
+                            const n = statusValues[item.dataIndex];
+                            return n != null ? Number(n).toLocaleString() : '';
+                        }
+                    }
+                }
+            }
+        }
+    });
   createChart('anonymousChart', {
     type: 'doughnut',
     data: {
