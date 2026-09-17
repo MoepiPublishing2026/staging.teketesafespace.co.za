@@ -1858,8 +1858,7 @@ const statuses = Object.entries(dataset.statusCounts || {})
     });
     const statusLabels = statuses.map(s => s[0]);
     const statusValues = statuses.map(s => s[1]);
-    const reportTotal = statusValues.reduce((a, b) => a + b, 0);
-    const statusPctBars = statusValues.map((v) => (reportTotal > 0 ? (v / reportTotal) * 100 : 0));
+   const statusPctBars = percentagesTo100(statusValues);
     const tickFontSize = window.matchMedia('(max-width: 600px)').matches ? 11 : 13;
     const statusLayoutPad = window.matchMedia('(max-width: 600px)').matches ? 36 : 50;
 
