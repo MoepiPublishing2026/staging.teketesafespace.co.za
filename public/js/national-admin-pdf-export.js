@@ -9,6 +9,15 @@
  * image. Blocks are then packed onto PDF pages, starting a new page whenever
  * the next block would not fit in the remaining space. A block is only ever
  * pixel-sliced across pages if it is, by itself, taller than a full page.
+ *
+ * Map handling: the district map is an inline SVG styled by the page's
+ * stylesheet. Serializing it into an <img> data URI produces a *standalone*
+ * SVG document, which has no access to that stylesheet, no webfont, and
+ * unreliable CSS-filter support. The white separator lines (which rely on
+ * vector-effect: non-scaling-stroke) collapse to hairlines, and the dark
+ * outer silhouette (a CSS drop-shadow filter) disappears entirely. So before
+ * serializing, bakeMapSvgBorders() rewrites both as real geometry and
+ * presentation attributes measured in user units.
  */
 (function () {
     'use strict';
@@ -20,6 +29,7 @@
     var A3_H = 297;
     var MARGIN = 10;
     var BLOCK_GAP_MM = 4;
+    var SVG_NS = 'http://www.w3.org/2000/svg';
 
     function wait(ms) {
         return new Promise(function (resolve) { setTimeout(resolve, ms); });
@@ -123,17 +133,93 @@
         return snaps;
     }
 
+    /**
+     * Rewrite the cloned map SVG so its borders survive as a standalone
+     * document.
+     *
+     *  - .district-map-shape gets explicit stroke / stroke-width presentation
+     *    attributes, and vector-effect is switched off so the width is honoured
+     *    in user units instead of being resolved against the wrong viewport.
+     *  - .map-color-root's CSS drop-shadow (the dark outer silhouette) is
+     *    replaced by a real stroked <g> of duplicate paths, painted under the
+     *    labels so text stays legible.
+     *  - Label styling is inlined with a web-safe font stack, since an external
+     *    fonts.googleapis.com <link> cannot resolve inside a data: URI.
+     *
+     * @param {SVGElement} clone deep clone being prepared for serialization
+     * @param {SVGElement} svg   the live on-page SVG (read for its viewBox)
+     * @param {number}     w     rendered CSS width of the live SVG, in px
+     */
+    function bakeMapSvgBorders(clone, svg, w) {
+        // user units per CSS pixel — every stroke width below is scaled by this
+        var vb = svg.viewBox && svg.viewBox.baseVal;
+        var upp = (vb && vb.width && w) ? (vb.width / w) : 1;
+        var WHITE_W = 1.2 * upp;   // inner district separators
+        var DARK_W = 1.6 * upp;    // outer province silhouette
+        var HALO_W = 0.35 * upp;   // label outline
+
+        clone.querySelectorAll('.district-map-shape').forEach(function (p) {
+            p.setAttribute('stroke', '#ffffff');
+            p.setAttribute('stroke-width', String(WHITE_W));
+            p.setAttribute('stroke-linejoin', 'round');
+            p.setAttribute('vector-effect', 'none');
+        });
+
+        var root = clone.querySelector('.map-color-root');
+        if (root) {
+            root.style.filter = 'none';
+            root.removeAttribute('filter');
+        }
+
+        var outline = document.createElementNS(SVG_NS, 'g');
+        outline.setAttribute('class', 'na-pdf-map-outline');
+        outline.setAttribute('fill', 'none');
+        outline.setAttribute('stroke', '#111111');
+        outline.setAttribute('stroke-width', String(DARK_W));
+        outline.setAttribute('stroke-linejoin', 'round');
+        outline.setAttribute('pointer-events', 'none');
+        clone.querySelectorAll('.district-map-shape').forEach(function (p) {
+            var d = p.getAttribute('d');
+            if (!d) return;
+            var o = document.createElementNS(SVG_NS, 'path');
+            o.setAttribute('d', d);
+            o.setAttribute('fill-rule', 'evenodd');
+            outline.appendChild(o);
+        });
+
+        var g = clone.querySelector('g.za-map-root') || clone;
+        var labels = clone.querySelector('.map-label-layer');
+        if (labels && labels.parentNode === g) {
+            g.insertBefore(outline, labels);
+        } else {
+            g.appendChild(outline);
+        }
+
+        var style = document.createElementNS(SVG_NS, 'style');
+        style.textContent =
+            '.map-label-layer text{font-family:Helvetica,Arial,sans-serif;font-weight:700;'
+            + 'paint-order:stroke fill;stroke:#ffffff;stroke-width:' + HALO_W + ';'
+            + 'stroke-linejoin:round;}'
+            + '.map-label-district{fill:#111111;}';
+        clone.insertBefore(style, clone.firstChild);
+
+        return clone;
+    }
+
     function snapshotMapSvg(root) {
         var snaps = [];
-        root.querySelectorAll('.district-map-svg, svg.district-map-svg').forEach(function (svg) {
+        root.querySelectorAll('svg.district-map-svg').forEach(function (svg) {
             try {
                 var box = svg.getBoundingClientRect();
                 var w = Math.max(1, Math.round(box.width || svg.clientWidth || 800));
                 var h = Math.max(1, Math.round(box.height || svg.clientHeight || 520));
+
                 var clone = svg.cloneNode(true);
                 clone.setAttribute('width', String(w));
                 clone.setAttribute('height', String(h));
-                clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+                clone.setAttribute('xmlns', SVG_NS);
+                bakeMapSvgBorders(clone, svg, w);
+
                 var xml = new XMLSerializer().serializeToString(clone);
                 var img = document.createElement('img');
                 img.className = 'na-pdf-svg-snapshot';
@@ -160,6 +246,24 @@
         return Promise.all((snaps || []).map(function (item) {
             var img = item && item.img;
             if (!img || img.complete) return Promise.resolve();
+            return new Promise(function (resolve) {
+                img.onload = resolve;
+                img.onerror = resolve;
+            });
+        }));
+    }
+
+    // The capture host is a *clone*, so its snapshot <img> elements are
+    // separate nodes that must decode on their own before html2canvas runs.
+    // They share a src with the originals so this is normally a cache hit,
+    // but awaiting it avoids an intermittently blank map on a cold export.
+    function decodeHostImages(host) {
+        var imgs = Array.prototype.slice.call(host.querySelectorAll('img'));
+        return Promise.all(imgs.map(function (img) {
+            if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+            if (typeof img.decode === 'function') {
+                return img.decode().catch(function () {});
+            }
             return new Promise(function (resolve) {
                 img.onload = resolve;
                 img.onerror = resolve;
@@ -432,8 +536,9 @@
             })
             .then(function () {
                 host = buildCaptureHost(element);
-                // allow the fixed-width clone to lay out before we measure it
-                return wait(150);
+                // allow the fixed-width clone to lay out, and let its own copies
+                // of the snapshot images finish decoding, before we measure it
+                return decodeHostImages(host).then(function () { return wait(150); });
             })
             .then(function () {
                 setOverlay(true, 'Building PDF\u2026');
