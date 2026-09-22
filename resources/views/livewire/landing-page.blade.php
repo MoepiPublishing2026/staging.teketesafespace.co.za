@@ -5,46 +5,60 @@
     <div id="main-landing-container" x-data="{ menuOpen: false }"
         class="relative w-full min-h-[100dvh] bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
 
-        <header class="fixed top-0 left-0 right-0 bg-white z-40 flex items-center justify-between px-4 py-3 lg:px-[2vw] lg:pt-[1.5vh]">
-            <div class="absolute inset-0 bg-white/40 backdrop-blur-sm hidden lg:block"></div>
-            <div class="relative z-10 flex justify-end items-center w-full">
+<header class="fixed top-0 left-0 w-full bg-transparent z-50">
+    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
-                <!-- Logo -->
-                <a href="{{ route('landing-page') }}" class="lg:hidden -ml-3">
-                    <img src="{{ asset('images/logo.png') }}"
-                        alt="Safe Space Logo"
-                        class="w-[170px]">
+        <!-- Logo -->
+        <div class="flex items-center">
+    <img
+        src="{{ asset('images/logo.png') }}"
+        alt="Safe Space Logo"
+        class="
+            w-[120px]
+            sm:w-[140px]
+            md:w-[170px]
+            lg:w-[190px]
+            xl:w-[200px]
+            2xl:w-[300px]
+            h-auto
+            object-contain
+            flex-shrink-0">
+</div>
+
+        <!-- Top Right Links -->
+        <div class="flex items-center gap-4">
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            font-[Montserrat]
+            text-[18px]
+            lg:text-[18px]
+            xl:text-[20px]
+            ">
+
+                 
+
+                <a href="{{ route('landing-page') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Home
                 </a>
 
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
-                    font-[Montserrat]
-                    text-[18px]
-                    lg:text-[18px]
-                    xl:text-[20px] ">
-
-
-                    <a href="{{ route('landing-page') }}"
-                        class="text-black transition-colors hover:!text-[#c7da30]">
-                        Home
+                <a href="{{ route('about-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    About Us
+                </a>
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
+                        Workshops
                     </a>
 
-                    <a href="{{ route('about-us') }}"
-                        class="text-black transition-colors hover:!text-[#c7da30]">
-                        About Us
-                    </a>
-                    <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
-                            Workshops
-                        </a>
+                 
 
-                    
+                <a href="{{ route('contact-us') }}"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Contact Us
+                </a>
 
-                    <a href="{{ route('contact-us') }}"
-                        class="text-black transition-colors hover:!text-[#c7da30]">
-                        Contact Us
-                    </a>
-
-                </div>
+            </div>
 
                 <div class="lg:hidden ml-auto -mt-2">
                     <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
@@ -108,46 +122,46 @@
 </nav>
         </header>
 
-       <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-24 pb-8 lg:block lg:px-0 lg:pt-0 overflow-hidden">
+      <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
             
-            <div class="circle-bg-line hidden lg:block absolute top-[-95vh] left-[-46vw] w-[100vw] h-[320vh] pointer-events-none z-50">
-                <img src="{{ asset('images/circle6.png') }}" alt="Circle Background" class="w-full h-full object-fill opacity-75 pointer-events-none">
-            </div>
+    <div class="circle-bg-line hidden lg:block absolute top-[-100vh] left-[-46vw] w-[107vw] h-[320vh] pointer-events-none z-50">
+        <img src="{{ asset('images/circle6.png') }}" 
+             alt="Circle Background" 
+             class="w-full h-full object-fill opacity-75 pointer-events-none"
+             style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);">
+    </div>
 
-           <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo"
-                class="hidden lg:block relative mb-2 min-[520px]:mb-1 max-w-[220px]
-                min-[520px]:max-w-[160px] md:max-w-[220px]
-                lg:max-w-none lg:absolute lg:mb-0 lg:top-[7vh]
-                lg:left-[0vw] lg:w-[30vw] z-0">
+    <!-- Heading: order-1 on mobile so it appears safely at the top -->
+    <h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight text-[32px] sm:text-[38px] mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[3vw] lg:mb-0">
+        Report Abuse<br>Safely and<br>Anonymously
+    </h1>
 
-           <h1 class="w-full text-center font-bold text-[#c7da30] leading-tight text-[32px] sm:text-[38px] mb-1 mx-auto lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[42vh] lg:left-[2vw] lg:mb-0">
-    Report Abuse<br>Safely and<br>Anonymously
-</h1>
+    <!-- Student Image: order-2 on mobile so it sits cleanly below the heading -->
+    <img src="{{ asset('images/back-pc.png') }}" alt="Students"
+        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[12vh] lg:right-[5vw] lg:w-[42vw] lg:h-[31vw] lg:max-w-none">
+        
+    <!-- Buttons: order-3 on mobile -->
+    <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[74vh] lg:right-[12vw] lg:flex-row lg:gap-[1vw]">
+        <button wire:click="redirectToReportAbuse"
+           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-bold lg:border-[0.27vw]">
+            Report Now
+        </button>
 
-            <img src="{{ asset('images/back-pc.png') }}" alt="Students"
-                class="w-full max-w-[370px] mx-auto -mt-6 mb-8 object-contain lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[4vh] lg:right-[5vw] lg:w-[38vw] lg:h-[37vw] lg:max-w-none">
-                
-            <div class="w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[8vw] lg:flex-row lg:gap-[1vw]">
-                <button wire:click="redirectToReportAbuse"
-                   class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-medium lg:border-[0.27vw]">
-                    Report Now
-                </button>
+        <button wire:click="redirectToStatusCheck"
+           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-bold lg:border-[0.27vw]">
+            Check Status
+        </button>
 
-                <button wire:click="redirectToStatusCheck"
-                   class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-medium lg:border-[0.27vw]">
-                    Check Status
-                </button>
+        <button wire:click="redirectToAdminLogin"
+            class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-bold lg:border-[0.27vw]">
+            Administrators
+        </button>
+    </div>
 
-                <button wire:click="redirectToAdminLogin"
-                    class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-medium lg:border-[0.27vw]">
-                    Administrator
-                </button>
-            </div>
-
-        </section>
+</section>
 
      <!-- FOOTER -->
-<footer class="relative w-full bg-[#757573] text-white px-4 py-6 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:gap-2 lg:px-[2vw] mt-auto z-30 font-[Montserrat]">
+<footer class="relative w-full bg-[#c7da30] text-white px-4 py-6 flex flex-col items-center gap-4 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:gap-2 lg:px-[2vw] mt-auto z-30 font-[Montserrat]">
             <p class="text-[13px] leading-5 text-center font-normal text-white min-[640px]:text-[14px] lg:text-[16px] min-[640px]:text-left w-full min-[640px]:w-auto">
                 &copy; {{ date('Y') }} Tekete SafeSpace From Moepi <br class="min-[640px]:hidden">Publishing. All rights reserved.
             </p>
@@ -158,18 +172,23 @@
                 <a href="https://www.X.com/moepipublishing" target="_blank">
                     <img src="{{ asset('images/X.png') }}" alt="X" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
                 </a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
-                </a>
+               <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" class="inline-block transition-transform hover:scale-110">
+    <svg class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-[1.7vw] fill-current" viewBox="0 0 24 24" aria-label="LinkedIn">
+        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+    </svg>
+</a>
                 <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
                     <img src="{{ asset('images/facebook.png') }}" alt="Facebook" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
                 </a>
                 <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank">
                     <img src="{{ asset('images/instagram.png') }}" alt="Instagram" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
                 </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok" class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
-                </a>
+                <a href="https://www.tiktok.com/@moepipublishing" target="_blank" 
+   class="w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-md transition-transform hover:scale-110">
+    <svg class="w-7 h-4" viewBox="0 0 24 24" fill="#c7da30" aria-label="TikTok">
+        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-1.02-.97-.49-1.85-1.15-2.59-1.97v9.75c-.01 2.82-2.3 5.12-5.13 5.12-2.83 0-5.13-2.3-5.13-5.12 0-2.83 2.3-5.13 5.13-5.13.38 0 .76.04 1.13.12v4.02c-.37-.1-.76-.15-1.13-.15-1.04 0-1.88.84-1.88 1.88 0 1.04.84 1.88 1.88 1.88 1.04 0 1.88-.84 1.88-1.88V.02z"/>
+    </svg>
+</a>
             </div>
     </footer>
 
@@ -269,7 +288,7 @@
     <script>
         (() => {
             const refreshLandingViewport = () => {
-                document.documentElement.style.setProperty('--landing-viewport-height', `${window.innerHeight}px`);
+                document.documentElement.style.setProperty('--landing-viewport-height', ${window.innerHeight}px);
             };
 
             refreshLandingViewport();
