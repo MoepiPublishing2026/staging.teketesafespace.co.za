@@ -233,7 +233,8 @@
                             <div class="w-full">
                                 <label for="fullName" class="block text-[12px] text-black mb-1">Full Name</label>
                                 <input type="text" wire:model="fullName" id="fullName"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
+                                    placeholder="Enter your full name">
                                 @error('fullName')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
@@ -242,7 +243,8 @@
                             <div class="w-full">
                                 <label for="age" class="block text-[12px] text-black mb-1">Age</label>
                                 <input type="number" wire:model.live="age" id="age" min="0" max="115"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white">
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
+                                    placeholder="Enter your age (e.g 15)">
                                 @error('age')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
