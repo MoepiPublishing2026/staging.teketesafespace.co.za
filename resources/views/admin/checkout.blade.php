@@ -5,6 +5,7 @@
 <title>Payment</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 :root {
@@ -171,6 +172,8 @@ h2 {
     </button>
 
 </div>
+
+<x-site-footer />
 
 </body>
 </html>
