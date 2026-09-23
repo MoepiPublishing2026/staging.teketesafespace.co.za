@@ -10,13 +10,139 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
+        .about-heading-about {
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-weight: 300;
+            font-size: 52px;
+            line-height: 0.95;
+            color: #C5D931;
+        }
+
+        .about-heading-brand {
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 1.15;
+            color: #C5D931;
+        }
+
+        .about-intro {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            color: #000000;
+            width: 100%;
+            max-width: 1024px;
+            line-height: 1.55;
+        }
+
+        .core-values-heading {
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-weight: 400;
+            font-size: 28px;
+            line-height: 1.15;
+            color: #FFFFFF;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .core-value-title {
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 1.2;
+            color: #1E94FD;
+            text-transform: uppercase;
+        }
+
+        .core-value-body {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #000000;
+            max-width: 853px;
+        }
+
+        .core-value-number {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            line-height: 1;
+            color: #1E94FD;
+        }
+
+        .about-report-heading {
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-weight: 400;
+            font-size: 24px;
+            line-height: 1.4;
+            color: #C5D931;
+        }
+
+        .about-issue-label {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1.25;
+            color: #000000;
+        }
+
+        .who-we-serve-heading {
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-weight: 400;
+            font-size: 28px;
+            line-height: 1.2;
+            color: #C5D931;
+        }
+
+        .who-we-serve-list {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 1.45;
+            color: #000000;
+        }
+
+        .who-we-serve-photo {
+            width: 230px;
+            height: auto;
+            max-width: 100%;
+            object-fit: cover;
+            object-position: center center;
+        }
+
+        @media (min-width: 768px) {
+            .about-hero-mobile { display: none !important; }
+            .about-hero-desktop { display: flex; }
+            .about-heading-about { font-size: 80px; }
+            .about-heading-brand { font-size: 32px; }
+            .about-report-heading { font-size: 36px; }
+            .core-values-heading { font-size: 36px; }
+            .core-value-title { font-size: 21px; }
+            .core-value-number { font-size: 36px; }
+            .who-we-serve-heading { font-size: 36px; }
+            .who-we-serve-photo {
+                width: 280px;
+                height: 100%;
+                align-self: stretch;
+            }
+        }
+
         @media (max-width: 767px) {
             .about-hero-mobile { display: flex; }
             .about-hero-desktop { display: none !important; }
         }
-        @media (min-width: 768px) {
-            .about-hero-mobile { display: none !important; }
-            .about-hero-desktop { display: flex; }
+
+        @media (min-width: 1024px) {
+            .about-heading-about {
+                font-size: 114.8px;
+                max-width: 505.4px;
+            }
+            .about-heading-brand {
+                font-size: 41.8px;
+                max-width: 505.4px;
+            }
         }
     </style>
 </head>
@@ -163,64 +289,63 @@
         <div class="about-hero-mobile flex-col items-center text-center w-full">
             <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
                 class="block mx-auto w-[190px] mb-8">
-            <h2 class="text-[28px] font-extrabold text-black leading-[1.15] mb-3 text-center">
-                ABOUT TEKETE<br>SAFESPACE
+            <h2 class="mb-3 text-center">
+                <span class="about-heading-about block mx-auto">ABOUT</span>
+                <span class="about-heading-brand block mx-auto mt-1">TEKETE SAFESPACE</span>
             </h2>
-            <div class="h-[6px] bg-[#c7da30] w-[200px] mx-auto"></div>
         </div>
 
-        {{-- Desktop: icon beside title --}}
-        <div class="about-hero-desktop w-full flex-row items-center gap-2 sm:gap-3">
-            <div class="flex justify-start shrink-0">
-                <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
-                    class="w-[220px] lg:w-[280px] -mr-4 lg:-mr-6">
-            </div>
-            <div class="flex-1 min-w-0 text-left">
-                <h2 class="text-[44px] lg:text-[50px] font-extrabold text-[#333333] mb-2 leading-tight">
-                    ABOUT TEKETE SAFESPACE
-                </h2>
-                <div class="h-[6px] bg-[#c7da30] w-full max-w-[620px] lg:max-w-[740px]"></div>
-            </div>
-        </div>
+       {{-- Desktop: icon stays in place, heading nudged to the right --}}
+<div class="about-hero-desktop w-full flex flex-row items-center justify-center gap-2 sm:gap-3">
+    <div class="flex justify-center shrink-0">
+        <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
+            class="w-[220px] lg:w-[272px] -mr-4 lg:-mr-6">
+    </div>
+    <div class="text-left shrink-0 ml-10">
+        <h2>
+            <span class="about-heading-about block">ABOUT</span>
+            <span class="about-heading-brand block">TEKETE SAFESPACE</span>
+        </h2>
+    </div>
+</div>
 
-        <div class="mt-8 md:mt-8 space-y-4 text-[15px] md:text-[17px] text-black leading-relaxed text-left">
+        <div class="about-intro mt-8 md:mt-8 text-left mx-auto">
             <p>
-                A confidential platform designed to protect and empower learners
-                and employees to speak out—with the option to report anonymously.
-                The app is zero-rated, ensuring users can access and submit reports
-                without incurring data costs. Your voice matters. Your identity is protected.
-            </p>
-            <p>
-                Whether you choose to report with your name or anonymously,
-                Tekete SafeSpace by Moepi Publishing ensures every report is handled with confidentiality and urgency.
+                A confidential platform designed to protect and empower learners and employees to speak out,
+                with the option to report anonymously. The app is zero-rated, ensuring users can access and
+                submit reports without incurring data costs. Your voice matters. Your identity is protected.
+                <br><br>
+                Whether you choose to report with your name or anonymously, Tekete SafeSpace by Moepi
+                Publishing ensures every report is handled with confidentiality, urgency, and at no data cost to
+                the user.
             </p>
         </div>
     </section>
 
-    <section class="w-full bg-white py-16" style="padding-left: 2vw; padding-right: 2vw;">
-       <h2 class="text-[24px] text-black text-left md:text-center font-bold mb-16">
-    You can report any of the following through Tekete SafeSpace
+    <section class="w-full bg-white py-16 px-6 lg:px-8">
+       <h2 class="about-report-heading text-center mb-14 md:mb-16">
+    You can report any of the following<br class="hidden md:block"> through Tekete SafeSpace
 </h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 w-full">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-12 md:gap-x-16 md:gap-y-14 w-full max-w-[720px] mx-auto">
          @php
     $issues = [
-        ['img' => 'Bullying.png', 'title' => 'Bullying'],
-        ['img' => 'Substance  Abuse.png', 'title' => 'Substance Addiction'],
-        ['img' => 'Sexual Abuse.png', 'title' => 'Suspected Sexual Harassment'],
-        ['img' => 'weapons.png', 'title' => 'Weapons'],
-        ['img' => 'pregnancy.png', 'title' => 'Teenage Pregnancy'],
-        ['img' => 'other issues.png', 'title' => 'Other Issues'],
+        ['img' => '6.svg', 'title' => 'Teenage pregnancy'],
+        ['img' => '9.svg', 'title' => 'Bullying'],
+        ['img' => '10.svg', 'title' => 'Substance Addiction'],
+        ['img' => '11.svg', 'title' => 'Suspected Sexual Harassment'],
+        ['img' => '12.svg', 'title' => 'Weapons'],
+        ['img' => '13.svg', 'title' => 'Many More'],
     ];
 @endphp
 
            @foreach ($issues as $issue)
        <div class="flex flex-col items-center text-center">
-        <div class="h-[80px] w-[80px] flex items-center justify-center mb-3">
+        <div class="h-[64px] w-[64px] md:h-[76px] md:w-[76px] flex items-center justify-center mb-3">
             <img src="{{ asset('images/' . $issue['img']) }}"
                  class="max-w-full max-h-full object-contain"
                  alt="{{ $issue['title'] }}">
         </div>
-        <p class="text-[16px] text-black leading-tight min-h-[40px]">
+        <p class="about-issue-label max-w-[160px]">
             {{ $issue['title'] }}
         </p>
     </div>
@@ -228,69 +353,89 @@
         </div>
     </section>
 
-    <section class="relative bg-white w-full pb-12 grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_230px] gap-8 items-start overflow-visible" style="padding-left: 2vw; padding-right: 2vw;">
+    <section class="relative bg-white w-full pt-6 md:pt-10 pb-12 px-6 lg:px-8">
+        <div class="max-w-[1024px] mx-auto flex flex-col md:flex-row md:items-stretch justify-center gap-5 md:gap-6">
+            <div>
+                <h3 class="who-we-serve-heading mb-5 text-left">
+                    Who we serve:
+                </h3>
 
-        <div class="hidden lg:block absolute -left-56 top-[100%] -translate-y-1/2 w-[400px] h-[400px] pointer-events-none z-10">
-            <img src="{{ asset('images/futuristic digital frame tech.png') }}" alt="Tech Frame Half"
-                class="w-full h-full object-cover object-right [clip-path:inset(0_0_0_50%)]">
+                <ul class="who-we-serve-list list-disc space-y-3 pl-5">
+                    <li><span class="font-bold">Learners</span> - A safe way to speak out without fear.</li>
+                    <li><span class="font-bold">Parents</span> - Peace of mind knowing concerns can be raised.</li>
+                    <li><span class="font-bold">Teachers &amp; Staff</span> - A trusted channel for reporting<br>misconduct.</li>
+                    <li><span class="font-bold">Schools</span> - A structured system to build safer, more<br>accountable learning environments.</li>
+                    <li><span class="font-bold">Organisations</span> - A safer working environment for both<br>employer and employee.</li>
+                </ul>
+            </div>
+
+            <img src="{{ asset('images/Students holding phone.png') }}"
+                 alt="Students holding phone"
+                 class="who-we-serve-photo rounded-lg shadow-md mx-auto md:mx-0 shrink-0">
         </div>
+    </section>
 
-        <div class="pt-2 -mt-10 sm:mt-0 relative z-10">
-            <h3 class="text-[#c7da30] text-[29.9px] font-bold mb-3 text-center md:text-left">
-                Who we serve:
+    <section class="bg-white w-full pt-10 pb-16 px-6 lg:px-8">
+        <div class="relative mx-auto mb-14 w-[300px] h-[90px] md:w-[400px] md:h-[120px] flex items-center justify-center overflow-hidden">
+            <img src="{{ asset('images/7.svg') }}"
+                 alt=""
+                 aria-hidden="true"
+                 class="absolute left-1/2 top-1/2 w-[520px] h-[520px] max-w-none -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
+            <h3 class="core-values-heading relative z-10 px-8">
+                OUR CORE<br>VALUES
             </h3>
-
-            <ul class="list-disc text-[16px] text-black space-y-2 pl-5">
-                <li>Learners — A safe way to speak out without fear.</li>
-                <li>Parents — Peace of mind knowing concerns can be raised.</li>
-                <li>Teachers & Staff — A trusted channel for reporting misconduct.</li>
-                <li>Schools — A structured system to build safer environments.</li>
-                <li>Organisations — A safer working environment.</li>
-            </ul>
         </div>
 
-        <!-- Updated container and image classes for mobile centering -->
-        <div class="flex justify-center md:justify-end relative z-10 w-full max-w-[230px] mx-auto md:mx-0">
-            <img src="{{ asset('images/Students holding phone.png') }}" alt="Students holding phone" class="rounded-lg shadow-md object-contain" style="width: 230px; height: auto; max-width: 100%;">
+        @php
+            $coreValues = [
+                [
+                    'num' => '01',
+                    'title' => 'SAFETY FIRST',
+                    'body' => 'We believe every learner has the right to feel and be safe at school, at home, and in their community. Our system is designed to protect and empower young people by creating a secure environment where they can speak up without fear.',
+                ],
+                [
+                    'num' => '02',
+                    'title' => 'CONFIDENTIALITY & TRUST',
+                    'body' => 'Learners must feel confident that what they share is protected. Our platform ensures anonymity, privacy, and strict data protection. We are committed to earning and maintaining the trust of every learner who reaches out for help.',
+                ],
+                [
+                    'num' => '03',
+                    'title' => 'EMPOWERMENT THROUGH VOICE',
+                    'body' => 'Silence often comes from fear. We exist to give learners their voice back - to allow them to speak their truth, raise concerns, and ask for help without shame or judgment. Every voice matters.',
+                ],
+                [
+                    'num' => '04',
+                    'title' => 'EQUITY & INCLUSION',
+                    'body' => 'Every learner, regardless of gender, background, or circumstance, deserves equal access to support and protection. We pay special attention to the unique vulnerabilities of girls, LGBTQ+ youth, and others who are often left behind.',
+                ],
+                [
+                    'num' => '05',
+                    'title' => 'TECHNOLOGY WITH INTEGRITY',
+                    'body' => 'Our platform is digital, encrypted, and POPIA-compliant - but more importantly, it is designed with human dignity at the center. Technology should never replace care, but it can strengthen and extend it.',
+                ],
+            ];
+        @endphp
+
+        <div class="w-full max-w-[1024px] mx-auto flex flex-col gap-8 md:gap-10">
+            @foreach ($coreValues as $value)
+                <div class="flex items-start md:items-center gap-3 sm:gap-6">
+                    <div class="relative w-[96px] h-[72px] sm:w-[130px] sm:h-[92px] md:w-[149px] md:h-[105px] shrink-0 flex items-center justify-center">
+                        <img src="{{ asset('images/8.svg') }}"
+                             alt=""
+                             aria-hidden="true"
+                             class="absolute inset-0 w-full h-full object-contain scale-[1.45] pointer-events-none select-none">
+                        <span class="core-value-number relative z-10">{{ $value['num'] }}</span>
+                    </div>
+                    <div class="min-w-0 pt-1">
+                        <h4 class="core-value-title mb-1 md:mb-2">{{ $value['title'] }}</h4>
+                        <p class="core-value-body">{{ $value['body'] }}</p>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </section>
 
-    <section class="bg-white w-full pt-4 pb-4" style="padding-left: 2vw; padding-right: 2vw;">
-        <h3 class="text-[#c7da30] text-[26px] font-bold text-center mb-8">
-            Our Core Values
-        </h3>
-
-        <div class="space-y-10 text-black text-[16px] md:text-[17px] flex flex-col items-start w-full mx-auto">
-
-            <div class="text-center w-full">
-                <p class="font-bold text-black text-[18px] mb-2 text-center">1. Safety First</p>
-                <p>We believe every learner has the right to feel and be safe at school, at home, and in their community. Our system is designed to protect and empower young people by creating a secure environment where they can speak up without fear.</p>
-            </div>
-
-            <div class="text-center w-full">
-                <p class="font-bold text-black text-[18px] mb-2 text-center">2. Confidentiality & Trust</p>
-                <p>Learners must feel confident that what they share is protected. Our platform ensures anonymity, privacy, and strict data protection. We are committed to earning and maintaining the trust of every learner who reaches out for help.</p>
-            </div>
-
-            <div class="text-center w-full">
-                <p class="font-bold text-black text-[18px] mb-2 text-center">3. Empowerment Through Voice</p>
-                <p>Silence often comes from fear. We exist to give learners their voice back — to allow them to speak their truth, raise concerns, and ask for help without shame or judgment. Every voice matters.</p>
-            </div>
-
-            <div class="text-center w-full">
-                <p class="font-bold text-black text-[18px] mb-2 text-center">4. Equity & Inclusion</p>
-                <p>Every learner, regardless of gender, background, or circumstance, deserves equal access to support and protection. We pay special attention to the unique vulnerabilities of girls, LGBTQ+ youth, and others who are often left behind.</p>
-            </div>
-
-            <div class="text-center w-full">
-                <p class="font-bold text-black text-[18px] mb-2 text-center">5. Technology with Integrity</p>
-                <p>Our platform is digital, encrypted, and POPIA-compliant — but more importantly, it is designed with human dignity at the center. Technology should never replace care, but it can strengthen and extend it.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <x-site-footer class="mt-12" />
+    <x-site-footer class="mt-12" background="#C5D931" />
 
     <script>
         function toggleMobileMenu() {

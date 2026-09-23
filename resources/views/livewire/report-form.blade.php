@@ -232,7 +232,7 @@
     @if (!$isAnonymous)
                             <div class="w-full">
                                 <label for="fullName" class="block text-[12px] text-black mb-1">Full Name</label>
-                                <input type="text" wire:model="fullName" id="fullName"
+                                <input type="text" wire:model.blur="fullName" id="fullName"
                                     class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                     placeholder="Enter your full name">
                                 @error('fullName')
@@ -323,7 +323,7 @@
 
                         <div class="w-full">
                             <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
-                            <input type="text" wire:model.lazy="phoneNumber" id="phoneNumber"
+                            <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. 0789345687" maxlength="15">
                             @error('phoneNumber')
@@ -333,7 +333,7 @@
 
                         <div class="w-full">
                             <label for="reporterEmail" class="block text-[12px] text-black mb-1">Email Address</label>
-                            <input type="email" wire:model.lazy="reporterEmail" id="reporterEmail"
+                            <input type="email" wire:model.blur="reporterEmail" id="reporterEmail"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. example@gmail.com"
                                 title="Please enter a valid email address (e.g., user@domain.com, user@domain.co.za)"
@@ -347,7 +347,7 @@
 
                         <div class="w-full">
                             <label for="location" class="block text-[12px] text-black mb-1">Address</label>
-                            <input type="text" wire:model="location" id="location"
+                            <input type="text" wire:model.blur="location" id="location"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[10.5px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. 123 Main St, Gauteng"
                                 pattern="^\d+\s+[A-Za-z\s\-']+,\s*[A-Za-z\s\-']+$"
@@ -403,7 +403,7 @@
                                 <span class="text-gray-500">(Optional)</span>
                             @endif
                         </label>
-                        <textarea wire:model="description" id="description" rows="4" maxlength="200"
+                        <textarea wire:model.blur="description" id="description" rows="4" maxlength="200"
                             class="w-full border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white h-[120px] sm:h-[126px]"></textarea>
                         @error('description')
                             <p class="text-red-600 text-[12px]">{{ $message }}</p>
@@ -506,44 +506,9 @@
             </div>
         </div>
     </div>
-    </main
+    </main>
 
-    <!-- Footer -->
-   <footer class="relative w-full bg-[#757573] text-white py-8 mt-auto z-30 font-[Montserrat]" style="margin-top: 4rem; width: 100vw; max-width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
-<div class="w-full px-4 min-[640px]:px-6 flex flex-col items-start justify-center text-left gap-6 min-[640px]:flex-row min-[640px]:justify-between min-[640px]:items-center lg:px-[1vw]">
-                <p class="text-[13px] leading-5 font-normal text-white min-[640px]:text-[14px] lg:text-[16px] w-full min-[640px]:w-auto flex justify-center min-[640px]:justify-start">
-                <span class="text-center min-[640px]:text-left">
-                    &copy; {{ date('Y') }} Tekete SafeSpace From Moepi <br class="min-[640px]:hidden">Publishing. All rights reserved.
-                </span>
-            </p>
-<div class="w-full flex items-center justify-center flex-wrap gap-4 min-[640px]:w-auto min-[640px]:justify-start min-[640px]:gap-2 lg:gap-[1vw]">                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener">
-                    <img src="{{ asset('images/youtube.png') }}"
-                         class="w-7 min-[640px]:w-5 h-auto lg:w-[2.3vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0 hover:opacity-80 transition"
-                         alt="YouTube">
-                </a>
-                <a href="https://www.X.com/moepipublishing" target="_blank">
-                    <img src="{{ asset('images/X.png') }}" alt="X"
-                         class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
-                </a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank">
-                    <img src="{{ asset('images/linkedIn.png') }}" alt="LinkedIn"
-                         class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.7vw] lg:h-auto min-w-[20px] min-[640px]:min-w-0">
-                </a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank">
-                    <img src="{{ asset('images/facebook.png') }}" alt="Facebook"
-                         class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
-                </a>
-                <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank">
-                    <img src="{{ asset('images/instagram.png') }}" alt="Instagram"
-                         class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
-                </a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank">
-                    <img src="{{ asset('images/tiktok.png') }}" alt="TikTok"
-                         class="w-5 h-5 min-[640px]:w-4 min-[640px]:h-4 lg:w-[1.9vw] lg:h-auto min-w-[22px] min-[640px]:min-w-0">
-                </a>
-            </div>
-        </div>
-    </footer>
+    <x-site-footer />
 
 
     <script>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Subscription | Tekete SafeSpace</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
@@ -169,16 +170,6 @@
             font-weight: 600;
             text-decoration: none;
             font-size: 15px;
-        }
-
-        footer {
-            margin-top: 10px;
-            padding: 25px;
-            background: #6f6f6f;
-            /* correct grey */
-            color: white;
-            text-align: center;
-            font-size: 14px;
         }
 
         .limitations-note {
@@ -443,9 +434,7 @@
 
     </div>
 
-    <footer>
-        © {{ date('Y') }} Tekete SafeSpace from Moepi Publishing. All rights reserved.
-    </footer>
+    <x-site-footer />
 
 </body>
 
