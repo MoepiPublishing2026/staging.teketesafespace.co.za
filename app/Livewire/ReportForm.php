@@ -236,10 +236,35 @@ protected array $phaseGrades = [
         }
     }
 
-    // ❌ The updatedReporterEmail method has been removed to stop live validation errors.
-    // The cleaning logic is now only in submitReport().
+    /**
+     * Re-check a field when it changes so errors hide as soon as the value is valid.
+     * Empty values are left until submit so required messages do not appear while typing.
+     */
+    public function updated($propertyName)
+    {
+        $realtimeFields = [
+            'reporterEmail',
+            'phoneNumber',
+            'location',
+            'fullName',
+            'grade',
+            'schoolName',
+            'subtypeID',
+            'description',
+        ];
 
+        if (! in_array($propertyName, $realtimeFields, true)) {
+            return;
+        }
 
+        $this->resetValidation($propertyName);
+
+        if (blank(data_get($this, $propertyName))) {
+            return;
+        }
+
+        $this->validateOnly($propertyName);
+    }
 
     public function getIsOtherSubtypeSelectedProperty()
     {
@@ -270,7 +295,8 @@ protected array $phaseGrades = [
         ],
 
             'phoneNumber' => [
-            'required', 
+            'bail',
+            'required',
             'digits:10', // Ensures it's exactly 10 digits
             // Regex simplified, as spaces are removed. 
             // Ensures it starts with 0 and has 9 more digits (total 10)
@@ -279,10 +305,10 @@ protected array $phaseGrades = [
             function($attribute, $value, $fail) {
                 // The custom checks below will now run on the space-trimmed value.
                 if (preg_match('/[a-zA-Z]/', $value)) {
-                    $fail('Invalid phone number format. Only numbers and spaces are allowed.');
+                    $fail('The phone number field is required.');
                 }
                 if (preg_match('/^(\d)\1{9}$/', $value)) {
-                    $fail('The '.$attribute.' cannot contain all the same digits.');
+                    $fail('The phone number field is required.');
                 }
             },
         ],
@@ -350,6 +376,8 @@ protected array $phaseGrades = [
             'location.required' => 'Please enter the Address.',
             'grade.required' => 'Please select a Grade.',
             'phoneNumber.required' => 'The phone number field is required.',
+            'phoneNumber.digits' => 'The phone number field is required.',
+            'phoneNumber.regex' => 'The phone number field is required.',
             'age.required' => 'The age field is required.',
             'reporterEmail.required' => 'The reporter email field is required.',
         ];

@@ -232,7 +232,7 @@
     @if (!$isAnonymous)
                             <div class="w-full">
                                 <label for="fullName" class="block text-[12px] text-black mb-1">Full Name</label>
-                                <input type="text" wire:model="fullName" id="fullName"
+                                <input type="text" wire:model.blur="fullName" id="fullName"
                                     class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                     placeholder="Enter your full name">
                                 @error('fullName')
@@ -323,7 +323,7 @@
 
                         <div class="w-full">
                             <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
-                            <input type="text" wire:model.lazy="phoneNumber" id="phoneNumber"
+                            <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. 0789345687" maxlength="15">
                             @error('phoneNumber')
@@ -333,7 +333,7 @@
 
                         <div class="w-full">
                             <label for="reporterEmail" class="block text-[12px] text-black mb-1">Email Address</label>
-                            <input type="email" wire:model.lazy="reporterEmail" id="reporterEmail"
+                            <input type="email" wire:model.blur="reporterEmail" id="reporterEmail"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. example@gmail.com"
                                 title="Please enter a valid email address (e.g., user@domain.com, user@domain.co.za)"
@@ -347,7 +347,7 @@
 
                         <div class="w-full">
                             <label for="location" class="block text-[12px] text-black mb-1">Address</label>
-                            <input type="text" wire:model="location" id="location"
+                            <input type="text" wire:model.blur="location" id="location"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[10.5px] sm:placeholder:text-[14px] text-black bg-white"
                                 placeholder="e.g. 123 Main St, Gauteng"
                                 pattern="^\d+\s+[A-Za-z\s\-']+,\s*[A-Za-z\s\-']+$"
@@ -403,7 +403,7 @@
                                 <span class="text-gray-500">(Optional)</span>
                             @endif
                         </label>
-                        <textarea wire:model="description" id="description" rows="4" maxlength="200"
+                        <textarea wire:model.blur="description" id="description" rows="4" maxlength="200"
                             class="w-full border-[3px] border-[#c7da30] rounded-[6px] p-3 text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white h-[120px] sm:h-[126px]"></textarea>
                         @error('description')
                             <p class="text-red-600 text-[12px]">{{ $message }}</p>
