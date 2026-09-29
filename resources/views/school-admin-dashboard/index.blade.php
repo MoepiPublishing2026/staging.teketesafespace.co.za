@@ -1534,7 +1534,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function navigateWithFilter(extraParams = {}) {
     const params = new URLSearchParams();
     const keyMap = { abuse_type: 'type_id' };
-    const skipKeys = ['age_range'];
+   
 
     // 1. Capture selected filters from the active form on the dashboard
     const filterForm = document.getElementById('filtersForm');
@@ -1570,15 +1570,19 @@ function navigateWithFilter(extraParams = {}) {
 // Navigate preserving all active filters and adding/updating 'is_anonymous' filter
 function navigateWithFilterByAnonymous(isAnonymous) {
     const url = new URL("{{ url('/admin/reports') }}", window.location.origin);
-    const params = new URLSearchParams(window.location.search);
-
-    // Preserve all current filters except 'is_anonymous'
-    params.forEach((value, key) => {
-        if (key !== 'is_anonymous') {
-            url.searchParams.append(key, value);
+    const filterForm = document.getElementById('filtersForm');
+    
+    // 1. Grab all current filters from the form
+    if (filterForm) {
+        const formData = new FormData(filterForm);
+        for (const [key, value] of formData.entries()) {
+            if (value !== null && value !== '' && value !== undefined) {
+                url.searchParams.set(key, value); // keep abuse_type, age_range, grade, date_from, date_to
+            }
         }
-    });
+    }
 
+    // 2. Add/override the anonymous filter
     url.searchParams.set('is_anonymous', isAnonymous ? 1 : 0);
 
     window.location.href = url.toString();
@@ -1640,16 +1644,25 @@ function openExtrasModal(type) {
     if (!modal || !titleEl || !bodyEl) return;
 
     if (type === 'anonymous') {
-        titleEl.textContent = 'Anonymous Reports';
-        const count = (data.anonymousCounts || {}).anonymous || 0;
-        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports submitted anonymously: <strong>' + count.toLocaleString() + '</strong></p>' +
-            '<button type="button" onclick="navigateWithFilter({ is_anonymous: \'1\' }); closeExtrasModal();" class="extras-modal-btn">View Anonymous Reports</button>';
-    } else if (type === 'identified') {
-        titleEl.textContent = 'Identified Reports';
-        const count = (data.anonymousCounts || {}).identified || 0;
-        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports where the reporter was identified: <strong>' + count.toLocaleString() + '</strong></p>' +
-            '<button type="button" onclick="navigateWithFilter({ is_anonymous: \'0\' }); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
-    } else if (type === 'abuse-types') {
+    titleEl.textContent = 'Anonymous Reports';
+    const count = (data.anonymousCounts || {}).anonymous || 0;
+
+    bodyEl.innerHTML =
+        '<p style="margin-bottom:1rem;">Reports submitted anonymously: <strong>' +
+        count.toLocaleString() +
+        '</strong></p>' +
+        '<button type="button" onclick="navigateWithFilterByAnonymous(1); closeExtrasModal();" class="extras-modal-btn">View Anonymous Reports</button>';
+
+} else if (type === 'identified') {
+    titleEl.textContent = 'Identified Reports';
+    const count = (data.anonymousCounts || {}).identified || 0;
+
+    bodyEl.innerHTML =
+        '<p style="margin-bottom:1rem;">Reports where the reporter was identified: <strong>' +
+        count.toLocaleString() +
+        '</strong></p>' +
+        '<button type="button" onclick="navigateWithFilterByAnonymous(0); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
+}else if (type === 'abuse-types') {
         titleEl.textContent = 'Types Of Report Tracked';
         const labels = data.abuseLabels || [];
         const counts = data.abuseCounts || [];
