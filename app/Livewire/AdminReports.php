@@ -44,10 +44,12 @@ class AdminReports extends Component
     public $filterSubtype  = '';
     public $filterStatus   = '';
     public $filterAnonymous = '';
+    public $filterAge       = '';
 
     protected $queryString = [
-        'filterAnonymous' => ['as' => 'is_anonymous', 'except' => ''],
-    ];
+    'filterAnonymous' => ['as' => 'is_anonymous', 'except' => ''],
+    'filterAge'       => ['as' => 'age_range', 'except' => ''],
+];
 
     // Reset pagination whenever a filter changes
     public function updatingSearch():         void { $this->resetPage(); }
@@ -109,7 +111,14 @@ class AdminReports extends Component
         $this->resetPage();
         if ($value === '1') {
             $this->filterName = '';
+        
         } 
+
+        $age = request()->query('age_range');
+
+if ($age !== null && $age !== '' && is_numeric($age)) {
+    $this->filterAge = (string) $age;
+}
     }
     // Clear all filters
     public function clearFilters(): void
@@ -375,6 +384,11 @@ class AdminReports extends Component
             $query->where('is_anonymous', (int) $this->filterAnonymous);
         }
 
+        // Age filter from dashboard
+        if ($this->filterAge !== '') {
+            $query->where('age', (int) $this->filterAge);
+        }
+        
         // Global search bar
         if (trim($this->search) !== '') {
             $s = trim($this->search);
