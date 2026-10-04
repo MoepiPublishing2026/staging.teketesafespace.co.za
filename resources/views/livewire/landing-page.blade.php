@@ -5,7 +5,7 @@
     <div id="main-landing-container" x-data="{ menuOpen: false }"
         class="relative w-full min-h-[100dvh] bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
 
-<header class="fixed top-0 left-0 w-full bg-transparent z-50">
+<header class="fixed top-0 left-0 w-full bg-white shadow-sm md:bg-transparent md:shadow-none z-50">
     <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
 
         <!-- Logo -->
@@ -34,6 +34,9 @@
             text-[18px]
             lg:text-[18px]
             xl:text-[20px]
+            -mt-5
+            relative
+            -left-4
             ">
 
                  
@@ -132,28 +135,28 @@
     </div>
 
     <!-- Heading: order-1 on mobile so it appears safely at the top -->
-    <h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight text-[32px] sm:text-[38px] mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[3vw] lg:mb-0">
+    <h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight  text-[32px] sm:text-[38px] mt-4 mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[3vw] lg:mb-0">
         Report Abuse<br>Safely and<br>Anonymously
     </h1>
 
     <!-- Student Image: order-2 on mobile so it sits cleanly below the heading -->
     <img src="{{ asset('images/back-pc.png') }}" alt="Students"
-        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[12vh] lg:right-[5vw] lg:w-[42vw] lg:h-[31vw] lg:max-w-none">
+        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[12vh] lg:right-[4vw] lg:w-[40vw] lg:h-[33vw] lg:max-w-none">
         
     <!-- Buttons: order-3 on mobile -->
-    <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[74vh] lg:right-[12vw] lg:flex-row lg:gap-[1vw]">
+    <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[76vh] lg:right-[9vw] lg:flex-row lg:gap-[1vw]">
         <button wire:click="redirectToReportAbuse"
-           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-bold lg:border-[0.27vw]">
+           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
             Report Now
         </button>
 
         <button wire:click="redirectToStatusCheck"
-           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-bold lg:border-[0.27vw]">
+           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
             Check Status
         </button>
 
         <button wire:click="redirectToAdminLogin"
-            class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[10vw] lg:h-[3.4vw] lg:text-[1vw] lg:font-bold lg:border-[0.27vw]">
+            class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
             Administrators
         </button>
     </div>
