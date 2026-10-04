@@ -139,7 +139,7 @@
                              h-[300px] sm:h-[342px] p-4 text-center shadow-lg relative">
 
                         <p class="text-[18px] sm:text-[19px] text-black mb-4">
-                            REPORT SUBMITTED SUCCESSFULLY!
+                            REPORT SUBMITTED SUCCESSFULL!
                         </p>
 
                         <img src="{{ asset('images/tick.png') }}" alt="Success Tick"
@@ -162,8 +162,8 @@
        rounded-[100px] text-[#38b6ff] 
        text-[16px] sm:text-[15px] font-semibold sm:font-normal transition duration-200 
        hover:opacity-80 sm:shadow-md flex items-center justify-center bg-white">
-    <span class="sm:hidden">Close</span>
-    <span class="hidden sm:inline">Close</span>
+    <span class="sm:hidden">Ok</span>
+    <span class="hidden sm:inline">Ok</span>
 </button>
 
                     </div>

@@ -120,7 +120,12 @@
     </div>
 
     <!-- Main Section -->
-<div class="flex-grow flex items-center justify-center px-6 py-10 font-[Montserrat]">
+<div class="flex-grow flex flex-col items-center justify-center px-6 py-10 font-[Montserrat]">
+
+    <!-- Title for Mobile (Outside Box) -->
+    <h1 class="sm:hidden font-bold uppercase text-black text-center text-[20px] mb-6">
+        REPORT ANONYMOUSLY?
+    </h1>
 
     <!-- Rectangle -->
     <div
@@ -130,7 +135,7 @@
            lg:w-[55%]
            xl:w-[45%]
            max-w-[600px]
-           min-h-[180px]
+           min-h-[120px]
            sm:min-h-[200px]
            md:min-h-[258px]
            border-2
@@ -143,14 +148,14 @@
            justify-center
            px-6
            sm:px-8
-           py-8">
+           py-6
+           sm:py-8">
 
-       <!-- Title -->
-<h1 class="font-bold
+       <!-- Title for Desktop/Tablet (Inside Box) -->
+<h1 class="hidden sm:block font-bold
            uppercase
            text-black
            text-center
-           text-[20px]
            sm:text-[18px]
            md:text-[22px]
            lg:text-[30px]
