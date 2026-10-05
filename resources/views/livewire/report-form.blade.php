@@ -208,7 +208,7 @@
                 wire:model.live="subtypeID"
                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
 
-                <option value="">-- Select a Subtype --</option>
+                <option value="">--Select Subtype--</option>
 
                 @foreach ($standardSubtypes as $subtype)
                     <option value="{{ $subtype->id }}">
@@ -229,32 +229,20 @@
         </div>
     @endif
 
-    @if (!$isAnonymous)
-                            <div class="w-full">
-                                <label for="fullName" class="block text-[12px] text-black mb-1">Full Name</label>
-                                <input type="text" wire:model.blur="fullName" id="fullName"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
-                                    placeholder="Enter your full name">
-                                @error('fullName')
-                                    <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div class="w-full">
-                                <label for="age" class="block text-[12px] text-black mb-1">Age</label>
-                                <input type="number" wire:model.live="age" id="age" min="0" max="115"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
-                                    placeholder="Enter your age (e.g 15)">
-                                @error('age')
-                                    <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        @endif
+                        <div class="w-full">
+                            <label for="age" class="block text-[12px] text-black mb-1">Age</label>
+                            <input type="number" wire:model.live="age" id="age" min="0" max="115"
+                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
+                                placeholder="Enter age (e.g .. 10)">
+                            @error('age')
+                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         <div class="w-full">
                             <label for="schoolSearch" class="block text-[12px] text-black mb-1">Name of School</label>
                             <div class="relative" wire:ignore>
-                                <input type="text" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" id="schoolSearch" placeholder="Start typing school name..."
+                                <input type="text" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" id="schoolSearch" placeholder="Start typing School..."
                                     class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[10.5px] sm:placeholder:text-[14px] text-black bg-white"
                                     pattern="^[a-zA-Z\s.,\-&amp;']+$"
                                     title="The School Name can only contain letters, spaces, hyphens (-), apostrophes ('), commas (,), periods (.), and the ampersand (&amp;)."
@@ -266,7 +254,7 @@
                                     class="absolute z-10 bg-white border border-gray-300 w-full mt-1 max-h-[200px] overflow-y-auto text-[13px]"
                                     style="display:none;"></div>
                             </div>
-@error('schoolName')
+                            @error('schoolName')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
                             @error('schoolId')
@@ -277,65 +265,56 @@
                             </p>
                         </div>
 
-                        @if ($isAnonymous)
-                            <div class="w-full">
-                                <label for="age" class="block text-[12px] text-black mb-1">Age</label>
-                                <input type="number" wire:model.live="age" id="age" min="0" max="115"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white">
-                                @error('age')
-                                    <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-@else
-                            <div class="w-full" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
-                                <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
-                                <select wire:model.live="grade" id="grade"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
-                                    <option value="">-- Select Grade --</option>
-                                    @if (!blank($age))
-                                        @foreach ($this->applicableGrades as $gradeOption)
-                                            <option value="{{ $gradeOption }}" wire:key="grade-{{ $gradeOption }}">
-                                                {{ $gradeOption }}
-                                            </option>
-                                        @endforeach
-                                    @else
-                                        <option value="Creche">Creche</option>
-                                        <option value="Grade R">Grade R</option>
-                                        <option value="Grade 1">Grade 1</option>
-                                        <option value="Grade 2">Grade 2</option>
-                                        <option value="Grade 3">Grade 3</option>
-                                        <option value="Grade 4">Grade 4</option>
-                                        <option value="Grade 5">Grade 5</option>
-                                        <option value="Grade 6">Grade 6</option>
-                                        <option value="Grade 7">Grade 7</option>
-                                        <option value="Grade 8">Grade 8</option>
-                                        <option value="Grade 9">Grade 9</option>
-                                        <option value="Grade 10">Grade 10</option>
-                                        <option value="Grade 11">Grade 11</option>
-                                        <option value="Grade 12">Grade 12</option>
-                                    @endif
-                                </select>
-                                @error('grade')
+                        <div class="w-full col-span-2" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
+                            <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
+                            <select wire:model.live="grade" id="grade"
+                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
+                                <option value="">Select Grade</option>
+                                @if (!blank($age))
+                                    @foreach ($this->applicableGrades as $gradeOption)
+                                        <option value="{{ $gradeOption }}" wire:key="grade-{{ $gradeOption }}">
+                                            {{ $gradeOption }}
+                                        </option>
+                                    @endforeach
+                                @else
+                                    <option value="Creche">Creche</option>
+                                    <option value="Grade R">Grade R</option>
+                                    <option value="Grade 1">Grade 1</option>
+                                    <option value="Grade 2">Grade 2</option>
+                                    <option value="Grade 3">Grade 3</option>
+                                    <option value="Grade 4">Grade 4</option>
+                                    <option value="Grade 5">Grade 5</option>
+                                    <option value="Grade 6">Grade 6</option>
+                                    <option value="Grade 7">Grade 7</option>
+                                    <option value="Grade 8">Grade 8</option>
+                                    <option value="Grade 9">Grade 9</option>
+                                    <option value="Grade 10">Grade 10</option>
+                                    <option value="Grade 11">Grade 11</option>
+                                    <option value="Grade 12">Grade 12</option>
+                                @endif
+                            </select>
+                            @error('grade')
+                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        @if (!$isAnonymous)
+                            <div class="w-full col-span-2">
+                                <label for="fullName" class="block text-[12px] text-black mb-1">Full name</label>
+                                <input type="text" wire:model.blur="fullName" id="fullName"
+                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
+                                    placeholder="Enter your full name">
+                                @error('fullName')
                                     <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                         @endif
 
                         <div class="w-full">
-                            <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
-                            <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
-                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
-                                placeholder="e.g. 0789345687" maxlength="15">
-                            @error('phoneNumber')
-                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div class="w-full">
                             <label for="reporterEmail" class="block text-[12px] text-black mb-1">Email Address</label>
                             <input type="email" wire:model.blur="reporterEmail" id="reporterEmail"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
-                                placeholder="e.g. example@gmail.com"
+                                placeholder="example@gmail.com"
                                 title="Please enter a valid email address (e.g., user@domain.com, user@domain.co.za)"
                                 maxlength="50">
                             @error('reporterEmail')
@@ -343,55 +322,28 @@
                             @enderror
                         </div>
 
-                       
-
                         <div class="w-full">
+                            <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
+                            <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
+                                class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
+                                placeholder="e.g 08267836743" maxlength="15">
+                            @error('phoneNumber')
+                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="w-full col-span-2">
                             <label for="location" class="block text-[12px] text-black mb-1">Address</label>
                             <input type="text" wire:model.blur="location" id="location"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[10.5px] sm:placeholder:text-[14px] text-black bg-white"
-                                placeholder="e.g. 123 Main St, Gauteng"
+                                placeholder="e.g 123 Main St, Gauteng"
                                 pattern="^\d+\s+[A-Za-z\s\-']+,\s*[A-Za-z\s\-']+$"
-                                title="Format: StreetNumber Street Name, Province (e.g. 123 Main St, Gauteng)"
+                                title="Format: StreetNumber Street Name, Province (e.g 123 Main St, Gauteng)"
                                 maxlength="100">
                             @error('location')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-
-@if ($isAnonymous)
-                            <div class="w-full" wire:key="grade-wrapper-{{ $age }}-{{ $schoolPhase }}">
-                                <label for="grade" class="block text-[12px] text-black mb-1">Grade</label>
-                                <select wire:model.live="grade" id="grade"
-                                    class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] text-black bg-white">
-                                    <option value="">-- Select Grade --</option>
-                                    @if (!blank($age))
-                                        @foreach ($this->applicableGrades as $gradeOption)
-                                            <option value="{{ $gradeOption }}" wire:key="grade-{{ $gradeOption }}">
-                                                {{ $gradeOption }}
-                                            </option>
-                                        @endforeach
-                                    @else
-                                        <option value="Creche">Creche</option>
-                                        <option value="Grade R">Grade R</option>
-                                        <option value="Grade 1">Grade 1</option>
-                                        <option value="Grade 2">Grade 2</option>
-                                        <option value="Grade 3">Grade 3</option>
-                                        <option value="Grade 4">Grade 4</option>
-                                        <option value="Grade 5">Grade 5</option>
-                                        <option value="Grade 6">Grade 6</option>
-                                        <option value="Grade 7">Grade 7</option>
-                                        <option value="Grade 8">Grade 8</option>
-                                        <option value="Grade 9">Grade 9</option>
-                                        <option value="Grade 10">Grade 10</option>
-                                        <option value="Grade 11">Grade 11</option>
-                                        <option value="Grade 12">Grade 12</option>
-                                    @endif
-                                </select>
-                                @error('grade')
-                                    <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        @endif
                     </div>
 
                     <div class="mt-6">

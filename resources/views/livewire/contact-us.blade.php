@@ -86,12 +86,15 @@
         }
 
         .contact-mobile-menu-button-wrap {
-            display: block;
-        }
+         display: block;
+}
 
-        @media (min-width: 768px) {
-            .contact-mobile-menu-button-wrap { display: none; }
-        }
+/* Keep hamburger menu on tablets */
+@media (min-width: 1280px) {
+    .contact-mobile-menu-button-wrap {
+        display: none;
+    }
+}
 
         .contact-mobile-menu-button {
             padding: 0.5rem;
@@ -181,6 +184,38 @@
             
             
         }
+        /* EXACT TEKETE LOGO GREEN */
+.contact-icon {
+    display: block;
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px;
+    margin-right: 31px;
+    background-color: #C7DA30;
+
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+}
+
+/* PHONE */
+.phone-icon {
+    -webkit-mask-image: url("{{ asset('images/phone icon.png') }}");
+    mask-image: url("{{ asset('images/phone icon.png') }}");
+}
+
+/* EMAIL */
+.email-icon {
+    width: 26px;
+    height: 22px;
+
+    -webkit-mask-image: url("{{ asset('images/email icon.png') }}");
+    mask-image: url("{{ asset('images/email icon.png') }}");
+}
 
         .contact-detail.email img {
             height: 22px;
@@ -291,7 +326,7 @@
         /* =========================
            MOBILE
            ========================= */
-        @media (max-width: 1023px) {
+        @media (max-width: 1279px) {
 
     /* =========================
        MOBILE HEADER
@@ -616,14 +651,14 @@
                 <h1 class="contact-title">CONTACT US</h1>
 
                 <div class="contact-detail">
-                    <img src="{{ asset('images/phone icon.png') }}" alt="">
-                    <a href="tel:0872656716">087 265 6716</a>
+                     <span class="contact-icon phone-icon"></span>
+                     <a href="tel:0872656716">087 265 6716</a>
                 </div>
 
-                <div class="contact-detail email">
-                    <img src="{{ asset('images/email icon.png') }}" alt="">
+               <div class="contact-detail email">
+                    <span class="contact-icon email-icon"></span>
                     <a href="mailto:support@tekete.co.za">support@tekete.co.za</a>
-                </div>
+               </div>
 
                 <div class="contact-app-box">
                     <div class="contact-app-title">Download the Safe Space App</div>
