@@ -26,6 +26,10 @@
             color: #C5D931;
         }
 
+        .about-intro-mobile {
+            display: none;
+        }
+
         .about-intro {
             font-family: "Montserrat", sans-serif;
             font-weight: 400;
@@ -76,8 +80,23 @@
             font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
             font-weight: 400;
             font-size: 24px;
-            line-height: 1.4;
+            line-height: 1.35;
             color: #C5D931;
+            width: max-content;
+            max-width: 100%;
+            letter-spacing: 0.03em;
+        }
+
+        .about-report-block {
+            width: fit-content;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about-report-grid {
+            width: 0;
+            min-width: 100%;
         }
 
         .about-issue-label {
@@ -115,9 +134,9 @@
         @media (min-width: 768px) {
             .about-hero-mobile { display: none !important; }
             .about-hero-desktop { display: flex; }
-            .about-heading-about { font-size: 80px; }
-            .about-heading-brand { font-size: 32px; }
-            .about-report-heading { font-size: 36px; }
+            .about-heading-about { font-size: 92px; }
+            .about-heading-brand { font-size: 36px; }
+            .about-report-heading { font-size: 36px; letter-spacing: 0.06em; }
             .core-values-heading { font-size: 36px; }
             .core-value-title { font-size: 21px; }
             .core-value-number { font-size: 36px; }
@@ -132,16 +151,45 @@
         @media (max-width: 767px) {
             .about-hero-mobile { display: flex; }
             .about-hero-desktop { display: none !important; }
+            .about-intro-desktop { display: none !important; }
+            .about-intro-mobile { display: block; }
+            .about-heading-mobile {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 700;
+                font-size: 24px;
+                line-height: 1.2;
+                letter-spacing: 0.04em;
+                color: #000000;
+                text-transform: uppercase;
+                text-align: center;
+                display: inline-block;
+                padding-bottom: 8px;
+                border-bottom: 3px solid #C5D931;
+            }
+            .about-intro-mobile {
+                font-family: "Montserrat", sans-serif;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 1.5;
+                color: #000000;
+                text-align: left;
+                width: max-content;
+                max-width: 340px;
+                margin-left: auto;
+                margin-right: auto;
+            }
         }
 
         @media (min-width: 1024px) {
             .about-heading-about {
-                font-size: 114.8px;
-                max-width: 505.4px;
+                font-size: 128px;
+                max-width: none;
+                letter-spacing: 0.02em;
             }
             .about-heading-brand {
-                font-size: 41.8px;
-                max-width: 505.4px;
+                font-size: 46px;
+                max-width: none;
+                letter-spacing: 0.06em;
             }
         }
     </style>
@@ -195,7 +243,7 @@
                 </a>
 
                 <a href="{{ route('about-us') }}"
-                    class="text-black font-bold transition-colors hover:!text-[#c7da30]">
+                    class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
@@ -285,23 +333,22 @@
     </div>
 </div>
     <section class="pt-6 md:pt-24 w-full bg-white pb-10 md:py-16 px-6 lg:px-8">
-        {{-- Mobile: stacked, centered icon + title --}}
+        {{-- Mobile: stacked icon, black heading, lime underline --}}
         <div class="about-hero-mobile flex-col items-center text-center w-full">
             <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
-                class="block mx-auto w-[190px] mb-8">
-            <h2 class="mb-3 text-center">
-                <span class="about-heading-about block mx-auto">ABOUT</span>
-                <span class="about-heading-brand block mx-auto mt-1">TEKETE SAFESPACE</span>
+                class="block mx-auto w-[210px] mb-6">
+            <h2 class="about-heading-mobile mb-6">
+                ABOUT TEKETE<br>SAFESPACE
             </h2>
         </div>
 
        {{-- Desktop: icon stays in place, heading nudged to the right --}}
-<div class="about-hero-desktop w-full flex flex-row items-center justify-center gap-2 sm:gap-3">
+<div class="about-hero-desktop w-full flex flex-row items-center justify-center gap-4 sm:gap-6">
     <div class="flex justify-center shrink-0">
         <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
-            class="w-[220px] lg:w-[272px] -mr-4 lg:-mr-6">
+            class="w-[250px] lg:w-[320px] -translate-x-6 lg:-translate-x-8">
     </div>
-    <div class="text-left shrink-0 ml-10">
+    <div class="text-left shrink-0">
         <h2>
             <span class="about-heading-about block">ABOUT</span>
             <span class="about-heading-brand block">TEKETE SAFESPACE</span>
@@ -309,7 +356,30 @@
     </div>
 </div>
 
-        <div class="about-intro mt-8 md:mt-8 text-left mx-auto">
+        <div class="about-intro-mobile mt-1">
+            <p>
+                A confidential platform designed to<br>
+                protect and empower learners and<br>
+                employees to speak out- with the<br>
+                option to report anonymously.The<br>
+                app is zero-rated,ensuring users can<br>
+                access and submit reports without<br>
+                incurring data costs. Your voice<br>
+                matters. Your identity is protected.<br>
+                Your voice matters. Your identity is<br>
+                protected.
+            </p>
+            <p class="mt-5">
+                Whether you choose to report with<br>
+                your name or anonymously, Safe<br>
+                Space by Moepi Publishing ensures<br>
+                every report is handled with<br>
+                confidentiality, urgency, and at no<br>
+                data cost to the user.
+            </p>
+        </div>
+
+        <div class="about-intro about-intro-desktop mt-8 md:mt-8 text-left mx-auto">
             <p>
                 A confidential platform designed to protect and empower learners and employees to speak out,
                 with the option to report anonymously. The app is zero-rated, ensuring users can access and
@@ -323,13 +393,14 @@
     </section>
 
     <section class="w-full bg-white py-16 px-6 lg:px-8">
+        <div class="about-report-block">
        <h2 class="about-report-heading text-center mb-14 md:mb-16">
-    You can report any of the following<br class="hidden md:block"> through Tekete SafeSpace
+    You can report any of the following<br> through Tekete SafeSpace
 </h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-12 md:gap-x-16 md:gap-y-14 w-full max-w-[720px] mx-auto">
+        <div class="about-report-grid grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-12 md:gap-x-16 md:gap-y-14">
          @php
     $issues = [
-        ['img' => '6.svg', 'title' => 'Teenage pregnancy'],
+        ['img' => '6.svg', 'title' => "Teenage\npregnancy"],
         ['img' => '9.svg', 'title' => 'Bullying'],
         ['img' => '10.svg', 'title' => 'Substance Addiction'],
         ['img' => '11.svg', 'title' => 'Suspected Sexual Harassment'],
@@ -343,19 +414,20 @@
         <div class="h-[64px] w-[64px] md:h-[76px] md:w-[76px] flex items-center justify-center mb-3">
             <img src="{{ asset('images/' . $issue['img']) }}"
                  class="max-w-full max-h-full object-contain"
-                 alt="{{ $issue['title'] }}">
+                 alt="{{ str_replace("\n", ' ', $issue['title']) }}">
         </div>
-        <p class="about-issue-label max-w-[160px]">
+        <p class="about-issue-label whitespace-pre-line">
             {{ $issue['title'] }}
         </p>
     </div>
 @endforeach
         </div>
+        </div>
     </section>
 
     <section class="relative bg-white w-full pt-6 md:pt-10 pb-12 px-6 lg:px-8">
-        <div class="max-w-[1024px] mx-auto flex flex-col md:flex-row md:items-stretch justify-center gap-5 md:gap-6">
-            <div>
+        <div class="max-w-[1024px] mx-auto flex flex-col md:flex-row md:items-stretch justify-center gap-5 md:gap-10">
+            <div class="md:min-w-[540px] md:max-w-[560px]">
                 <h3 class="who-we-serve-heading mb-5 text-left">
                     Who we serve:
                 </h3>
@@ -371,19 +443,23 @@
 
             <img src="{{ asset('images/Students holding phone.png') }}"
                  alt="Students holding phone"
-                 class="who-we-serve-photo rounded-lg shadow-md mx-auto md:mx-0 shrink-0">
+                 class="who-we-serve-photo rounded-lg shadow-md mx-auto md:mr-0 md:ml-4 shrink-0">
         </div>
     </section>
 
     <section class="bg-white w-full pt-10 pb-16 px-6 lg:px-8">
-        <div class="relative mx-auto mb-14 w-[300px] h-[90px] md:w-[400px] md:h-[120px] flex items-center justify-center overflow-hidden">
-            <img src="{{ asset('images/7.svg') }}"
-                 alt=""
-                 aria-hidden="true"
-                 class="absolute left-1/2 top-1/2 w-[520px] h-[520px] max-w-none -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
-            <h3 class="core-values-heading relative z-10 px-8">
-                OUR CORE<br>VALUES
-            </h3>
+        <div class="w-full max-w-[1024px] mx-auto">
+        <div class="flex justify-center md:justify-start mb-14">
+            <div class="hidden md:block w-[259px] shrink-0" aria-hidden="true"></div>
+            <div class="relative w-[300px] h-[90px] md:w-[400px] md:h-[120px] flex items-center justify-center overflow-hidden">
+                <img src="{{ asset('images/7.svg') }}"
+                     alt=""
+                     aria-hidden="true"
+                     class="absolute left-1/2 top-1/2 w-[520px] h-[520px] max-w-none -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
+                <h3 class="core-values-heading relative z-10 px-8">
+                    OUR CORE<br>VALUES
+                </h3>
+            </div>
         </div>
 
         @php
@@ -416,7 +492,7 @@
             ];
         @endphp
 
-        <div class="w-full max-w-[1024px] mx-auto flex flex-col gap-8 md:gap-10">
+        <div class="w-full flex flex-col gap-8 md:gap-10">
             @foreach ($coreValues as $value)
                 <div class="flex items-start md:items-center gap-3 sm:gap-6">
                     <div class="relative w-[96px] h-[72px] sm:w-[130px] sm:h-[92px] md:w-[149px] md:h-[105px] shrink-0 flex items-center justify-center">
@@ -432,6 +508,7 @@
                     </div>
                 </div>
             @endforeach
+        </div>
         </div>
     </section>
 
