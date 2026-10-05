@@ -109,7 +109,11 @@
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
                     About Us
                 </a>
-   
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" onclick="toggleMobileMenu()"
+                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
+                    style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
+                    Workshops
+                </a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
                     class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors"
                     style="font-family: 'Montserrat', sans-serif; font-size: 17px;">
