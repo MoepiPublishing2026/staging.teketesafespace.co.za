@@ -86,12 +86,15 @@
         }
 
         .contact-mobile-menu-button-wrap {
-            display: block;
-        }
+         display: block;
+}
 
-        @media (min-width: 768px) {
-            .contact-mobile-menu-button-wrap { display: none; }
-        }
+/* Keep hamburger menu on tablets */
+@media (min-width: 1280px) {
+    .contact-mobile-menu-button-wrap {
+        display: none;
+    }
+}
 
         .contact-mobile-menu-button {
             padding: 0.5rem;
@@ -323,7 +326,7 @@
         /* =========================
            MOBILE
            ========================= */
-        @media (max-width: 1023px) {
+        @media (max-width: 1279px) {
 
     /* =========================
        MOBILE HEADER
