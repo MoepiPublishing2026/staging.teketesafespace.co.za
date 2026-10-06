@@ -122,18 +122,22 @@ if ($age !== null && $age !== '' && is_numeric($age)) {
     }
     // Clear all filters
     public function clearFilters(): void
-    {
-        $this->search         = '';
-        $this->filterName     = '';
-        $this->filterGrade    = '';
-        $this->filterDateFrom = '';
-        $this->filterDateTo   = '';
-        $this->filterType     = '';
-        $this->filterSubtype  = '';
-        $this->filterStatus   = '';
-        $this->filterAnonymous = '';
-        $this->resetPage();
-    }
+{
+    $this->search = '';
+    $this->filterName = '';
+    $this->filterGrade = '';
+    $this->filterDateFrom = '';
+    $this->filterDateTo = '';
+    $this->filterType = '';
+    $this->filterSubtype = '';
+    $this->filterStatus = '';
+    $this->filterAnonymous = '';
+    $this->filterAge = '';
+
+    $this->resetPage();
+
+    $this->redirect('/admin/reports', navigate: true);
+}
 
     // Step 1: Prompt admin to give a reason before changing status
     public function promptForStatusUpdate($reportId, $newStatus)
