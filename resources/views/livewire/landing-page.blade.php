@@ -116,14 +116,13 @@
 </nav>
         </header>
 
-      <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
+     <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
             
-    <div class="circle-bg-line hidden lg:block absolute top-[-100vh] left-[-46vw] w-[107vw] h-[320vh] pointer-events-none z-50">
-        <img src="{{ asset('images/circle6.png') }}" 
-             alt="Circle Background" 
-             class="w-full h-full object-fill opacity-75 pointer-events-none"
-             style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);">
-    </div>
+   <div class="circle-bg-line hidden lg:block absolute top-[-24rem] left-[-78vw] w-[204vw] h-[220vh] pointer-events-none z-50">
+       <img src="{{ asset('images/circle6.png') }}" 
+            alt="Circle Background" 
+            class="w-full h-full object-contain object-top opacity-75 pointer-events-none">
+   </div>
 
     <!-- Heading: order-1 on mobile so it appears safely at the top -->
     <h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight  text-[32px] sm:text-[38px] mt-4 mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[3vw] lg:mb-0">
@@ -134,7 +133,7 @@
     <img src="{{ asset('images/back-pc.png') }}" alt="Students"
         class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[16vh] lg:right-[4vw] lg:w-[40vw] lg:h-[33vw] lg:max-w-none">
     <!-- Buttons: order-3 on mobile -->
-    <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[76vh] lg:right-[9vw] lg:flex-row lg:gap-[1vw]">
+    <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[9vw] lg:flex-row lg:gap-[1vw]">
         <button wire:click="redirectToReportAbuse"
            class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
             Report Now
