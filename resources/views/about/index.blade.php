@@ -337,7 +337,7 @@
         {{-- Mobile: stacked icon, black heading, lime underline --}}
         <div class="about-hero-mobile flex-col items-center text-center w-full">
             <img src="{{ asset('images/magnifying glass.png') }}" alt="Magnifying Glass"
-                class="block mx-auto w-[210px] mb-6">
+                class="block mx-auto w-[210px] mb-1">
             <h2 class="about-heading-mobile mb-6">
                 ABOUT TEKETE<br>SAFESPACE
             </h2>
