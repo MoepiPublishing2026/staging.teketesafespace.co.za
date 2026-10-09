@@ -754,6 +754,64 @@
         Refresh Table
     </button>
 </div>
+{{-- Active Dashboard Filters --}}
+@if($filterAge !== '' || $filterAnonymous !== '')
+    <div style="
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin: 12px 0 16px;
+    ">
+
+        @if($filterAge !== '')
+            <span style="
+                background: #f0f9d4;
+                color: #4a5e00;
+                border: 1px solid #c7da30;
+                padding: 7px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            ">
+                Age: {{ $filterAge }}
+            </span>
+        @endif
+
+        @if($filterGrade !== '')
+    <span style="
+        background: #f0f9d4;
+        color: #4a5e00;
+        border: 1px solid #c7da30;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    ">
+        Grade: {{ $filterGrade }}
+    </span>
+@endif
+
+        @if($filterAnonymous !== '')
+            <span style="
+                background: #f0f9d4;
+                color: #4a5e00;
+                border: 1px solid #c7da30;
+                padding: 7px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            ">
+                Anonymous: {{ (string) $filterAnonymous === '1' ? 'Yes' : 'No' }}
+            </span>
+        @endif
+
+        <span style="font-size: 12px; color: #6b7280;">
+            {{ $reports->total() }} result(s)
+        </span>
+
+    </div>
+@endif
             </section>
 
             <div class="reports-table-wrap">
