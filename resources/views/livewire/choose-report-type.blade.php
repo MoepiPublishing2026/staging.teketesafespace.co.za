@@ -47,10 +47,11 @@
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
-                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
-                        Workshops
-                    </a>
 
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Workshops
+                </a>
 
                 <a href="{{ route('contact-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">

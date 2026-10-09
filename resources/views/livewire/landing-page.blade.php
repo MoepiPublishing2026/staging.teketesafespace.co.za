@@ -10,37 +10,29 @@
 
         <!-- Logo -->
         <div class="flex items-center">
-    <img
-        src="{{ asset('images/logo.png') }}"
-        alt="Safe Space Logo"
-        class="
-            w-[120px]
-            sm:w-[140px]
-            md:w-[170px]
-            lg:w-[190px]
-            xl:w-[200px]
-            2xl:w-[300px]
-            h-auto
-            object-contain
-            flex-shrink-0">
-</div>
+           <img
+    src="{{ asset('images/logo.png') }}"
+    alt="Safe Space Logo"
+    class="
+        relative
+        xl:top-[12px]
+        2xl:top-[14px]
+        w-[120px]
+        sm:w-[140px]
+        md:w-[240px]
+        lg:w-[280px]
+        xl:w-[320px]
+        2xl:w-[380px]
+        h-auto
+        object-contain
+        flex-shrink-0">
+        </div>
 
         <!-- Top Right Links -->
         <div class="flex items-center gap-4">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
-            font-[Montserrat]
-            text-[18px]
-            lg:text-[18px]
-            xl:text-[20px]
-            -mt-5
-            relative
-            -left-4
-            ">
-
-                 
-
+           <div class="hidden md:flex items-center gap-7 md:mr-4 lg:mr-8 xl:mr-12 font-[Montserrat] text-[18px] lg:text-[20px] xl:text-[22px]">
                 <a href="{{ route('landing-page') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     Home
@@ -50,11 +42,11 @@
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
-                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
-                        Workshops
-                    </a>
 
-                 
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Workshops
+                </a>
 
                 <a href="{{ route('contact-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
@@ -98,26 +90,25 @@
 
    <a href="{{ route('landing-page') }}"
     @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff]">
+    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
     Home
 </a>
 
 <a href="{{ route('about-us') }}"
     @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff]">
+    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
     About Us
 </a>
 
 <a href="{{ $workshopBookingUrl }}/workshops"
     @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff]">
+    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
     Workshops
 </a>
 
-
 <a href="{{ route('contact-us') }}"
     @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff]">
+    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
     Contact Us
 </a>
 
@@ -141,8 +132,7 @@
 
     <!-- Student Image: order-2 on mobile so it sits cleanly below the heading -->
     <img src="{{ asset('images/back-pc.png') }}" alt="Students"
-        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[12vh] lg:right-[4vw] lg:w-[40vw] lg:h-[33vw] lg:max-w-none">
-        
+        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[16vh] lg:right-[4vw] lg:w-[40vw] lg:h-[33vw] lg:max-w-none">
     <!-- Buttons: order-3 on mobile -->
     <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[76vh] lg:right-[9vw] lg:flex-row lg:gap-[1vw]">
         <button wire:click="redirectToReportAbuse"
