@@ -115,15 +115,14 @@
 
 </nav>
         </header>
+    <div class="circle-bg-line hidden lg:block" style="position: fixed !important; top: -50vh; left: -20vw; width: 81vw; height: 220vh; pointer-events: none; z-index: 50;">
+    <img src="{{ asset('images/circle6.png') }}" 
+         alt="Circle Background" 
+         class="w-full h-full object-fill opacity-75 pointer-events-none"
+         style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);">
+</div>
 
-     <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
-            
-   <div class="circle-bg-line hidden lg:block absolute top-[-24rem] left-[-78vw] w-[204vw] h-[220vh] pointer-events-none z-50">
-       <img src="{{ asset('images/circle6.png') }}" 
-            alt="Circle Background" 
-            class="w-full h-full object-contain object-top opacity-75 pointer-events-none">
-   </div>
-
+        <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
     <!-- Heading: order-1 on mobile so it appears safely at the top -->
     <h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight  text-[32px] sm:text-[38px] mt-4 mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[3vw] lg:mb-0">
         Report Abuse<br>Safely and<br>Anonymously
