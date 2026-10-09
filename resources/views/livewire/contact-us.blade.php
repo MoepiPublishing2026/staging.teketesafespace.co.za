@@ -48,11 +48,15 @@
         }
 
         @media (min-width: 1280px) {
-            .contact-logo { width: 200px; }
+            .contact-logo { width: 320px;
+        position: relative;
+        top: 12px; }
         }
 
         @media (min-width: 1536px) {
-            .contact-logo { width: 300px; }
+            .contact-logo { width: 380px; 
+        width: 380px;
+        top: 14px;}
         }
 
         .contact-desktop-nav {
@@ -72,6 +76,7 @@
                 display: flex;
                 gap: 2.5rem;
                 font-size: 20px;
+                margin-right: 3rem;
             }
         }
 
@@ -581,7 +586,7 @@
                     <a href="{{ route('landing-page') }}">Home</a>
                     <a href="{{ route('about-us') }}">About Us</a>
                     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops">Workshops</a>
-                    <a href="{{ route('contact-us') }}" class="font-bold">Contact Us</a>
+                    <a href="{{ route('contact-us') }}">Contact Us</a>
                 </nav>
 
                 <!-- Mobile Hamburger Menu -->
@@ -629,14 +634,14 @@
                    onclick="window.history.back(); toggleMobileMenu();"
                    class="block py-3 text-[#38b6ff]">Back</a>
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff]">Home</a>
+                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff]">About Us</a>
+                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">About Us</a>
                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
                    onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff]">Workshops</a>
+                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Workshops</a>
                 <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
-                   class="block py-3 font-bold text-[#38b6ff]">Contact Us</a>
+                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Contact Us</a>
             </nav>
         </div>
     </div>

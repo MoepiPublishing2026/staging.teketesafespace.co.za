@@ -47,11 +47,11 @@
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
-                 <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
-                        Workshops
-                    </a>
 
-                 
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Workshops
+                </a>
 
                 <a href="{{ route('contact-us') }}"
                     class="text-black transition-colors hover:!text-[#c7da30]">
@@ -107,25 +107,25 @@
 
             <a href="{{ route('landing-page') }}"
                onclick="toggleMobileMenu()"
-               class="block py-3 text-[#38b6ff]">
+               class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
                 Home
             </a>
 
             <a href="{{ route('about-us') }}"
                onclick="toggleMobileMenu()"
-               class="block py-3 text-[#38b6ff]">
+               class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
                 About Us
             </a>
 
             <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
                onclick="toggleMobileMenu()"
-               class="block py-3 text-[#38b6ff]">
+               class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
                 Workshops
             </a>
 
             <a href="{{ route('contact-us') }}"
                onclick="toggleMobileMenu()"
-               class="block py-3 text-[#38b6ff]">
+               class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
                 Contact Us
             </a>
         </nav>

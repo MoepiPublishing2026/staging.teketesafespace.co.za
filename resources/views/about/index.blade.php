@@ -205,25 +205,28 @@
         <!-- Logo -->
         <div class="flex items-center">
     <img
-        src="{{ asset('images/logo.png') }}"
-        alt="Safe Space Logo"
-        class="
-            w-[120px]
-            sm:w-[140px]
-            md:w-[170px]
-            lg:w-[190px]
-            xl:w-[200px]
-            2xl:w-[300px]
-            h-auto
-            object-contain
-            flex-shrink-0">
+    src="{{ asset('images/logo.png') }}"
+    alt="Safe Space Logo"
+    class="
+        relative
+        xl:top-[12px]
+        2xl:top-[14px]
+        w-[120px]
+        sm:w-[140px]
+        md:w-[240px]
+        lg:w-[280px]
+        xl:w-[320px]
+        2xl:w-[380px]
+        h-auto
+        object-contain
+        flex-shrink-0">
 </div>
 
         <!-- Top Right Links -->
         <div class="flex items-center gap-4">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
+            <div class="hidden md:flex items-center gap-6 md:mr-4 lg:mr-8 xl:mr-12 lg:gap-8 xl:gap-10
             font-[Montserrat]
             text-[18px]
             lg:text-[18px]
@@ -246,14 +249,14 @@
                     class="text-black transition-colors hover:!text-[#c7da30]">
                     About Us
                 </a>
-                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"  class="text-black transition-colors hover:!text-[#c7da30]">
-                        Workshops
-                    </a>
 
-                 
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
+                    class="text-black transition-colors hover:!text-[#c7da30]">
+                    Workshops
+                </a>
 
                 <a href="{{ route('contact-us') }}"
-                    class="text-black  transition-colors hover:!text-[#c7da30]">
+                    class="text-black transition-colors hover:!text-[#c7da30]">
                     Contact Us
                 </a>
 
@@ -305,27 +308,25 @@
 
     <a href="{{ route('landing-page') }}"
        onclick="toggleMobileMenu()"
-       class="block py-3 text-[#38b6ff]">
+       class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
         Home
     </a>
 
     <a href="{{ route('about-us') }}"
        onclick="toggleMobileMenu()"
-       class="block py-3 font-bold text-[#38b6ff]">
+       class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
         About Us
     </a>
 
     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
        onclick="toggleMobileMenu()"
-       class="block py-3 text-[#38b6ff]">
+       class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
         Workshops
     </a>
 
-    
-
     <a href="{{ route('contact-us') }}"
        onclick="toggleMobileMenu()"
-       class="block py-3 text-[#38b6ff]">
+       class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
         Contact Us
     </a>
 
