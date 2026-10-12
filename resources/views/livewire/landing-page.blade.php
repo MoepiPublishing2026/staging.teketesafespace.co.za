@@ -4,12 +4,19 @@
 
     <div id="main-landing-container" x-data="{ menuOpen: false }"
         class="relative w-full min-h-[100dvh] bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
-
+<style>
+    @import url('https://fonts.cdnfonts.com/css/century-gothic-paneuropean');
+    
+    .font-paneuropean {
+        font-family: 'Century Gothic Paneuropean', 'Century Gothic', sans-serif !important;
+        font-weight: 400 !important;
+    }
+</style>
 <header class="fixed top-0 left-0 w-full bg-white shadow-sm md:bg-transparent md:shadow-none z-50">
-    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
+    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2 ">
 
         <!-- Logo -->
-        <div class="flex items-center">
+        <div class="flex items-center ml-6 ml-7">
            <img
     src="{{ asset('images/logo.png') }}"
     alt="Safe Space Logo"
@@ -17,12 +24,12 @@
         relative
         xl:top-[12px]
         2xl:top-[14px]
-        w-[120px]
-        sm:w-[140px]
-        md:w-[240px]
-        lg:w-[280px]
-        xl:w-[320px]
-        2xl:w-[380px]
+        w-[100px]
+        sm:w-[100px]
+        md:w-[210px]
+        lg:w-[220px]
+        xl:w-[250px]
+        2xl:w-[310px]
         h-auto
         object-contain
         flex-shrink-0">
@@ -115,39 +122,44 @@
 
 </nav>
         </header>
-    <div class="circle-bg-line hidden lg:block" style="position: fixed !important; top: -50vh; left: -20vw; width: 81vw; height: 220vh; pointer-events: none; z-index: 50;">
+    <div class="circle-bg-line hidden lg:block" style="position: fixed !important; top: -58vh; left: -14vw; width: 72vw; height: 220vh; pointer-events: none; z-index: 50;">
     <img src="{{ asset('images/circle6.png') }}" 
          alt="Circle Background" 
-         class="w-full h-full object-fill opacity-75 pointer-events-none"
+         class="w-full h-full object-fill opacity-100 pointer-events-none"
          style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);">
 </div>
 
         <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
-    <!-- Heading: order-1 on mobile so it appears safely at the top -->
-    <h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight  text-[32px] sm:text-[38px] mt-4 mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[3vw] lg:mb-0">
-        Report Abuse<br>Safely and<br>Anonymously
-    </h1>
-
+   <!-- Heading: order-1 on mobile so it appears safely at the top -->
+<h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight text-[32px] sm:text-[38px] mt-4 mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[6vw] lg:mb-0"
+    style="font-family: 'Century Gothic Paneuropean', 'Century Gothic', sans-serif !important;">
+    Report Abuse<br>Safely and<br>Anonymously
+</h1>
     <!-- Student Image: order-2 on mobile so it sits cleanly below the heading -->
     <img src="{{ asset('images/back-pc.png') }}" alt="Students"
-        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[16vh] lg:right-[4vw] lg:w-[40vw] lg:h-[33vw] lg:max-w-none">
+        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[16vh] lg:right-[8vw] lg:w-[40vw] lg:h-[30vw] lg:max-w-none">
     <!-- Buttons: order-3 on mobile -->
-    <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[9vw] lg:flex-row lg:gap-[1vw]">
-        <button wire:click="redirectToReportAbuse"
-           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
-            Report Now
-        </button>
+   <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[12vw] lg:flex-row lg:gap-[1vw]">
+    
+    <button wire:click="redirectToReportAbuse"
+       class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]"
+       style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
+        Report Now
+    </button>
 
-        <button wire:click="redirectToStatusCheck"
-           class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
-            Check Status
-        </button>
+    <button wire:click="redirectToStatusCheck"
+       class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]"
+       style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
+        Check Status
+    </button>
 
-        <button wire:click="redirectToAdminLogin"
-            class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]">
-            Administrators
-        </button>
-    </div>
+    <button wire:click="redirectToAdminLogin"
+        class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]"
+        style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
+        Administrators
+    </button>
+
+</div>
 
 </section>
 
