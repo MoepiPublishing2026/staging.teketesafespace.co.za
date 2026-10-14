@@ -1,277 +1,388 @@
 @php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
 
 <div>
-
     <div id="main-landing-container" x-data="{ menuOpen: false }"
-        class="relative w-full min-h-[100dvh] bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden class-hide-scrollbar">
+        class="relative w-full min-h-screen bg-white font-[Montserrat] flex flex-col justify-between overflow-x-hidden overflow-y-auto">
 <style>
-    @import url('https://fonts.cdnfonts.com/css/century-gothic-paneuropean');
-    
-    .font-paneuropean {
-        font-family: 'Century Gothic Paneuropean', 'Century Gothic', sans-serif !important;
-        font-weight: 400 !important;
-    }
-</style>
-<header class="fixed top-0 left-0 w-full bg-white shadow-sm md:bg-transparent md:shadow-none z-50">
-    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2 ">
+            @import url('https://fonts.cdnfonts.com/css/century-gothic-paneuropean');
+            
+            .font-paneuropean {
+                font-family: 'Century Gothic Paneuropean', 'Century Gothic', sans-serif !important;
+                font-weight: 400 !important;
+            }
 
-        <!-- Logo -->
-        <div class="flex items-center ml-6 ml-7">
-           <img
-    src="{{ asset('images/logo.png') }}"
-    alt="Safe Space Logo"
-    class="
-        relative
-        xl:top-[12px]
-        2xl:top-[14px]
-        w-[100px]
-        sm:w-[100px]
-        md:w-[210px]
-        lg:w-[220px]
-        xl:w-[250px]
-        2xl:w-[310px]
-        h-auto
-        object-contain
-        flex-shrink-0">
-        </div>
+            /* Enable vertical scrolling on body/html */
+            html, body {
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+            }
 
-        <!-- Top Right Links -->
-        <div class="flex items-center gap-4">
+            /* Hide the decorative background linework on phones and tablets. */
+            @media (max-width: 1023px) {
+                #main-landing-container .hide-circle-on-tall-portrait {
+                    display: none !important;
+                }
+            }
 
-            <!-- Desktop Navigation -->
-           <div class="hidden md:flex items-center gap-7 md:mr-4 lg:mr-8 xl:mr-12 font-[Montserrat] text-[18px] lg:text-[20px] xl:text-[22px]">
-                <a href="{{ route('landing-page') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Home
-                </a>
+            /* Keep the landing page readable and usable on narrow phones. */
+            @media (max-width: 699px) {
+                #main-landing-container {
+                    min-height: 100svh;
+                    height: auto !important;
+                    overflow-x: clip !important;
+                    overflow-y: visible !important;
+                }
 
-                <a href="{{ route('about-us') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    About Us
-                </a>
+                #main-landing-container > header {
+                    flex-shrink: 0;
+                }
 
-                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Workshops
-                </a>
+                #main-landing-container > section {
+                    min-height: 0 !important;
+                    margin-top: 0 !important;
+                    padding: 1.5rem 1rem 2rem !important;
+                }
 
-                <a href="{{ route('contact-us') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Contact Us
-                </a>
+                #main-landing-container > section h1 {
+                    margin: 0 !important;
+                    font-size: clamp(2rem, 9vw, 2.65rem) !important;
+                    line-height: 1.12 !important;
+                    text-align: center !important;
+                }
 
-            </div>
+                #main-landing-container .tall-portrait-right-box > div:first-child img {
+                    width: auto !important;
+                    height: auto !important;
+                    max-width: min(100%, 360px) !important;
+                    max-height: 34svh !important;
+                    object-fit: contain !important;
+                }
 
-                <div class="lg:hidden ml-auto -mt-2">
-                    <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-[#c7da30]">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5m-16.5 6.5h16.5m-16.5 6.5h16.5" />
-                        </svg>
-                    </button>
+                #main-landing-container .tall-portrait-btn-shift {
+                    position: static !important;
+                    top: auto !important;
+                    left: auto !important;
+                    width: 100% !important;
+                    max-width: 320px !important;
+                    margin: 0 auto !important;
+                    flex-direction: column !important;
+                    gap: 0.75rem !important;
+                }
+
+                #main-landing-container .tall-portrait-btn-shift button {
+                    width: 100% !important;
+                    max-width: 320px !important;
+                    height: 3.5rem !important;
+                    flex: none !important;
+                }
+
+                #main-landing-container footer {
+                    width: 100%;
+                    margin-top: auto;
+                }
+
+                #main-landing-container footer p {
+                    margin-left: 0 !important;
+                }
+
+                #main-landing-container footer > div {
+                    justify-content: center !important;
+                }
+
+                .force-cookie-bottom {
+                    max-height: 45svh;
+                    overflow-y: auto;
+                }
+            }
+
+            /* General tablet portrait setup & button adjustments */
+            @media (min-width: 700px) and (max-width: 1150px) and (orientation: portrait) {
+                .hide-circle-on-tall-portrait {
+                    display: none !important;
+                }
+                .tall-portrait-hero-fix {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    align-items: center !important;
+                }
+                .tall-portrait-left-box {
+                    order: 1 !important;
+                    width: 100% !important;
+                    text-align: center !important;
+                }
+                .tall-portrait-right-box {
+                    order: 2 !important;
+                    width: 100% !important;
+                    align-items: center !important;
+                }
+                .tall-portrait-btn-shift {
+                    margin-left: auto !important;
+                    margin-right: auto !important;
+                    transform: translateX(0) !important;
+                    justify-content: center !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    top: 20px !important;
+                    margin-bottom: 20px !important;
+                }
+                .tall-portrait-btn-shift button {
+                    width: 220px !important;
+                    height: 65px !important;
+                    font-size: 20px !important;
+                }
+            }
+
+            /* Galaxy Tab S4 (~712x1138): Move to the RIGHT */
+            @media (min-width: 705px) and (max-width: 725px) and (orientation: portrait) {
+                .tall-portrait-right-box img {
+                    margin-left: 45px !important;
+                }
+            }
+
+            /* iPad Pro 13 (1032x1376): Move to the RIGHT */
+            @media (min-width: 1020px) and (max-width: 1150px) and (orientation: portrait) {
+                .tall-portrait-right-box img {
+                    margin-left: 25px !important;
+                }
+            }
+
+            /* SCROLLABLE DESKTOP & LAPTOP LAYOUT FIX (1024px to 1439px) */
+            @media (min-width: 1024px) and (max-width: 1439px) {
+                #main-landing-container {
+                    min-height: 100vh;
+                    height: auto !important;
+                    overflow-y: auto !important;
+                }
+
+                .tall-portrait-left-box {
+                    text-align: left !important;
+                    padding-left: 10px;
+                }
+                .tall-portrait-left-box h1 {
+                    text-align: left !important;
+                    margin-left: -30px !important;
+                }
+
+                .tall-portrait-right-box img {
+                    height: auto !important;
+                    max-height: 68vh !important;
+                    max-width: 100% !important;
+                    object-fit: contain !important;
+                    position: relative !important;
+                    left: -70px !important; 
+                    top: 10px !important;
+                }
+
+                .tall-portrait-btn-shift {
+                    top: -15px !important;
+                    position: relative !important;
+                    left: -20px !important;
+                    margin-bottom: -8px !important;
+                }
+            }
+
+            /* ULTRA-LARGE SCREEN MONITORS (1440px and up e.g., 1920x1080) */
+            @media (min-width: 1440px) {
+                #main-landing-container {
+                    min-height: 100vh;
+                    height: auto !important;
+                    overflow-y: auto !important;
+                }
+
+                .tall-portrait-left-box {
+                    text-align: left !important;
+                    padding-left: 10px;
+                }
+                .tall-portrait-left-box h1 {
+                    text-align: left !important;
+                    margin-left: -30px !important;
+                }
+
+                /* Keep image safely bounded and prevent touching background lines on large displays */
+                .tall-portrait-right-box img {
+                    height: auto !important;
+                    max-height: 62vh !important;
+                    max-width: 90% !important;
+                    object-fit: contain !important;
+                    position: relative !important;
+                    left: -20px !important; /* Gentle shift so it stays inside lines */
+                    top: 10px !important;
+                }
+
+                .tall-portrait-btn-shift {
+                    top: -15px !important;
+                    position: relative !important;
+                    left: 0px !important;
+                    margin-bottom: -8px !important;
+                }
+            }
+        </style>
+
+<header class="relative w-full bg-white shadow-sm md:bg-transparent md:shadow-none z-50">
+                <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
+
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <img src="{{ asset('images/logo.png') }}"
+                        alt="Safe Space Logo"
+                        class="w-[120px] sm:w-[140px] md:w-[200px] lg:w-[300px] xl:w-[300px] h-auto object-contain flex-shrink-0">
+                </div>
+
+                <!-- Top Right Links -->
+                <div class="flex items-center gap-4">
+
+                    <!-- Desktop Navigation -->
+                    <div class="hidden lg:flex items-center gap-7 font-[Montserrat] text-[18px] lg:text-[20px] xl:text-[22px]" style="position: relative; top: -10px; left: -20px;">
+                        <a href="{{ route('landing-page') }}" class="text-black transition-colors hover:!text-[#c7da30]">
+                            Home
+                        </a>
+                        <a href="{{ route('about-us') }}" class="text-black transition-colors hover:!text-[#c7da30]">
+                            About Us
+                        </a>
+                        <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops" class="text-black transition-colors hover:!text-[#c7da30]">
+                            Workshops
+                        </a>
+                        <a href="{{ route('contact-us') }}" class="text-black transition-colors hover:!text-[#c7da30]">
+                            Contact Us
+                        </a>
+                    </div>
+
+                    <div class="lg:hidden ml-auto">
+                        <button @click="menuOpen = !menuOpen" class="focus:outline-none relative z-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-[#c7da30]">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.75h16.5m-16.5 6.5h16.5m-16.5 6.5h16.5" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Drawer -->
+                <div x-show="menuOpen"
+                    x-transition:enter="transform transition ease-in-out duration-300"
+                    x-transition:enter-start="translate-x-full"
+                    x-transition:enter-end="translate-x-0"
+                    x-transition:leave="transform transition ease-in-out duration-300"
+                    x-transition:leave-start="translate-x-0"
+                    x-transition:leave-end="translate-x-full"
+                    @click.away="menuOpen = false"
+                    class="fixed top-0 right-0 h-full w-[min(18rem,85vw)] bg-white shadow-lg z-50 lg:hidden">
+                    
+                    <div class="flex items-center justify-start px-4 pt-16 pb-4">
+                        <button @click="menuOpen = false" class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
+                            <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
+                        <a href="{{ route('landing-page') }}" @click="menuOpen = false" class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Home</a>
+                        <a href="{{ route('about-us') }}" @click="menuOpen = false" class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">About Us</a>
+                        <a href="{{ $workshopBookingUrl }}/workshops" @click="menuOpen = false" class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Workshops</a>
+                        <a href="{{ route('contact-us') }}" @click="menuOpen = false" class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Contact Us</a>
+                    </nav>
                 </div>
             </div>
-
-            <div x-show="menuOpen"
-    x-transition:enter="transform transition ease-in-out duration-300"
-    x-transition:enter-start="translate-x-full"
-    x-transition:enter-end="translate-x-0"
-    x-transition:leave="transform transition ease-in-out duration-300"
-    x-transition:leave-start="translate-x-0"
-    x-transition:leave-end="translate-x-full"
-    @click.away="menuOpen = false"
-    class="fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 lg:hidden">
-    
-               <div class="flex items-center justify-start px-4 pt-16 pb-4">
-    <button @click="menuOpen = false"
-        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100">
-        <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="3"
-                  d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    </button>
-</div>
-
-<nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-
-   <a href="{{ route('landing-page') }}"
-    @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
-    Home
-</a>
-
-<a href="{{ route('about-us') }}"
-    @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
-    About Us
-</a>
-
-<a href="{{ $workshopBookingUrl }}/workshops"
-    @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
-    Workshops
-</a>
-
-<a href="{{ route('contact-us') }}"
-    @click="menuOpen = false"
-    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
-    Contact Us
-</a>
-
-
-</nav>
         </header>
-    <div class="circle-bg-line hidden lg:block" style="position: fixed !important; top: -58vh; left: -14vw; width: 72vw; height: 220vh; pointer-events: none; z-index: 50;">
-    <img src="{{ asset('images/circle6.png') }}" 
-         alt="Circle Background" 
-         class="w-full h-full object-fill opacity-100 pointer-events-none"
-         style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);">
-</div>
 
-        <section class="relative flex-1 flex flex-col items-center justify-start px-5 pt-16 pb-8 lg:block lg:px-10 lg:pt-0 overflow-hidden">
-   <!-- Heading: order-1 on mobile so it appears safely at the top -->
-<h1 class="order-1 relative z-20 w-full text-center font-normal text-[#c7da30] leading-tight text-[32px] sm:text-[38px] mt-4 mb-6 mx-auto lg:order-none lg:absolute lg:w-auto lg:text-left lg:text-[5vw] lg:top-[30vh] lg:left-[6vw] lg:mb-0"
-    style="font-family: 'Century Gothic Paneuropean', 'Century Gothic', sans-serif !important;">
-    Report Abuse<br>Safely and<br>Anonymously
-</h1>
-    <!-- Student Image: order-2 on mobile so it sits cleanly below the heading -->
-    <img src="{{ asset('images/back-pc.png') }}" alt="Students"
-        class="order-2 w-full max-w-[360px] mx-auto mb-8 object-contain lg:order-none lg:mt-0 lg:absolute lg:mx-0 lg:mb-0 lg:top-[16vh] lg:right-[8vw] lg:w-[40vw] lg:h-[30vw] lg:max-w-none">
-    <!-- Buttons: order-3 on mobile -->
-   <div class="order-3 w-full max-w-[320px] mx-auto flex flex-col items-center gap-4 lg:order-none lg:absolute lg:mx-0 lg:max-w-none lg:w-auto lg:top-[78vh] lg:right-[12vw] lg:flex-row lg:gap-[1vw]">
-    
-    <button wire:click="redirectToReportAbuse"
-       class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]"
-       style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
-        Report Now
-    </button>
+        <!-- Background Decor -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-10 hidden sm:block hide-circle-on-tall-portrait">
+            <div style="position: absolute; top: -58vh; left: -16vw; width: 72vw; height: 220vh;">
+                    <img src="{{ asset('images/circle6.png') }}" 
+                     alt="Circle Background" 
+                     class="w-full h-full object-fill opacity-100 pointer-events-none"
+                     style="mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 70%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 70%);">
+            </div>
+        </div>
 
-    <button wire:click="redirectToStatusCheck"
-       class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]"
-       style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
-        Check Status
-    </button>
+        <!-- STATIC HERO SECTION -->
+<section class="relative z-20 flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-8 pt-2 pb-8 -mt-20">            <!-- Fixed-width wrapper with tall portrait override -->
+            <div class="w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center tall-portrait-hero-fix">
+                
+                <!-- Left Side: Heading -->
+                <div class="md:col-span-6 text-center md:text-left md:pt-12 tall-portrait-left-box">
+                    <h1 class="font-normal text-[#c7da30] leading-tight text-[30px] sm:text-[38px] md:text-[50px] lg:text-[72px]"
+                        style="font-family: 'Century Gothic Paneuropean', 'Century Gothic', sans-serif !important;">
+                        Report Abuse<br>Safely and<br>Anonymously
+                    </h1>
+                </div>
 
-    <button wire:click="redirectToAdminLogin"
-        class="w-[280px] h-[44px] border-2 border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[14px] bg-white transition hover:scale-105 lg:w-[11vw] lg:h-[3.8vw] lg:text-[1.1vw] lg:font-bold lg:border-[0.27vw]"
-        style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
-        Administrators
-    </button>
+                <!-- Right Side: Students Image & Action Buttons -->
+                <div class="md:col-span-6 flex flex-col items-center md:items-end gap-4 tall-portrait-right-box">
+                    <!-- Student Image -->
+                    <div class="w-full flex justify-center md:justify-end">
+                        <img src="{{ asset('images/back-pc.png') }}" 
+                             alt="Students" 
+                             class="h-[45vh] sm:h-[55vh] md:h-[65vh] lg:h-[72vh] w-auto max-w-full object-contain">
+                    </div>
 
-</div>
+                    <!-- Action Buttons -->
+                    <div class="w-full max-w-[420px] md:max-w-none flex flex-col sm:flex-row items-center justify-start md:justify-end gap-3 relative top-4 md:top-[15px] mb-12 tall-portrait-btn-shift">
+                        <!-- Report Now Button -->
+                        <button wire:click="redirectToReportAbuse"
+                            class="w-[260px] sm:w-[180px] h-[60px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[18px] bg-white transition hover:scale-105"
+                            style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
+                            Report Now
+                        </button>
 
-</section>
+                        <!-- Check Status Button -->
+                        <button wire:click="redirectToStatusCheck"
+                            class="w-[260px] sm:w-[180px] h-[60px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[18px] bg-white transition hover:scale-105"
+                            style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
+                            Check Status
+                        </button>
 
-    <x-site-footer />
+                        <!-- Administrators Button -->
+                        <button wire:click="redirectToAdminLogin"
+                            class="w-[260px] sm:w-[180px] h-[60px] border-[4px] border-[#c7da30] rounded-full text-[#38b6ff] font-bold text-[18px] bg-white transition hover:scale-105"
+                            style="font-family: 'Helvetica Now Display', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;">
+                            Administrators
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>  
+        <x-site-footer />
 
         <style>
-    .zoom-stabilize {
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        transform: translateZ(0);
-        -webkit-transform: translateZ(0);
-        will-change: transform, width, height;
-    }
+            .zoom-stabilize {
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+                will-change: transform, width, height;
+            }
 
-    html, body {
-        overflow-x: hidden !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
+            /* Cookie notice */
+            .force-cookie-bottom,
+            .force-cookie-bottom > div,
+            .force-cookie-bottom #privacy-notice {
+                position: fixed !important;
+                top: auto !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 999999 !important;
+                transform: translateY(0) !important;
+            }
+        </style>
 
-    html::-webkit-scrollbar,
-    body::-webkit-scrollbar {
-        display: none !important;
-    }
+        <script>
+            (() => {
+                const refreshLandingViewport = () => {
+                    document.documentElement.style.setProperty('--landing-viewport-height', `${window.innerHeight}px`);
+                };
 
-    .class-hide-scrollbar {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
-
-    .class-hide-scrollbar::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    /* Desktop */
-    @media (min-width: 1024px) {
-        #main-landing-container {
-            min-height: 100vh;
-        }
-
-        .custom-desktop-footer {
-            position: relative !important;
-            top: auto !important;
-            bottom: auto !important;
-            padding-top: 25px;
-            padding-bottom: 25px;
-        }
-
-        section {
-            min-height: auto;
-            flex: 1 1 auto;
-        }
-    }
-
-    /* Mobile */
-    @media (max-width: 1023px) {
-        #main-landing-container {
-            /* Recalculate against the visible viewport after returning from an external app. */
-            min-height: var(--landing-viewport-height, 100dvh);
-            overflow-x: hidden;
-        }
-
-        section {
-            min-height: auto;
-        }
-
-        footer {
-            position: relative;
-            margin-top: auto;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        button {
-            width: 100%;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-    }
-
-    /* Cookie notice */
-    .force-cookie-bottom,
-    .force-cookie-bottom > div,
-    .force-cookie-bottom #privacy-notice {
-        position: fixed !important;
-        top: auto !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        z-index: 999999 !important;
-        transform: translateY(0) !important;
-    }
-</style>
-    <script>
-        (() => {
-            const refreshLandingViewport = () => {
-                document.documentElement.style.setProperty('--landing-viewport-height', ${window.innerHeight}px);
-            };
-
-            refreshLandingViewport();
-            window.addEventListener('resize', refreshLandingViewport, { passive: true });
-            window.addEventListener('orientationchange', refreshLandingViewport, { passive: true });
-            window.addEventListener('pageshow', refreshLandingViewport);
-        })();
-    </script>
-    </div> <div class="force-cookie-bottom">
-        @include('components.privacy-notice')
+                refreshLandingViewport();
+                window.addEventListener('resize', refreshLandingViewport, { passive: true });
+                window.addEventListener('orientationchange', refreshLandingViewport, { passive: true });
+                window.addEventListener('pageshow', refreshLandingViewport);
+            })();
+        </script>
     </div>
 
+    <div class="force-cookie-bottom">
+        @include('components.privacy-notice')
+    </div>
 </div>
