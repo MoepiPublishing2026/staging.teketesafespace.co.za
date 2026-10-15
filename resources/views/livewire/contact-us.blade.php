@@ -163,7 +163,7 @@
             font-weight: 400;
             line-height: 0.98;
             letter-spacing: -2px;
-            color: #000;
+            color: #c7da30;
            transform: translate(50px, 30px);
         }
 
