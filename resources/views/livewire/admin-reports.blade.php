@@ -755,7 +755,12 @@
     </button>
 </div>
 {{-- Active Dashboard Filters --}}
-@if($filterAge !== '' || $filterAnonymous !== '')
+@if(
+    $filterAge !== '' ||
+    $filterAnonymous !== '' ||
+    $filterGrade !== '' ||
+    trim($filterName) !== ''
+)
     <div style="
         display: flex;
         flex-wrap: wrap;
@@ -777,7 +782,20 @@
                 Age: {{ $filterAge }}
             </span>
         @endif
-
+{{-- Name / Surname Filter Badge --}}
+@if(trim($filterName) !== '')
+    <span style="
+        background: #f0f9d4;
+        color: #4a5e00;
+        border: 1px solid #c7da30;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    ">
+        Name: {{ trim($filterName) }}
+    </span>
+@endif
         @if($filterGrade !== '')
     <span style="
         background: #f0f9d4;

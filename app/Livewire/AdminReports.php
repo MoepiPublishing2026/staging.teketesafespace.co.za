@@ -403,15 +403,13 @@ if ($age !== null && $age !== '' && is_numeric($age)) {
             });
         }
 
-            // Name / surname filter
-        if (trim($this->filterName) !== '') {
-            $n = trim($this->filterName);
-            $query->where('is_anonymous', 0)
-                ->where(function ($q) use ($n) {
-                    $q->where('full_name', 'like', "%{$n}%")
-                        ->orWhere('reporter_email', 'like', "%{$n}%");
-                            });
-            }
+            // Name / surname filter - match names from the beginning
+if (trim($this->filterName) !== '') {
+    $n = trim($this->filterName);
+
+    $query->where('is_anonymous', 0)
+          ->where('full_name', 'LIKE', $n . '%');
+}
 
         // Grade filter
         if ($this->filterGrade !== '') {
