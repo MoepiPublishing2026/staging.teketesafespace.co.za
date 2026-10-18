@@ -74,7 +74,7 @@ class ReportController extends Controller
         // Name / surname filter
         if ($n = trim($request->input('full_name', ''))) {
             $query->where(function ($q) use ($n) {
-                $q->where('full_name', 'like', "%{$n}%")
+                $q->where('full_name', 'like', "{$n}%")
                 ->where('is_anonymous', 0);
             });
         }

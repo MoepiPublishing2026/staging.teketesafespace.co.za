@@ -48,18 +48,19 @@ class SchoolAdminReportsController extends AdminController
 
         if ($s = trim($request->input('search', ''))) {
             $query->where(function ($q) use ($s) {
-                $q->where('case_number',      'like', "%{$s}%")
-                ->orWhere('reporter_email', 'like', "%{$s}%")
-                ->orWhere('full_name',      'like', "%{$s}%")
-                ->orWhere('description',    'like', "%{$s}%");
+                $q->where('case_number',      'like', "{$s}%")
+                ->orWhere('reporter_email', 'like', "{$s}%")
+                ->orWhere('full_name',      'like', "{$s}%")
+                ->orWhere('description',    'like', "{$s}%");
             });
         }
 
+        // Updated Name Filter (Prefix match: starts with $n)
         if ($n = trim($request->input('full_name', ''))) {
             $query->where(function ($q) use ($n) {
-                $q->where('full_name',        'like', "%{$n}%")
-                ->where('is_anonymous', 0)
-                ->orWhere('reporter_email', 'like', "%{$n}%");
+                $q->where('full_name', 'like', "{$n}%")
+                  ->where('is_anonymous', 0)
+                  ->orWhere('reporter_email', 'like', "{$n}%");
             });
         }
 
