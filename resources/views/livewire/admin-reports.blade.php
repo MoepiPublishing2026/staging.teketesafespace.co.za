@@ -754,13 +754,37 @@
         Refresh Table
     </button>
 </div>
-{{-- Active Dashboard Filters --}}
-@if(
-    $filterAge !== '' ||
-    $filterAnonymous !== '' ||
-    $filterGrade !== '' ||
-    trim($filterName) !== ''
-)
+
+{{-- Active Report Filters --}}
+@php
+    $hasActiveFilters =
+        trim((string) $search) !== '' ||
+        trim((string) $filterName) !== '' ||
+        $filterAge !== '' ||
+        $filterGrade !== '' ||
+        $filterAnonymous !== '' ||
+        $filterDateFrom !== '' ||
+        $filterDateTo !== '' ||
+        $filterType !== '' ||
+        $filterSubtype !== '' ||
+        $filterStatus !== '';
+
+    $selectedType = collect($typeOptions)->firstWhere('id', $filterType);
+    $selectedSubtype = collect($subtypeOptions)->firstWhere('id', $filterSubtype);
+
+    $badgeStyle = '
+        display: inline-block;
+        background: #f0f9d4;
+        color: #4a5e00;
+        border: 1px solid #c7da30;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    ';
+@endphp
+
+@if($hasActiveFilters)
     <div style="
         display: flex;
         flex-wrap: wrap;
@@ -769,67 +793,84 @@
         margin: 12px 0 16px;
     ">
 
+        {{-- Main Search Badge --}}
+        @if(trim((string) $search) !== '')
+            <span style="{{ $badgeStyle }}">
+                Search: {{ trim($search) }}
+            </span>
+        @endif
+
+        {{-- Name Badge --}}
+        @if(trim((string) $filterName) !== '')
+            <span style="{{ $badgeStyle }}">
+                Name: {{ trim($filterName) }}
+            </span>
+        @endif
+
+        {{-- Age Badge --}}
         @if($filterAge !== '')
-            <span style="
-                background: #f0f9d4;
-                color: #4a5e00;
-                border: 1px solid #c7da30;
-                padding: 7px 14px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 600;
-            ">
+            <span style="{{ $badgeStyle }}">
                 Age: {{ $filterAge }}
             </span>
         @endif
-{{-- Name / Surname Filter Badge --}}
-@if(trim($filterName) !== '')
-    <span style="
-        background: #f0f9d4;
-        color: #4a5e00;
-        border: 1px solid #c7da30;
-        padding: 7px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-    ">
-        Name: {{ trim($filterName) }}
-    </span>
-@endif
-        @if($filterGrade !== '')
-    <span style="
-        background: #f0f9d4;
-        color: #4a5e00;
-        border: 1px solid #c7da30;
-        padding: 7px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-    ">
-        Grade: {{ $filterGrade }}
-    </span>
-@endif
 
+        {{-- Grade Badge --}}
+        @if($filterGrade !== '')
+            <span style="{{ $badgeStyle }}">
+                Grade: {{ $filterGrade }}
+            </span>
+        @endif
+
+        {{-- Anonymous Badge --}}
         @if($filterAnonymous !== '')
-            <span style="
-                background: #f0f9d4;
-                color: #4a5e00;
-                border: 1px solid #c7da30;
-                padding: 7px 14px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 600;
-            ">
+            <span style="{{ $badgeStyle }}">
                 Anonymous: {{ (string) $filterAnonymous === '1' ? 'Yes' : 'No' }}
             </span>
         @endif
 
+        {{-- Date From Badge --}}
+        @if($filterDateFrom !== '')
+            <span style="{{ $badgeStyle }}">
+                Date From: {{ $filterDateFrom }}
+            </span>
+        @endif
+
+        {{-- Date To Badge --}}
+        @if($filterDateTo !== '')
+            <span style="{{ $badgeStyle }}">
+                Date To: {{ $filterDateTo }}
+            </span>
+        @endif
+
+        {{-- Report Type Badge --}}
+        @if($filterType !== '')
+            <span style="{{ $badgeStyle }}">
+                Report Type: {{ $selectedType?->type_name ?? $filterType }}
+            </span>
+        @endif
+
+        {{-- Subtype Badge --}}
+        @if($filterSubtype !== '')
+            <span style="{{ $badgeStyle }}">
+                Subtype: {{ $selectedSubtype?->sub_type_name ?? $filterSubtype }}
+            </span>
+        @endif
+
+        {{-- Status Badge --}}
+        @if($filterStatus !== '')
+            <span style="{{ $badgeStyle }}">
+                Status: {{ ucwords(str_replace('-', ' ', $filterStatus)) }}
+            </span>
+        @endif
+
+        {{-- Number of matching reports --}}
         <span style="font-size: 12px; color: #6b7280;">
             {{ $reports->total() }} result(s)
         </span>
 
     </div>
 @endif
+
             </section>
 
             <div class="reports-table-wrap">
