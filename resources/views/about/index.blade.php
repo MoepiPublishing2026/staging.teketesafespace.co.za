@@ -5,39 +5,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Tekete SafeSpace</title>
+    <x-favicon />
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean" rel="stylesheet">
     <style>
-        .about-heading-about {
-            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
-            font-weight: 300;
-            font-size: 52px;
-            line-height: 0.95;
-            color: #C5D931;
+        .about-desktop-nav {
+            display: none;
+            align-items: center;
+            gap: 18px;
+            margin: 0;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: 0;
         }
 
+        .about-desktop-nav a {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: 0;
+            color: #000000;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .about-desktop-nav a:hover {
+            color: #c7da30;
+        }
+
+        .about-title-lockup {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .about-heading-about,
         .about-heading-brand {
             font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
             font-weight: 400;
-            font-size: 20px;
-            line-height: 1.15;
+            font-style: normal;
             color: #C5D931;
+            letter-spacing: 0;
+            white-space: nowrap;
+        }
+
+        .about-heading-about {
+            display: block;
+            font-size: 52px;
+            font-weight: 300;
+            line-height: 0.9;
+        }
+
+        .about-heading-brand {
+            display: block;
+            font-size: 18px;
+            line-height: 1.05;
+            margin-top: 2px;
         }
 
         .about-intro-mobile {
             display: none;
         }
 
-        .about-intro {
+        .about-paragraph,
+        .about-intro,
+        .about-intro p,
+        .core-value-body,
+        .who-we-serve-list {
             font-family: "Montserrat", sans-serif;
             font-weight: 400;
             font-size: 16px;
+            font-style: normal;
+            line-height: 1.36;
+            letter-spacing: 0;
             color: #000000;
+        }
+
+        .about-intro {
             width: 100%;
-            max-width: 1024px;
-            line-height: 1.55;
+            max-width: 767px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about-intro p {
+            margin: 0;
+        }
+
+        .about-intro p + p {
+            margin-top: 22px;
         }
 
         .core-values-heading {
@@ -59,13 +123,35 @@
             text-transform: uppercase;
         }
 
+        .about-copy-column {
+            width: 100%;
+            max-width: 767px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .core-value-body {
-            font-family: "Montserrat", sans-serif;
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1.5;
-            color: #000000;
-            max-width: 853px;
+            width: 100%;
+            max-width: 640px;
+            margin: 8px 0 0;
+        }
+
+        .core-values-list {
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+        }
+
+        .core-value-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .core-value-mark {
+            width: 105px;
+            height: 78px;
+            flex: 0 0 105px;
         }
 
         .core-value-number {
@@ -116,35 +202,41 @@
         }
 
         .who-we-serve-list {
-            font-family: "Montserrat", sans-serif;
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 1.45;
-            color: #000000;
+            margin: 0;
+            padding-left: 1.25rem;
+            line-height: 2.1;
+        }
+
+        .who-we-serve-list li {
+            margin: 0;
+            padding: 0;
         }
 
         .who-we-serve-photo {
             width: 230px;
             height: auto;
             max-width: 100%;
+            aspect-ratio: 289 / 356;
             object-fit: cover;
             object-position: center center;
+            align-self: flex-start;
         }
 
         @media (min-width: 768px) {
+            .about-desktop-nav { display: flex; }
             .about-hero-mobile { display: none !important; }
             .about-hero-desktop { display: flex; }
-            .about-heading-about { font-size: 92px; }
-            .about-heading-brand { font-size: 36px; }
+            .about-heading-about { font-size: 92px; font-weight: 300; }
+            .about-heading-brand { font-size: 33px; font-weight: 400; }
             .about-report-heading { font-size: 36px; letter-spacing: 0.06em; }
             .core-values-heading { font-size: 36px; }
             .core-value-title { font-size: 21px; }
             .core-value-number { font-size: 36px; }
             .who-we-serve-heading { font-size: 36px; }
             .who-we-serve-photo {
-                width: 280px;
-                height: 100%;
-                align-self: stretch;
+                width: 289px;
+                height: auto;
+                align-self: flex-start;
             }
         }
 
@@ -182,14 +274,16 @@
 
         @media (min-width: 1024px) {
             .about-heading-about {
-                font-size: 128px;
+                font-size: 115px;
+                font-weight: 300;
                 max-width: none;
-                letter-spacing: 0.02em;
+                letter-spacing: 0;
             }
             .about-heading-brand {
-                font-size: 46px;
+                font-size: 42px;
+                font-weight: 400;
                 max-width: none;
-                letter-spacing: 0.06em;
+                letter-spacing: 0;
             }
         }
     </style>
@@ -208,9 +302,6 @@
     src="{{ asset('images/logo.png') }}"
     alt="Safe Space Logo"
     class="
-        relative
-        xl:top-[12px]
-        2xl:top-[14px]
         w-[120px]
         sm:w-[140px]
         md:w-[240px]
@@ -223,44 +314,15 @@
 </div>
 
         <!-- Top Right Links -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center">
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center gap-6 md:mr-4 lg:mr-8 xl:mr-12 lg:gap-8 xl:gap-10
-            font-[Montserrat]
-            text-[18px]
-            lg:text-[18px]
-            xl:text-[20px]
-            ">
-
-                
-                <a href="javascript:void(0);"
-                    onclick="window.history.back();"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Back
-                </a>
-
-                <a href="{{ route('landing-page') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Home
-                </a>
-
-                <a href="{{ route('about-us') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    About Us
-                </a>
-
-                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Workshops
-                </a>
-
-                <a href="{{ route('contact-us') }}"
-                    class="text-black transition-colors hover:!text-[#c7da30]">
-                    Contact Us
-                </a>
-
-            </div>
+            <nav class="about-desktop-nav" aria-label="Primary">
+                <a href="{{ route('landing-page') }}">Home</a>
+                <a href="{{ route('about-us') }}">About Us</a>
+                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops">Workshops</a>
+                <a href="{{ route('contact-us') }}">Contact Us</a>
+            </nav>
 
             <!-- Mobile Hamburger Menu -->
             <div class="md:hidden">
@@ -297,14 +359,7 @@
             </button>
         </div>
         
-        <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-
-    <!-- Back -->
-    <a href="javascript:void(0);"
-       onclick="window.history.back(); toggleMobileMenu();"
-       class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">
-        Back
-    </a>
+        <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]" style="font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 0;">
 
     <a href="{{ route('landing-page') }}"
        onclick="toggleMobileMenu()"
@@ -350,9 +405,9 @@
             class="w-[250px] lg:w-[320px] -translate-x-6 lg:-translate-x-8">
     </div>
     <div class="text-left shrink-0">
-        <h2>
-            <span class="about-heading-about block">ABOUT</span>
-            <span class="about-heading-brand block">TEKETE SAFESPACE</span>
+        <h2 class="about-title-lockup">
+            <span class="about-heading-about">ABOUT</span>
+            <span class="about-heading-brand">TEKETE SAFESPACE</span>
         </h2>
     </div>
 </div>
@@ -380,12 +435,13 @@
             </p>
         </div>
 
-        <div class="about-intro about-intro-desktop mt-8 md:mt-8 text-left mx-auto">
+        <div class="about-intro about-intro-desktop mt-8 text-left">
             <p>
                 A confidential platform designed to protect and empower learners and employees to speak out,
                 with the option to report anonymously. The app is zero-rated, ensuring users can access and
                 submit reports without incurring data costs. Your voice matters. Your identity is protected.
-                <br><br>
+            </p>
+            <p>
                 Whether you choose to report with your name or anonymously, Tekete SafeSpace by Moepi
                 Publishing ensures every report is handled with confidentiality, urgency, and at no data cost to
                 the user.
@@ -427,13 +483,13 @@
     </section>
 
     <section class="relative bg-white w-full pt-6 md:pt-10 pb-12 px-6 lg:px-8">
-        <div class="max-w-[1024px] mx-auto flex flex-col md:flex-row md:items-stretch justify-center gap-5 md:gap-10">
+        <div class="max-w-[1024px] mx-auto flex flex-col md:flex-row md:items-start justify-center gap-5 md:gap-10">
             <div class="md:min-w-[540px] md:max-w-[560px]">
                 <h3 class="who-we-serve-heading mb-5 text-left">
                     Who we serve:
                 </h3>
 
-                <ul class="who-we-serve-list list-disc space-y-3 pl-5">
+                <ul class="who-we-serve-list list-disc">
                     <li><span class="font-bold">Learners</span> - A safe way to speak out without fear.</li>
                     <li><span class="font-bold">Parents</span> - Peace of mind knowing concerns can be raised.</li>
                     <li><span class="font-bold">Teachers &amp; Staff</span> - A trusted channel for reporting<br>misconduct.</li>
@@ -449,9 +505,8 @@
     </section>
 
     <section class="bg-white w-full pt-10 pb-16 px-6 lg:px-8">
-        <div class="w-full max-w-[1024px] mx-auto">
-        <div class="flex justify-center md:justify-start mb-14">
-            <div class="hidden md:block w-[259px] shrink-0" aria-hidden="true"></div>
+        <div class="about-copy-column">
+        <div class="flex justify-center mb-12">
             <div class="relative w-[300px] h-[90px] md:w-[400px] md:h-[120px] flex items-center justify-center overflow-hidden">
                 <img src="{{ asset('images/7.svg') }}"
                      alt=""
@@ -493,18 +548,18 @@
             ];
         @endphp
 
-        <div class="w-full flex flex-col gap-8 md:gap-10">
+        <div class="core-values-list">
             @foreach ($coreValues as $value)
-                <div class="flex items-start md:items-center gap-3 sm:gap-6">
-                    <div class="relative w-[96px] h-[72px] sm:w-[130px] sm:h-[92px] md:w-[149px] md:h-[105px] shrink-0 flex items-center justify-center">
+                <div class="core-value-row">
+                    <div class="core-value-mark relative shrink-0 flex items-center justify-center">
                         <img src="{{ asset('images/8.svg') }}"
                              alt=""
                              aria-hidden="true"
-                             class="absolute inset-0 w-full h-full object-contain scale-[1.45] pointer-events-none select-none">
+                             class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none">
                         <span class="core-value-number relative z-10">{{ $value['num'] }}</span>
                     </div>
-                    <div class="min-w-0 pt-1">
-                        <h4 class="core-value-title mb-1 md:mb-2">{{ $value['title'] }}</h4>
+                    <div class="min-w-0">
+                        <h4 class="core-value-title">{{ $value['title'] }}</h4>
                         <p class="core-value-body">{{ $value['body'] }}</p>
                     </div>
                 </div>
