@@ -10,6 +10,7 @@ use App\Services\Reports\TurnstileVerifier;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -71,6 +72,85 @@ class ProtectionTest extends ReportTestCase
         app(ReportSubmission::class)->decode($form->get('submissionIdentity'), session()->getId());
     }
 
+    public function test_reloading_after_session_regeneration_replaces_stale_identity(): void
+    {
+        $stale = app(ReportSubmission::class)->identity('expired-session');
+        session()->put('report_identity.1.1', $stale);
+        $form = Livewire::test(ReportForm::class, ['abuseTypeID' => 1, 'isAnonymous' => 'anonymous']);
+        $this->assertNotSame($stale, $form->get('submissionIdentity'));
+        app(ReportSubmission::class)->decode($form->get('submissionIdentity'), session()->getId());
+    }
+
+    public function test_changed_completed_submission_is_not_reported_as_a_new_success(): void
+    {
+        $this->allowVerification();
+        Mail::fake();
+        $this->validForm()->set('turnstileToken', 'valid')->call('submitReport')->assertHasNoErrors();
+        $form = $this->validForm()->set('description', 'A different incident');
+        $identity = $form->get('submissionIdentity');
+        $form->call('submitReport')->assertHasErrors('reportIdentity')
+            ->assertSet('description', 'A different incident');
+        $this->assertSame(1, Report::count());
+        Http::assertSentCount(1);
+        $form->call('startNewReport', true)->assertHasNoErrors()
+            ->assertSet('description', 'A different incident')->assertSet('schoolName', 'Test School');
+        $this->assertNotSame($identity, $form->get('submissionIdentity'));
+        $form->set('turnstileToken', 'valid')->call('submitReport')->assertHasNoErrors();
+        $this->assertSame(2, Report::count());
+    }
+
+    public function test_lost_response_retry_with_original_entries_needs_no_new_verification(): void
+    {
+        $this->allowVerification();
+        Mail::fake();
+        $this->validForm()->set('turnstileToken', 'valid')->call('submitReport')->assertHasNoErrors();
+        $this->validForm()->call('submitReport')->assertHasNoErrors()->assertSee(Report::first()->case_number);
+        $this->assertSame(1, Report::count());
+        Http::assertSentCount(1);
+        Mail::assertSentCount(1);
+    }
+
+    public function test_completed_retry_does_not_require_expired_temporary_attachment_contents(): void
+    {
+        $this->allowVerification();
+        Mail::fake();
+        Storage::fake('public');
+        $form = $this->validForm()->set('image', [UploadedFile::fake()->create('evidence.pdf', 1, 'application/pdf')]);
+        $temporary = $form->get('image')[0];
+        $retry = $this->validForm()->call('_finishUpload', 'image', [$temporary->getFilename()], true);
+        $form->set('turnstileToken', 'valid')->call('submitReport')->assertHasNoErrors();
+        $temporary->delete();
+        $retry->call('submitReport')->assertHasNoErrors()->assertSee(Report::first()->case_number);
+        $this->assertSame(1, Report::count());
+        Http::assertSentCount(1);
+        Mail::assertSentCount(1);
+    }
+
+    public function test_email_and_logging_failures_cannot_reverse_committed_success(): void
+    {
+        $this->allowVerification();
+        Mail::shouldReceive('to')->once()->andThrow(new \RuntimeException('transport failed'));
+        Log::shouldReceive('warning')->once()->andThrow(new \RuntimeException('log unavailable'));
+        $form = $this->validForm()->set('turnstileToken', 'valid')->call('submitReport')->assertHasNoErrors();
+        $this->assertSame(1, Report::count());
+        $form->assertSee(Report::first()->case_number)->assertDontSee('Something went wrong. Please try again.');
+    }
+
+    public function test_new_report_resets_school_context_and_pending_uploads(): void
+    {
+        $form = $this->validForm()->set('schoolProvince', 'Gauteng')->set('schoolPhase', 'PRIMARY SCHOOL');
+        $form->call('startNewReport')->assertSet('schoolProvince', null)
+            ->assertSet('schoolPhase', null)->assertSet('schoolId', null)->assertSet('newUploads', [])
+            ->assertSet('schoolSuggestions', [])->assertSet('showSchoolDropdown', false);
+    }
+
+    public function test_harness_does_not_use_project_environment_or_storage(): void
+    {
+        $this->assertSame(realpath(__DIR__.'/../.runtime/environment'), realpath(app()->environmentPath()));
+        $this->assertStringContainsString('tests/.runtime/storage', str_replace('\\', '/', storage_path()));
+        $this->assertStringContainsString('tests/.runtime/bootstrap', str_replace('\\', '/', app()->getCachedConfigPath()));
+    }
+
     public function test_email_failure_keeps_committed_report_successful(): void
     {
         $this->allowVerification();
@@ -122,6 +202,36 @@ class ProtectionTest extends ReportTestCase
         $this->validForm()->set('turnstileToken', 'token')->call('submitReport')
             ->assertHasErrors('turnstileToken')->assertSet('schoolName', 'Test School');
         $this->assertSame(0, Report::count());
+    }
+
+    public function test_transient_verification_retry_reuses_siteverify_idempotency_key(): void
+    {
+        Http::fake(['challenges.cloudflare.com/*' => Http::sequence()->push([], 503)->push([
+            'success' => true, 'hostname' => 'reports.test', 'action' => 'report_submit',
+        ])]);
+        app(TurnstileVerifier::class)->verify('test-token');
+        Http::assertSentCount(2);
+        $requests = Http::recorded()->map(fn ($pair) => $pair[0]);
+        $this->assertSame($requests[0]['idempotency_key'], $requests[1]['idempotency_key']);
+        $this->assertSame('https://challenges.cloudflare.com/turnstile/v0/siteverify', $requests[0]->url());
+    }
+
+    public function test_bad_request_is_not_retried_and_zero_timeout_fails_closed(): void
+    {
+        Http::fake(['*' => Http::response([], 400)]);
+        try {
+            app(TurnstileVerifier::class)->verify('test-token');
+            $this->fail('Bad request accepted');
+        } catch (ValidationException) {
+            Http::assertSentCount(1);
+        }
+        config(['report_protection.timeout' => 0]);
+        try {
+            app(TurnstileVerifier::class)->verify('test-token');
+            $this->fail('Unbounded timeout accepted');
+        } catch (ValidationException) {
+            Http::assertSentCount(1);
+        }
     }
 
     public function test_invalid_verification_preserves_temporary_upload_and_writes_no_permanent_file(): void

@@ -1,17 +1,26 @@
 <div class="mt-7 text-center" x-data="{
-    token: '', widget: null, failed: false,
+    token: '', widget: null, failed: false, size: null,
     mount() {
         if (this.widget !== null || !window.turnstile || !this.$refs.challenge.dataset.sitekey) return;
         this.failed = false;
+        this.size = this.$el.clientWidth &lt; 300 ? 'compact' : 'flexible';
+        try {
         this.widget = window.turnstile.render(this.$refs.challenge, {
             sitekey: this.$refs.challenge.dataset.sitekey,
             action: 'report_submit',
-            size: this.$el.clientWidth &lt; 300 ? 'compact' : 'flexible',
+            size: this.size,
             callback: token => { this.token = token; this.failed = false; this.$wire.set('turnstileToken', token, false); },
             'expired-callback': () => this.reset(),
             'timeout-callback': () => this.reset(),
             'error-callback': () => { this.clear(); this.failed = true; }
         });
+        } catch { this.clear(); this.failed = true; }
+    },
+    resize() {
+        const size = this.$el.clientWidth &lt; 300 ? 'compact' : 'flexible';
+        if (this.widget !== null &amp;&amp; this.size !== size &amp;&amp; window.turnstile) {
+            this.clear(); window.turnstile.remove(this.widget); this.widget = null; this.mount();
+        }
     },
     clear() { this.token = ''; this.$wire.set('turnstileToken', '', false); },
     reset() { this.clear(); if (this.widget !== null &amp;&amp; window.turnstile) window.turnstile.reset(this.widget); },
@@ -34,6 +43,7 @@
     },
     destroy() { if (this.widget !== null &amp;&amp; window.turnstile) window.turnstile.remove(this.widget); }
 }" @report-turnstile-ready.window="mount()"
+    @resize.window.debounce.150ms="resize()"
     @report-turnstile-unavailable.window="failed = true"
     @report-verification-reset.window="reset()">
     <div wire:ignore>
@@ -49,6 +59,10 @@
     @endunless
     @error('turnstileToken') <p role="alert" class="text-red-700 text-sm mb-3">{{ $message }}</p> @enderror
     @error('reportSubmission') <p role="alert" class="text-red-700 text-sm mb-3">{{ $message }}</p> @enderror
+    @error('reportIdentity')
+        <p role="alert" class="text-red-700 text-sm mb-3">{{ $message }}</p>
+        <button type="button" wire:click="startNewReport(true)" class="underline mb-3">Start a separate report with these entries</button>
+    @enderror
     <button type="submit" wire:loading.attr="disabled" wire:target="submitReport"
         :disabled="!token" aria-describedby="report-verification-help"
         class="w-full h-[50px] sm:h-[52px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] text-[15px] font-medium cursor-pointer transition duration-200 hover:opacity-80 shadow-md disabled:opacity-50">

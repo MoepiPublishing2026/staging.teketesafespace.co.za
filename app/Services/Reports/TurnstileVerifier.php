@@ -14,7 +14,8 @@ class TurnstileVerifier
         if (! is_string($token) || $token === '' || strlen($token) > 2048) {
             $this->reject();
         }
-        if (empty($config['secret_key']) || empty($config['site_key']) || empty($config['hostnames'])) {
+        if (empty($config['secret_key']) || empty($config['site_key']) || empty($config['hostnames'])
+            || $config['connect_timeout'] <= 0 || $config['timeout'] <= 0) {
             $this->reject('Verification is temporarily unavailable. Your report has not been submitted. Please try again later.');
         }
 

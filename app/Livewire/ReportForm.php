@@ -13,7 +13,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CaseNumberNotification;
 use App\Mail\IncidentReported; 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule; 
 use Carbon\Carbon;
@@ -106,8 +105,14 @@ protected array $phaseGrades = [
         $this->abuseTypeID = $abuseTypeID;
         $this->isAnonymous = ($isAnonymous === 'anonymous');
         $identityKey = 'report_identity.'.$abuseTypeID.'.'.(int) $this->isAnonymous;
-        $this->submissionIdentity = session()->get($identityKey)
-            ?? app(ReportSubmission::class)->identity(session()->getId());
+        $submissions = app(ReportSubmission::class);
+        $cachedIdentity = session()->get($identityKey);
+        try {
+            $submissions->decode((string) $cachedIdentity, session()->getId());
+        } catch (ValidationException) {
+            $cachedIdentity = null;
+        }
+        $this->submissionIdentity = $cachedIdentity ?? $submissions->identity(session()->getId());
         session()->put($identityKey, $this->submissionIdentity);
         $abuseType = AbuseType::find($this->abuseTypeID);
         $this->selectedAbuseTypeName = $abuseType->type_name ?? 'Unknown';
@@ -405,12 +410,17 @@ protected array $phaseGrades = [
 public function submitReport()
     {
  ini_set('max_execution_time', 500);
+        session()->forget(['success_message', 'email_warning', 'error_message']);
 
         $submissions = app(ReportSubmission::class);
         try {
             $identity = $submissions->decode($this->submissionIdentity, session()->getId());
             if ($completed = $submissions->completed($identity)) {
+                if ($this->hasDraftEntries()) {
+                    $submissions->assertPayload($identity, $this->submissionFingerprint());
+                }
                 $this->showSubmissionSuccess($completed->case_number);
+                $this->resetDraft();
                 return;
             }
             // Laravel's request IP respects only configured trusted proxies.
@@ -607,15 +617,31 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             
             
 
-            // Notify reporter
-            if ($created && $report->reporter_email) {
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable) {
+            Log::error('Report submission could not complete.');
+            session()->flash('error_message', 'Something went wrong. Please try again.');
+            return;
+        } finally {
+            $this->turnstileToken = '';
+            $this->dispatch('report-verification-reset');
+        }
+
+        // Persistence has committed. Nothing below may report a failed save.
+        $this->showSubmissionSuccess($report->case_number);
+        if ($created && $report->reporter_email) {
+            try {
+                Mail::to($report->reporter_email)->send(new CaseNumberNotification($report->case_number));
+            } catch (\Throwable) {
+                session()->flash('email_warning', 'Your report was saved, but the confirmation email could not be sent. Please keep your case number.');
                 try {
-                    Mail::to($report->reporter_email)->send(new CaseNumberNotification($report->case_number));
-                } catch (\Throwable) {
                     Log::warning('Report saved; confirmation email could not be sent.', ['report_id' => $report->id]);
-                    session()->flash('email_warning', 'Your report was saved, but the confirmation email could not be sent. Please keep your case number.');
+                } catch (\Throwable) {
+                    // Logging failure must not reverse a successful submission.
                 }
             }
+        }
 /*
             // Notify only the assigned school admin
             if ($report) {
@@ -635,31 +661,7 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
                 }
             }
 */
-            $this->showSubmissionSuccess($report->case_number);
-
-            $this->reset([
-                'subtypeID',
-                'description',
-                'reporterEmail',
-                'phoneNumber',
-                'image',
-                'fullName',
-                'age',
-                'location',
-                'grade',
-                'schoolName',
-                'schoolSearch',
-            ]);
-
-        } catch (ValidationException $e) {
-            throw $e;
-        } catch (\Throwable) {
-            Log::error('Report submission could not complete.');
-            session()->flash('error_message', 'Something went wrong. Please try again.');
-        } finally {
-            $this->turnstileToken = '';
-            $this->dispatch('report-verification-reset');
-        }
+        $this->resetDraft();
     }
 
     private function submissionFingerprint(): string
@@ -669,7 +671,9 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             'phoneNumber', 'fullName', 'age', 'location', 'grade', 'schoolName', 'schoolId'] as $field) {
             $fields[$field] = is_string($this->$field) ? trim($this->$field) : $this->$field;
         }
-        $fields['attachments'] = array_map(fn ($file) => hash_file('sha256', $file->getRealPath()), $this->image);
+        // Server-assigned temporary upload IDs bind the selected files without
+        // reading them again on completed retries (they may already have expired).
+        $fields['attachments'] = array_map(fn ($file) => $file->getFilename(), $this->image);
         return hash_hmac('sha256', json_encode($fields, JSON_THROW_ON_ERROR), config('app.key'));
     }
 
@@ -680,10 +684,31 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         $this->dispatch('report-verification-reset');
     }
 
-    public function startNewReport(): void
+    private function hasDraftEntries(): bool
+    {
+        foreach (['subtypeID', 'description', 'reporterEmail', 'phoneNumber', 'fullName',
+            'age', 'location', 'grade', 'schoolName', 'schoolSearch', 'schoolId'] as $field) {
+            if (filled($this->$field)) {
+                return true;
+            }
+        }
+        return ! empty($this->image);
+    }
+
+    private function resetDraft(): void
     {
         $this->reset(['subtypeID', 'description', 'reporterEmail', 'phoneNumber', 'image',
-            'newUploads', 'fullName', 'age', 'location', 'grade', 'schoolName', 'schoolSearch', 'schoolId']);
+            'newUploads', 'fullName', 'age', 'location', 'grade', 'schoolName', 'schoolSearch', 'schoolId',
+            'schoolPhase', 'schoolProvince', 'schoolSuggestions', 'showSchoolDropdown']);
+    }
+
+    public function startNewReport(bool $preserveInput = false): void
+    {
+        session()->forget(['success_message', 'email_warning', 'error_message']);
+        if (! $preserveInput) {
+            $this->resetDraft();
+        }
+        $this->turnstileToken = '';
         $this->submissionIdentity = app(ReportSubmission::class)->identity(session()->getId());
         session()->put('report_identity.'.$this->abuseTypeID.'.'.(int) $this->isAnonymous, $this->submissionIdentity);
         $this->resetValidation();

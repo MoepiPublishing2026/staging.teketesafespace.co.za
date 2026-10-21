@@ -13,7 +13,7 @@ putenv('DB_DATABASE=:memory:');
 putenv('APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=');
 putenv('LOG_CHANNEL=null');
 require __DIR__.'/bootstrap.php';
-$app = require dirname(__DIR__).'/bootstrap/app.php';
+$app = createReportTestApplication();
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 set_exception_handler(function (Throwable $error) {
     fwrite(STDERR, 'Concurrency check failed: '.$error::class."\n");
@@ -45,14 +45,19 @@ if ($mode === 'limit') {
         exit(2);
     }
 }
-if ($mode === 'save') {
+if ($mode === 'save' || $mode === 'conflict') {
     $service = app(App\Services\Reports\ReportSubmission::class);
     $identity = $service->decode(file_get_contents(__DIR__.'/.runtime/concurrency-identity'), 'same-session');
-    $service->save($identity, hash('sha256', 'same-payload'), function () {
-        usleep(100000);
+    $payload = $mode === 'conflict' && ((int) ($argv[3] ?? 0)) % 2 === 1 ? 'changed-payload' : 'same-payload';
+    try {
+        $service->save($identity, hash('sha256', $payload), function () {
+            usleep(100000);
 
-        return App\Models\Report::create(['case_number' => 'CASE-CONCURRENT']);
-    });
+            return App\Models\Report::create(['case_number' => 'CASE-CONCURRENT']);
+        });
+    } catch (Illuminate\Validation\ValidationException) {
+        exit(2);
+    }
     exit(0);
 }
 
@@ -67,11 +72,11 @@ try {
         $table->timestamps();
     });
     file_put_contents(__DIR__.'/.runtime/concurrency-identity', app(App\Services\Reports\ReportSubmission::class)->identity('same-session'));
-    foreach (['limit', 'save'] as $phase) {
+    foreach (['limit', 'save', 'conflict'] as $phase) {
         $processes = [];
         for ($i = 0; $i < 8; $i++) {
             $log = __DIR__.'/.runtime/'.$phase.'-'.$i.'.log';
-            $processes[] = proc_open([PHP_BINARY, __FILE__, $phase, $database],
+            $processes[] = proc_open([PHP_BINARY, __FILE__, $phase, $database, (string) $i],
                 [0 => ['pipe', 'r'], 1 => ['file', $log, 'w'], 2 => ['file', $log, 'a']], $pipes);
             fclose($pipes[0]);
         }
@@ -87,6 +92,11 @@ try {
                 throw new RuntimeException('Concurrent counters did not commit exactly three admissions.');
             }
             echo "MySQL concurrent limiter: exactly 3/8 admitted, 5 rejected.\n";
+        } elseif ($phase === 'conflict') {
+            if ($admitted !== 4 || count(array_filter($codes, fn ($code) => $code === 2)) !== 4 || App\Models\Report::count() !== 1) {
+                throw new RuntimeException('Concurrent changed-payload assertion failed.');
+            }
+            echo "MySQL concurrent changed payloads: 4 original results, 4 conflicts, still 1 report.\n";
         } elseif ($admitted !== 8 || App\Models\Report::count() !== 1 || Illuminate\Support\Facades\DB::table('report_submissions')->count() !== 1) {
             throw new RuntimeException('Concurrent duplicate assertion failed; inspect ignored runtime logs.');
         } else {

@@ -53,12 +53,19 @@ property, and the server checks the session binding on every action. The current
 identity is also retained in the server session for the same report type/anonymity
 route, permitting reload recovery. The success dialog's OK action starts a new
 identity explicitly; a second tab on the same route shares the current identity
-until a new report is explicitly started.
+until a new report is explicitly started. A stale identity is replaced when the
+session changes. If a completed identity is used with changed entries, the server
+rejects it as a conflict instead of pretending those entries were saved. The
+conflict UI can start a separate report while keeping the draft and temporary
+uploads. Identical and cleared-form retries still return the original case number
+without CAPTCHA. Starting a fresh report also clears dependent school context.
 
 After verification, a unique `report_submissions` row and `SELECT FOR UPDATE`
 serialize report creation. The claim, report and completed association commit in
 one transaction; a failed transaction rolls all three back. A keyed fingerprint
-binds report fields and attachment content. Completed replays return the original
+binds report fields and server-assigned temporary upload identifiers. It is a
+request identity check, not a content checksum; completed retries can recover
+even after the temporary file contents have expired. Completed replays return the original
 case number without another CAPTCHA, allowance or email. Keep completed ledger
 rows for the lifetime of the report: deleting them would remove the duplicate
 guarantee. Session expiry prevents recovery in a different session. The ledger
@@ -68,7 +75,9 @@ Report persistence and email errors are handled separately. Email failure leaves
 success and the case number visible with a secondary delivery warning. Sending is
 best effort, without an automatic retry/outbox guarantee. A process crash after
 commit but before email may result in no confirmation email; retries still recover
-the case number and do not send again.
+the case number and do not send again. Notification handling is outside the save
+failure handler; even a logging failure after an email error cannot report that a
+committed report failed.
 
 Filesystem writes are not transactional. Attachment visibility and anonymous-report
 contact requirements are unchanged and remain separate follow-ups.
@@ -79,24 +88,57 @@ Run `php vendor/phpunit/phpunit/phpunit -c phpunit.report-protection.xml`.
 For an isolated worktree borrowing installed dependencies, set `REPORT_TEST_VENDOR`
 to that vendor directory. The test bootstrap overrides application class maps so
 the worktree code is exercised. Tests force an in-memory SQLite database and do
-not load a production database. Small fixtures isolate this feature from unrelated
+not load the checkout's `.env`, cached configuration, sessions or compiled views,
+and route public-file writes into the isolated test runtime.
+An empty environment directory and runtime paths under `tests/.runtime` enforce
+that isolation. Outbound HTTP is blocked unless a test explicitly fakes it.
+Small fixtures isolate this feature from unrelated
 legacy migrations. The older `public/phpunit.xml` and `storage/tests` are untouched.
 
 MySQL concurrency checks use `tests/concurrency.php`. Set
 `REPORT_CONCURRENCY_ENABLE=1` only with a disposable local MySQL/MariaDB server on
 127.0.0.1:33317. The harness creates and drops a randomly named test database and
-spawns eight workers for each of quota admission and duplicate persistence.
+spawns eight workers for quota admission, duplicate persistence and conflicting
+payload retries. It uses the actual database-cache driver and database locks,
+without cache mocks.
 Ordinary SQLite tests do not establish MySQL row-lock correctness.
 
 For browser checks, the feature suite generates an ignored SQLite fixture. Run
 `php -S 127.0.0.1:8871 tests/browser-router.php` locally with
 `REPORT_BROWSER_ENABLE=1`, install Playwright only
-under ignored `tests/.runtime/browser`, set `REPORT_TEST_CHROMIUM` to a compatible
+under ignored `tests/.runtime/browser` (or set `REPORT_TEST_PLAYWRIGHT` to an
+existing installation), set `REPORT_TEST_CHROMIUM` to a compatible
 browser executable, and run `node tests/browser.cjs`. The default mode stubs the
 provider script but exercises actual Blade, Livewire and Alpine. Set
 `REPORT_TEST_REAL_TURNSTILE=1` for a real-provider smoke test with Cloudflare's
 official public dummy site key. Server verification and mail remain faked in
 this isolated harness. No production keys or database are used.
+
+| Check | Database/cache | Cloudflare behavior |
+| --- | --- | --- |
+| PHPUnit feature/service suite | Actual DatabaseStore/DatabaseLock on isolated in-memory SQLite; row locks are not equivalent to MySQL | Laravel HTTP fakes, including expired/reused responses and transport/retry cases |
+| Concurrent PHP worker harness | Actual MySQL driver and database cache/locks on disposable local MySQL/MariaDB | No Cloudflare calls; persistence/limiter services tested directly |
+| Controlled browser checks | Actual app with isolated file SQLite and database cache; real Blade/Livewire/Alpine | Provider JavaScript stub; server Siteverify and mail faked |
+| Real-widget browser smoke | Same isolated app/database | Real provider script and official public dummy site key, generating dummy responses; server Siteverify still faked |
+
+The smoke test is not an end-to-end test of real Siteverify or production keys.
+It does not establish production hostname configuration, proxy correctness, or
+delivery guarantees. Screenshots may have missing static images in the isolated
+router; the router exists to exercise form behavior, not hosting asset delivery.
+
+## CI and review access
+
+Neither main nor this feature branch contains `.github/workflows` definitions.
+GitHub Actions is enabled, but the only API-listed workflow is GitHub's generated
+`dynamic/dependabot/dependabot-updates`; it does not test pushes to this feature
+branch. Therefore no application CI was triggered by this PR. Local checks are
+not equivalent to required CI. This change does not disable checks or alter
+branch protections. GitHub's branch endpoint reports `main.protected=false`.
+Protection/rules APIs return HTTP 403 with a plan-availability message (GitHub
+suggests an upgrade or making the repository public); this is not evidence of a
+missing token permission. No upgrade, visibility change or protection change was
+made. A maintainer must confirm intended CI/review policy and any external checks.
+At review time the PR has no submitted reviews.
 
 Official references:
 - https://developers.cloudflare.com/turnstile/get-started/server-side-validation/

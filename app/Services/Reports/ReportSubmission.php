@@ -40,6 +40,15 @@ class ReportSubmission
         return $row?->report_id ? Report::findOrFail($row->report_id) : null;
     }
 
+    public function assertPayload(array $identity, string $fingerprint): void
+    {
+        $hash = DB::table('report_submissions')->where('id', $identity['id'])
+            ->where('session_hash', $identity['session'])->value('payload_hash');
+        if (! is_string($hash) || ! hash_equals($hash, $fingerprint)) {
+            throw ValidationException::withMessages(['reportIdentity' => 'This form already submitted different entries. Your current entries have not been saved. Start a separate report to submit them.']);
+        }
+    }
+
     public function save(array $identity, string $fingerprint, \Closure $create): array
     {
         return DB::transaction(function () use ($identity, $fingerprint, $create) {
@@ -56,11 +65,11 @@ class ReportSubmission
             if (! hash_equals($row->session_hash, $identity['session'])) {
                 throw ValidationException::withMessages(['reportSubmission' => 'Invalid submission session.']);
             }
+            if (! hash_equals($row->payload_hash, $fingerprint)) {
+                throw ValidationException::withMessages(['reportIdentity' => 'This form already submitted different entries. Your current entries have not been saved. Start a separate report to submit them.']);
+            }
             if ($row->report_id) {
                 return [Report::findOrFail($row->report_id), false];
-            }
-            if (! hash_equals($row->payload_hash, $fingerprint)) {
-                throw ValidationException::withMessages(['reportSubmission' => 'The submission contents have changed. Please start a new report.']);
             }
             $report = $create();
             DB::table('report_submissions')->where('id', $identity['id'])->update([

@@ -1,7 +1,7 @@
 // Uses temporary Playwright tooling under the ignored runtime directory.
 // The actual application/Blade/Livewire/Alpine code runs; Cloudflare is stubbed
 // for deterministic lifecycle testing, not represented as a real challenge.
-const { chromium } = require('./.runtime/browser/node_modules/playwright');
+const { chromium } = require(process.env.REPORT_TEST_PLAYWRIGHT || './.runtime/browser/node_modules/playwright');
 const assert = require('node:assert/strict');
 
 (async () => {
@@ -31,17 +31,18 @@ const assert = require('node:assert/strict');
                 window.widgetTest = { renders: 0, resets: 0, removes: 0 };
                 window.turnstile = {
                     render(container, options) {
+                        if (window.widgetTest.failNextRender) { window.widgetTest.failNextRender = false; throw new Error('test render failure'); }
                         window.widgetTest.renders++;
                         window.widgetTest.options = options;
                         window.widgetTest.size = options.size;
                         const button = document.createElement('button');
                         button.type = 'button'; button.textContent = 'Test verification';
                         button.onclick = () => options.callback('browser-token');
-                        container.append(button);
+                        container.append(button); window.widgetTest.container = container;
                         return 0;
                     },
                     reset() { window.widgetTest.resets++; },
-                    remove() { window.widgetTest.removes++; }
+                    remove() { window.widgetTest.removes++; window.widgetTest.container.replaceChildren(); }
                 };`,
             }));
             await page.goto('http://127.0.0.1:8871/report-form/1/anonymous', { waitUntil: 'domcontentloaded', timeout: 60000 });
@@ -75,7 +76,21 @@ const assert = require('node:assert/strict');
             if (width === 320) assert.equal(await page.evaluate(() => window.widgetTest.size), 'compact');
             assert.deepEqual(errors, [], 'Browser must have no JavaScript errors');
             await page.screenshot({ path: `tests/.runtime/report-form-${width}.png`, fullPage: true });
-            console.log(`Browser ${width}px: placement, mobile fit, morph, expiry, error/reset and input preservation passed.`);
+            if (width === 1280) {
+                await page.setViewportSize({ width: 320, height: 900 });
+                await page.waitForFunction(() => window.widgetTest.size === 'compact');
+                assert.equal(await page.evaluate(() => window.widgetTest.renders), 2);
+                assert.equal(await page.locator('#reporterEmail').inputValue(), 'preserved@example.com');
+                assert.equal(await submit.isDisabled(), true);
+                await page.evaluate(() => { window.widgetTest.failNextRender = true; });
+                await page.setViewportSize({ width: 1280, height: 900 });
+                await page.getByRole('button', { name: 'Retry verification' }).waitFor({ state: 'visible' });
+                await page.getByRole('button', { name: 'Retry verification' }).click();
+                await challenge.waitFor();
+                assert.equal(await page.locator('#reporterEmail').inputValue(), 'preserved@example.com');
+                assert.deepEqual(errors, [], 'Render failure must be recoverable without JavaScript errors');
+            }
+            console.log(`Browser ${width}px: placement, mobile fit, morph, expiry, error/reset, responsive resize and input preservation passed.`);
             await page.close();
         }
     } finally {

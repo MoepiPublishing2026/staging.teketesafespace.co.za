@@ -10,7 +10,7 @@ abstract class ReportTestCase extends \Illuminate\Foundation\Testing\TestCase
 {
     public function createApplication()
     {
-        $app = require dirname(__DIR__).'/bootstrap/app.php';
+        $app = createReportTestApplication();
         $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
         return $app;
@@ -24,6 +24,7 @@ abstract class ReportTestCase extends \Illuminate\Foundation\Testing\TestCase
         }
         config(['report_protection.site_key' => 'test-site', 'report_protection.secret_key' => 'test-secret',
             'report_protection.hostnames' => ['reports.test']]);
+        \Illuminate\Support\Facades\Http::preventStrayRequests();
         (require database_path('migrations/0001_01_01_000001_create_cache_table.php'))->up();
         (require database_path('migrations/2023_01_01_000000_create_reports_table.php'))->up();
         (require database_path('migrations/2026_10_21_000001_create_report_submissions_table.php'))->up();

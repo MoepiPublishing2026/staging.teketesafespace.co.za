@@ -13,7 +13,7 @@ putenv('APP_KEY=base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=');
 putenv('SESSION_DRIVER=file');
 putenv('LOG_CHANNEL=null');
 require __DIR__.'/bootstrap.php';
-$app = require dirname(__DIR__).'/bootstrap/app.php';
+$app = createReportTestApplication();
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $kernel->bootstrap();
 config(['report_protection.site_key' => '1x00000000000000000000AA',
