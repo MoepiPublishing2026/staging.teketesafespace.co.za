@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
-    <script src="//unpkg.com/alpinejs" defer></script>
 
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
@@ -149,13 +148,15 @@
                             CASE NUMBER:
                             {{ str_replace('Your report has been submitted successfully! Case number: ', '', session('success_message')) }}
                         </p>
+                        @if(session('email_warning'))
+                            <p role="status" class="text-sm text-red-700">{{ session('email_warning') }}</p>
+                        @endif
 
                        <button
    
     @click="
     open = false;
-    document.querySelector('form').reset();
-    window.livewire.emit('resetForm');
+    $wire.startNewReport();
 "
     class="w-[228px] sm:w-[190px] h-[60px] sm:h-[64px]
        border-2 sm:border-4 border-solid border-[#c7da30]
@@ -446,13 +447,7 @@
                             @endif
                         </div>
 
-                        <div class="mt-7 text-center">
-                            <button type="submit" wire:loading.attr="disabled" wire:target="submitReport"
-                                class="w-full h-[50px] sm:h-[52px] border-4 border-solid border-[#c7da30] rounded-[100px] text-[#38b6ff] text-[15px] font-medium cursor-pointer transition duration-200 hover:opacity-80 shadow-md">
-                                <span wire:loading.remove wire:target="submitReport">Submit</span>
-                                <span wire:loading wire:target="submitReport">Submitting...</span>
-                            </button>
-                        </div>
+                        <x-report-verification />
                     </div>
                 </form>
             </div>

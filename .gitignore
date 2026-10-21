@@ -4,6 +4,7 @@ storage/framework/cache/*
 storage/logs/*
 vendor/*
 .history/*
+/.phpunit.cache/
 scripts/data/education_districts/*.shp
 scripts/data/education_districts/*.shx
 scripts/data/education_districts/*.dbf
