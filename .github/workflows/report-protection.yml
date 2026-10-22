@@ -1,0 +1,108 @@
+name: Report protection
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [feat/211-report-form-protection]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report-protection-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  report-protection:
+    name: Tests, lint, style and MariaDB concurrency
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    env:
+      APP_ENV: testing
+      # Public, deterministic test-only encryption key, never a deployment key.
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ':memory:'
+      DB_URL: ''
+      CACHE_STORE: database
+      SESSION_DRIVER: array
+      MAIL_MAILER: array
+      QUEUE_CONNECTION: sync
+      LOG_CHANNEL: 'null'
+      COMPOSER_NO_INTERACTION: '1'
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          # Disposable service only; the existing harness uses this local account.
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+          MARIADB_ROOT_HOST: '%'
+        ports:
+          - 33317:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=12
+    steps:
+      - name: Check out source without persisted credentials
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Set up PHP 8.2 and Composer 2
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+        with:
+          php-version: '8.2'
+          extensions: bcmath, curl, dom, fileinfo, intl, mbstring, pdo_mysql, pdo_sqlite, xml, xmlwriter, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Install exact locked dependencies in the disposable runner
+        timeout-minutes: 5
+        env:
+          COMPOSER_CACHE_DIR: ${{ runner.temp }}/composer-cache
+        run: |
+          # The repository tracks vendor; do not let those copies mask lock drift.
+          rm -rf -- vendor
+          composer validate --no-check-publish --no-check-all
+          composer install --prefer-dist --no-progress --no-scripts --no-plugins
+          composer check-platform-reqs
+
+      - name: PHP syntax checks
+        run: |
+          php -l app/Livewire/ReportForm.php
+          php -l config/report_protection.php
+          php -l database/migrations/2026_10_21_000001_create_report_submissions_table.php
+          find app/Services/Reports tests -path 'tests/.runtime' -prune -o -type f -name '*.php' -print0 |
+            xargs -0 -r -n 1 php -l
+
+      - name: Focused style checks
+        run: |
+          php vendor/laravel/pint/builds/pint --test \
+            app/Services/Reports tests config/report_protection.php \
+            database/migrations/2026_10_21_000001_create_report_submissions_table.php
+
+      - name: Report protection tests with mocked Siteverify
+        timeout-minutes: 4
+        run: php vendor/phpunit/phpunit/phpunit -c phpunit.report-protection.xml
+
+      - name: Real MariaDB database-cache concurrency checks
+        timeout-minutes: 4
+        env:
+          REPORT_CONCURRENCY_ENABLE: '1'
+        run: php tests/concurrency.php
+
+      - name: Record verification scope
+        if: always()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          This job uses isolated SQLite fixtures and a disposable MariaDB service.
+          Siteverify responses in the feature tests are mocked; stray HTTP is blocked.
+          Concurrency checks exercise the actual MariaDB driver and database cache/locks.
+          No production secrets/database or real Cloudflare server verification are used.
+          SUMMARY

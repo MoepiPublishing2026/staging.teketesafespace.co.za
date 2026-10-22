@@ -128,12 +128,22 @@ router; the router exists to exercise form behavior, not hosting asset delivery.
 
 ## CI and review access
 
-Neither main nor this feature branch contains `.github/workflows` definitions.
-GitHub Actions is enabled, but the only API-listed workflow is GitHub's generated
-`dynamic/dependabot/dependabot-updates`; it does not test pushes to this feature
-branch. Therefore no application CI was triggered by this PR. Local checks are
-not equivalent to required CI. This change does not disable checks or alter
-branch protections. GitHub's branch endpoint reports `main.protected=false`.
+`.github/workflows/report-protection.yml` runs on pull requests targeting main
+and pushes to `feat/211-report-form-protection`. It uses read-only permissions,
+SHA-pinned actions, a standard Ubuntu runner with a 15-minute job timeout, PHP 8.2,
+and a disposable MariaDB 10.11 service. It installs from `composer.lock` into a
+clean runner vendor directory with Composer scripts/plugins disabled, then runs
+PHP lint, focused Pint, the feature suite with mocked Siteverify, and actual
+database-cache concurrency tests. It does not upload artifacts or persist caches.
+
+Before the first CI push, billing inspection confirmed covered Actions usage
+and an existing organization-wide Actions budget of $0 with stop-usage enabled.
+No billing settings were changed. A later manual rerun should recheck the current
+allowance/budget rather than assume this remains true indefinitely.
+
+Previously neither branch defined application CI; GitHub listed only its generated
+Dependabot updates workflow. The focused workflow supplies application checks
+without disabling checks or altering branch protections. GitHub's branch endpoint reports `main.protected=false`.
 Protection/rules APIs return HTTP 403 with a plan-availability message (GitHub
 suggests an upgrade or making the repository public); this is not evidence of a
 missing token permission. No upgrade, visibility change or protection change was
