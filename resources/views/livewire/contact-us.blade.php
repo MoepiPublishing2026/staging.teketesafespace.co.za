@@ -3,6 +3,8 @@
 <div class="contact-page-livewire-container w-full min-h-screen flex flex-col overflow-x-hidden bg-white">
 
     <style>
+        @import url('https://fonts.cdnfonts.com/css/century-gothic-paneuropean');
+
         .contact-page-livewire-container {
             font-family: 'Montserrat', sans-serif;
         }
@@ -43,46 +45,37 @@
         }
 
         @media (min-width: 1024px) {
-            .contact-logo { width: 190px; }
-            .contact-header-inner { padding: 0.5rem 2rem; }
-        }
-
-        @media (min-width: 1280px) {
-            .contact-logo { width: 320px;
-        position: relative;
-        top: 12px; }
-        }
-
-        @media (min-width: 1536px) {
-            .contact-logo { width: 380px; 
-        width: 380px;
-        top: 14px;}
+            .contact-logo { width: 197px; }
+            .contact-header-inner { padding: 0.5rem 58px; }
         }
 
         .contact-desktop-nav {
             display: none;
             align-items: center;
-            gap: 1.5rem;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
-        }
-
-        @media (min-width: 1024px) {
-            .contact-desktop-nav { gap: 2rem; }
+            gap: 18px;
+            margin-right: 0;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 1;
+            letter-spacing: 0;
         }
 
         @media (min-width: 1280px) {
             .contact-desktop-nav {
                 display: flex;
-                gap: 2.5rem;
-                font-size: 20px;
-                margin-right: 3rem;
             }
         }
 
         .contact-desktop-nav a {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 1;
+            letter-spacing: 0;
             color: #000;
             text-decoration: none;
+            white-space: nowrap;
             transition: color 0.15s;
         }
 
@@ -151,34 +144,38 @@
 
         .contact-left {
             position: absolute;
-            left: 80px;
-            top: 83px;
+            left: 110px;
+            top: 48px;
             z-index: 10;
+            width: 520px;
+            max-width: calc(100% - 560px);
         }
 
         .contact-title {
-            margin: 0 0 35px 50px;
-            font-family: 'Century Gothic', 'Montserrat', sans-serif;
-            font-size: 70px;
+            margin: 0 0 28px;
+            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
+            font-size: 50px;
             font-weight: 400;
-            line-height: 0.98;
-            letter-spacing: -2px;
-            color: #c7da30;
-           transform: translate(50px, 30px);
+            font-style: normal;
+            line-height: 1;
+            letter-spacing: 0;
+            color: #000000;
+            transform: none;
         }
 
         .contact-detail {
-             display: flex;
-             align-items: center;
-             margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            position: static;
+            margin: 0 0 18px;
             color: #000;
         }
 
-        .contact-detail:first-of-type {
-         position: relative;
-         top: 30px;
-         left: 110px;
-            
+        .contact-detail:first-of-type,
+        .contact-detail.email {
+            position: static;
+            top: auto;
+            left: auto;
         }
 
         .contact-detail img {
@@ -227,18 +224,19 @@
         }
 
         .contact-detail.email {
-           position: relative;
-           top: 30px;
-           left: 110px;
-}
+            position: static;
+            top: auto;
+            left: auto;
+        }
 
         .contact-detail a {
             color: #000;
             text-decoration: none;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 25px;
+            font-family: "Montserrat", sans-serif;
+            font-size: 16px;
             font-weight: 400;
-            line-height: 1;
+            line-height: 1.36;
+            letter-spacing: 0;
         }
 
         .contact-detail a:hover {
@@ -247,12 +245,14 @@
 
         /* App download box exactly as a single bordered block in the prototype */
         .contact-app-box {
-            width: 660px;
-            height: 158px;
+            width: 100%;
+            max-width: 520px;
+            height: auto;
             border: 4px solid #c7da30;
             box-sizing: border-box;
-            margin-top: 120px;
-            margin-left: -30px;
+            margin-top: 48px;
+            margin-left: 0;
+            padding: 18px 16px 22px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -260,11 +260,12 @@
         }
 
         .contact-app-title {
-            margin: 18px 0 19px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 30px;
+            margin: 0 0 16px;
+            font-family: "Montserrat", sans-serif;
+            font-size: 18px;
             font-weight: 700;
-            line-height: 1;
+            line-height: 1.2;
+            letter-spacing: 0;
             color: #000;
         }
 
@@ -301,11 +302,12 @@
            ========================= */
         .contact-social-art {
             position: absolute;
-            right: -100px;
-            top: 70px;
-            width: 750px;
-            height: 650px;
-            z-index: 5;
+            right: 36px;
+            top: 0;
+            width: 482px;
+            height: 560px;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .contact-social-art img {
@@ -314,11 +316,12 @@
         }
 
         .social-phone {
-           width: 800px;
-           height: auto;
-           right: -25px;
-           bottom: -20px;
-           z-index: 1;
+            width: 482px;
+            height: auto;
+            right: 0;
+            top: 0;
+            bottom: auto;
+            z-index: 1;
         }
 
         /*
@@ -382,7 +385,8 @@
         text-align: center;
         font-size: 48px;
         line-height: 1;
-        letter-spacing: -1px;
+        letter-spacing: 0;
+        color: #000000;
     }
 
     /* =========================
@@ -580,9 +584,7 @@
             <div class="flex items-center gap-4">
 
                 <!-- Desktop Navigation -->
-                <nav class="contact-desktop-nav">
-                    <a href="javascript:void(0);"
-                       onclick="window.history.back();">Back</a>
+                <nav class="contact-desktop-nav" aria-label="Primary">
                     <a href="{{ route('landing-page') }}">Home</a>
                     <a href="{{ route('about-us') }}">About Us</a>
                     <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops">Workshops</a>
@@ -629,10 +631,7 @@
                 </button>
             </div>
 
-            <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]">
-                <a href="javascript:void(0);"
-                   onclick="window.history.back(); toggleMobileMenu();"
-                   class="block py-3 text-[#38b6ff]">Back</a>
+            <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]" style="font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 0;">
                 <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
                    class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Home</a>
                 <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"

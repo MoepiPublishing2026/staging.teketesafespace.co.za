@@ -139,7 +139,7 @@
                              h-[300px] sm:h-[342px] p-4 text-center shadow-lg relative">
 
                         <p class="text-[18px] sm:text-[19px] text-black mb-4">
-                            REPORT SUBMITTED SUCCESSFULL!
+                            REPORT SUBMITTED SUCCESSFULLY!
                         </p>
 
                         <img src="{{ asset('images/tick.png') }}" alt="Success Tick"
@@ -162,8 +162,8 @@
        rounded-[100px] text-[#38b6ff] 
        text-[16px] sm:text-[15px] font-semibold sm:font-normal transition duration-200 
        hover:opacity-80 sm:shadow-md flex items-center justify-center bg-white">
-    <span class="sm:hidden">Ok</span>
-    <span class="hidden sm:inline">Ok</span>
+    <span class="sm:hidden">Close</span>
+    <span class="hidden sm:inline">Close</span>
 </button>
 
                     </div>
@@ -326,7 +326,7 @@
                             <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
                             <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
-                                placeholder="e.g 08267836743" maxlength="15">
+                                placeholder="e.g 0826783674" maxlength="15">
                             @error('phoneNumber')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
