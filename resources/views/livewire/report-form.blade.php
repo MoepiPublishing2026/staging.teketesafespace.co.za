@@ -1,5 +1,6 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
-    <script src="//unpkg.com/alpinejs" defer></script>
+    {{-- Livewire supplies Alpine; loading another copy breaks widget lifecycle. --}}
+    <script src="{{ asset('js/report-turnstile.js') }}" defer></script>
 
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
@@ -445,6 +446,12 @@
                                 </ul>
                             @endif
                         </div>
+
+                        @error('reportSubmission')
+                            <p role="alert" class="text-sm text-red-700 mt-2">{{ $message }}</p>
+                        @enderror
+
+                        <x-report-turnstile />
 
                         <div class="mt-7 text-center">
                             <button type="submit" wire:loading.attr="disabled" wire:target="submitReport"

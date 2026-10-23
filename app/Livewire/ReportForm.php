@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Services\TurnstileVerifier;
+use App\Services\ReportSubmissionLimiter;
 use Livewire\WithFileUploads;
 use App\Models\AbuseType;
 use App\Models\Subtype;
@@ -21,6 +23,8 @@ use Carbon\Carbon;
 class ReportForm extends Component
 {
     use WithFileUploads;
+
+    public $turnstileToken = '';
 
     public $abuseTypeID;
     public $isAnonymous;
@@ -392,7 +396,8 @@ protected array $phaseGrades = [
 public function submitReport()
     {
  ini_set('max_execution_time', 500);
-
+        try {
+        app(ReportSubmissionLimiter::class)->admit(session()->getId(), request()->ip() ?? '');
         $this->validate();
 
     if ($this->schoolProvince) {
@@ -479,6 +484,7 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         $this->dispatch('restart-timer');
         return; 
     }
+        app(TurnstileVerifier::class)->verify($this->turnstileToken);
 
         $report = null;        $caseNumber = null;
         
@@ -617,6 +623,10 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         } catch (\Exception $e) {
             Log::error('Report Submission Error: ' . $e->getMessage());
             session()->flash('error_message', 'Something went wrong. Please try again.');
+        }
+        } finally {
+            $this->turnstileToken = '';
+            $this->dispatch('report-verification-reset');
         }
     }
   
