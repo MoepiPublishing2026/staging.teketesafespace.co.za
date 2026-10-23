@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
     {{-- Livewire supplies Alpine; loading another copy breaks widget lifecycle. --}}
-    <script src="{{ asset('js/report-turnstile.js') }}" defer></script>
+    <script src="{{ asset('js/report-turnstile.js') }}?v={{ substr(hash_file('sha256', base_path('public/js/report-turnstile.js')), 0, 12) }}" defer></script>
 
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">

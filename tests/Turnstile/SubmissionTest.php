@@ -30,6 +30,9 @@ class SubmissionTest extends TurnstileTestCase
         $this->assertLessThan(strpos($html, 'type="submit"'), strpos($html, 'Human verification'));
         $this->assertStringNotContainsString('unpkg.com/alpinejs', $html);
         $this->assertStringContainsString('wire:ignore', $html);
+        $this->assertStringContainsString('x-data="reportTurnstile($wire, $el)"', $html);
+        $this->assertStringContainsString('data-turnstile-host', $html);
+        $this->assertMatchesRegularExpression('/report-turnstile\.js\?v=[a-f0-9]{12}/', $html);
         $this->assertStringNotContainsString('test-secret', $html);
     }
 

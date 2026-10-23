@@ -1,5 +1,40 @@
-// Livewire owns Alpine. Keep the provider iframe outside DOM morphing.
-window.reportTurnstile = function (wire) {
+// Livewire owns Alpine. Explicit rendering has one shared provider-script loader.
+(() => {
+let loading;
+function loadProvider() {
+    if (loading) return loading;
+    if (typeof window.turnstile?.render === 'function') return Promise.resolve(window.turnstile);
+    loading = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        let finished = false;
+        const fail = () => {
+            if (finished) return;
+            finished = true;
+            clearTimeout(timer);
+            script.remove();
+            reject(new Error('Verification unavailable'));
+        };
+        const timer = setTimeout(fail, 12000);
+        // Cloudflare calls this after initialization. ready() rejects async scripts.
+        window.reportTurnstileOnload = () => {
+            if (finished) return;
+            if (typeof window.turnstile?.render !== 'function') { fail(); return; }
+            finished = true;
+            clearTimeout(timer);
+            resolve(window.turnstile);
+        };
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=reportTurnstileOnload';
+        script.async = true;
+        script.onerror = fail;
+        document.head.append(script);
+    }).catch(error => { loading = null; throw error; });
+    return loading;
+}
+
+window.reportTurnstile = function (wire, root) {
+    // Capture the root once: Alpine's $el is the Retry button in click handlers.
+    const sitekey = root.dataset.sitekey;
+    const challenge = root.querySelector('[data-turnstile-host]');
     return {
         widget: null, failed: false, size: null, disposed: false, loading: false,
         async init() { await this.retry(); },
@@ -8,31 +43,15 @@ window.reportTurnstile = function (wire) {
             this.loading = true;
             this.failed = false;
             try {
-                if (!this.$el.dataset.sitekey) return;
-                if (!window.turnstile) {
-                    if (!window.reportTurnstileLoading) {
-                        window.reportTurnstileLoading = new Promise((resolve, reject) => {
-                            const script = document.createElement('script');
-                            script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-                            script.async = true;
-                            const timer = setTimeout(() => { script.remove(); reject(new Error('timeout')); }, 12000);
-                            script.onload = () => { clearTimeout(timer); resolve(); };
-                            script.onerror = () => { clearTimeout(timer); script.remove(); reject(new Error('load')); };
-                            document.head.append(script);
-                        }).catch(error => { window.reportTurnstileLoading = null; throw error; });
-                    }
-                    await window.reportTurnstileLoading;
+                if (typeof sitekey !== 'string' || !sitekey.trim() || !challenge) {
+                    throw new Error('Verification configuration unavailable');
                 }
-                // Script download completion alone does not guarantee API readiness.
-                await new Promise((resolve, reject) => {
-                    const timer = setTimeout(() => reject(new Error('ready timeout')), 12000);
-                    window.turnstile.ready(() => { clearTimeout(timer); resolve(); });
-                });
+                const provider = await loadProvider();
                 if (this.disposed) return;
                 if (this.widget !== null) { this.reset(); return; }
-                this.size = this.$el.clientWidth < 300 ? 'compact' : 'flexible';
-                this.widget = window.turnstile.render(this.$refs.challenge, {
-                    sitekey: this.$el.dataset.sitekey, action: 'report_submit', size: this.size,
+                this.size = root.clientWidth < 300 ? 'compact' : 'flexible';
+                this.widget = provider.render(challenge, {
+                    sitekey, action: 'report_submit', size: this.size,
                     callback: token => { if (this.disposed) return; this.failed = false; wire.set('turnstileToken', token, false); },
                     'expired-callback': () => this.reset(),
                     'timeout-callback': () => this.reset(),
@@ -48,7 +67,7 @@ window.reportTurnstile = function (wire) {
             catch { this.failed = true; }
         },
         resize() {
-            const size = this.$el.clientWidth < 300 ? 'compact' : 'flexible';
+            const size = root.clientWidth < 300 ? 'compact' : 'flexible';
             if (this.widget !== null && size !== this.size) {
                 wire.set('turnstileToken', '', false);
                 try { window.turnstile.remove(this.widget); this.widget = null; this.retry(); }
@@ -62,3 +81,4 @@ window.reportTurnstile = function (wire) {
         },
     };
 };
+})();
