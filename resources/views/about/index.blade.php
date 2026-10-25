@@ -55,19 +55,26 @@
         .phone-mark span { position: relative; color: #1E94FD; font-weight: 700; font-size: 22px; }
         .phone-value h3 { margin: 0 0 4px; color: #1E94FD; font-size: 16px; font-weight: 700; text-transform: uppercase; }
         .phone-value p { margin: 0; font-size: 15px; line-height: 1.45; }
+        .page-footer { padding-top: 25px !important; padding-bottom: 22px !important; }
+        @media (min-width: 1024px) {
+            .page-footer p { position: relative !important; left: 50px !important; }
+        }
+        @media (min-width: 1440px) {
+            .page-footer img { position: relative !important; left: -15px !important; }
+        }
 
         @media (min-width: 900px) {
             .phone-page { display: none; }
             .art-wrap {
                 display: block;
                 width: 100%;
-                height: 3405px;
+                height: 3333px;
                 position: relative;
                 overflow: hidden;
             }
             .art-board {
                 width: 1366px;
-                height: 3405px;
+                height: 3333px;
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -114,15 +121,6 @@
             .cv-mark { position: absolute; width: 149.4px; height: 105.4px; }
             .cv-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
             .cv-num { position: absolute; margin: 0; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 48px; line-height: 1; color: #1E94FD; }
-            .board-footer {
-                position: absolute; left: 0; top: 3333px; width: 1366px; height: 72px; background: #C5D931;
-                display: flex; align-items: center; justify-content: space-between; padding: 0 79px 0 93.8px; box-sizing: border-box;
-                z-index: 30;
-            }
-            .board-footer a { cursor: pointer; position: relative; z-index: 1; }
-            .board-footer p { margin: 0; font-size: 14.6px; line-height: 22.8px; color: #fff; font-weight: 400; }
-            .board-footer .socials { display: flex; align-items: center; gap: 14px; }
-            .board-footer img { display: block; object-fit: contain; }
         }
     </style>
 </head>
@@ -205,7 +203,6 @@
             </div>
         @endforeach
     </section>
-    <x-site-footer style="background:#C5D931" />
 </div>
 
 <div class="art-wrap" id="about-wrap">
@@ -267,19 +264,9 @@
         <div class="cv-mark" style="left:160.5px;top:3127px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
         <span class="cv-num" style="left:203.9px;top:3163.2px;">05</span>
         <p class="cv-body" style="top:3136.3px;">Our platform is digital, encrypted, and POPIA-compliant - but more<br>importantly, it is designed with human dignity at the center. Technology should<br>never replace care, but it can strengthen and extend it.</p>
-        <footer class="board-footer">
-            <p>&copy; {{ date('Y') }} Tekete SafeSpace From Moepi Publishing. All rights reserved.</p>
-            <div class="socials">
-                <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener" aria-label="YouTube"><img src="{{ asset('images/youtube.png') }}" alt="" style="width:36.6px;height:24.6px;"></a>
-                <a href="https://www.X.com/moepipublishing" target="_blank" rel="noopener" aria-label="X"><img src="{{ asset('images/X.png') }}" alt="" style="width:25.3px;height:25.8px;"></a>
-                <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="{{ asset('images/linkedin.png') }}" alt="" style="width:30.3px;height:25.8px;"></a>
-                <a href="https://www.facebook.com/MoepiPublishing" target="_blank" rel="noopener" aria-label="Facebook"><img src="{{ asset('images/facebook.png') }}" alt="" style="width:25.9px;height:25.8px;"></a>
-                <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank" rel="noopener" aria-label="Instagram"><img src="{{ asset('images/instagram.png') }}" alt="" style="width:25.8px;height:25.8px;"></a>
-                <a href="https://www.tiktok.com/@moepipublishing" target="_blank" rel="noopener" aria-label="TikTok"><img src="{{ asset('images/ticktock.png') }}" alt="" style="width:27.6px;height:27.6px;"></a>
-            </div>
-        </footer>
     </div>
 </div>
+<x-site-footer class="page-footer" style="background:#C5D931" />
 <script>
     function fitAbout() {
         var wrap = document.getElementById('about-wrap');
@@ -287,7 +274,7 @@
         if (!wrap || !board || getComputedStyle(wrap).display === 'none') return;
         var scale = wrap.clientWidth / 1366;
         board.style.transform = 'scale(' + scale + ')';
-        wrap.style.height = (3405 * scale) + 'px';
+        wrap.style.height = (3333 * scale) + 'px';
     }
     fitAbout();
     window.addEventListener('resize', fitAbout);

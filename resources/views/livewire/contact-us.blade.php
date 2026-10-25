@@ -11,6 +11,13 @@
         .phone-header img { width: 120px; height: auto; }
         .menu-btn { border: 0; background: transparent; color: #c7da30; padding: 8px; }
         .phone-main { width: min(520px, calc(100% - 32px)); margin: 8px auto 24px; }
+        .page-footer { padding-top: 25px !important; padding-bottom: 22px !important; }
+        @media (min-width: 1024px) {
+            .page-footer p { position: relative !important; left: 50px !important; }
+        }
+        @media (min-width: 1440px) {
+            .page-footer img { position: relative !important; left: -15px !important; }
+        }
         .phone-title { margin: 18px 0 22px; text-align: center; font-size: 48px; font-weight: 400; line-height: 1; color: #000; }
         .detail { display: flex; align-items: center; gap: 14px; border: 1px solid #ddd; border-radius: 6px; padding: 12px 14px; margin: 0 0 12px; }
         .detail a { color: #000; text-decoration: none; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 18px; }
@@ -48,13 +55,13 @@
             .art-wrap {
                 display: block;
                 width: 100%;
-                height: 734px;
+                height: 662px;
                 position: relative;
                 overflow: hidden;
             }
             .art-board {
                 width: 1366px;
-                height: 734px;
+                height: 662px;
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -95,15 +102,6 @@
                 pointer-events: none;
                 z-index: 1;
             }
-            .board-footer {
-                position: absolute; left: 0; top: 662px; width: 1366px; height: 72px; background: #C5D931;
-                display: flex; align-items: center; justify-content: space-between; padding: 0 79px 0 93.8px; box-sizing: border-box;
-                z-index: 30;
-            }
-            .board-footer a { cursor: pointer; position: relative; z-index: 1; }
-            .board-footer p { margin: 0; color: #fff; font-size: 14.6px; line-height: 22.8px; }
-            .board-footer .socials { display: flex; align-items: center; gap: 14px; }
-            .board-footer img { display: block; object-fit: contain; }
         }
     </style>
 
@@ -142,7 +140,6 @@
                 <img class="phone-art" src="{{ asset('images/social media phone1.png') }}" alt="">
             </div>
         </main>
-        <x-site-footer style="background:#C5D931" />
     </div>
 
     <div class="art-wrap" id="contact-wrap">
@@ -165,19 +162,9 @@
             <a class="badge badge-google" href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="{{ asset('images/badges/google-play.png') }}" alt=""></a>
             <a class="badge badge-huawei" href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener" aria-label="Explore it on AppGallery"><img src="{{ asset('images/badges/appgallery.png') }}" alt=""></a>
             <img class="art" src="{{ asset('images/social media phone1.png') }}" alt="">
-            <footer class="board-footer">
-                <p>&copy; {{ date('Y') }} Tekete SafeSpace From Moepi Publishing. All rights reserved.</p>
-                <div class="socials">
-                    <a href="https://www.youtube.com/@matauramapuputla6836" target="_blank" rel="noopener" aria-label="YouTube"><img src="{{ asset('images/youtube.png') }}" alt="" style="width:36.6px;height:24.6px;"></a>
-                    <a href="https://www.X.com/moepipublishing" target="_blank" rel="noopener" aria-label="X"><img src="{{ asset('images/X.png') }}" alt="" style="width:25.3px;height:25.8px;"></a>
-                    <a href="https://www.linkedin.com/company/moepi-publishing/" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="{{ asset('images/linkedin.png') }}" alt="" style="width:30.3px;height:25.8px;"></a>
-                    <a href="https://www.facebook.com/MoepiPublishing" target="_blank" rel="noopener" aria-label="Facebook"><img src="{{ asset('images/facebook.png') }}" alt="" style="width:25.9px;height:25.8px;"></a>
-                    <a href="https://www.instagram.com/moepi_pub?igsh=MWJ0NWFueWM2MDZ3YQ==" target="_blank" rel="noopener" aria-label="Instagram"><img src="{{ asset('images/instagram.png') }}" alt="" style="width:25.8px;height:25.8px;"></a>
-                    <a href="https://www.tiktok.com/@moepipublishing" target="_blank" rel="noopener" aria-label="TikTok"><img src="{{ asset('images/ticktock.png') }}" alt="" style="width:27.6px;height:27.6px;"></a>
-                </div>
-            </footer>
         </div>
     </div>
+    <x-site-footer class="page-footer" style="background:#C5D931" />
     <script>
         function fitContact() {
             var wrap = document.getElementById('contact-wrap');
@@ -185,7 +172,7 @@
             if (!wrap || !board || getComputedStyle(wrap).display === 'none') return;
             var scale = wrap.clientWidth / 1366;
             board.style.transform = 'scale(' + scale + ')';
-            wrap.style.height = (734 * scale) + 'px';
+            wrap.style.height = (662 * scale) + 'px';
         }
         fitContact();
         window.addEventListener('resize', fitContact);
