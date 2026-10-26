@@ -11,10 +11,8 @@ class DistrictLoginForm extends Component
 {
     public $username = '';
     public $password = '';
-    public $role = '';
 
     protected $rules = [
-        'role' => 'required',
         'username' => 'required',
         'password' => 'required',
     ];
@@ -22,32 +20,23 @@ class DistrictLoginForm extends Component
     public function login()
     {
         $this->validate([
-        'role' => 'required',
-        'username' => 'required',
-        'password' => 'required',
-    ], [
-        'role.required' => 'Please select your role before logging in.',
-    ]);
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
 
         // Find user by username
         $user = User::where('username', $this->username)->first();
 
-        if (!$user) {
-            $this->addError('login', 'User not found.');
-            return;
-        }
-
-        // Check if role matches
-        if ($user->role !== $this->role) {
-            $this->addError('login', 'Incorrect administrator role selected.');
+        if (!$user || $user->role !== 'district') {
+            $this->addError('login', 'The provided credentials do not match our records.');
             return;
         }
 
         // Attempt login
         if (Auth::attempt(['username' => $this->username, 'password' => $this->password])) {
             OtpSession::clearPending();
-            session(['admin_role' => $this->role]);
+            session(['admin_role' => $user->role]);
             return redirect()->route('email.verification');
         }
 
@@ -62,7 +51,7 @@ class DistrictLoginForm extends Component
     
     public function resetForm()
     {
-        // Reset the input fields when role changes
+        // Clear the input fields for a fresh attempt.
         $this->reset(['username', 'password']);
         
         // Optionally clear validation errors
