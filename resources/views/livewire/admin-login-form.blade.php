@@ -266,10 +266,10 @@
                                             @endif
                                             <div wire:ignore class="mt-5 flex justify-center">
                                                 <div id="admin-login-turnstile"
-                                                     data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                                     data-sitekey="{{ config('turnstile.site_key') }}"
                                                      data-component-id="{{ $this->getId() }}"></div>
                                             </div>
-                                            @if (!config('services.turnstile.site_key'))
+                                            @if (!config('turnstile.site_key'))
                                                 <p class="mt-3 text-sm text-red-600" role="alert">Security verification is not configured. Please contact the site administrator.</p>
                                             @endif
                                         @endif
@@ -355,9 +355,9 @@
             widgetId = window.turnstile.render(container, {
                 sitekey: container.dataset.sitekey,
                 action: 'admin_login',
-                callback: function (token) {
+                callback: function (turnstileToken) {
                     const component = window.Livewire && Livewire.find(container.dataset.componentId);
-                    if (component) component.call('verifyTurnstile', token);
+                    if (component) component.call('verifyTurnstile', turnstileToken);
                 },
                 'error-callback': function () {
                     const component = window.Livewire && Livewire.find(container.dataset.componentId);

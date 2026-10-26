@@ -16,6 +16,7 @@ class AdminLoginForm extends Component
 
     public $username = '';
     public $password = '';
+    public string $turnstileToken = '';
     public string $website = '';
     public string $captchaError = '';
     public bool $showCaptcha = false;
@@ -50,14 +51,15 @@ class AdminLoginForm extends Component
         return 'admin-login-ip:'.sha1((string) request()->ip()).':lock';
     }
 
-    public function verifyTurnstile(string $token)
+    public function verifyTurnstile(string $turnstileToken)
     {
+        $this->turnstileToken = $turnstileToken;
         $this->captchaError = '';
-        $secret = (string) config('services.turnstile.secret_key');
-        $siteKey = (string) config('services.turnstile.site_key');
-        $expectedHostnames = array_map('strtolower', config('services.turnstile.hostnames', []));
+        $secret = (string) config('turnstile.secret_key');
+        $siteKey = (string) config('turnstile.site_key');
+        $expectedHostnames = array_map('strtolower', config('turnstile.hostnames', []));
 
-        if (!$this->showCaptcha || $secret === '' || $siteKey === '' || $token === '' || $expectedHostnames === []) {
+        if (!$this->showCaptcha || $secret === '' || $siteKey === '' || $this->turnstileToken === '' || strlen($this->turnstileToken) > 2048 || $expectedHostnames === []) {
             $this->captchaError = 'Security verification is unavailable. Please contact the site administrator.';
             $this->dispatch('admin-turnstile-reset');
             return;
@@ -69,7 +71,7 @@ class AdminLoginForm extends Component
                 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
                 [
                     'secret' => $secret,
-                    'response' => $token,
+                    'response' => $this->turnstileToken,
                     'remoteip' => request()->ip(),
                 ]
             );
@@ -252,7 +254,7 @@ class AdminLoginForm extends Component
     public function resetForm()
     {
         // Clear the input and CAPTCHA state for a fresh attempt.
-        $this->reset(['username', 'password', 'website', 'captchaError', 'showCaptcha']);
+        $this->reset(['username', 'password', 'turnstileToken', 'website', 'captchaError', 'showCaptcha']);
         session()->forget('admin_login_turnstile_passed');
         
         // Optionally clear validation errors
