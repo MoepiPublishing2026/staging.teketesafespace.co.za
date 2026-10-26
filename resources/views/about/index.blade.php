@@ -17,8 +17,8 @@
         .art-wrap { display: none; }
         .phone-page { display: block; }
 
-        .phone-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
-        .phone-header img { width: 140px; height: auto; }
+        .phone-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 16px 32px; }
+        .phone-header img { width: 120px; height: auto; }
         .menu-btn { border: 0; background: transparent; color: #c7da30; padding: 8px; }
         .phone-hero { text-align: center; padding: 8px 20px 0; }
         .phone-hero img { width: 210px; height: auto; }
@@ -74,15 +74,17 @@
                 background: #fff;
                 transform-origin: top left;
             }
-            .art-board a { color: inherit; text-decoration: none; }
-            .logo { position: absolute; left: 82.1px; top: 35.5px; width: 249.9px; height: 113px; object-fit: contain; object-position: left center; }
-            .nav { position: absolute; left: 0; top: 69px; width: 1366px; height: 23px; font-size: 15px; line-height: 23px; font-weight: 400; }
-            .nav a { position: absolute; top: 0; color: #000; white-space: nowrap; }
+            .art-board a { color: inherit; text-decoration: none; cursor: pointer; }
+            .logo-link { position: absolute; left: 88px; top: 16px; z-index: 40; display: block; }
+            .logo { width: 300px; height: auto; display: block; object-fit: contain; object-position: left center; }
+            .nav { position: absolute; left: 0; top: 67px; width: 1366px; height: 24.4px; font-family: Montserrat, sans-serif; font-size: 19.97px; line-height: 24.4px; font-weight: 400; z-index: 30; }
+            .nav a { position: absolute; top: 0; color: #000; white-space: nowrap; cursor: pointer; }
             .nav a:hover { color: #c7da30; }
-            .nav .home { left: 865.1px; }
-            .nav .about { left: 947.6px; }
-            .nav .workshops { left: 1055.9px; }
-            .nav .contact { left: 1184.6px; }
+            .glass, .issue, .serve-photo, .chalk, .cv-mark { pointer-events: none; }
+            .nav .home { left: 851.4px; }
+            .nav .about { left: 936px; }
+            .nav .workshops { left: 1049.8px; }
+            .nav .contact { left: 1182.6px; }
             .glass { position: absolute; left: 289.5px; top: 190.1px; width: 272.2px; height: 343.4px; object-fit: contain; }
             .word, .brand { position: absolute; left: 619.7px; margin: 0; color: #C5D931; white-space: nowrap; }
             .word { top: 278.4px; font-weight: 300; font-size: 153.1px; line-height: 1; }
@@ -115,7 +117,9 @@
             .board-footer {
                 position: absolute; left: 0; top: 3333px; width: 1366px; height: 72px; background: #C5D931;
                 display: flex; align-items: center; justify-content: space-between; padding: 0 79px 0 93.8px; box-sizing: border-box;
+                z-index: 30;
             }
+            .board-footer a { cursor: pointer; position: relative; z-index: 1; }
             .board-footer p { margin: 0; font-size: 14.6px; line-height: 22.8px; color: #fff; font-weight: 400; }
             .board-footer .socials { display: flex; align-items: center; gap: 14px; }
             .board-footer img { display: block; object-fit: contain; }
@@ -205,8 +209,8 @@
 </div>
 
 <div class="art-wrap" id="about-wrap">
+    <a class="logo-link" href="{{ route('landing-page') }}"><img class="logo" src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space"></a>
     <div class="art-board" id="about-board">
-        <a href="{{ route('landing-page') }}"><img class="logo" src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space"></a>
         <nav class="nav" aria-label="Primary">
             <a class="home" href="{{ route('landing-page') }}">Home</a>
             <a class="about" href="{{ route('about-us') }}">About Us</a>

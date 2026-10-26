@@ -7,8 +7,8 @@
         .century { font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif; }
         .art-wrap { display: none; }
         .phone-page { display: block; }
-        .phone-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
-        .phone-header img { width: 140px; height: auto; }
+        .phone-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 16px 32px; }
+        .phone-header img { width: 120px; height: auto; }
         .menu-btn { border: 0; background: transparent; color: #c7da30; padding: 8px; }
         .phone-main { width: min(520px, calc(100% - 32px)); margin: 8px auto 24px; }
         .phone-title { margin: 18px 0 22px; text-align: center; font-size: 48px; font-weight: 400; line-height: 1; color: #000; }
@@ -40,6 +40,7 @@
             max-width: none;
             left: -33.6%;
             top: -82.5%;
+            pointer-events: none;
         }
 
         @media (min-width: 900px) {
@@ -60,24 +61,25 @@
                 background: #fff;
                 transform-origin: top left;
             }
-            .logo { position: absolute; left: 82.1px; top: 35.5px; width: 249.9px; height: 113px; object-fit: contain; object-position: left center; }
-            .nav { position: absolute; left: 0; top: 69px; width: 1366px; height: 23px; font-size: 15px; line-height: 23px; }
-            .nav a { position: absolute; top: 0; color: #000; text-decoration: none; white-space: nowrap; }
+            .logo-link { position: absolute; left: 88px; top: 16px; z-index: 40; display: block; }
+            .logo { width: 300px; height: auto; display: block; object-fit: contain; object-position: left center; }
+            .nav { position: absolute; left: 0; top: 67px; width: 1366px; height: 24.4px; font-family: Montserrat, sans-serif; font-size: 19.97px; line-height: 24.4px; font-weight: 400; z-index: 30; }
+            .nav a { position: absolute; top: 0; color: #000; text-decoration: none; white-space: nowrap; cursor: pointer; }
             .nav a:hover { color: #c7da30; }
-            .nav .home { left: 865.1px; }
-            .nav .about { left: 947.6px; }
-            .nav .workshops { left: 1055.9px; }
-            .nav .contact { left: 1184.6px; }
+            .nav .home { left: 851.4px; }
+            .nav .about { left: 936px; }
+            .nav .workshops { left: 1049.8px; }
+            .nav .contact { left: 1182.6px; }
             .contact-title { position: absolute; left: 217.7px; top: 229.7px; margin: 0; font-weight: 400; font-size: 66.5px; line-height: 1; color: #000; letter-spacing: 0; }
             .art-board .phone-icon { position: absolute; left: 217.7px; top: 329.8px; width: 26.4px; height: 26.4px; }
             .art-board .email-icon { position: absolute; left: 217.7px; top: 382.8px; width: 25.9px; height: 17.9px; }
-            .phone-link, .email-link { position: absolute; left: 262.2px; color: #000; text-decoration: none; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 21.3px; line-height: 24.9px; }
+            .phone-link, .email-link { position: absolute; left: 262.2px; color: #000; text-decoration: none; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 21.3px; line-height: 24.9px; z-index: 30; cursor: pointer; }
             .phone-link { top: 330.6px; }
             .email-link { top: 379.3px; }
             .phone-link:hover, .email-link:hover { color: #C5D931; }
             .download-box { position: absolute; left: 155px; top: 464.6px; width: 528px; height: 125.4px; border: 2px solid #C5D931; box-sizing: border-box; }
             .download-title { position: absolute; left: 155px; top: 476px; width: 528px; margin: 0; text-align: center; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 24px; line-height: 28.6px; color: #000; }
-            .badge { position: absolute; display: block; text-decoration: none; }
+            .badge { position: absolute; display: block; text-decoration: none; z-index: 30; cursor: pointer; }
             .badge-apple { left: 201px; top: 523.7px; width: 129.6px; height: 43.5px; }
             .badge-google { left: 342.9px; top: 521.3px; width: 142.1px; height: 48.4px; }
             .badge-huawei { left: 497.2px; top: 524.5px; width: 139.8px; height: 41.9px; }
@@ -90,11 +92,15 @@
                 height: 896px;
                 max-width: none;
                 object-fit: fill;
+                pointer-events: none;
+                z-index: 1;
             }
             .board-footer {
                 position: absolute; left: 0; top: 662px; width: 1366px; height: 72px; background: #C5D931;
                 display: flex; align-items: center; justify-content: space-between; padding: 0 79px 0 93.8px; box-sizing: border-box;
+                z-index: 30;
             }
+            .board-footer a { cursor: pointer; position: relative; z-index: 1; }
             .board-footer p { margin: 0; color: #fff; font-size: 14.6px; line-height: 22.8px; }
             .board-footer .socials { display: flex; align-items: center; gap: 14px; }
             .board-footer img { display: block; object-fit: contain; }
@@ -140,8 +146,8 @@
     </div>
 
     <div class="art-wrap" id="contact-wrap">
+        <a class="logo-link" href="{{ route('landing-page') }}"><img class="logo" src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space"></a>
         <div class="art-board" id="contact-board">
-            <a href="{{ route('landing-page') }}"><img class="logo" src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space"></a>
             <nav class="nav" aria-label="Primary">
                 <a class="home" href="{{ route('landing-page') }}">Home</a>
                 <a class="about" href="{{ route('about-us') }}">About Us</a>
