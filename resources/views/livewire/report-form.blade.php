@@ -1,24 +1,36 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
     {{-- Livewire supplies Alpine; loading another copy breaks widget lifecycle. --}}
     <script src="{{ asset('js/report-turnstile.js') }}?v={{ substr(hash_file('sha256', base_path('public/js/report-turnstile.js')), 0, 12) }}" defer></script>
+    <style>
+        @media (max-width: 1023px) {
+            .report-header > div { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .report-header img { width: 120px !important; margin-left: 0 !important; }
+        }
+        .page-footer { padding-top: 25px !important; padding-bottom: 22px !important; }
+        @media (min-width: 1024px) {
+            .page-footer p { position: relative !important; left: 50px !important; }
+        }
+        @media (min-width: 1440px) {
+            .page-footer img { position: relative !important; left: -15px !important; }
+        }
+    </style>
 
     <header
-    class="fixed top-0 left-0 w-full bg-white z-50 ">
+    class="report-header fixed top-0 left-0 w-full bg-white z-50 ">
 
-    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
+    <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
 
         <!-- Logo -->
-        <div class="flex items-center">
+        <div class="flex items-center ml-4 lg:ml-10">
     <img
         src="{{ asset('images/logo.png') }}"
         alt="Safe Space Logo"
         class="
             w-[120px]
             sm:w-[140px]
-            md:w-[170px]
-            lg:w-[190px]
-            xl:w-[200px]
-            2xl:w-[300px]
+            md:w-[200px]
+            lg:w-[300px]
+            xl:w-[300px]
             h-auto
             object-contain
             flex-shrink-0">
@@ -110,7 +122,7 @@
 
 
   <main class="flex-1">
-    <div style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: auto; padding: 120px 1.5rem 40px; position: relative;">
+    <div class="pt-[104px] lg:pt-[188px] px-6 pb-10" style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: auto; position: relative;">
         <div style="max-width: 1280px; margin: 0 auto; width: 100%;">
 
             <h1 class="text-center text-[20px] sm:text-[22px] font-[700] uppercase text-black mb-2">
@@ -140,7 +152,7 @@
                              h-[300px] sm:h-[342px] p-4 text-center shadow-lg relative">
 
                         <p class="text-[18px] sm:text-[19px] text-black mb-4">
-                            REPORT SUBMITTED SUCCESSFULL!
+                            REPORT SUBMITTED SUCCESSFULLY!
                         </p>
 
                         <img src="{{ asset('images/tick.png') }}" alt="Success Tick"
@@ -163,8 +175,8 @@
        rounded-[100px] text-[#38b6ff] 
        text-[16px] sm:text-[15px] font-semibold sm:font-normal transition duration-200 
        hover:opacity-80 sm:shadow-md flex items-center justify-center bg-white">
-    <span class="sm:hidden">Ok</span>
-    <span class="hidden sm:inline">Ok</span>
+    <span class="sm:hidden">Close</span>
+    <span class="hidden sm:inline">Close</span>
 </button>
 
                     </div>
@@ -327,7 +339,7 @@
                             <label for="phoneNumber" class="block text-[12px] text-black mb-1">Phone Number</label>
                             <input type="text" wire:model.blur="phoneNumber" id="phoneNumber"
                                 class="box-border w-full h-[50px] sm:h-[57px] border-[3px] border-[#c7da30] rounded-[6px] px-2 sm:px-3 text-[13px] sm:text-[14.8px] placeholder:text-[11px] sm:placeholder:text-[14px] text-black bg-white"
-                                placeholder="e.g 08267836743" maxlength="15">
+                                placeholder="e.g 0826783674" maxlength="15">
                             @error('phoneNumber')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
                             @enderror
@@ -467,7 +479,7 @@
     </div>
     </main>
 
-    <x-site-footer />
+    <x-site-footer class="page-footer" />
 
 
     <script>
