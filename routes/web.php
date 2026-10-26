@@ -59,7 +59,8 @@ Route::get('/contact-us', ContactUs::class)->name('contact-us');
 
 // Admin Login Flow
 // Step 1: The initial username and password form
-Route::get('/school-admin', AdminLoginForm::class)->name('school-admin');
+// Step 1: The initial username and password form
+Route::get('/secure-portal-auth-9x7/login', AdminLoginForm::class)->name('school-admin');
 //District log in
 Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-district');
 
@@ -67,13 +68,13 @@ Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-dis
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
 
 // Step 3: School admin dashboard — protected only by auth
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
-    Route::post('/admin/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
-    Route::get('/admin/reports', \App\Livewire\AdminReports::class)->name('admin.reports');
-    Route::get('/admin/reports/{filter?}', \App\Livewire\AdminReports::class)->name('admin.reports.index');
-    Route::get('/admin/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
+Route::middleware(['auth'])->prefix('secure-portal-auth-9x7')->group(function () {
+    Route::get('/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
+    Route::post('/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
+    Route::get('/reports', \App\Livewire\AdminReports::class)->name('admin.reports');
+    Route::get('/reports/{filter?}', \App\Livewire\AdminReports::class)->name('admin.reports.index');
+    Route::get('/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
 });
 
 // District Admin Dashboard
