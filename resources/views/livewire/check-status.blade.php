@@ -6,20 +6,19 @@
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
 
-    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
+    <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
 
         <!-- Logo -->
-        <div class="flex items-center">
+        <div class="flex items-center ml-4 lg:ml-10">
     <img
         src="{{ asset('images/logo.png') }}"
         alt="Safe Space Logo"
         class="
             w-[120px]
             sm:w-[140px]
-            md:w-[170px]
-            lg:w-[190px]
-            xl:w-[200px]
-            2xl:w-[300px]
+            md:w-[200px]
+            lg:w-[300px]
+            xl:w-[300px]
             h-auto
             object-contain
             flex-shrink-0">
@@ -110,7 +109,7 @@
 </div>
 
     <!-- ================= MAIN CONTENT ================= -->
-    <div class="flex-1 pt-[120px] pb-16 px-4 sm:px-6">
+    <div class="flex-1 pt-[150px] lg:pt-[170px] pb-16 px-4 sm:px-6">
 
         <h1 class="text-2xl sm:text-3xl font-bold text-center uppercase mb-8 tracking-wider font-[Montserrat]">TRACK
             STATUS</h1>
@@ -406,7 +405,35 @@
     </div>
 </div>
 
+<div id="check-status-footer-container">
 <x-site-footer />
+</div>
+
+<style>
+    /* Match landing page footer sizing/spacing */
+    #check-status-footer-container footer {
+        padding-top: 25px !important;
+        padding-bottom: 22px !important;
+    }
+
+    /* Footer text move left (size unchanged) */
+    @media (min-width: 1024px) {
+        #check-status-footer-container footer p {
+            position: relative !important;
+            left: 50px !important;
+        }
+    }
+
+    /* Footer icons move left (size unchanged) */
+    @media (min-width: 1440px) {
+        #check-status-footer-container footer svg,
+        #check-status-footer-container footer img {
+            position: relative !important;
+            left: -15px !important;
+            transform: translateX(0) !important;
+        }
+    }
+</style>
 </div>
 
 <script>

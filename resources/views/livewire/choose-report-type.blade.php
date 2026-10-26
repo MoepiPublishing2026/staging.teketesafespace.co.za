@@ -1,21 +1,33 @@
-<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full pt-24 sm:pt-28"> <!-- Header -->
+<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full pt-[104px] lg:pt-[188px]"> <!-- Header -->
+    <style>
+        @media (max-width: 1023px) {
+            .report-header > div { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .report-header img { width: 120px !important; margin-left: 0 !important; }
+        }
+        .page-footer { padding-top: 25px !important; padding-bottom: 22px !important; }
+        @media (min-width: 1024px) {
+            .page-footer p { position: relative !important; left: 50px !important; }
+        }
+        @media (min-width: 1440px) {
+            .page-footer img { position: relative !important; left: -15px !important; }
+        }
+    </style>
     <header
-    class="fixed top-0 left-0 w-full bg-white z-50 ">
+    class="report-header fixed top-0 left-0 w-full bg-white z-50 ">
 
-    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
+    <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
 
         <!-- Logo -->
-        <div class="flex items-center">
+        <div class="flex items-center ml-4 lg:ml-10">
     <img
         src="{{ asset('images/logo.png') }}"
         alt="Safe Space Logo"
         class="
             w-[120px]
             sm:w-[140px]
-            md:w-[170px]
-            lg:w-[190px]
-            xl:w-[200px]
-            2xl:w-[300px]
+            md:w-[200px]
+            lg:w-[300px]
+            xl:w-[300px]
             h-auto
             object-contain
             flex-shrink-0">
@@ -219,7 +231,7 @@
 
 
 
-    <x-site-footer />
+    <x-site-footer class="page-footer" />
 </div>
 
 <script>
