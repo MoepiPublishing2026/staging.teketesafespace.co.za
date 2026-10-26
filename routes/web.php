@@ -121,23 +121,36 @@ Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')
 
 // National Admin Dashboard
 
-Route::get('/national-admin/dashboard', [NationalAdminDashboardController::class, 'index'])
-    ->name('national.admin.dashboard')
-    ->middleware('auth');
-Route::get('/national-admin/heatmap', [NationalHeatmapController::class, 'index'])
-    ->name('national-admin.heatmap')
-    ->middleware('auth');
-Route::get('/national-admin/reports', [ReportController::class, 'index'])->name('national-admin.reports');
-Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
+Route::middleware('auth')->group(function () {
+    Route::prefix('national-admin')->name('national.admin.')->group(function () {
+        Route::get('/dashboard', [NationalAdminDashboardController::class, 'index'])
+            ->name('dashboard');
 
+        Route::get('/heatmap', [NationalHeatmapController::class, 'index'])
+            ->name('heatmap');
 
-Route::prefix('national-admin')->name('national-admin.')->group(function () {
-    Route::get('settings', [SettingsController::class, 'index'])->name('settings');
-    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::delete('settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])
-        ->name('settings.delete-picture');
+        Route::get('/reports', [ReportController::class, 'index'])
+            ->name('reports');
+    });
+
+        Route::get('/reports/{id}', [ReportController::class, 'show'])
+            ->name('reports.show');
 });
 
+Route::prefix('national-admin')
+    ->name('national-admin.')
+    ->middleware(['auth'])
+    ->group(function () {
+
+        Route::get('settings', [SettingsController::class, 'index'])
+            ->name('settings');
+
+        Route::put('settings', [SettingsController::class, 'update'])
+            ->name('settings.update');
+
+        Route::delete('settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])
+            ->name('settings.delete-picture');
+    });
 // School Admin Reports Page (Controller-based, matching Provincial Admin)
 // Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 //     Route::get('reports', [SchoolAdminReportsController::class, 'index'])->name('reports');
