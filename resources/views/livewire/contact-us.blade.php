@@ -1,761 +1,194 @@
 @php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
 
-<div class="contact-page-livewire-container w-full min-h-screen flex flex-col overflow-x-hidden bg-white">
-
+<div class="contact-page bg-white text-black">
+    <link href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean" rel="stylesheet">
     <style>
-        @import url('https://fonts.cdnfonts.com/css/century-gothic-paneuropean');
-
-        .contact-page-livewire-container {
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        /* =========================
-           HEADER (same as About Us page)
-           ========================= */
-        .contact-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: #fff;
-            z-index: 50;
-        }
-
-        .contact-header-inner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 0.5rem 1.5rem;
-        }
-
-        .contact-logo {
-            width: 120px;
-            height: auto;
-            object-fit: contain;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 640px) {
-            .contact-logo { width: 140px; }
-        }
-
-        @media (min-width: 768px) {
-            .contact-logo { width: 170px; }
-        }
-
+        .contact-page { font-family: Montserrat, sans-serif; min-height: 100vh; }
+        .century { font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif; }
+        .art-wrap { display: none; }
+        .phone-page { display: block; }
+        .phone-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 16px 32px; }
+        .phone-header img { width: 120px; height: auto; }
+        .menu-btn { border: 0; background: transparent; color: #c7da30; padding: 8px; }
+        .phone-main { width: min(520px, calc(100% - 32px)); margin: 8px auto 24px; }
+        .page-footer { padding-top: 25px !important; padding-bottom: 22px !important; }
         @media (min-width: 1024px) {
-            .contact-logo { width: 197px; }
-            .contact-header-inner { padding: 0.5rem 58px; }
+            .page-footer p { position: relative !important; left: 50px !important; }
         }
-
-        .contact-desktop-nav {
-            display: none;
-            align-items: center;
-            gap: 18px;
-            margin-right: 0;
-            font-family: "Montserrat", sans-serif;
-            font-weight: 400;
-            font-size: 15px;
-            line-height: 1;
-            letter-spacing: 0;
+        @media (min-width: 1440px) {
+            .page-footer img { position: relative !important; left: -15px !important; }
         }
-
-        @media (min-width: 1280px) {
-            .contact-desktop-nav {
-                display: flex;
-            }
+        .phone-title { margin: 18px 0 22px; text-align: center; font-size: 48px; font-weight: 400; line-height: 1; color: #000; }
+        .detail { display: flex; align-items: center; gap: 14px; border: 1px solid #ddd; border-radius: 6px; padding: 12px 14px; margin: 0 0 12px; }
+        .detail a { color: #000; text-decoration: none; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 18px; }
+        .icon {
+            display: block; flex: 0 0 26px; background: #C5D931;
+            -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+            -webkit-mask-size: contain; mask-size: contain;
         }
-
-        .contact-desktop-nav a {
-            font-family: "Montserrat", sans-serif;
-            font-weight: 400;
-            font-size: 15px;
-            line-height: 1;
-            letter-spacing: 0;
-            color: #000;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: color 0.15s;
-        }
-
-        .contact-desktop-nav a:hover {
-            color: #c7da30 !important;
-        }
-
-        .contact-mobile-menu-button-wrap {
-         display: block;
-}
-
-/* Keep hamburger menu on tablets */
-@media (min-width: 1280px) {
-    .contact-mobile-menu-button-wrap {
-        display: none;
-    }
-}
-
-        .contact-mobile-menu-button {
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            color: #c7da30;
-            background: transparent;
-            border: 0;
-        }
-
-        .contact-mobile-menu-button:hover {
-            background: #f3f4f6;
-        }
-
-        .contact-mobile-menu-button svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .contact-page-livewire-container {
-            padding-top: 4rem;
-        }
-
-        @media (min-width: 768px) {
-            .contact-page-livewire-container { padding-top: 6rem; }
-        }
-
-        @media (min-width: 1024px) {
-            .contact-page-livewire-container { padding-top: 7rem; }
-        }
-
-        /* =========================
-           MAIN CONTENT
-           ========================= */
-        .contact-main {
+        .phone-icon { width: 26px; height: 26px; -webkit-mask-image: url("{{ asset('images/phone icon.png') }}"); mask-image: url("{{ asset('images/phone icon.png') }}"); }
+        .email-icon { width: 26px; height: 18px; -webkit-mask-image: url("{{ asset('images/email icon.png') }}"); mask-image: url("{{ asset('images/email icon.png') }}"); }
+        .app-box { border: 2px solid #C5D931; text-align: center; padding: 16px 10px 18px; }
+        .app-box h2 { margin: 0 0 14px; font-family: Montserrat, sans-serif; font-size: 22px; font-weight: 700; color: #000; }
+        .stores a img { display: block; width: 148px; height: 46px; object-fit: contain; }
+        .stores { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .phone-art-frame {
+            width: min(340px, 100%);
+            aspect-ratio: 0.924;
+            margin: 16px auto 0;
             position: relative;
-            flex: 1 0 auto;
-            min-height: 631px;
             overflow: hidden;
-            background: #fff;
         }
-
-        .contact-content {
-            position: relative;
-            width: 100%;
-            max-width: 1340px;
-            min-height: 631px;
-            margin: 0 auto;
-        }
-
-        .contact-left {
+        .phone-art {
             position: absolute;
-            left: 110px;
-            top: 48px;
-            z-index: 10;
-            width: 520px;
-            max-width: calc(100% - 560px);
-        }
-
-        .contact-title {
-            margin: 0 0 28px;
-            font-family: "Century Gothic Paneuropean", "Century Gothic", CenturyGothic, sans-serif;
-            font-size: 50px;
-            font-weight: 400;
-            font-style: normal;
-            line-height: 1;
-            letter-spacing: 0;
-            color: #000000;
-            transform: none;
-        }
-
-        .contact-detail {
-            display: flex;
-            align-items: center;
-            position: static;
-            margin: 0 0 18px;
-            color: #000;
-        }
-
-        .contact-detail:first-of-type,
-        .contact-detail.email {
-            position: static;
-            top: auto;
-            left: auto;
-        }
-
-        .contact-detail img {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            margin-right: 31px;
-            
-            
-        }
-        /* EXACT TEKETE LOGO GREEN */
-.contact-icon {
-    display: block;
-    width: 26px;
-    height: 26px;
-    flex: 0 0 26px;
-    margin-right: 31px;
-    background-color: #C7DA30;
-
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    -webkit-mask-size: contain;
-
-    mask-repeat: no-repeat;
-    mask-position: center;
-    mask-size: contain;
-}
-
-/* PHONE */
-.phone-icon {
-    -webkit-mask-image: url("{{ asset('images/phone icon.png') }}");
-    mask-image: url("{{ asset('images/phone icon.png') }}");
-}
-
-/* EMAIL */
-.email-icon {
-    width: 26px;
-    height: 22px;
-
-    -webkit-mask-image: url("{{ asset('images/email icon.png') }}");
-    mask-image: url("{{ asset('images/email icon.png') }}");
-}
-
-        .contact-detail.email img {
-            height: 22px;
-        }
-
-        .contact-detail.email {
-            position: static;
-            top: auto;
-            left: auto;
-        }
-
-        .contact-detail a {
-            color: #000;
-            text-decoration: none;
-            font-family: "Montserrat", sans-serif;
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 1.36;
-            letter-spacing: 0;
-        }
-
-        .contact-detail a:hover {
-            color: #c7da30;
-        }
-
-        /* App download box exactly as a single bordered block in the prototype */
-        .contact-app-box {
-            width: 100%;
-            max-width: 520px;
+            width: 184.5%;
             height: auto;
-            border: 4px solid #c7da30;
-            box-sizing: border-box;
-            margin-top: 48px;
-            margin-left: 0;
-            padding: 18px 16px 22px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-        }
-
-        .contact-app-title {
-            margin: 0 0 16px;
-            font-family: "Montserrat", sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: 0;
-            color: #000;
-        }
-
-        .contact-store-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 17px;
-        }
-
-        .contact-store-row a {
-            display: block;
-            text-decoration: none;
-            flex: 0 0 auto;
-        }
-
-        .contact-store-row img {
-            display: block;
-            object-fit: contain;
-        }
-
-        .prototype-store {
-            width: 162px;
-            height: 55px;
-        }
-
-        .prototype-store-huawei {
-            width: 175px;
-            height: 58px;
-        }
-
-        /* =========================
-           RIGHT-SIDE PROTOTYPE ART
-           ========================= */
-        .contact-social-art {
-            position: absolute;
-            right: 36px;
-            top: 0;
-            width: 482px;
-            height: 560px;
-            z-index: 1;
+            max-width: none;
+            left: -33.6%;
+            top: -82.5%;
             pointer-events: none;
         }
 
-        .contact-social-art img {
-            position: absolute;
-            object-fit: contain;
+        @media (min-width: 900px) {
+            .phone-page { display: none; }
+            .art-wrap {
+                display: block;
+                width: 100%;
+                height: 662px;
+                position: relative;
+                overflow: hidden;
+            }
+            .art-board {
+                width: 1366px;
+                height: 662px;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background: #fff;
+                transform-origin: top left;
+            }
+            .logo-link { position: absolute; left: 88px; top: 16px; z-index: 40; display: block; }
+            .logo { width: 300px; height: auto; display: block; object-fit: contain; object-position: left center; }
+            .nav { position: absolute; left: 0; top: 67px; width: 1366px; height: 24.4px; font-family: Montserrat, sans-serif; font-size: 19.97px; line-height: 24.4px; font-weight: 400; z-index: 30; }
+            .nav a { position: absolute; top: 0; color: #000; text-decoration: none; white-space: nowrap; cursor: pointer; }
+            .nav a:hover { color: #c7da30; }
+            .nav .home { left: 851.4px; }
+            .nav .about { left: 936px; }
+            .nav .workshops { left: 1049.8px; }
+            .nav .contact { left: 1182.6px; }
+            .contact-title { position: absolute; left: 217.7px; top: 229.7px; margin: 0; font-weight: 400; font-size: 66.5px; line-height: 1; color: #000; letter-spacing: 0; }
+            .art-board .phone-icon { position: absolute; left: 217.7px; top: 329.8px; width: 26.4px; height: 26.4px; }
+            .art-board .email-icon { position: absolute; left: 217.7px; top: 382.8px; width: 25.9px; height: 17.9px; }
+            .phone-link, .email-link { position: absolute; left: 262.2px; color: #000; text-decoration: none; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 21.3px; line-height: 24.9px; z-index: 30; cursor: pointer; }
+            .phone-link { top: 330.6px; }
+            .email-link { top: 379.3px; }
+            .phone-link:hover, .email-link:hover { color: #C5D931; }
+            .download-box { position: absolute; left: 155px; top: 464.6px; width: 528px; height: 125.4px; border: 2px solid #C5D931; box-sizing: border-box; }
+            .download-title { position: absolute; left: 155px; top: 476px; width: 528px; margin: 0; text-align: center; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 24px; line-height: 28.6px; color: #000; }
+            .badge { position: absolute; display: block; text-decoration: none; z-index: 30; cursor: pointer; }
+            .badge-apple { left: 201px; top: 523.7px; width: 129.6px; height: 43.5px; }
+            .badge-google { left: 342.9px; top: 521.3px; width: 142.1px; height: 48.4px; }
+            .badge-huawei { left: 497.2px; top: 524.5px; width: 139.8px; height: 41.9px; }
+            .badge img, .badge > div { width: 100%; height: 100%; object-fit: contain; }
+            .art {
+                position: absolute;
+                left: 698.5px;
+                top: -118px;
+                width: 672px;
+                height: 896px;
+                max-width: none;
+                object-fit: fill;
+                pointer-events: none;
+                z-index: 1;
+            }
         }
-
-        .social-phone {
-            width: 482px;
-            height: auto;
-            right: 0;
-            top: 0;
-            bottom: auto;
-            z-index: 1;
-        }
-
-        /*
-         * The supplied prototype already contains the social-media arrangement
-         * in the image "social media phone1.png". Keep the image intact rather
-         * than rebuilding the icons separately, so its proportions match the
-         * prototype.
-         */
-
-        /* =========================
-           MOBILE
-           ========================= */
-        @media (max-width: 1279px) {
-
-    /* =========================
-       MOBILE HEADER
-       ========================= */
-    .contact-header-inner {
-        min-height: 85px;
-        padding: 10px 18px;
-    }
-
-    .contact-logo {
-        width: 150px;
-        height: auto;
-    }
-
-    .contact-page-livewire-container {
-        padding-top: 85px;
-    }
-
-    /* =========================
-       MOBILE MAIN
-       ========================= */
-    .contact-main {
-        min-height: auto;
-        overflow: hidden;
-    }
-
-    .contact-content {
-        width: 100%;
-        min-height: auto;
-        padding: 0;
-    }
-
-    .contact-left {
-        position: relative;
-        left: auto;
-        top: auto;
-        width: 100%;
-        padding: 45px 20px 40px;
-        box-sizing: border-box;
-    }
-
-    /* =========================
-       CONTACT TITLE
-       ========================= */
-    .contact-title {
-        margin: 0 0 40px;
-        transform: none;
-        text-align: center;
-        font-size: 48px;
-        line-height: 1;
-        letter-spacing: 0;
-        color: #000000;
-    }
-
-    /* =========================
-       PHONE + EMAIL
-       ========================= */
-    .contact-detail,
-    .contact-detail:first-of-type,
-    .contact-detail.email {
-        position: relative;
-        top: auto;
-        left: auto;
-        width: 100%;
-        margin: 0 0 18px;
-        padding: 12px 15px;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-    }
-
-    .contact-detail img,
-    .contact-detail.email img {
-        width: 27px;
-        height: 27px;
-        flex-shrink: 0;
-        margin-right: 14px;
-        object-fit: contain;
-    }
-
-    .contact-detail a {
-        font-size: 17px;
-        line-height: 1.2;
-        word-break: break-word;
-    }
-
-    /* =========================
-       APP DOWNLOAD BOX
-       ========================= */
-    .contact-app-box {
-        width: 100%;
-        height: auto;
-        min-height: 210px;
-        margin: 45px auto 0;
-        padding: 20px 15px;
-        box-sizing: border-box;
-    }
-
-    .contact-app-title {
-        margin: 0 0 22px;
-        font-size: 22px;
-        line-height: 1.2;
-        text-align: center;
-    }
-
-    .contact-store-row {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .prototype-store {
-        width: 150px;
-        height: 51px;
-    }
-
-    .prototype-store-huawei {
-        width: 160px;
-        height: 53px;
-    }
-
-    /* Hide desktop social phone artwork */
-    .contact-social-art {
-    display: block;
-    position: relative;
-    right: auto;
-    top: auto;
-    width: 100%;
-    height: 420px;
-    margin-top: 10px;
-    overflow: visible;
-}
-
-.social-phone {
-    position: absolute;
-    width: 420px;
-    height: auto;
-    right: 50%;
-    bottom: 0;
-    transform: translateX(50%);
-}
-
-        @media (max-width: 480px) {
-
-    .contact-header-inner {
-        min-height: 80px;
-        padding: 8px 15px;
-    }
-
-    .contact-logo {
-        width: 145px;
-    }
-
-    .contact-page-livewire-container {
-        padding-top: 80px;
-    }
-
-    .contact-left {
-        padding: 35px 15px 30px;
-    }
-
-    .contact-title {
-        font-size: 38px;
-        margin-bottom: 32px;
-    }
-
-    .contact-detail,
-    .contact-detail:first-of-type,
-    .contact-detail.email {
-        padding: 11px 12px;
-        margin-bottom: 14px;
-    }
-
-    .contact-detail img,
-    .contact-detail.email img {
-        width: 25px;
-        height: 25px;
-        margin-right: 12px;
-    }
-
-    .contact-detail a {
-        font-size: 15px;
-    }
-
-    .contact-app-box {
-        min-height: 235px;
-        margin-top: 40px;
-        padding: 18px 10px;
-    }
-
-    .contact-app-title {
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
-
-    .contact-store-row {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .prototype-store {
-        width: 150px;
-        height: 51px;
-    }
-
-    .prototype-store-huawei {
-        width: 160px;
-        height: 53px;
-    }
-    .contact-social-art {
-    width: 100%;
-    height: 350px;
-    margin-top: 0;
-}
-
-.social-phone {
-    width: 350px;
-    right: 50%;
-    bottom: 0;
-    transform: translateX(50%);
-}
-
     </style>
 
-    <!-- =========================
-         HEADER
-         ========================= -->
-    <header class="contact-header">
-        <div class="contact-header-inner">
-
-            <!-- Logo -->
-            <div class="flex items-center">
-                <a href="{{ route('landing-page') }}" aria-label="Tekete Safe Space Home">
-                    <img
-                        src="{{ asset('images/logo.png') }}"
-                        alt="Tekete Safe Space"
-                        class="contact-logo">
-                </a>
-            </div>
-
-            <!-- Top Right Links -->
-            <div class="flex items-center gap-4">
-
-                <!-- Desktop Navigation -->
-                <nav class="contact-desktop-nav" aria-label="Primary">
-                    <a href="{{ route('landing-page') }}">Home</a>
-                    <a href="{{ route('about-us') }}">About Us</a>
-                    <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops">Workshops</a>
-                    <a href="{{ route('contact-us') }}">Contact Us</a>
+    <div class="phone-page">
+        <header class="phone-header">
+            <a href="{{ route('landing-page') }}"><img src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space"></a>
+            <button type="button" class="menu-btn" aria-label="Open menu" onclick="toggleMobileMenu()">
+                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </header>
+        <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
+            <div class="fixed inset-0 bg-black/50" onclick="toggleMobileMenu()"></div>
+            <div id="mobile-menu-slide" class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300">
+                <div class="px-4 pt-16"><button type="button" onclick="toggleMobileMenu()" class="p-2 text-[#c7da30]" aria-label="Close menu"><svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg></button></div>
+                <nav class="px-6 text-[17px]">
+                    <a class="block py-3 text-[#38b6ff]" href="{{ route('landing-page') }}" onclick="toggleMobileMenu()">Home</a>
+                    <a class="block py-3 text-[#38b6ff]" href="{{ route('about-us') }}" onclick="toggleMobileMenu()">About Us</a>
+                    <a class="block py-3 text-[#38b6ff]" href="{{ $workshopBookingUrl }}/workshops" onclick="toggleMobileMenu()">Workshops</a>
+                    <a class="block py-3 text-[#38b6ff]" href="{{ route('contact-us') }}" onclick="toggleMobileMenu()">Contact Us</a>
                 </nav>
-
-                <!-- Mobile Hamburger Menu -->
-                <div class="contact-mobile-menu-button-wrap">
-                    <button
-                        id="mobile-menu-button"
-                        type="button"
-                        class="contact-mobile-menu-button"
-                        aria-label="Open menu"
-                        onclick="toggleMobileMenu()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
+            </div>
+        </div>
+        <main class="phone-main">
+            <h1 class="phone-title century">CONTACT US</h1>
+            <div class="detail"><span class="icon phone-icon"></span><a href="tel:0872656716">087 265 6716</a></div>
+            <div class="detail"><span class="icon email-icon"></span><a href="mailto:support@tekete.co.za">support@tekete.co.za</a></div>
+            <div class="app-box">
+                <h2>Download the Safe Space App</h2>
+                <div class="stores">
+                    <a href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank" rel="noopener" aria-label="Download on the App Store"><img src="{{ asset('images/badges/app-store.png') }}" alt="Download on the App Store"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="{{ asset('images/badges/google-play.png') }}" alt="Get it on Google Play"></a>
+                    <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener" aria-label="Explore it on AppGallery"><img src="{{ asset('images/badges/appgallery.png') }}" alt="Explore it on AppGallery"></a>
                 </div>
-
             </div>
-        </div>
-    </header>
-
-    <!-- =========================
-         MOBILE MENU
-         ========================= -->
-    <div id="mobile-menu" class="fixed inset-0 z-[200] hidden">
-        <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleMobileMenu()"></div>
-
-        <div id="mobile-menu-slide"
-             class="fixed top-0 right-0 h-full w-64 bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-in-out">
-
-            <div class="flex items-center justify-start px-4 pt-16 pb-4">
-                <button type="button"
-                        onclick="toggleMobileMenu()"
-                        class="p-2 rounded-md text-[#c7da30] hover:bg-gray-100 focus:outline-none"
-                        aria-label="Close menu">
-                    <svg class="h-8 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                              d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+            <div class="phone-art-frame">
+                <img class="phone-art" src="{{ asset('images/social media phone1.png') }}" alt="">
             </div>
-
-            <nav class="mt-8 px-6 space-y-2 pb-8 text-[17px]" style="font-family: 'Montserrat', sans-serif; font-weight: 400; letter-spacing: 0;">
-                <a href="{{ route('landing-page') }}" onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Home</a>
-                <a href="{{ route('about-us') }}" onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">About Us</a>
-                <a href="{{ rtrim(config('tekete.workshop_booking_url'), '/') }}/workshops"
-                   onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Workshops</a>
-                <a href="{{ route('contact-us') }}" onclick="toggleMobileMenu()"
-                   class="block py-3 text-[#38b6ff] hover:text-[#c7da30] transition-colors">Contact Us</a>
-            </nav>
-        </div>
+        </main>
     </div>
 
-    <!-- =========================
-         CONTACT PAGE
-         ========================= -->
-    <main class="contact-main">
-        <div class="contact-content">
-
-            <div class="contact-left">
-                <h1 class="contact-title">CONTACT US</h1>
-
-                <div class="contact-detail">
-                     <span class="contact-icon phone-icon"></span>
-                     <a href="tel:0872656716">087 265 6716</a>
-                </div>
-
-               <div class="contact-detail email">
-                    <span class="contact-icon email-icon"></span>
-                    <a href="mailto:support@tekete.co.za">support@tekete.co.za</a>
-               </div>
-
-                <div class="contact-app-box">
-                    <div class="contact-app-title">Download the Safe Space App</div>
-
-                    <div class="contact-store-row">
-                        <a href="https://apps.apple.com/za/app/safe-space/id6756009264"
-                           target="_blank" rel="noopener" aria-label="Download on the App Store"
-                           class="prototype-store">
-                            <div style="width:100%;height:100%;background:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Arial,sans-serif;">
-                                <svg width="26" height="30" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                                </svg>
-                                <span style="display:flex;flex-direction:column;line-height:1.05;margin-left:6px;text-align:left;">
-                                    <span style="font-size:8px;font-weight:400;">Download on the</span>
-                                    <span style="font-size:17px;font-weight:600;">App Store</span>
-                                </span>
-                            </div>
-                        </a>
-
-                        <a href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace"
-                           target="_blank" rel="noopener" aria-label="Get it on Google Play"
-                           class="prototype-store">
-                            <div style="width:100%;height:100%;background:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Arial,sans-serif;">
-                                <svg width="25" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <defs>
-                                        <linearGradient id="contact-gp1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00C3FF"/><stop offset="100%" stop-color="#1DE9B6"/></linearGradient>
-                                        <linearGradient id="contact-gp2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FFBC00"/><stop offset="100%" stop-color="#FF8F00"/></linearGradient>
-                                        <linearGradient id="contact-gp3" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F44336"/><stop offset="100%" stop-color="#E91E63"/></linearGradient>
-                                        <linearGradient id="contact-gp4" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4CAF50"/><stop offset="100%" stop-color="#8BC34A"/></linearGradient>
-                                    </defs>
-                                    <path fill="url(#contact-gp1)" d="M3.18 23.76A1.94 1.94 0 0 1 2 22V2a1.94 1.94 0 0 1 1.18-1.76l11.16 11.76z"/>
-                                    <path fill="url(#contact-gp2)" d="M18.82 13.59l-2.6-1.59L14.34 12l2.48 2.61z"/>
-                                    <path fill="url(#contact-gp3)" d="M3.18 23.76l11.16-11.76L18.82 13.59 6.44 20.77a2 2 0 0 1-2 .06z"/>
-                                    <path fill="url(#contact-gp4)" d="M3.18.24A2 2 0 0 1 5.18.18l12.38 7.18-3.48 3.64z"/>
-                                </svg>
-                                <span style="display:flex;flex-direction:column;line-height:1.05;margin-left:5px;text-align:left;">
-                                    <span style="font-size:8px;font-weight:400;">GET IT ON</span>
-                                    <span style="font-size:15px;font-weight:600;">Google Play</span>
-                                </span>
-                            </div>
-                        </a>
-
-                        <a href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB"
-                           target="_blank" rel="noopener">
-                            <img
-                                src="{{ asset('images/appgallery-huawei.png') }}"
-                                alt="Explore it on AppGallery"
-                                class="prototype-store-huawei">
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Prototype right-side graphic -->
-            <div class="contact-social-art">
-                <img
-                    src="{{ asset('images/social media phone1.png') }}"
-                    alt=""
-                    class="social-phone">
-            </div>
-
+    <div class="art-wrap" id="contact-wrap">
+        <a class="logo-link" href="{{ route('landing-page') }}"><img class="logo" src="{{ asset('images/logo.png') }}" alt="Tekete Safe Space"></a>
+        <div class="art-board" id="contact-board">
+            <nav class="nav" aria-label="Primary">
+                <a class="home" href="{{ route('landing-page') }}">Home</a>
+                <a class="about" href="{{ route('about-us') }}">About Us</a>
+                <a class="workshops" href="{{ $workshopBookingUrl }}/workshops">Workshops</a>
+                <a class="contact" href="{{ route('contact-us') }}">Contact Us</a>
+            </nav>
+            <h1 class="contact-title century">CONTACT US</h1>
+            <span class="icon phone-icon"></span>
+            <a class="phone-link" href="tel:0872656716">087 265 6716</a>
+            <span class="icon email-icon"></span>
+            <a class="email-link" href="mailto:support@tekete.co.za">support@tekete.co.za</a>
+            <div class="download-box"></div>
+            <p class="download-title">Download the Safe Space App</p>
+            <a class="badge badge-apple" href="https://apps.apple.com/za/app/safe-space/id6756009264" target="_blank" rel="noopener" aria-label="Download on the App Store"><img src="{{ asset('images/badges/app-store.png') }}" alt=""></a>
+            <a class="badge badge-google" href="https://play.google.com/store/apps/details?id=com.moepipublishing.safespace" target="_blank" rel="noopener" aria-label="Get it on Google Play"><img src="{{ asset('images/badges/google-play.png') }}" alt=""></a>
+            <a class="badge badge-huawei" href="https://appgallery.cloud.huawei.com/ag/n/app/C116390043?locale=en_GB" target="_blank" rel="noopener" aria-label="Explore it on AppGallery"><img src="{{ asset('images/badges/appgallery.png') }}" alt=""></a>
+            <img class="art" src="{{ asset('images/social media phone1.png') }}" alt="">
         </div>
-    </main>
-
-    <x-site-footer />
-
+    </div>
+    <x-site-footer class="page-footer" style="background:#C5D931" />
     <script>
+        function fitContact() {
+            var wrap = document.getElementById('contact-wrap');
+            var board = document.getElementById('contact-board');
+            if (!wrap || !board || getComputedStyle(wrap).display === 'none') return;
+            var scale = wrap.clientWidth / 1366;
+            board.style.transform = 'scale(' + scale + ')';
+            wrap.style.height = (662 * scale) + 'px';
+        }
+        fitContact();
+        window.addEventListener('resize', fitContact);
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            const slide = document.getElementById('mobile-menu-slide');
-
+            var menu = document.getElementById('mobile-menu');
+            var slide = document.getElementById('mobile-menu-slide');
             if (!menu || !slide) return;
-
-            const isHidden = menu.classList.contains('hidden');
-
-            if (isHidden) {
+            if (menu.classList.contains('hidden')) {
                 menu.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
-
-                setTimeout(() => {
-                    slide.classList.remove('translate-x-full');
-                    slide.classList.add('translate-x-0');
-                }, 10);
+                setTimeout(function () { slide.classList.remove('translate-x-full'); }, 10);
             } else {
-                slide.classList.remove('translate-x-0');
                 slide.classList.add('translate-x-full');
                 document.body.style.overflow = '';
-
-                setTimeout(() => {
-                    menu.classList.add('hidden');
-                }, 300);
+                setTimeout(function () { menu.classList.add('hidden'); }, 300);
             }
         }
     </script>
-
 </div>

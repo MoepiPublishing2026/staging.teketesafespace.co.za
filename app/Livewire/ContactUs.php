@@ -14,7 +14,7 @@ class ContactUs extends Component
     public function render()
     {
         return view('livewire.contact-us')
-            ->layout('components.layouts.app'); // Assuming you use the default app layout
+            ->layout('components.layouts.app', ['title' => 'Contact Us - Tekete SafeSpace']);
     }
 
     
