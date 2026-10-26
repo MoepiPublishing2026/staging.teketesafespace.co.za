@@ -38,7 +38,7 @@ return [
 
     'turnstile' => [
         'site_key' => env('TURNSTILE_SITE_KEY'),
-        'secret_key' => env('TURNSTILE_SECRET_KEY'),
+        'secret_key' => env('TURNSTILE_SECRET'),
         'hostnames' => array_values(array_filter(array_map(
             static fn ($hostname) => strtolower(trim($hostname)),
             explode(',', (string) env('TURNSTILE_HOSTNAMES', ''))

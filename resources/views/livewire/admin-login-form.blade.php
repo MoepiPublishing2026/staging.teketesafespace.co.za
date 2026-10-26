@@ -260,23 +260,15 @@
                                                 <p class="mt-1 text-sm text-green-700">Signing you in…</p>
                                             </div>
                                         @else
-                                            <p class="mt-2 text-sm text-gray-600">Confirm the checkbox to start the security check.</p>
+                                            <p class="mt-2 text-sm text-gray-600">Complete the security check to continue.</p>
                                             @if ($captchaError)
                                                 <p class="mt-3 text-sm text-red-600" role="alert">{{ $captchaError }}</p>
                                             @endif
-                                            @if (!$humanConfirmation)
-                                                <label class="mt-5 flex cursor-pointer items-center gap-3 rounded-lg border border-gray-300 p-4 text-sm text-gray-800">
-                                                    <input type="checkbox" wire:click="beginTurnstile"
-                                                           class="h-5 w-5 rounded border-gray-400 accent-[#168fc8]">
-                                                    <span>I'm human</span>
-                                                </label>
-                                            @else
-                                                <div wire:ignore class="mt-5 flex justify-center">
-                                                    <div id="admin-login-turnstile"
-                                                         data-sitekey="{{ config('services.turnstile.site_key') }}"
-                                                         data-component-id="{{ $this->getId() }}"></div>
-                                                </div>
-                                            @endif
+                                            <div wire:ignore class="mt-5 flex justify-center">
+                                                <div id="admin-login-turnstile"
+                                                     data-sitekey="{{ config('services.turnstile.site_key') }}"
+                                                     data-component-id="{{ $this->getId() }}"></div>
+                                            </div>
                                             @if (!config('services.turnstile.site_key'))
                                                 <p class="mt-3 text-sm text-red-600" role="alert">Security verification is not configured. Please contact the site administrator.</p>
                                             @endif

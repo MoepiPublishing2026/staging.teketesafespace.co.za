@@ -12,11 +12,12 @@ use App\Support\OtpSession;
 
 class AdminLoginForm extends Component
 {
+    private const LOGIN_LOCKOUT_MINUTES = 5;
+
     public $username = '';
     public $password = '';
     public string $website = '';
     public string $captchaError = '';
-    public bool $humanConfirmation = false;
     public bool $showCaptcha = false;
 
     public function mount(): void
@@ -56,7 +57,7 @@ class AdminLoginForm extends Component
         $siteKey = (string) config('services.turnstile.site_key');
         $expectedHostnames = array_map('strtolower', config('services.turnstile.hostnames', []));
 
-        if (!$this->showCaptcha || !$this->humanConfirmation || $secret === '' || $siteKey === '' || $token === '' || $expectedHostnames === []) {
+        if (!$this->showCaptcha || $secret === '' || $siteKey === '' || $token === '' || $expectedHostnames === []) {
             $this->captchaError = 'Security verification is unavailable. Please contact the site administrator.';
             $this->dispatch('admin-turnstile-reset');
             return;
@@ -113,17 +114,6 @@ class AdminLoginForm extends Component
         return $this->login();
     }
 
-    public function beginTurnstile(): void
-    {
-        if (!$this->showCaptcha) {
-            return;
-        }
-
-        $this->humanConfirmation = true;
-        $this->captchaError = '';
-        $this->dispatch('admin-turnstile-open');
-    }
-
     private function activeLockUntil()
     {
         $locks = [Cache::get($this->lockKey()), Cache::get($this->ipLockKey())];
@@ -145,15 +135,15 @@ class AdminLoginForm extends Component
     {
         $attempts = (int) Cache::get($this->failureCountKey(), 0) + 1;
         $ipAttempts = (int) Cache::get($this->ipFailureCountKey(), 0) + 1;
-        Cache::put($this->failureCountKey(), $attempts, now()->addMinutes(15));
-        Cache::put($this->ipFailureCountKey(), $ipAttempts, now()->addMinutes(15));
+        Cache::put($this->failureCountKey(), $attempts, now()->addMinutes(self::LOGIN_LOCKOUT_MINUTES));
+        Cache::put($this->ipFailureCountKey(), $ipAttempts, now()->addMinutes(self::LOGIN_LOCKOUT_MINUTES));
 
         if ($attempts >= 3) {
-            Cache::put($this->lockKey(), now()->addMinutes(15), now()->addMinutes(15));
+            Cache::put($this->lockKey(), now()->addMinutes(self::LOGIN_LOCKOUT_MINUTES), now()->addMinutes(self::LOGIN_LOCKOUT_MINUTES));
             $this->addError('login', 'The password is incorrect. Too many failed attempts; login is now locked. Wait for the countdown before trying again. Use Forgot password or contact your administrator if you need help.');
         } elseif ($ipAttempts >= 10) {
-            Cache::put($this->ipLockKey(), now()->addMinutes(15), now()->addMinutes(15));
-            $this->addError('login', 'Too many failed login attempts from this network. Login is locked for 15 minutes.');
+            Cache::put($this->ipLockKey(), now()->addMinutes(self::LOGIN_LOCKOUT_MINUTES), now()->addMinutes(self::LOGIN_LOCKOUT_MINUTES));
+            $this->addError('login', 'Too many failed login attempts from this network. Login is locked for 5 minutes.');
         } else {
             if ($attempts >= 2) {
                 $delay = 2 ** $attempts;
@@ -210,8 +200,8 @@ class AdminLoginForm extends Component
 
         if (!$this->captchaPassed) {
             $this->showCaptcha = true;
-            $this->humanConfirmation = false;
             $this->captchaError = '';
+            $this->dispatch('admin-turnstile-open');
             return;
         }
 
@@ -225,7 +215,6 @@ class AdminLoginForm extends Component
             ]);
             session()->forget('admin_login_turnstile_passed');
             $this->showCaptcha = false;
-            $this->humanConfirmation = false;
             $this->addError('login', 'Sign-in is temporarily unavailable. Please try again shortly.');
             return;
         }
@@ -236,7 +225,6 @@ class AdminLoginForm extends Component
                 Auth::logout();
                 session()->forget('admin_login_turnstile_passed');
                 $this->showCaptcha = false;
-                $this->humanConfirmation = false;
                 $this->addError('login', 'The provided credentials do not match our records.');
                 return;
             }
@@ -245,7 +233,6 @@ class AdminLoginForm extends Component
             Cache::forget($this->lockKey());
             session()->forget('admin_login_turnstile_passed');
             $this->showCaptcha = false;
-            $this->humanConfirmation = false;
             OtpSession::clearPending();
             session(['admin_role' => $role]);
             return redirect()->route('email.verification');
@@ -253,7 +240,6 @@ class AdminLoginForm extends Component
 
         session()->forget('admin_login_turnstile_passed');
         $this->showCaptcha = false;
-        $this->humanConfirmation = false;
         $this->recordFailedPassword();
     }
 
@@ -266,7 +252,7 @@ class AdminLoginForm extends Component
     public function resetForm()
     {
         // Clear the input and CAPTCHA state for a fresh attempt.
-        $this->reset(['username', 'password', 'website', 'captchaError', 'humanConfirmation', 'showCaptcha']);
+        $this->reset(['username', 'password', 'website', 'captchaError', 'showCaptcha']);
         session()->forget('admin_login_turnstile_passed');
         
         // Optionally clear validation errors
