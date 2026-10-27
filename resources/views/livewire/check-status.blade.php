@@ -179,6 +179,8 @@
                         @enderror
                     </div>
 
+                    <x-turnstile />
+
                     <button type="submit"
     class="w-full py-4 px-4 border-2 sm:border-4 border-[#c7da30] rounded-full text-[#38b6ff] hover:opacity-90 transition font-[Montserrat] text-lg">
     Search
