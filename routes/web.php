@@ -68,7 +68,7 @@ Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-dis
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
 
 // Step 3: School admin dashboard — protected only by auth
-Route::middleware(['auth'])->prefix('secure-portal-auth-9x7')->group(function () {
+Route::middleware(['auth', 'otp.verified'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
     Route::post('/flag-report/{reportId}', [SchoolAdminDashboardController::class, 'flagReport'])->name('admin.flag-report');
