@@ -8,11 +8,14 @@ use App\Models\User;
 use App\Mail\TrackStatusChange;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Locked;
+use Illuminate\Support\Facades\RateLimiter;
+use App\Support\Turnstile;
 
 class CheckStatus extends Component
 {
     public $caseNumber = '';
-    #[Locked] public array $reportData = [];
+    #[Locked] public array $reportData = []; //stops clients tampering with id/status
     public $message = '';
     public $turnstileToken = '';
 
@@ -44,7 +47,7 @@ class CheckStatus extends Component
         //rate limiting and bot check
         $ipKey = 'check-status:ip:' . request()->ip();
         $globalKey = 'check-status:global';
-        if (RateLimiter::tooManyAttempts($ipKey, 10)) {
+        if (RateLimiter::tooManyAttempts($ipKey, 5)) {
             $this->addError('caseNumber', 'Too many attempts. Please try again in a few minutes.');
             $this->reportData = [];
             return;
