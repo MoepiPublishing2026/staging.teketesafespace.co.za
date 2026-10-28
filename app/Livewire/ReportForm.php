@@ -18,7 +18,11 @@ use App\Mail\IncidentReported;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule; 
+use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
+use App\Support\AttachmentStore;
+use App\Support\Turnstile;
+use Livewire\Attributes\Locked;
 
 class ReportForm extends Component
 {
@@ -26,8 +30,8 @@ class ReportForm extends Component
 
     public $turnstileToken = '';
 
-    public $abuseTypeID;
-    public $isAnonymous;
+    #[Locked] public $abuseTypeID;
+    #[Locked] public $isAnonymous;
     public $subtypeID;
     public $description;
     public $reporterEmail;
@@ -316,8 +320,9 @@ protected array $phaseGrades = [
                 }
             },
         ],
-          'image.*' => 'file|max:102400|mimetypes:video/mp4,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/ogg,image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword',
-'newUploads.*' => 'file|max:102400|mimetypes:video/mp4,audio/mp4,audio/3gpp,audio/amr,audio/aac,audio/webm,audio/mpeg,audio/wav,audio/ogg,image/jpeg,image/png,image/gif,image/webp,application/pdf,application/msword',
+          'image'        => ['array', 'max:' . (int) config('attachments.max_per_report', 5)],
+          'image.*'      => AttachmentStore::fileRules(),
+          'newUploads.*' => AttachmentStore::fileRules(),
 
 
             'fullName' => $this->isAnonymous ? 'nullable' : [
@@ -396,8 +401,6 @@ protected array $phaseGrades = [
 public function submitReport()
     {
  ini_set('max_execution_time', 500);
-        try {
-        app(ReportSubmissionLimiter::class)->admit(session()->getId(), request()->ip() ?? '');
         $this->validate();
 
     if ($this->schoolProvince) {
@@ -620,23 +623,38 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
                 'schoolSearch',
             ]);
 
+        } catch (ValidationException $e) {
+            throw $e;   // e.g. an attachment blocked by the type check / antivirus: Livewire shows it on the form
         } catch (\Exception $e) {
             Log::error('Report Submission Error: ' . $e->getMessage());
             session()->flash('error_message', 'Something went wrong. Please try again.');
         }
-        } finally {
+        finally {
             $this->turnstileToken = '';
             $this->dispatch('report-verification-reset');
         }
     }
   
-  
-  public function updatedNewUploads($files)
+public function updatedNewUploads($files)
 {
     // Ensure it's an array
     $files = is_array($files) ? $files : [$files];
 
-    foreach ($files as $file) {
+    $store = app(AttachmentStore::class);
+    $max   = (int) config('attachments.max_per_report', 5);
+
+     foreach ($files as $file) {
+        if (count($this->image) >= $max) {
+            $this->addError('newUploads.0', "You can attach at most {$max} files.");
+            $file->delete();
+            continue;
+        }
+        if ($error = $store->validate($file)) {
+            $this->addError('newUploads.0', $error);
+            $file->delete();
+            continue;
+        }
+
         $alreadyExists = collect($this->image)->contains(function ($existingFile) use ($file) {
             return $existingFile->getFilename() === $file->getFilename();
         });

@@ -227,7 +227,8 @@ class ReportController extends Controller
                 'grade'                => $report->grade ?? 'N/A',
                 'latest_status_reason' => $report->latest_status_reason ?? 'No status history recorded.',
                 'description'          => $report->description,
-                'attachments'          => $report->image_path ? json_decode($report->image_path, true) : [],
+                'attachments'          => \App\Support\AttachmentAccess::paths($report),
+                'attachment_urls'      => \App\Support\AttachmentAccess::adminUrls($report),
             ]);
         }
 

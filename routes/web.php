@@ -181,6 +181,18 @@ Route::middleware(['auth', 'role:district'])->group(function () {
     // New Contact Us Route
 });
 
+Route::get('/attachments/{report}/{file}', [\App\Http\Controllers\AttachmentController::class, 'show'])
+    ->middleware('auth')
+    ->whereNumber('report')
+    ->where('file', '[^/]+')
+    ->name('attachments.show');
+
+Route::get('/report-attachments/{caseNumber}/{file}', [\App\Http\Controllers\AttachmentController::class, 'showForReporter'])
+    ->middleware(['signed', 'throttle:60,1'])
+    ->where('caseNumber', '[A-Za-z0-9-]+')
+    ->where('file', '[^/]+')
+    ->name('attachments.reporter');
+
 // ==========================================
 
 // ABOUT US PAGE
