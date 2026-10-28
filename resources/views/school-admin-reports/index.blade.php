@@ -521,10 +521,11 @@ attachmentSpan.innerHTML = '';
 
 if (report.attachments && report.attachments.length > 0) {
 
-    report.attachments.forEach(filePath => {
+    report.attachments.forEach((filePath, i) => {
 
-        // Create Laravel storage URL
-        const publicUrl = "{{ asset('storage') }}/" + filePath.replace(/^\/+/, '');
+        // Attachments are private: use the authenticated download URL built by the server
+        const publicUrl = (report.attachment_urls || [])[i];   // authenticated handler URL
+        if (!publicUrl) return;
 
         const ext = filePath.split('.').pop().toLowerCase();
 

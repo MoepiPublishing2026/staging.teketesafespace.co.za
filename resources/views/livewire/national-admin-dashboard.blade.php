@@ -271,9 +271,14 @@
                                 <tr><th class="pr-4 py-1">Grade:</th><td>{{ $selectedReport->grade ?? 'N/A' }}</td></tr>
                                 <tr><th class="pr-4 py-1">Is Anonymous:</th><td>{{ $selectedReport->is_anonymous ? 'Yes' : 'No' }}</td></tr>
                                 <tr><th class="pr-4 py-1">Latest Status Reason:</th><td>{{ $selectedReport->latest_status_reason ?? 'N/A' }}</td></tr>
-                                @if($selectedReport->image_path)
-                                    <tr><th class="pr-4 py-1">Attached Image:</th>
-                                        <td><img src="{{ asset('storage/' . $selectedReport->image_path) }}" alt="Report Image" class="max-w-xs rounded"></td>
+                                @php $attachmentUrls = \App\Support\AttachmentAccess::adminUrls($selectedReport); @endphp
+                                @if(count($attachmentUrls))
+                                    <tr><th class="pr-4 py-1">Attachments:</th>
+                                        <td>
+                                            @foreach($attachmentUrls as $i => $attachmentUrl)
+                                                <a href="{{ $attachmentUrl }}" target="_blank" rel="noopener" class="text-blue-600 underline mr-3">Attachment {{ $i + 1 }}</a>
+                                            @endforeach
+                                        </td>
                                     </tr>
                                 @endif
                             </tbody>

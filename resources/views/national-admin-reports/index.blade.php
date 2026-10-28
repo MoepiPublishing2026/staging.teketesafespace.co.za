@@ -869,7 +869,8 @@ function openReportModal(reportId) {
         if (report.attachments && report.attachments.length > 0) {
             report.attachments.forEach(function(filePath) {
                 const ext       = filePath.split('.').pop().toLowerCase();
-                const publicUrl = '/storage/' + filePath.replace(/^\/+/, '');
+                const publicUrl = (report.attachment_urls || [])[i];   // authenticated handler URL
+                if (!publicUrl) return;
                 let elem;
 
                 if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
@@ -911,7 +912,8 @@ function openReportModal(reportId) {
         if (report.attachments && report.attachments.length > 0) {
             report.attachments.forEach(filePath => {
                 const ext = filePath.split('.').pop().toLowerCase();
-                const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
+                const publicUrl = (report.attachment_urls || [])[i];   // authenticated handler URL
+                if (!publicUrl) return;
                 let elem;
                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
                     elem = document.createElement('img');

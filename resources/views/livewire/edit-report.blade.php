@@ -1,19 +1,15 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
     <!-- Header -->
     <header
-        style="position: fixed; top: 0; left: 0; width: 100vw; background-color: #ffffff; z-index: 50;">
-                <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
+        style="position: fixed; top: 0; left: 0; width: 100vw; background-color: #ffffff; z-index: 50; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                <div class="flex justify-between items-center py-2" style="width: 100%; padding-left: 2vw; padding-right: 2vw;">
 
-            <div class="flex items-center ml-4 lg:ml-10">
-                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" class="w-[120px] sm:w-[140px] md:w-[200px] lg:w-[300px] xl:w-[300px] h-auto object-contain flex-shrink-0">
+            <div>
+                <img src="{{ asset('images/logo.png') }}" alt="Safe Space Logo" style="width: 110px; height: auto;">
             </div>
             <div class="flex items-center gap-4">
-                <div class="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-10
-                font-[Montserrat]
-                text-[18px]
-                lg:text-[18px]
-                xl:text-[20px]
-                ">
+                <div class="hidden md:flex gap-8"
+                    style="font-family: 'Montserrat', sans-serif; font-size: 17px; color: black;">
                     <a href="javascript:void(0);" onclick="window.history.back();"
                         class="transition-colors hover:!text-[#c7da30]"
                         style="color: black; text-decoration: none;">Back</a>
@@ -120,21 +116,13 @@
 
     <!-- Main Section -->
     <div
-        class="edit-report-main"
-        style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: 100vh; padding: 150px 1.5rem 40px;">
-        <style>
-            @media (min-width: 1024px) {
-                .edit-report-main {
-                    padding-top: 170px !important;
-                }
-            }
-        </style>
+        style="font-family: 'Montserrat', sans-serif; background-color: #fff; min-height: 100vh; padding: 120px 1.5rem 40px;">
         <div style="max-width: 1280px; margin: 0 auto; width: 100%;">
 
-    <!-- Page heading -->
-    <h1 class="text-center text-[22px] sm:text-[28px] font-bold text-black mb-6">
-       EDIT  YOUR REPORT
-    </h1>
+            <!-- Page Title -->
+            <h1 class="text-center text-[22px] font-[700] uppercase text-black mb-8">
+                Edit Your Report
+            </h1>
 
             <!-- Form Container -->
             <div class="mx-auto border-2 border-[#c6d933] rounded-[10px] bg-white w-full max-w-[640px] p-6 sm:p-10">
@@ -226,7 +214,7 @@
                                 @foreach ($existingAttachments as $index => $filePath)
                                     @php
                                         $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-                                        $url = asset('storage/' . ltrim($filePath, '/'));
+                                        $url = \App\Support\AttachmentAccess::reporterUrl($caseNumber, $filePath);
                                         $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg']);
                                         $isVideo = in_array($ext, ['mp4', 'mov', 'avi', 'wmv']);
                                     @endphp
@@ -234,7 +222,7 @@
                                         @if ($isImage)
                                             <img src="{{ $url }}" alt="Attachment"
                                                 class="w-32 h-32 object-cover border rounded shadow cursor-pointer hover:opacity-80 transition"
-                                                onclick="window.open('{{ $url }}', '_blank')">
+                                                onclick="window.open(@js($url), '_blank', 'noopener')">
                                         @elseif ($isVideo)
                                             <video controls
                                                 class="w-32 h-32 border rounded shadow cursor-pointer hover:opacity-80 transition">
@@ -256,6 +244,7 @@
 
                         <div class="mt-4">
                             <input type="file" wire:model="newUploads" multiple
+                                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
                                 class="form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black bg-white">
                             @error('newUploads.*')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
@@ -439,35 +428,7 @@
         </div>
     </div>
 
-    <div id="edit-report-footer-container">
     <x-site-footer />
-    </div>
-
-    <style>
-        /* Match landing page footer sizing/spacing */
-        #edit-report-footer-container footer {
-            padding-top: 25px !important;
-            padding-bottom: 22px !important;
-        }
-
-        /* Footer text move left (size unchanged) */
-        @media (min-width: 1024px) {
-            #edit-report-footer-container footer p {
-                position: relative !important;
-                left: 50px !important;
-            }
-        }
-
-        /* Footer icons move left (size unchanged) */
-        @media (min-width: 1440px) {
-            #edit-report-footer-container footer svg,
-            #edit-report-footer-container footer img {
-                position: relative !important;
-                left: -15px !important;
-                transform: translateX(0) !important;
-            }
-        }
-    </style>
 
 
     <script>
