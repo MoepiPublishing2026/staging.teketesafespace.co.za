@@ -1,4 +1,15 @@
+# Environment files
 .env
+.env.*
+!.env.example
+!.env.encrypted
+
+# Never expose environment backups
+/public/.env_old
+/public/.env
+/public/.env.*
+
+
 storage/framework/views/*
 storage/framework/cache/*
 storage/logs/*
