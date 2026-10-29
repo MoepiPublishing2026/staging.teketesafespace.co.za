@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
 use App\Support\OtpSession;
-use App\Services\TurnstileVerifier;
-use Illuminate\Validation\ValidationException;
 
 class AdminLoginForm extends Component
 {
@@ -56,16 +54,52 @@ class AdminLoginForm extends Component
     {
         $this->turnstileToken = $turnstileToken;
         $this->captchaError = '';
-        if (!$this->showCaptcha) {
+        $secret = (string) config('turnstile.secret_key');
+        $siteKey = (string) config('turnstile.site_key');
+        $expectedHostnames = array_map('strtolower', config('turnstile.hostnames', []));
+
+        if (!$this->showCaptcha || $secret === '' || $siteKey === '' || $this->turnstileToken === '' || strlen($this->turnstileToken) > 2048 || $expectedHostnames === []) {
             $this->captchaError = 'Security verification is unavailable. Please contact the site administrator.';
             $this->dispatch('admin-turnstile-reset');
             return;
         }
 
+        $httpStatus = null;
         try {
-            app(TurnstileVerifier::class)->verify($this->turnstileToken, 'admin_login');
-        } catch (ValidationException $exception) {
-            $this->captchaError = $exception->errors()['turnstileToken'][0] ?? 'Security verification could not be confirmed. Please try again.';
+            $response = Http::asForm()->timeout(8)->post(
+                'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+                [
+                    'secret' => $secret,
+                    'response' => $this->turnstileToken,
+                    'remoteip' => request()->ip(),
+                ]
+            );
+            $httpStatus = $response->status();
+            $result = $response->successful() ? $response->json() : null;
+        } catch (\Throwable $exception) {
+            $result = null;
+            Log::warning('Turnstile Siteverify request failed', [
+                'exception' => get_class($exception),
+            ]);
+        }
+
+        $hostname = strtolower((string) data_get($result, 'hostname', ''));
+        $action = (string) data_get($result, 'action', '');
+        $siteverifySuccess = data_get($result, 'success') === true;
+        $valid = data_get($result, 'success') === true
+            && $action === 'admin_login'
+            && in_array($hostname, $expectedHostnames, true);
+
+        if (!$valid) {
+            Log::notice('Turnstile verification rejected', [
+                'http_status' => $httpStatus,
+                'success' => $siteverifySuccess,
+                'error_codes' => data_get($result, 'error-codes', []),
+                'action_matches' => $action === 'admin_login',
+                'hostname' => $hostname,
+                'hostname_matches' => in_array($hostname, $expectedHostnames, true),
+            ]);
+            $this->captchaError = 'Security verification could not be confirmed. Please try again.';
             $this->dispatch('admin-turnstile-reset');
             return;
         }
