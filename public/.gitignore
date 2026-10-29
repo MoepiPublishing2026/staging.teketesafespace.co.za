@@ -14,8 +14,8 @@ Thumbs.db
 
 # Node and build
 /node_modules
-/public/build
-/public/hot
+/build/
+/hot/
 /public/storage
 
 # Composer and PHP
