@@ -15,16 +15,16 @@ The reporter for **Case #{{ $report->case_number }}** has submitted an official 
 ### Report Details
 **Case Number:** {{ $report->case_number }}  
 **Current Status:** {{ ucfirst($report->status) }}  
-**Location:** {{ $report->location ?? 'N/A' }}
+**Location:** {{ \App\Support\MailText::line($report->location ?? 'N/A') }}
 
 @if(!$report->is_anonymous)
-**Reporter Name:** {{ $report->full_name ?? 'N/A' }}  
-**Email:** {{ $report->reporter_email ?? 'N/A' }}
+**Reporter Name:** {{ \App\Support\MailText::line($report->full_name ?? 'N/A') }}  
+**Email:** {{ \App\Support\MailText::line($report->reporter_email ?? 'N/A') }}
 @else
 **Reporter:** Anonymous
 @endif
 
-@component('mail::button', ['url' => url('/school-admin')])
+@component('mail::button', ['url' => route('school-admin')])
 Review Clarification & Manage Report
 @endcomponent
 

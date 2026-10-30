@@ -277,7 +277,7 @@
                                         @if ($isImage)
                                             <img src="{{ $file->temporaryUrl() }}" alt="Preview"
                                                 class="w-32 h-32 object-cover border rounded mt-2 cursor-pointer hover:opacity-80 transition"
-                                                onclick="window.open('{{ $file->temporaryUrl() }}', '_blank')">
+                                                onclick="window.open(@js($file->temporaryUrl()), '_blank', 'noopener')">
                                         @elseif ($isVideo)
                                             <video controls class="w-32 h-32 border rounded mt-2">
                                                 <source src="{{ $file->temporaryUrl() }}"

@@ -12,7 +12,7 @@ class Turnstile
     /** Active only when BOTH keys are set, so a half-finished setup can never lock everyone out. */
     public static function enabled(): bool
     {
-        return filled(config('services.turnstile.site_key')) && filled(config('services.turnstile.secret'));
+        return filled(config('services.turnstile.site_key')) && filled(config('turnstile.secret_key'));
     }
 
     public static function verify(?string $token, ?string $ip = null): bool
@@ -26,7 +26,7 @@ class Turnstile
 
         try {
             $response = Http::asForm()->timeout(5)->post(self::VERIFY_URL, [
-                'secret'   => config('services.turnstile.secret'),
+                'secret'   => config('turnstile.secret_key'),
                 'response' => $token,
                 'remoteip' => $ip,
             ]);

@@ -20,7 +20,7 @@ class CheckStatus extends Component
     public $turnstileToken = '';
 
     protected $rules = [
-        'caseNumber' => 'required|string',
+        'caseNumber' => ['required', 'string', 'max:40', 'regex:/^[A-Za-z0-9-]{3,40}$/D'],
     ];
 
     protected $queryString = ['caseNumber'];

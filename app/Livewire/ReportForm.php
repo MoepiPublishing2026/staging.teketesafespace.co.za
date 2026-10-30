@@ -401,6 +401,8 @@ protected array $phaseGrades = [
 public function submitReport()
     {
  ini_set('max_execution_time', 500);
+        try {
+        app(ReportSubmissionLimiter::class)->admit(session()->getId(), request()->ip() ?? '');
         $this->validate();
 
     if ($this->schoolProvince) {
@@ -490,7 +492,7 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
         app(TurnstileVerifier::class)->verify($this->turnstileToken);
 
         $report = null;        $caseNumber = null;
-        
+
         try {
         DB::transaction(function () use (&$report, &$caseNumber) {
             
@@ -538,22 +540,10 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             } while ($attempt < $maxAttempts);
                 $imagePaths = [];
                 if (!empty($this->image)) {
-                    foreach ($this->image as $file) {
-                        $path = $file->store('reports', 'public');
-                        $imagePaths[] = $path;
-
-                        // Copy to public storage for web access
-                        $source = storage_path('app/public/' . $path);
-                        $destination = public_path('storage/' . $path);
-                        $destinationDir = dirname($destination);
-                        if (!file_exists($destinationDir)) {
-                            mkdir($destinationDir, 0777, true);
-                        }
-                        if (!@copy($source, $destination)) {
-                            Log::error('Failed to copy report attachment for web access', ['source' => $source, 'destination' => $destination]);
-                        }
-                    }
-                }                // Lookup school by name to get foreign key IDs
+                    // Content-sniffed type, antivirus scan, images re-encoded, generated names, PRIVATE disk.
+                    // All-or-nothing: if one file is rejected the ones already written are removed.
+                    $imagePaths = app(AttachmentStore::class)->storeMany($this->image);
+                }               // Lookup school by name to get foreign key IDs
                 $school = $this->findSchoolByName($this->schoolName);
                 
                 $report = new Report();
@@ -584,9 +574,16 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             
             
 
-            // Notify reporter
+            // Notify reporter. The report is already committed, so an email problem (SMTP down, bad
+            // address...) must not be reported as a failed submission - they would just submit it again.
+            $emailed = true;
             if ($this->reporterEmail) {
-                Mail::to($this->reporterEmail)->send(new CaseNumberNotification($caseNumber));
+                try {
+                    Mail::to($this->reporterEmail)->send(new CaseNumberNotification($caseNumber));
+                } catch (\Throwable $mailError) {
+                    $emailed = false;
+                    Log::warning('Case number email could not be sent', ['case' => $caseNumber, 'error' => $mailError->getMessage()]);
+                }
             }
 /*
             // Notify only the assigned school admin
@@ -608,6 +605,9 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             }
 */
             session()->flash('success_message', 'Your report has been submitted successfully! Case number: ' . $caseNumber);
+            if (! $emailed) {
+                session()->flash('case_email_failed', true);
+            }
 
             $this->reset([
                 'subtypeID',
@@ -629,7 +629,7 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             Log::error('Report Submission Error: ' . $e->getMessage());
             session()->flash('error_message', 'Something went wrong. Please try again.');
         }
-        finally {
+        }finally {
             $this->turnstileToken = '';
             $this->dispatch('report-verification-reset');
         }

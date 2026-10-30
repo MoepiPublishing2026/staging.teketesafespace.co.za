@@ -18,6 +18,7 @@ class SchoolAdminReportsController extends AdminController
 {
     public function index(Request $request)
     {
+        \App\Support\InputRules::sanitizeReportFilters($request);
 
         $user = Auth::user();
 

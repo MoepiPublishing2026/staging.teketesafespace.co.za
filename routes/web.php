@@ -53,9 +53,14 @@ Route::get('/select-abuse-type/{isAnonymous}', function (string $isAnonymous) {
 });
 Route::get('/report-form/{abuseTypeID}/{isAnonymous}', ReportForm::class)->name('report-form');
 Route::get('/clarify/{caseNumber}', ClarificationModal::class)->name('report.clarify');
-Route::get('/check-status', CheckStatus::class)->name('check-status'); // Add this line
+Route::get('/check-status', CheckStatus::class)->name('check-status');
 Route::get('/edit-report/{caseNumber}', EditReport::class)->name('edit-report');
 Route::get('/contact-us', ContactUs::class)->name('contact-us'); 
+
+// Browser CSP violation reports
+Route::post('/csp-report', \App\Http\Controllers\CspReportController::class)
+    ->middleware('throttle:30,1')
+    ->name('csp.report');
 
 // Admin Login Flow
 // Step 1: The initial username and password form
@@ -182,7 +187,7 @@ Route::middleware(['auth', 'role:district'])->group(function () {
 });
 
 Route::get('/attachments/{report}/{file}', [\App\Http\Controllers\AttachmentController::class, 'show'])
-    ->middleware('auth')
+    ->middleware(['auth', 'otp.verified'])
     ->whereNumber('report')
     ->where('file', '[^/]+')
     ->name('attachments.show');
@@ -192,6 +197,7 @@ Route::get('/report-attachments/{caseNumber}/{file}', [\App\Http\Controllers\Att
     ->where('caseNumber', '[A-Za-z0-9-]+')
     ->where('file', '[^/]+')
     ->name('attachments.reporter');
+
 
 // ==========================================
 

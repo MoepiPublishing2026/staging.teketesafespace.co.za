@@ -14,6 +14,7 @@ class ProvincialAdminReportsController extends Controller
 {
     public function index(Request $request)
     {
+        \App\Support\InputRules::sanitizeReportFilters($request);   // task #4: bounded / allow-listed filters
         $user = Auth::user();
 
         if (!$user || $user->role !== 'provincial') {

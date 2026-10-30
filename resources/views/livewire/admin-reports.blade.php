@@ -853,7 +853,7 @@
                                     ? 'Anonymous' 
                                     :  $report->full_name;
                             @endphp
-                            <tr wire:click="showReport({{ $report->id }})">
+                            <tr wire:click="showReport({{ (int) $report->id }})">
                                 <td class="case-number">{{ $report->case_number }}</td>
                                 <td title="{{ $displayName }}">{{ $displayName }}</td>
                                 <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
@@ -1050,7 +1050,7 @@
                                     <span class="text-[11px] font-bold text-red-600 mb-1 uppercase tracking-tighter">
                                         {{ $falseReportsCount }} Total False Reports
                                     </span>
-                                    <button wire:click="permanentBlock('{{ $selectedReport->reporter_email }}')"
+                                    <button wire:click="permanentBlock(@js($selectedReport->reporter_email))"
                                             wire:confirm="Are you sure? This will permanently prevent this email ({{ $selectedReport->reporter_email }}) from making future reports."
                                             class="bg-gradient-to-r from-[#c7da30] to-[#d7e47a] px-5 py-2 rounded-full font-montserrat text-black shadow-md">
                                         <i class="fas fa-user-slash mr-2"></i> Block Reporter

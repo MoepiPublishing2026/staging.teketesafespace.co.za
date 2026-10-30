@@ -174,7 +174,7 @@
     @foreach ($abuseTypes as $abuseType)
 
         <button
-            wire:click="selectAbuseType({{ $abuseType->id }})"
+            wire:click="selectAbuseType({{ (int) $abuseType->id }})"
             class="
                 w-full
                 min-w-0

@@ -1571,6 +1571,16 @@ function activateCard(el, status) {
     openStatusModal(status);
 }
 
+/**
+ * Escape a value before it is concatenated into an HTML string (innerHTML / template literal).
+ * Anything that came from the database or a reporter must go through this.
+ */
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"'`]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c];
+    });
+}
+
 function openStatusModal(status) {
     let reports = [];
 

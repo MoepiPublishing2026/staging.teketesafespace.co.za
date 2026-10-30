@@ -14,6 +14,8 @@ class ReportController extends Controller
 {
     public function index(Request $request)
     {
+        \App\Support\InputRules::sanitizeReportFilters($request);
+
         // Start query with eager loading relationships
         $query = Report::with(['province', 'district', 'school', 'abuseType', 'subtype']);
             

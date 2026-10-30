@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Mail\ReportUpdatedMail;
 use App\Support\AttachmentStore;
+use App\Support\InputRules;
 use Livewire\Attributes\Locked;
 
 class EditReport extends Component
@@ -38,7 +39,7 @@ class EditReport extends Component
     public $fullName;
     public $age;
     public $isAnonymous;
-    public $schoolPhase;
+    #[Locked] public $schoolPhase;   // derived from the school record on the server
     public $schoolProvince;
     public $schoolId;
 
@@ -398,9 +399,8 @@ class EditReport extends Component
                     }
                 },
             ],
-            'grade' => 'required|string|max:255',
-            'email' => 'nullable|email:rfc,dns|max:255',
-            'phoneNumber' => [
+            'grade' => InputRules::grade(),   // allow-list (Creche, Grade R, Grade 1-12)
+            'email' => InputRules::safeEmail(),
                 'required',
                 'digits:10',
                 'regex:/^\s*0(1[01234578]|2[12378]|3[1234569]|4[0123456789]|5[134678]|6[0-8]|7[1-9]|8[1-467])(\s*\d){7}\s*$/',
@@ -428,7 +428,9 @@ class EditReport extends Component
                 },
             ],
             'fullName' => $this->isAnonymous ? 'nullable|string' : 'required|string|max:50|regex:/^[a-zA-Z\s]+$/u',
-            'age' => 'nullable|numeric|min:0|max:115',
+            'age' => InputRules::age(false),
+            'image'   => ['array', 'max:' . (int) config('attachments.max_per_report', 5)],
+            'image.*' => AttachmentStore::fileRules(),
         ]);
 
         // Re-resolve province from the database rather than trusting stale component state.

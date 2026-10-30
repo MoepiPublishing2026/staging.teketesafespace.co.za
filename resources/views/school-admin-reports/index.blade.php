@@ -356,7 +356,7 @@ $gradeOptions = collect($gradeOptions)
                             <td onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
                             <td onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">{{ $report->created_at->format('Y M d') }}</td>
                             <td>
-                                <select class="status-select" onchange="promptStatusUpdate({{ $report->id }}, this.value, '{{ $report->case_number }}', '{{ $report->status }}'); this.value='';" onclick="event.stopPropagation();">
+                                <select class="status-select" onchange="promptStatusUpdate({{ (int) $report->id }}, this.value, @js($report->case_number), @js($report->status)); this.value='';" onclick="event.stopPropagation();">
                                     <option value="">Update</option>
                                     <option value="awaiting-resolution">Awaiting Resolution</option>
                                     <option value="under-review">Under Review</option>

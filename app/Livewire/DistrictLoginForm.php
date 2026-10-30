@@ -13,15 +13,15 @@ class DistrictLoginForm extends Component
     public $password = '';
 
     protected $rules = [
-        'username' => 'required',
-        'password' => 'required',
+        'username' => 'required|string|max:100',
+        'password' => 'required|string|max:255',
     ];
 
     public function login()
     {
         $this->validate([
-            'username' => 'required',
-            'password' => 'required',
+            'username' => 'required|string|max:100',
+            'password' => 'required|string|max:255',
         ]);
 
 
