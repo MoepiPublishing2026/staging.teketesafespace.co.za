@@ -1524,24 +1524,27 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 </div>
 
 <!-- Chart Data -->
+@php
+    $provincialDashboardData = [
+        'months' => $months,
+        'monthlyCounts' => $monthlyCounts,
+        'abuseLabels' => $abuseTypeLabels,
+        'abuseCounts' => $abuseTypeCounts,
+        'abuseTypePercentages' => $abuseTypePercentages ?? [],
+        'statusCounts' => $statusCounts,
+        'anonymousCounts' => $anonymousCounts,
+        'topSchools' => $topSchools ?? [],
+        'activeSchoolsWithReports' => $activeSchoolsWithReports ?? 0,
+        'activeSchoolsByReports' => $activeSchoolsByReports ?? [],
+        'reportsWithoutLinkedSchool' => $reportsWithoutLinkedSchool ?? 0,
+        'statusReports' => $statusReportPayload,
+        'allReports' => $allReportsPayload,
+        'anonymousReports' => $anonymousReportsPayload ?? [],
+        'identifiedReports' => $identifiedReportsPayload ?? [],
+    ];
+@endphp
 <script id="dashboard-data" type="application/json">
-{!! json_encode([
-    'months' => $months,
-    'monthlyCounts' => $monthlyCounts,
-    'abuseLabels' => $abuseTypeLabels,
-    'abuseCounts' => $abuseTypeCounts,
-    'abuseTypePercentages' => $abuseTypePercentages ?? [],
-    'statusCounts' => $statusCounts,
-    'anonymousCounts' => $anonymousCounts,
-    'topSchools' => $topSchools ?? [],
-    'activeSchoolsWithReports' => $activeSchoolsWithReports ?? 0,
-    'activeSchoolsByReports' => $activeSchoolsByReports ?? [],
-    'reportsWithoutLinkedSchool' => $reportsWithoutLinkedSchool ?? 0,
-    'statusReports' => $statusReportPayload,
-    'allReports' => $allReportsPayload,
-    'anonymousReports' => $anonymousReportsPayload ?? [],
-    'identifiedReports' => $identifiedReportsPayload ?? [],
-]) !!}
+    @json($provincialDashboardData)
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -2003,12 +2006,12 @@ function openExtrasModal(type) {
     if (type === 'anonymous') {
         titleEl.textContent = 'Anonymous Reports';
         const count = (data.anonymousCounts || {}).anonymous || 0;
-        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports submitted anonymously: <strong>' + count.toLocaleString() + '</strong></p>' +
+        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports submitted anonymously: <strong>' + escapeHtml(count.toLocaleString()) + '</strong></p>' +
             '<button type="button" onclick="navigateWithFilterByAnonymous(1); closeExtrasModal();" class="extras-modal-btn">View Anonymous Reports</button>';
     } else if (type === 'identified') {
         titleEl.textContent = 'Identified Reports';
         const count = (data.anonymousCounts || {}).identified || 0;
-        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports where the reporter was identified: <strong>' + count.toLocaleString() + '</strong></p>' +
+        bodyEl.innerHTML = '<p style="margin-bottom:1rem;">Reports where the reporter was identified: <strong>' + escapeHtml(count.toLocaleString()) + '</strong></p>' +
             '<button type="button" onclick="navigateWithFilterByAnonymous(0); closeExtrasModal();" class="extras-modal-btn">View Identified Reports</button>';
     } else if (type === 'abuse-types') {
         titleEl.textContent = 'Types Of Report Tracked';
