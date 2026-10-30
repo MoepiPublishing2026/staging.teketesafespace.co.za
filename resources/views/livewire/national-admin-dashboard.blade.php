@@ -91,7 +91,7 @@
                     <h2>{{ $summaryCounts['total'] ?? 0 }}</h2>
                 </div>
                 @foreach (['awaiting-resolution', 'under-review', 'forwarded', 'closed', 'unresolved', 'false-report'] as $status)
-                    <div wire:click="showStatusReports('{{ $status }}')" class="card">
+                    <div wire:click="showStatusReports(@js((string) $status))" class="card">
                         <h4>{{ ucwords(str_replace('-', ' ', $status)) }} Reports</h4>
                         <h2>{{ $summaryCounts[$status] ?? 0 }}</h2>
                     </div>
@@ -124,7 +124,7 @@
                             <h4 class="font-bold text-gray-700 mb-3">Filter by Province</h4>
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($provinces as $province)
-                                <button wire:click="$set('provinceFilter', {{ $province['id'] }})" type="button"
+                                <button wire:click="$set('provinceFilter', {{ (int) $province['id'] }})" type="button"
                                     class="rounded px-3 py-1 text-sm font-semibold border border-[#a5d817] cursor-pointer {{ $provinceFilter === $province['id'] ? 'bg-[#a5d817] text-white' : 'bg-white text-gray-800' }}">
                                     {{ $province['name'] }}
                                 </button>
@@ -141,7 +141,7 @@
                             <h4 class="font-bold text-gray-700 mb-3">Filter by District</h4>
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($districts as $district)
-                                <button wire:click="$set('districtFilter', {{ $district['id'] }})" type="button"
+                                <button wire:click="$set('districtFilter', {{ (int) $district['id'] }})" type="button"
                                     class="rounded px-3 py-1 text-sm font-semibold border border-[#a5d817] cursor-pointer {{ $districtFilter === $district['id'] ? 'bg-[#a5d817] text-white' : 'bg-white text-gray-800' }}">
                                     {{ $district['name'] }}
                                 </button>
@@ -173,7 +173,7 @@
                             <h4 class="font-bold text-gray-700 mb-3">Filter by Abuse Type</h4>
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($abuseTypes as $type)
-                                <button wire:click="$set('abuseTypeFilter', {{ $type->id }})" type="button"
+                                <button wire:click="$set('abuseTypeFilter', {{ (int) $type->id }})" type="button"
                                     class="rounded px-3 py-1 text-sm font-semibold border border-[#a5d817] cursor-pointer {{ $abuseTypeFilter === $type->id ? 'bg-[#a5d817] text-white' : 'bg-white text-gray-800' }}">
                                     {{ $type->type_name }}
                                 </button>
@@ -189,7 +189,7 @@
                             <h4 class="font-bold text-gray-700 mb-3">Filter by Town/City</h4>
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($townCities as $city)
-                                <button wire:click="$set('townCityFilter', '{{ $city }}')" type="button"
+                                <button wire:click="$set('townCityFilter', @js((string) $city))" type="button"
                                     class="rounded px-3 py-1 text-sm font-semibold border border-[#a5d817] cursor-pointer {{ $townCityFilter === $city ? 'bg-[#a5d817] text-white' : 'bg-white text-gray-800' }}">
                                     {{ $city }}
                                 </button>
@@ -229,7 +229,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach($statusReports as $report)
-                                        <tr wire:click="showReportDetails({{ $report->id }})" class="hover:bg-green-50" style="cursor: pointer;">
+                                        <tr wire:click="showReportDetails({{ (int) $report->id }})" class="hover:bg-green-50" style="cursor: pointer;">
                                             <td class="p-2 border-b">{{ $report->school_name ?? 'Unknown' }}</td>
                                             <td class="p-2 border-b">{{ optional($report->district)->district_name ?? 'Unknown' }}</td>
                                             <td class="p-2 border-b">{{ optional($report->abuseType)->type_name ?? 'Unknown' }}</td>
@@ -271,9 +271,14 @@
                                 <tr><th class="pr-4 py-1">Grade:</th><td>{{ $selectedReport->grade ?? 'N/A' }}</td></tr>
                                 <tr><th class="pr-4 py-1">Is Anonymous:</th><td>{{ $selectedReport->is_anonymous ? 'Yes' : 'No' }}</td></tr>
                                 <tr><th class="pr-4 py-1">Latest Status Reason:</th><td>{{ $selectedReport->latest_status_reason ?? 'N/A' }}</td></tr>
-                                @if($selectedReport->image_path)
-                                    <tr><th class="pr-4 py-1">Attached Image:</th>
-                                        <td><img src="{{ asset('storage/' . $selectedReport->image_path) }}" alt="Report Image" class="max-w-xs rounded"></td>
+                                @php $attachmentUrls = \App\Support\AttachmentAccess::adminUrls($selectedReport); @endphp
+                                @if(count($attachmentUrls))
+                                    <tr><th class="pr-4 py-1">Attachments:</th>
+                                        <td>
+                                            @foreach($attachmentUrls as $i => $attachmentUrl)
+                                                <a href="{{ $attachmentUrl }}" target="_blank" rel="noopener" class="text-blue-600 underline mr-3">Attachment {{ $i + 1 }}</a>
+                                            @endforeach
+                                        </td>
                                     </tr>
                                 @endif
                             </tbody>

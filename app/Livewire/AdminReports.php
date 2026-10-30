@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Mail\ReportStatusChangedNotification;
 use App\Mail\ReporterBlockedNotification;
 use App\Notifications\CaseStatusChanged;
+use Livewire\Attributes\Locked;
+use App\Support\AttachmentAccess;
 
 class AdminReports extends Component
 {
@@ -21,7 +23,7 @@ class AdminReports extends Component
 
     public $filter = 'all';
     public $selectedReport = null;
-    public $modalImage = null;
+    #[Locked] public $modalImage = null;
 
     // Reason modal
     public $showReasonModal = false;
@@ -356,9 +358,16 @@ if ($age !== null && $age !== '' && is_numeric($age)) {
         $this->selectedReport = null;
     }
 
-    public function showImage($path)
+     public function showImage(int $index)
     {
-        $this->modalImage = $path;
+        // Resolve the attachment from the report already authorised in showReport();
+        // never trust a path coming from the browser.
+        $report = $this->selectedReport;
+        $paths  = $report ? AttachmentAccess::paths($report) : [];
+
+        $this->modalImage = isset($paths[$index])
+            ? AttachmentAccess::adminUrl($report->id, $paths[$index])
+            : null;
     }
 
     public function closeImage()

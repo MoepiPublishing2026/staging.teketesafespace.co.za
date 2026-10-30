@@ -1,0 +1,21 @@
+# OWASP ZAP baseline rules. Columns: <plugin id> <TAB> <IGNORE|INFO|WARN|FAIL> <TAB> <comment>
+# FAIL = breaks the workflow. WARN = shown in the report only. IGNORE = suppressed (justify every one).
+# Anything not listed here uses the ZAP default (WARN).
+10038	FAIL	(Content Security Policy (CSP) Header Not Set) every page must send the baseline CSP
+10020	FAIL	(Missing Anti-clickjacking Header) X-Frame-Options / frame-ancestors
+10021	FAIL	(X-Content-Type-Options Header Missing) pages AND static files; see public/.htaccess
+10037	FAIL	(Server Leaks Information via X-Powered-By) must stay hidden
+10098	FAIL	(Cross-Domain Misconfiguration) no Access-Control-Allow-Origin: * ; see config/cors.php
+10011	FAIL	(Cookie Without Secure Flag) staging/production run on HTTPS; set SESSION_SECURE_COOKIE=true
+10035	WARN	(Strict-Transport-Security Header Not Set)
+10063	WARN	(Permissions Policy Header Not Set)
+10054	WARN	(Cookie without SameSite Attribute)
+10055	WARN	(CSP) KNOWN: script-src/style-src still need 'unsafe-inline' (inline scripts + onclick handlers) and 'unsafe-eval' (Livewire/Alpine). Tracked: move to nonces, then change this to FAIL
+10017	WARN	(Cross-Domain JavaScript Source File Inclusion) KNOWN: CDN scripts have no SRI. Tracked: self-host or pin + add integrity hashes
+10010	WARN	(Cookie No HttpOnly Flag) Expected for Laravel's XSRF-TOKEN cookie only; investigate if any OTHER cookie is listed
+10044	IGNORE	(Big Redirect Detected) false positive: Laravel's standard ~400 byte redirect page
+10027	IGNORE	(Information Disclosure - Suspicious Comments) comments in third-party/minified JS
+10109	IGNORE	(Modern Web Application) informational
+10112	IGNORE	(Session Management Response Identified) informational
+10049	IGNORE	(Storable and Cacheable Content) informational on public pages
+10096	IGNORE	(Timestamp Disclosure - Unix) numbers in JS bundles, not timestamps

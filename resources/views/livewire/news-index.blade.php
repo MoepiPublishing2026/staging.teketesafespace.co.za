@@ -212,7 +212,7 @@
                 <div class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
                     @foreach($suggestions as $suggestion)
                         <button type="button"
-                                wire:click="selectSuggestion('{{ addslashes($suggestion) }}')"
+                                wire:click="selectSuggestion(@js((string) $suggestion))"
                                 class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-[#c7da30] hover:text-white transition-colors duration-150 block truncate">
                             {{ $suggestion }}
                         </button>
@@ -252,7 +252,7 @@
                         <div class="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-48 overflow-y-auto">
                             @foreach($suggestions as $suggestion)
                                 <button type="button"
-                                        wire:click="selectSuggestion('{{ addslashes($suggestion) }}')"
+                                        wire:click="selectSuggestion(@js((string) $suggestion))"
                                         class="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-[#c7da30] hover:text-white transition-colors duration-150 block truncate">
                                     {{ $suggestion }}
                                 </button>
@@ -338,7 +338,7 @@
 
     </div>
 
-   <button type="button" wire:click="toggleExpand('{{ $item->id }}')" class="text-[14px] md:text-[21px] font-medium text-[#c7da30] underline transition-colors focus:outline-none hover:text-[#2f343e] inline-flex items-center gap-1">
+   <button type="button" wire:click="toggleExpand(@js((string) $item->id))" class="text-[14px] md:text-[21px] font-medium text-[#c7da30] underline transition-colors focus:outline-none hover:text-[#2f343e] inline-flex items-center gap-1">
 <span>{{ (string)$expandedNewsletterId === (string)$item->id ? 'Show Less' : 'Read More' }}</span>
     
     @if((string)$expandedNewsletterId !== (string)$item->id)

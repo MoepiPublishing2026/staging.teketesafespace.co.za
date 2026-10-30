@@ -979,7 +979,8 @@ canvas {
 
     <!-- Chart Data -->
     <script id="dashboard-data" type="application/json">
-    {!! json_encode([
+    @php
+$dashboardJsonData = [
         'months' => $months,
         'monthlyCounts' => $monthlyCounts,
         'abuseLabels' => $abuseTypeLabels,
@@ -992,7 +993,9 @@ canvas {
         'allReports' => $allReportsPayload,
         'anonymousReports' => $anonymousReportsPayload ?? [],
         'identifiedReports' => $identifiedReportsPayload ?? [],
-    ]) !!}
+];
+@endphp
+@json($dashboardJsonData)
     </script>
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -1027,6 +1030,16 @@ function activateCard(el, status) {
     document.querySelectorAll('.metric-card').forEach(card => card.classList.remove('active'));
     el.classList.add('active');
     openStatusModal(status);
+}
+
+/**
+ * Escape a value before it is concatenated into an HTML string (innerHTML / template literal).
+ * Anything that came from the database or a reporter must go through this (task #4).
+ */
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"'`]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c];
+    });
 }
 
 function openStatusModal(status) {
@@ -1064,10 +1077,10 @@ function openStatusModal(status) {
             row.onmouseover = function() { this.style.backgroundColor = '#f9fafb'; };
             row.onmouseout = function() { this.style.backgroundColor = ''; };
             row.innerHTML = `
-                <td style="padding: 0.75rem;">${report.case_number ?? 'N/A'}</td>
-                <td style="padding: 0.75rem;">${report.abuse_type ?? 'N/A'}</td>
-                <td style="padding: 0.75rem;">${report.status ? report.status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'N/A'}</td>
-                <td style="padding: 0.75rem;">${report.created_at ?? 'N/A'}</td>`;
+                <td style="padding: 0.75rem;">${escapeHtml(report.case_number ?? 'N/A')}</td>
+                <td style="padding: 0.75rem;">${escapeHtml(report.abuse_type ?? 'N/A')}</td>
+                <td style="padding: 0.75rem;">${escapeHtml(report.status ? report.status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'N/A')}</td>
+                <td style="padding: 0.75rem;">${escapeHtml(report.created_at ?? 'N/A')}</td>`;
             tbody.appendChild(row);
         });
     }
@@ -1669,7 +1682,7 @@ function openExtrasModal(type) {
         const pcts = data.abuseTypePercentages || [];
         let html = '<table style="width:100%; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Report Type</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Count</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">%</th></tr></thead><tbody>';
         labels.forEach((label, i) => {
-            html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (label || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (counts[i] || 0).toLocaleString() + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (pcts[i] ?? 0) + '%</td></tr>';
+            html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + escapeHtml(label || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (counts[i] || 0).toLocaleString() + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (pcts[i] ?? 0) + '%</td></tr>';
         });
         html += '</tbody></table>';
         bodyEl.innerHTML = html;
@@ -1682,7 +1695,7 @@ function openExtrasModal(type) {
         } else {
             let html = '<table style="width:100%; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Report Type</th><th style="text-align:right; padding:0.5rem; border-bottom:2px solid #e5e7eb;">Reports</th></tr></thead><tbody>';
             entries.forEach(([name, count]) => {
-                html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + (name || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + Number(count).toLocaleString() + '</td></tr>';
+                html += '<tr><td style="padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + escapeHtml(name || 'N/A') + '</td><td style="text-align:right; padding:0.5rem; border-bottom:1px solid #e5e7eb;">' + Number(count).toLocaleString() + '</td></tr>';
             });
             html += '</tbody></table>';
             bodyEl.innerHTML = html;

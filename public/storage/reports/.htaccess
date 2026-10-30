@@ -1,0 +1,9 @@
+# Report attachments are private. Nothing in this folder may be served directly; files are delivered by AttachmentController after an access check.
+# This also covers any legacy file the migration has not moved yet.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

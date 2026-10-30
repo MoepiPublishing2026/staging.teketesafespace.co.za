@@ -35,16 +35,6 @@ return [
         'token' => env('TWILIO_AUTH_TOKEN'),
         'from' => env('TWILIO_PHONE_NUMBER'),
     ],
-
-    'turnstile' => [
-        'site_key' => env('TURNSTILE_SITE_KEY'),
-        'secret_key' => env('TURNSTILE_SECRET'),
-        'hostnames' => array_values(array_filter(array_map(
-            static fn ($hostname) => strtolower(trim($hostname)),
-            explode(',', (string) env('TURNSTILE_HOSTNAMES', ''))
-        ))),
-    ],
-
     
     'payfast' => [
         'merchant_id'  => env('PAYFAST_MERCHANT_ID'),

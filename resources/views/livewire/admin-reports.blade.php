@@ -754,37 +754,13 @@
         Refresh Table
     </button>
 </div>
-
-{{-- Active Report Filters --}}
-@php
-    $hasActiveFilters =
-        trim((string) $search) !== '' ||
-        trim((string) $filterName) !== '' ||
-        $filterAge !== '' ||
-        $filterGrade !== '' ||
-        $filterAnonymous !== '' ||
-        $filterDateFrom !== '' ||
-        $filterDateTo !== '' ||
-        $filterType !== '' ||
-        $filterSubtype !== '' ||
-        $filterStatus !== '';
-
-    $selectedType = collect($typeOptions)->firstWhere('id', $filterType);
-    $selectedSubtype = collect($subtypeOptions)->firstWhere('id', $filterSubtype);
-
-    $badgeStyle = '
-        display: inline-block;
-        background: #f0f9d4;
-        color: #4a5e00;
-        border: 1px solid #c7da30;
-        padding: 7px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-    ';
-@endphp
-
-@if($hasActiveFilters)
+{{-- Active Dashboard Filters --}}
+@if(
+    $filterAge !== '' ||
+    $filterAnonymous !== '' ||
+    $filterGrade !== '' ||
+    trim($filterName) !== ''
+)
     <div style="
         display: flex;
         flex-wrap: wrap;
@@ -793,84 +769,67 @@
         margin: 12px 0 16px;
     ">
 
-        {{-- Main Search Badge --}}
-        @if(trim((string) $search) !== '')
-            <span style="{{ $badgeStyle }}">
-                Search: {{ trim($search) }}
-            </span>
-        @endif
-
-        {{-- Name Badge --}}
-        @if(trim((string) $filterName) !== '')
-            <span style="{{ $badgeStyle }}">
-                Name: {{ trim($filterName) }}
-            </span>
-        @endif
-
-        {{-- Age Badge --}}
         @if($filterAge !== '')
-            <span style="{{ $badgeStyle }}">
+            <span style="
+                background: #f0f9d4;
+                color: #4a5e00;
+                border: 1px solid #c7da30;
+                padding: 7px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            ">
                 Age: {{ $filterAge }}
             </span>
         @endif
-
-        {{-- Grade Badge --}}
+{{-- Name / Surname Filter Badge --}}
+@if(trim($filterName) !== '')
+    <span style="
+        background: #f0f9d4;
+        color: #4a5e00;
+        border: 1px solid #c7da30;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    ">
+        Name: {{ trim($filterName) }}
+    </span>
+@endif
         @if($filterGrade !== '')
-            <span style="{{ $badgeStyle }}">
-                Grade: {{ $filterGrade }}
-            </span>
-        @endif
+    <span style="
+        background: #f0f9d4;
+        color: #4a5e00;
+        border: 1px solid #c7da30;
+        padding: 7px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    ">
+        Grade: {{ $filterGrade }}
+    </span>
+@endif
 
-        {{-- Anonymous Badge --}}
         @if($filterAnonymous !== '')
-            <span style="{{ $badgeStyle }}">
+            <span style="
+                background: #f0f9d4;
+                color: #4a5e00;
+                border: 1px solid #c7da30;
+                padding: 7px 14px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            ">
                 Anonymous: {{ (string) $filterAnonymous === '1' ? 'Yes' : 'No' }}
             </span>
         @endif
 
-        {{-- Date From Badge --}}
-        @if($filterDateFrom !== '')
-            <span style="{{ $badgeStyle }}">
-                Date From: {{ $filterDateFrom }}
-            </span>
-        @endif
-
-        {{-- Date To Badge --}}
-        @if($filterDateTo !== '')
-            <span style="{{ $badgeStyle }}">
-                Date To: {{ $filterDateTo }}
-            </span>
-        @endif
-
-        {{-- Report Type Badge --}}
-        @if($filterType !== '')
-            <span style="{{ $badgeStyle }}">
-                Report Type: {{ $selectedType?->type_name ?? $filterType }}
-            </span>
-        @endif
-
-        {{-- Subtype Badge --}}
-        @if($filterSubtype !== '')
-            <span style="{{ $badgeStyle }}">
-                Subtype: {{ $selectedSubtype?->sub_type_name ?? $filterSubtype }}
-            </span>
-        @endif
-
-        {{-- Status Badge --}}
-        @if($filterStatus !== '')
-            <span style="{{ $badgeStyle }}">
-                Status: {{ ucwords(str_replace('-', ' ', $filterStatus)) }}
-            </span>
-        @endif
-
-        {{-- Number of matching reports --}}
         <span style="font-size: 12px; color: #6b7280;">
             {{ $reports->total() }} result(s)
         </span>
 
     </div>
 @endif
-
             </section>
 
             <div class="reports-table-wrap">
@@ -894,7 +853,7 @@
                                     ? 'Anonymous' 
                                     :  $report->full_name;
                             @endphp
-                            <tr wire:click="showReport({{ $report->id }})">
+                            <tr wire:click="showReport({{ (int) $report->id }})">
                                 <td class="case-number">{{ $report->case_number }}</td>
                                 <td title="{{ $displayName }}">{{ $displayName }}</td>
                                 <td>{{ $report->abuseType->type_name ?? 'N/A' }}</td>
@@ -1048,14 +1007,14 @@
                                     @foreach ($attachments as $filePath)
                                         @php
                                             $ext       = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-                                            $publicUrl = asset('storage/' . ltrim($filePath, '/'));
+                                            $publicUrl = \App\Support\AttachmentAccess::adminUrl($selectedReport->id, $filePath);
                                             $isImage   = in_array($ext, ['jpg','jpeg','png','gif','bmp','webp','svg']);
                                             $isVideo   = in_array($ext, ['mp4','mov','avi','wmv']);
                                         @endphp
                                         @if ($isImage)
                                             <img src="{{ $publicUrl }}" alt="Attachment"
                                                  class="w-32 h-auto mt-2 border rounded shadow cursor-pointer"
-                                                 wire:click="showImage('{{ $filePath }}')">
+                                                 wire:click="showImage({{ $loop->index }})">
                                         @elseif ($isVideo)
                                             <video controls class="w-48 h-auto mt-2 border rounded shadow">
                                                 <source src="{{ $publicUrl }}" type="video/{{ $ext }}">
@@ -1091,7 +1050,7 @@
                                     <span class="text-[11px] font-bold text-red-600 mb-1 uppercase tracking-tighter">
                                         {{ $falseReportsCount }} Total False Reports
                                     </span>
-                                    <button wire:click="permanentBlock('{{ $selectedReport->reporter_email }}')"
+                                    <button wire:click="permanentBlock(@js($selectedReport->reporter_email))"
                                             wire:confirm="Are you sure? This will permanently prevent this email ({{ $selectedReport->reporter_email }}) from making future reports."
                                             class="bg-gradient-to-r from-[#c7da30] to-[#d7e47a] px-5 py-2 rounded-full font-montserrat text-black shadow-md">
                                         <i class="fas fa-user-slash mr-2"></i> Block Reporter
@@ -1110,7 +1069,7 @@
 
             @if($modalImage)
                 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-                    <img src="{{ asset('storage/' . $modalImage) }}" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg">
+                    <img src="{{ $modalImage }}" class="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg">
                     <button wire:click="closeImage"
                             class="absolute bottom-8 bg-gradient-to-r from-[#c7da30] to-[#d7e47a] px-5 py-2 rounded-full font-montserrat text-black">
                         Close

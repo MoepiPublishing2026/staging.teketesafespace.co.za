@@ -170,8 +170,8 @@ class AdminLoginForm extends Component
     // Defined rules for Livewire validation
     // These will be used when the wire:model.live directives update
     protected $rules = [
-        'username' => 'required',
-        'password' => ['required', 'string'],
+        'username' => 'required|string|max:100',
+        'password' => ['required', 'string', 'max:255'],
     ];
 
     public function login()

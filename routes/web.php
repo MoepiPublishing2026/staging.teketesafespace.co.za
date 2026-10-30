@@ -55,6 +55,14 @@ Route::get('/download-nomination', function () {
 })->name('download.nomination');
 
 
+// Browser CSP violation reports
+Route::post('/csp-report', \App\Http\Controllers\CspReportController::class)
+    ->middleware('throttle:30,1')
+    ->name('csp.report');
+
+// Admin Login Flow
+// Step 1: The initial username and password form
+// Step 1: The initial username and password form
 // ==========================================
 // AUTHENTICATION GATEWAY
 // ==========================================
@@ -155,10 +163,23 @@ Route::post('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-Auth::routes([
-    'register' => false, // Disables public registration
-    'verify'   => true,  // Keeps email verification enabled
-]);
+Route::get('/attachments/{report}/{file}', [\App\Http\Controllers\AttachmentController::class, 'show'])
+    ->middleware(['auth', 'otp.verified'])
+    ->whereNumber('report')
+    ->where('file', '[^/]+')
+    ->name('attachments.show');
+
+Route::get('/report-attachments/{caseNumber}/{file}', [\App\Http\Controllers\AttachmentController::class, 'showForReporter'])
+    ->middleware(['signed', 'throttle:60,1'])
+    ->where('caseNumber', '[A-Za-z0-9-]+')
+    ->where('file', '[^/]+')
+    ->name('attachments.reporter');
+
+
+// ==========================================
+
+// ABOUT US PAGE
+Route::view('/about-us', 'about.index')->name('about-us');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData');

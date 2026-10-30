@@ -7,7 +7,7 @@ A reporter has **edited a report**.
 {{ $report->case_number }}
 
 **Location:**  
-{{ $report->location }}
+{{ \App\Support\MailText::line($report->location) }}
 
 **Updated At:**  
 {{ $timestamp }}

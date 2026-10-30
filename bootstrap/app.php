@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\HandleAdminGracefully;
+use App\Http\Middleware\SecurityHeaders;
 use App\Support\AdminGuard;
 use App\Support\AdminRoutes;
 use Illuminate\Foundation\Application;
@@ -27,9 +28,13 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAdminGracefully::class,
         ]);
 
+        // Security headers + CSP on every response (also 404s and error pages), not just web routes.
+        $middleware->append(SecurityHeaders::class);
+
         // Exclude PayFast ITN callback from CSRF verification
         $middleware->validateCsrfTokens(except: [
             'payment/notify',
+            'csp-report',         // browsers post CSP violation reports without a CSRF token
         ]);
 
         // Register the subscription middleware alias

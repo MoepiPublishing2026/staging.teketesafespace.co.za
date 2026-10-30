@@ -39,14 +39,14 @@ class SubmissionTest extends TurnstileTestCase
     public function test_missing_token_cannot_bypass_server_action(): void
     {
         Mail::fake();
-        Storage::fake('public');
+        Storage::fake('attachments');
         $before = $this->permanentPublicFiles();
         $form = $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')]);
         $form->call('submitReport')->assertHasErrors('turnstileToken')->assertDispatched('report-verification-reset')
             ->assertSet('reporterEmail', 'fictional@example.com');
         $this->assertTrue($form->get('image')[0]->exists());
         $this->assertDatabaseCount('reports', 0);
-        $this->assertSame([], Storage::disk('public')->allFiles());
+        $this->assertSame([], Storage::disk('attachments')->allFiles());
         $this->assertSame($before, $this->permanentPublicFiles());
         Http::assertNothingSent();
         Mail::assertNothingOutgoing();
@@ -73,7 +73,7 @@ class SubmissionTest extends TurnstileTestCase
     public function test_rejected_tokens_cannot_write_or_send_and_preserve_uploads(string $errorCode): void
     {
         Mail::fake();
-        Storage::fake('public');
+        Storage::fake('attachments');
         Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => false, 'error-codes' => [$errorCode]])]);
         $before = $this->permanentPublicFiles();
         $form = $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')])
@@ -83,7 +83,7 @@ class SubmissionTest extends TurnstileTestCase
             ->assertDispatched('report-verification-reset');
         $this->assertTrue($form->get('image')[0]->exists());
         $this->assertDatabaseCount('reports', 0);
-        $this->assertSame([], Storage::disk('public')->allFiles());
+        $this->assertSame([], Storage::disk('attachments')->allFiles());
         $this->assertSame($before, $this->permanentPublicFiles());
         Http::assertSentCount(1);
         Mail::assertNothingOutgoing();
@@ -92,7 +92,7 @@ class SubmissionTest extends TurnstileTestCase
     public function test_reusing_a_previously_accepted_token_has_no_additional_side_effects(): void
     {
         Mail::fake();
-        Storage::fake('public');
+        Storage::fake('attachments');
         Http::fakeSequence()->push(['success' => true, 'hostname' => 'reports.test', 'action' => 'report_submit'])
             ->push(['success' => false, 'error-codes' => ['timeout-or-duplicate']]);
         $this->form()->set('turnstileToken', 'same-fixture-token')->call('submitReport')->assertHasNoErrors();
@@ -106,7 +106,7 @@ class SubmissionTest extends TurnstileTestCase
             ->assertDispatched('report-verification-reset');
         $this->assertTrue($form->get('image')[0]->exists());
         $this->assertDatabaseCount('reports', 1);
-        $this->assertSame([], Storage::disk('public')->allFiles());
+        $this->assertSame([], Storage::disk('attachments')->allFiles());
         $this->assertSame($before, $this->permanentPublicFiles());
         Mail::assertSentCount(1);
         Mail::assertNothingQueued();
@@ -129,7 +129,7 @@ class SubmissionTest extends TurnstileTestCase
     public function test_invalid_metadata_expired_replayed_and_malformed_responses_preserve_draft_and_upload(array $result): void
     {
         Mail::fake();
-        Storage::fake('public');
+        Storage::fake('attachments');
         Http::fake(['challenges.cloudflare.com/*' => Http::response($result)]);
         $form = $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')]);
         $form->set('turnstileToken', 'not-logged')->call('submitReport')->assertHasErrors('turnstileToken')
@@ -138,7 +138,7 @@ class SubmissionTest extends TurnstileTestCase
         $this->assertCount(1, $form->get('image'));
         $this->assertTrue($form->get('image')[0]->exists());
         $this->assertDatabaseCount('reports', 0);
-        $this->assertSame([], Storage::disk('public')->allFiles());
+        $this->assertSame([], Storage::disk('attachments')->allFiles());
         Mail::assertNothingSent();
     }
 
@@ -208,18 +208,18 @@ class SubmissionTest extends TurnstileTestCase
     public function test_verification_precedes_permanent_attachment_and_report_writes(): void
     {
         Mail::fake();
-        Storage::fake('public');
+        Storage::fake('attachments');
         Http::fake(function () {
             $this->assertDatabaseCount('reports', 0);
-            $this->assertSame([], Storage::disk('public')->allFiles());
+            $this->assertSame([], Storage::disk('attachments')->allFiles());
             Mail::assertNothingSent();
 
             return Http::response(['success' => true, 'hostname' => 'reports.test', 'action' => 'report_submit']);
         });
-        $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')])
+        $this->form()->set('image', [UploadedFile::fake()->createWithContent('fictional.pdf', "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n")])
             ->set('turnstileToken', 'not-logged')->call('submitReport')->assertHasNoErrors();
         $this->assertDatabaseCount('reports', 1);
-        $this->assertCount(1, Storage::disk('public')->allFiles());
+        $this->assertCount(1, Storage::disk('attachments')->allFiles());
         Mail::assertSentCount(1);
     }
 }

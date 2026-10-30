@@ -163,6 +163,12 @@
                             {{ str_replace('Your report has been submitted successfully! Case number: ', '', session('success_message')) }}
                         </p>
 
+                        @if (session('case_email_failed'))
+                            <p class="text-[14px] text-black mb-4">
+                                We could not email your case number to you, so please write it down.
+                            </p>
+                        @endif
+
                        <button
    
     @click="
@@ -378,7 +384,7 @@
                     <div class="form-group mt-6">
                         <label for="fileUpload" class="block text-[12px] text-black mb-1">Attachment <span class="text-gray-500">(Optional)</span></label>
                         <input type="file" wire:model="newUploads" multiple
-                            accept="image/*,video/*,audio/*,.mp3,.wav,.m4a,.mp4,.ogg,.webm,.amr,.aac,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                            accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
                             class="form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black"
                             id="fileUpload">
 
@@ -811,7 +817,7 @@ clearTimeout(timer);
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                display.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                display.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`; // security-lint:ignore numeric countdown only
             }, 1000);
         }
 

@@ -1483,7 +1483,7 @@ async function exportPDF() {
     // Configure html2pdf to prevent text/row overlapping
     const opt = {
         margin:       [10, 10, 10, 10], // top, left, bottom, right in mm
-        filename:     '{{ $mapProvinceSlug }}-provincial-heatmap.pdf',
+        filename:      @js($mapProvinceSlug . '-provincial-heatmap.pdf'),
         html2canvas:  {
             scale: 2,
             useCORS: true,

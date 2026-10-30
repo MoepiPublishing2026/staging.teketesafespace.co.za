@@ -1,0 +1,24 @@
+# Fast static checks that stop the XSS/injection patterns from coming back.
+# No database, no composer install: it only reads the source files.
+name: Security lint
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Unsafe output / injection patterns
+        run: php scripts/security-lint.php
