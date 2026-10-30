@@ -1,10 +1,10 @@
-<div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
+<div class="check-page min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
 
     <script src="//unpkg.com/alpinejs" defer></script>
 
     <!-- ================= HEADER ================= -->
     <header
-    class="fixed top-0 left-0 w-full bg-white z-50 ">
+    class="check-header fixed top-0 left-0 w-full bg-white z-50 ">
 
     <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
 
@@ -109,12 +109,12 @@
 </div>
 
     <!-- ================= MAIN CONTENT ================= -->
-    <div class="flex-1 pt-[150px] lg:pt-[170px] pb-16 px-4 sm:px-6">
+    <div class="check-main flex-1 pt-[150px] lg:pt-[170px] pb-16 px-4 sm:px-6">
 
         <h1 class="text-2xl sm:text-3xl font-bold text-center uppercase mb-8 tracking-wider font-[Montserrat]">TRACK
             STATUS</h1>
 
-        <div class="max-w-2xl mx-auto w-full flex flex-col items-center">
+        <div class="check-stack max-w-2xl mx-auto w-full flex flex-col items-center">
 
             <!-- ================= ALERT ================= -->
             <div x-data="{
@@ -155,9 +155,9 @@
             </div>
 
             <!-- ================= SEARCH CARD ================= -->
-            <div class="w-full border-2 sm:border-4 border-[#c7da30] rounded-2xl p-4 sm:p-8 bg-white">
+            <div class="check-card w-full border-2 sm:border-4 border-[#c7da30] rounded-2xl p-4 sm:p-8 bg-white">
 
-                <form wire:submit.prevent="checkStatus" class="space-y-4 w-full">
+                <form wire:submit.prevent="checkStatus" class="check-form space-y-4 w-full">
                     <div>
                         <input type="text" id="caseNumber" wire:model.live="caseNumber" placeholder="Case Number"
                             class="w-full py-4 px-4 rounded-xl border-4 border-[#c7da30] focus:outline-none text-sm font-[Montserrat]"
@@ -187,10 +187,10 @@
                 </form>
 
                 <!-- ================= STATUS SECTION ================= -->
-                <h2 class="text-lg sm:text-xl font-bold text-center uppercase mt-8 mb-4 font-[Montserrat]">YOUR CASE
+                <h2 class="check-status-title text-lg sm:text-xl font-bold text-center uppercase mt-8 mb-4 font-[Montserrat]">YOUR CASE
                     STATUS</h2>
 
-               <div class="border-2 sm:border-4 border-[#c7da30] rounded-xl p-4 sm:p-6 min-h-[200px] relative font-[Montserrat]">
+               <div class="check-status-box border-2 sm:border-4 border-[#c7da30] rounded-xl p-4 sm:p-6 min-h-[200px] relative font-[Montserrat]">
 
                     @if (!empty($message))
                         <div class="text-red-500 font-medium text-center mb-4">
@@ -410,6 +410,91 @@
 </div>
 
 <style>
+    /* 1366×768 Chrome is shorter than this page. Fit the header, form,
+       status box, and footer in the viewport. Taller screens keep the
+       existing spacing, which already fits at 1920×1080. */
+    @media (min-width: 768px) and (max-height: 800px) {
+        html:has(.check-page),
+        body:has(.check-page) {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .check-page {
+            height: 100dvh;
+            max-height: 100dvh;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .check-header {
+            position: relative;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+
+        .check-header img {
+            width: auto !important;
+            height: 72px;
+            max-width: 180px;
+        }
+
+        .check-main {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 0;
+            padding-top: 4px !important;
+            padding-bottom: 8px !important;
+        }
+
+        .check-main > h1 {
+            margin-bottom: 8px;
+            font-size: 26px;
+            line-height: 1.1;
+        }
+
+        .check-stack {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+
+        .check-card {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 0;
+            padding: 12px 16px !important;
+        }
+
+        .check-form {
+            gap: 8px;
+        }
+
+        .check-form input,
+        .check-form button {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+
+        .check-status-title {
+            margin-top: 8px !important;
+            margin-bottom: 8px !important;
+        }
+
+        .check-status-box {
+            flex: 1 1 auto;
+            min-height: 0 !important;
+            overflow-y: auto;
+            padding: 12px !important;
+        }
+
+        #check-status-footer-container footer {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+        }
+    }
+
     /* Match landing page footer sizing/spacing */
     #check-status-footer-container footer {
         padding-top: 25px !important;

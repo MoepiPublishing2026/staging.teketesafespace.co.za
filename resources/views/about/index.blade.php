@@ -49,7 +49,7 @@
         .phone-banner { position: relative; height: 90px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 20px; }
         .phone-banner img { position: absolute; width: 340px; max-width: none; }
         .phone-banner h2 { position: relative; color: #fff; text-align: center; margin: 0; font-size: 26px; text-transform: uppercase; }
-        .phone-value { display: flex; gap: 10px; margin: 0 0 22px; }
+        .phone-value { display: flex; gap: 28px; margin: 0 0 22px; }
         .phone-mark { position: relative; width: 72px; height: 54px; flex: 0 0 72px; display: flex; align-items: center; justify-content: center; }
         .phone-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
         .phone-mark span { position: relative; color: #1E94FD; font-weight: 700; font-size: 22px; }
@@ -113,11 +113,11 @@
             .serve-list li { margin: 0; padding: 0; }
             .serve-list strong { font-weight: 700; }
             .serve-photo { position: absolute; left: 856.6px; top: 1627.1px; width: 386.2px; height: 451.6px; object-fit: cover; border-radius: 16px; }
-            .chalk { position: absolute; left: 426.1px; top: 2172.7px; width: 492.7px; height: 150.3px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+            .chalk { position: absolute; left: 392px; top: 2172.7px; width: 492.7px; height: 150.3px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
             .chalk img { position: absolute; width: 520px; height: 520px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
             .chalk h2 { position: relative; z-index: 1; margin: 0; text-align: center; color: #fff; font-weight: 400; font-size: 36px; line-height: 1.15; text-transform: uppercase; }
-            .cv-title { position: absolute; left: 331.5px; width: 900px; margin: 0; font-weight: 700; font-size: 28px; line-height: 1; color: #1E94FD; text-transform: uppercase; }
-            .cv-body { position: absolute; left: 331.4px; width: 920px; margin: 0; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 21.33px; line-height: 29px; }
+            .cv-title { position: absolute; left: 331.5px; width: 1025px; margin: 0; font-weight: 700; font-size: 28px; line-height: 1; color: #1E94FD; text-transform: uppercase; }
+            .cv-body { position: absolute; left: 331.4px; width: 1045px; margin: 0; font-family: Montserrat, sans-serif; font-weight: 400; font-size: 21.33px; line-height: 29px; }
             .cv-mark { position: absolute; width: 149.4px; height: 105.4px; }
             .cv-mark img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
             .cv-num { position: absolute; margin: 0; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 48px; line-height: 1; color: #1E94FD; }
@@ -245,24 +245,24 @@
         <img class="serve-photo" src="{{ asset('images/Students holding phone.png') }}" alt="Students holding a phone">
         <div class="chalk"><img src="{{ asset('images/7.svg') }}" alt=""><h2 class="century">Our Core<br>Values</h2></div>
         <h3 class="cv-title century" style="top:2385.1px;">Safety First</h3>
-        <div class="cv-mark" style="left:160.5px;top:2415.9px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
-        <span class="cv-num" style="left:208.8px;top:2452.1px;">01</span>
+        <div class="cv-mark" style="left:122px;top:2415.9px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
+        <span class="cv-num" style="left:170.3px;top:2452.1px;">01</span>
         <p class="cv-body" style="top:2425.2px;">We believe every learner has the right to feel and be safe at school, at home,<br>and in their community. Our system is designed to protect and empower young<br>people by creating a secure environment where they can speak up without fear.</p>
         <h3 class="cv-title century" style="top:2560.9px;">Confidentiality &amp; Trust</h3>
-        <div class="cv-mark" style="left:160.5px;top:2591.9px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
-        <span class="cv-num" style="left:204.1px;top:2628.1px;">02</span>
+        <div class="cv-mark" style="left:122px;top:2591.9px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
+        <span class="cv-num" style="left:165.6px;top:2628.1px;">02</span>
         <p class="cv-body" style="top:2601.1px;">Learners must feel confident that what they share is protected. Our platform<br>ensures anonymity, privacy, and strict data protection. We are committed to<br>earning and maintaining the trust of every learner who reaches out for help.</p>
         <h3 class="cv-title century" style="top:2735.1px;">Empowerment Through Voice</h3>
-        <div class="cv-mark" style="left:160.5px;top:2766px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
-        <span class="cv-num" style="left:204.1px;top:2802.1px;">03</span>
+        <div class="cv-mark" style="left:122px;top:2766px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
+        <span class="cv-num" style="left:165.6px;top:2802.1px;">03</span>
         <p class="cv-body" style="top:2775.2px;">Silence often comes from fear. We exist to give learners their voice back - to<br>allow them to speak their truth, raise concerns, and ask for help without shame<br>or judgment. Every voice matters.</p>
         <h3 class="cv-title century" style="top:2910.9px;">Equity &amp; Inclusion</h3>
-        <div class="cv-mark" style="left:160.5px;top:2941.9px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
-        <span class="cv-num" style="left:201.6px;top:2978.1px;">04</span>
+        <div class="cv-mark" style="left:122px;top:2941.9px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
+        <span class="cv-num" style="left:163.1px;top:2978.1px;">04</span>
         <p class="cv-body" style="top:2951.1px;">Every learner, regardless of gender, background, or circumstance, deserves<br>equal access to support and protection. We pay special attention to the unique<br>vulnerabilities of girls, LGBTQ+ youth, and others who are often left behind.</p>
         <h3 class="cv-title century" style="top:3096px;">Technology with Integrity</h3>
-        <div class="cv-mark" style="left:160.5px;top:3127px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
-        <span class="cv-num" style="left:203.9px;top:3163.2px;">05</span>
+        <div class="cv-mark" style="left:122px;top:3127px;"><img src="{{ asset('images/8.svg') }}" alt=""></div>
+        <span class="cv-num" style="left:165.4px;top:3163.2px;">05</span>
         <p class="cv-body" style="top:3136.3px;">Our platform is digital, encrypted, and POPIA-compliant - but more<br>importantly, it is designed with human dignity at the center. Technology should<br>never replace care, but it can strengthen and extend it.</p>
     </div>
 </div>
