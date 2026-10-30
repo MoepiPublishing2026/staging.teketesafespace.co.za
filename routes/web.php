@@ -25,28 +25,18 @@ use App\Http\Controllers\ProvincialAdminReportsController;
 use App\Http\Controllers\SchoolAdminDashboardController;
 use App\Http\Controllers\SchoolAdminReportsController;
 use App\Livewire\ContactUs;
-// use App\Http\Controllers\SubscriptionController;
 use App\Livewire\ClarificationModal;
 use App\Http\Controllers\NationalHeatmapController;
-
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// Main landing page
+// Main landing page & Public flows
 Route::get('/', LandingPage::class)->name('landing-page');
-
-// Reporting flow routes
-Route::get('/report-anonymity', ChooseReportType::class)
-    ->name('choose-report-type');
+Route::get('/report-anonymity', ChooseReportType::class)->name('choose-report-type');
 Route::get('/types-of-reports/{isAnonymous}', AbuseTypeSelection::class)->name('types-of-reports');
 Route::get('/select-abuse-type/{isAnonymous}', function (string $isAnonymous) {
     return redirect()->route('types-of-reports', ['isAnonymous' => $isAnonymous]);
@@ -55,7 +45,15 @@ Route::get('/report-form/{abuseTypeID}/{isAnonymous}', ReportForm::class)->name(
 Route::get('/clarify/{caseNumber}', ClarificationModal::class)->name('report.clarify');
 Route::get('/check-status', CheckStatus::class)->name('check-status');
 Route::get('/edit-report/{caseNumber}', EditReport::class)->name('edit-report');
-Route::get('/contact-us', ContactUs::class)->name('contact-us'); 
+Route::get('/contact-us', ContactUs::class)->name('contact-us');
+Route::view('/about-us', 'about.index')->name('about-us');
+
+Route::get('/download-nomination', function () {
+    $path = public_path('Files/Nomination_Form.pdf');
+    if (!file_exists($path)) { abort(404); }
+    return response()->download($path);
+})->name('download.nomination');
+
 
 // Browser CSP violation reports
 Route::post('/csp-report', \App\Http\Controllers\CspReportController::class)
@@ -65,14 +63,17 @@ Route::post('/csp-report', \App\Http\Controllers\CspReportController::class)
 // Admin Login Flow
 // Step 1: The initial username and password form
 // Step 1: The initial username and password form
+// ==========================================
+// AUTHENTICATION GATEWAY
+// ==========================================
 Route::get('/secure-portal-auth-9x7/login', AdminLoginForm::class)->name('school-admin');
-//District log in
 Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-district');
-
-// Step 2: The email and OTP verification form
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
 
-// Step 3: School admin dashboard — protected only by auth
+
+// ==========================================
+// 1. SCHOOL ADMIN TIER (/admin/...)
+// ==========================================
 Route::middleware(['auth', 'otp.verified'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [SchoolAdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/false-reports', [SchoolAdminDashboardController::class, 'falseReports'])->name('admin.false-reports');
@@ -82,109 +83,85 @@ Route::middleware(['auth', 'otp.verified'])->prefix('admin')->group(function () 
     Route::get('/settings', \App\Livewire\AdminSettings::class)->name('admin.settings');
 });
 
-// District Admin Dashboard
-Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard')->middleware('auth');
 
-//provincial Admin Report Pages
+// ==========================================
+// 2. DISTRICT ADMIN TIER
+// ==========================================
+Route::middleware(['auth', 'otp.verified'])->group(function () {
+    Route::get('/district-admin/dashboard', \App\Livewire\DistrictAdminDashboard::class)->name('district.admin.dashboard');
+    Route::get('/district/profile', \App\Livewire\DistrictAdminSettings::class)->name('district.profile');
+});
+
+Route::middleware(['auth', 'otp.verified', 'role:district'])->group(function () {
+    Route::get('/district/settings', DistrictAdminSettings::class)->name('district.settings');
+});
 
 
-Route::middleware(['auth'])->group(function () {
+// ==========================================
+// 3. PROVINCIAL ADMIN TIER
+// ==========================================
+Route::middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('/geojson/{file}', [App\Http\Controllers\GeoJsonController::class, 'show'])
         ->where('file', '[a-z_]+')
         ->name('geojson.show');
 
-    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard')->middleware('auth');
+    Route::get('/provincial-admin/dashboard', [ProvincialAdminDashboardController::class, 'index'])->name('provincial.admin.dashboard');
 
+    // Heatmap, Profile & Dashboard
+    Route::get('/provincial/heatmap', [App\Http\Controllers\ProvincialHeatMapController::class, 'index'])->name('provincial.heatmap');
+    Route::get('/provincial/dashboard', [ProvincialDashboardController::class, 'index'])->name('provincial.dashboard');
+    Route::get('/provincial/dashboard/fetch', [ProvincialDashboardController::class, 'fetchData'])->name('provincial.dashboard.fetch');
+    Route::get('/provincial/export-pdf/{province}', [ProvincialReportController::class, 'exportPDF'])->name('provincial.export-pdf');
+
+    // Livewire Reports & Profile (Using distinct paths so they never collide)
+    Route::get('/provincial/profile', \App\Livewire\ProvincialSettings::class)->name('provincial.settings');
     Route::get('/provincial/reports', \App\Livewire\ProvincialReport::class)->name('provincial.reports');
     Route::get('/provincial/reports/{filter?}', \App\Livewire\ProvincialReport::class)->name('provincial.reports.index');
-
-    Route::get('/provincial/heatmap', [App\Http\Controllers\ProvincialHeatMapController::class, 'index'])->name('provincial.heatmap');
-
-
-
-     Route::get('/provincial/profile', \App\Livewire\ProvincialSettings::class)->name('provincial.settings');
-
-    Route::get('/provincial/export-pdf/{province}', [ProvincialReportController::class, 'exportPDF'])
-    ->name('provincial.export-pdf');
-
-    Route::get('/provincial/dashboard', [ProvincialDashboardController::class, 'index'])
-        ->name('provincial.dashboard');
-
-    // AJAX endpoint for chart updates (fetchData)
-    Route::get('/provincial/dashboard/fetch', [ProvincialDashboardController::class, 'fetchData'])
-        ->name('provincial.dashboard.fetch');
 });
 
-// Provincial Admin Settings and Reports
-Route::prefix('provincial-admin')->name('provincial-admin.')->middleware('auth')->group(function () {
+Route::prefix('provincial-admin')->name('provincial-admin.')->middleware(['auth', 'otp.verified'])->group(function () {
     Route::get('settings', [ProvincialAdminSettingsController::class, 'index'])->name('settings');
     Route::put('settings', [ProvincialAdminSettingsController::class, 'update'])->name('settings.update');
     Route::get('reports', [ProvincialAdminReportsController::class, 'index'])->name('reports');
     Route::get('reports/{id}', [ProvincialAdminReportsController::class, 'show'])->name('reports.show')->where('id', '[0-9]+');
 });
 
+// ==========================================
+// 4. NATIONAL ADMIN TIER 
+// ==========================================
+// ==========================================
+// 4. NATIONAL ADMIN TIER 
+// ==========================================
 
-
-// National Admin Dashboard
-
-Route::middleware('auth')->group(function () {
-    Route::prefix('national-admin')->name('national.admin.')->group(function () {
-        Route::get('/dashboard', [NationalAdminDashboardController::class, 'index'])
-            ->name('dashboard');
-
-        Route::get('/heatmap', [NationalHeatmapController::class, 'index'])
-            ->name('heatmap');
-
-        Route::get('/reports', [ReportController::class, 'index'])
-            ->name('reports');
-    });
-
-        Route::get('/reports/{id}', [ReportController::class, 'show'])
-            ->name('reports.show');
-});
-
-Route::prefix('national-admin')
-    ->name('national-admin.')
-    ->middleware(['auth'])
+// Dashboard, Heatmap & Reports (Dotted naming)
+Route::middleware(['auth', 'otp.verified'])
+    ->prefix('national-admin')
+    ->name('national.admin.')
     ->group(function () {
-
-        Route::get('settings', [SettingsController::class, 'index'])
-            ->name('settings');
-
-        Route::put('settings', [SettingsController::class, 'update'])
-            ->name('settings.update');
-
-        Route::delete('settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])
-            ->name('settings.delete-picture');
+        Route::get('/dashboard', [NationalAdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/heatmap', [NationalHeatmapController::class, 'index'])->name('heatmap');
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports');
+        Route::get('/reports/{id}', [ReportController::class, 'show'])->name('reports.show');
     });
-// School Admin Reports Page (Controller-based, matching Provincial Admin)
-// Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-//     Route::get('reports', [SchoolAdminReportsController::class, 'index'])->name('reports');
-//     Route::get('reports/{id}', [SchoolAdminReportsController::class, 'show'])->name('reports.show')->where('id', '[0-9]+');
-// });
 
-// Admin Logout
+// Settings / Profile (Hyphenated naming to match your existing profile views)
+Route::middleware(['auth', 'otp.verified'])
+    ->prefix('national-admin')
+    ->name('national-admin.')
+    ->group(function () {
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+        Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+        Route::delete('/settings/delete-picture', [SettingsController::class, 'deleteProfilePicture'])->name('settings.delete-picture');
+    });
+
+
+// ==========================================
+// UTILITIES & LOGOUT
+// ==========================================
 Route::post('/logout', function () {
     Auth::logout();
     return redirect('/');
 })->name('logout');
-Auth::routes(['verify' => true]);
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-//Routing for filtering data on dashboard
-Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData');
-
-Route::get('/district/profile', \App\Livewire\DistrictAdminSettings::class)
-    ->name('district.profile')
-    ->middleware(['auth']);
-
-
-Route::middleware(['auth', 'role:district'])->group(function () {
-    Route::get('/district/settings', DistrictAdminSettings::class)->name('district.settings');
-    // New Contact Us Route
-});
 
 Route::get('/attachments/{report}/{file}', [\App\Http\Controllers\AttachmentController::class, 'show'])
     ->middleware(['auth', 'otp.verified'])
@@ -204,62 +181,5 @@ Route::get('/report-attachments/{caseNumber}/{file}', [\App\Http\Controllers\Att
 // ABOUT US PAGE
 Route::view('/about-us', 'about.index')->name('about-us');
 
-
-
-
-// // Subscription Card Page
-// Route::get('/admin/subscribe', [SubscriptionController::class, 'index'])
-//     ->name('admin.subscribe')
-//     ->middleware('auth');
-
-// // Redirection to PayFast
-// Route::get('/admin/subscribe/checkout/{plan}', [SubscriptionController::class, 'checkout'])
-//     ->name('admin.checkout')
-//     ->middleware('auth');
-
-// // PayFast Callbacks
-// Route::get('/payment/success', function() {
-    
-//     $user         = Auth::user();
-//     $subscription = $user ? \App\Models\Subscription::where('user_id', $user->id)
-//                                 ->where('status', 'pending')
-//                                 ->latest()
-//                                 ->first() : null;
-
-//     if ($subscription) {
-//         $months    = match($subscription->plan) {
-//             'annual'  => 12,
-//             'monthly' => 1,
-//             default   => null,
-//         };
-
-//         $subscription->update([
-//             'status'     => 'active',
-//             'starts_at'  => \Carbon\Carbon::now(),
-//             'expires_at' => $months ? \Carbon\Carbon::now()->addMonths($months) : null,
-//         ]);
-
-//         $user->update(['is_subscribed' => true]);
-//     }
-
-//     return redirect()->route('admin.dashboard')->with('success', 'Subscription activated! Welcome aboard.');
-// })->name('payment.success')->middleware('auth');
-
-// Route::post('/payment/notify', [SubscriptionController::class, 'notify'])->name('payment.notify');
-
-// Route::get('/faq', function () {
-//     return view('faq');
-// })->name('faq');
-    
-//Nomination form download
-Route::get('/download-nomination', function () {
-
-    $path = public_path('Files/Nomination_Form.pdf');
-
-    if (!file_exists($path)) {
-        abort(404);
-    }
-
-    return response()->download($path);
-
-})->name('download.nomination');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/admin/fetch-dashboard-data', [AdminDashboardController::class, 'fetchData'])->name('admin.fetchData');
