@@ -163,7 +163,7 @@
 
                 #main-landing-container .landing-actions {
                     position: relative !important;
-                    left: 90px !important;
+                    left: 85px !important;
                     flex-direction: row;
                     flex-wrap: nowrap;
                     justify-content: flex-end;
@@ -484,7 +484,7 @@
 
         <!-- Background Decor -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-10 hidden sm:block hide-circle-on-tall-portrait">
-            <div class="absolute -top-[24vw] -left-[8.2vw] w-[110vw] aspect-square">
+            <div class="absolute -top-[25vw] -left-[8.2vw] w-[110vw] aspect-square">
                 <img src="{{ asset('images/line for Safe Space.svg') }}"
                      alt="Circle Background"
                      class="w-full h-full object-contain opacity-100 pointer-events-none">
