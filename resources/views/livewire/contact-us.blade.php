@@ -84,7 +84,7 @@
             .phone-link { top: 330.6px; }
             .email-link { top: 379.3px; }
             .phone-link:hover, .email-link:hover { color: #C5D931; }
-            .download-box { position: absolute; left: 155px; top: 464.6px; width: 528px; height: 125.4px; border: 2px solid #C5D931; box-sizing: border-box; }
+            .download-box { position: absolute; left: 153px; top: 462.6px; width: 532px; height: 129.4px; border: 4px solid #C5D931; box-sizing: border-box; }
             .download-title { position: absolute; left: 155px; top: 476px; width: 528px; margin: 0; text-align: center; font-family: Montserrat, sans-serif; font-weight: 700; font-size: 24px; line-height: 28.6px; color: #000; }
             .badge { position: absolute; display: block; text-decoration: none; z-index: 30; cursor: pointer; }
             .badge-apple { left: 201px; top: 523.7px; width: 129.6px; height: 43.5px; }
