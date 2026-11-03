@@ -1546,6 +1546,7 @@ section[aria-label="Analytics"] .chart-status-host canvas {
 <script id="dashboard-data" type="application/json">
     @json($provincialDashboardData)
 </script>
+ 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -1579,9 +1580,7 @@ function activateCard(el, status) {
  * Anything that came from the database or a reporter must go through this.
  */
 function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"'`]/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;' }[c];
-    });
+    return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function openStatusModal(status) {
