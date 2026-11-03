@@ -401,6 +401,7 @@ class EditReport extends Component
             ],
             'grade' => InputRules::grade(),   // allow-list (Creche, Grade R, Grade 1-12)
             'email' => InputRules::safeEmail(),
+            'phoneNumber' => [
                 'required',
                 'digits:10',
                 'regex:/^\s*0(1[01234578]|2[12378]|3[1234569]|4[0123456789]|5[134678]|6[0-8]|7[1-9]|8[1-467])(\s*\d){7}\s*$/',
