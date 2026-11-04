@@ -95,8 +95,6 @@
                     text-align: center !important;
                 }
 
-               
-
                 .force-cookie-bottom {
                     max-height: 45svh;
                     overflow-y: auto;
@@ -148,278 +146,199 @@
             }
 
             /* =========================================================
-               DESKTOP (1024px and up) - same look as before
+               DESKTOP (1024px and up) — ONE layout for ALL screens.
+               Everything is sized in vw (percent of screen width), so the
+               design is identical on every screen, just bigger or smaller.
+               Matches the prototype (measured at 1376px wide).
                ========================================================= */
             @media (min-width: 1024px) {
+                #main-landing-container {
+                    min-height: 0 !important;
+                    height: auto !important;
+                    overflow-y: visible !important;
+                }
+
+                /* HEADER — identical to the About page.
+                   About uses a 1366px board scaled by width/1366, so its px
+                   values translate to vw: px / 13.66 = vw.
+                   logo: left 88px -> 6.44vw, top 16px -> 1.17vw, w 300px -> 21.96vw
+                   nav:  top 67px -> 4.9vw, font 19.97px -> 1.46vw
+                   nav links: 851.4 -> 62.33vw, 936 -> 68.52vw,
+                              1049.8 -> 76.85vw, 1182.6 -> 86.54vw */
+                #main-landing-container > header > div {
+                    display: block !important;
+                    position: relative;
+                    padding: 0 !important;
+                    height: 6.8vw;
+                }
+
+                #main-landing-container .landing-logo-wrap {
+                    position: absolute !important;
+                    left: 6.44vw !important;
+                    top: 1.17vw !important;
+                    margin: 0 !important;
+                }
+
+                #main-landing-container > header img {
+                    width: 21.96vw !important;
+                    margin-left: 0 !important;
+                }
+
+                #main-landing-container .landing-nav {
+                    position: absolute !important;
+                    display: block !important;
+                    top: 4.9vw !important;
+                    left: 0 !important;
+                    width: 100% !important;
+                    gap: 0 !important;
+                    font-size: 1.46vw !important;
+                    line-height: 1.22 !important;
+                }
+
+                #main-landing-container .landing-nav a {
+                    position: absolute !important;
+                    top: 0 !important;
+                    font-size: 1.46vw !important;
+                    white-space: nowrap;
+                }
+
+                #main-landing-container .landing-nav a:nth-child(1) { left: 62.33vw !important; }
+                #main-landing-container .landing-nav a:nth-child(2) { left: 68.52vw !important; }
+                #main-landing-container .landing-nav a:nth-child(3) { left: 76.85vw !important; }
+                /* Right edges of Contact Us, Administrators button and the
+                   TikTok icon all align at 96vw (1311.4px at 1366w).
+                   Contact Us is nudged +1.46vw so its right edge matches. */
+                #main-landing-container .landing-nav a:nth-child(4) { left: 88vw !important; }
+
+                /* HERO SECTION */
+                #main-landing-container > section {
+                    margin-top: 0 !important;
+                    min-height: 0 !important;
+                    height: 52vw !important;
+                    padding: 0 6vw 8.5vw 6.5vw !important;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+
+                #main-landing-container > section > div {
+                    max-width: none !important;
+                }
+
+                /* HEADING */
+                .tall-portrait-left-box {
+                    padding: 0 !important;
+                    text-align: left !important;
+                }
+
                 #main-landing-container .landing-h1 {
-                    font-size: 80px !important;
+                    font-size: 5.1vw !important;
+                    line-height: 1.15 !important;
+                    text-align: left !important;
+                    margin: 0 !important;
+                    transform: translate(1vw, 3vw) !important;
+                }
+
+                /* IMAGE + BUTTONS */
+                .tall-portrait-right-box {
+                    gap: 0 !important;
                 }
 
                 #main-landing-container .landing-hero-img {
-                    position: relative !important;
-                    left: 70px !important;
-                    top: 20px !important;
+                    position: static !important;
+                    transform: translateY(2vw) !important;
+                    width: 37vw !important;
+                    max-width: none !important;
+                    max-height: none !important;
+                    height: auto;
+                    margin: 0 0 0 auto !important;
+                    display: block;
+                }
+
+                .tall-portrait-right-box img {
+                    left: 0 !important;
+                    top: 0 !important;
                 }
 
                 #main-landing-container .landing-actions {
-                    position: relative !important;
-                    left: 85px !important;
-                    flex-direction: row;
-                    flex-wrap: nowrap;
-                    justify-content: flex-end;
-                    gap: 1.5rem;
-                    max-width: none;
+                    position: static !important;
+                    transform: translate(2vw, 1vw) !important; 
+                    flex-direction: row !important;
+                    flex-wrap: nowrap !important;
+                    justify-content: flex-end !important;
+                    gap: 1.75vw !important;
+                    max-width: none !important;
+                    margin: 0 !important;
+                }
+
+                .tall-portrait-btn-shift {
+                    position: static !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    margin: 0 !important;
                 }
 
                 #main-landing-container .landing-btn {
-                    width: 210px;
-                    height: 72px;
-                    border-width: 4px;
-                    font-size: 22px;
+                    width: 14.3vw !important;
+                    height: 4.7vw !important;
+                    border-width: 0.28vw !important;
+                    font-size: 1.45vw !important;
+                    white-space: nowrap;
                 }
             }
 
-            /* iPad Pro portrait: stacked like tablets */
-@media (min-width: 1024px) and (max-width: 1150px) and (orientation: portrait) {
-    #main-landing-container .hide-circle-on-tall-portrait {
-        display: none !important;
-    }
+            /* Tall portrait tablets (iPad Pro etc.) stay stacked like tablets */
+            @media (min-width: 1024px) and (orientation: portrait) {
+                #main-landing-container .hide-circle-on-tall-portrait {
+                    display: none !important;
+                }
 
-    #main-landing-container > section {
-        margin-top: 0 !important;
-        padding: 1.5rem 1rem 2rem !important;
-    }
-
-    #main-landing-container .tall-portrait-left-box,
-    #main-landing-container .tall-portrait-right-box {
-        grid-column: 1 / -1 !important;
-        align-items: center !important;
-        text-align: center !important;
-        padding: 0 !important;
-    }
-
-    #main-landing-container .landing-h1 {
-        font-size: clamp(52px, 7vw, 72px) !important;
-        text-align: center !important;
-        margin: 0 !important;
-    }
-
-    #main-landing-container .landing-hero-img {
-        position: static !important;
-        margin: 0 auto !important;
-        max-width: min(100%, 560px) !important;
-        max-height: 38svh !important;
-    }
-
-    #main-landing-container .landing-actions {
-        left: 0 !important;
-        top: 0 !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        max-width: 720px !important;
-        margin: 0 auto 1.5rem !important;
-    }
-}
-
-/* ===== Nest Hub (1024x600) - matches the prototype ===== */
-@media (min-width: 1024px) and (max-width: 1100px) and (max-height: 700px) {
-    #main-landing-container > header img {
-        width: 180px !important;
-        margin-left: -20px !important;
-    }
-
-    #main-landing-container > header a {
-        font-size: 16px !important;
-    }
-
-    #main-landing-container .landing-h1 {
-        font-size: 54px !important;
-        line-height: 1.25 !important;
-        margin-left: 30px !important;
-    }
-
-    #main-landing-container .landing-hero-img {
-        left: 14px !important;
-        top: 0 !important;
-        height: 60vh !important;
-        width: auto !important;
-        max-height: none !important;
-        max-width: none !important;
-    }
-
-    html body #main-landing-container .landing-actions {
-    left: 0 !important;
-    top: 0 !important;
-    transform: translate(-20px, 30px) !important;   /* (left/right, up/down) */
-    width: 100% !important;
-    max-width: none !important;
-    flex-wrap: nowrap !important;
-    justify-content: flex-end !important;
-    gap: 17px !important;
-    margin-top: -10px !important;
-    margin-bottom: 0 !important;
-}
-
-    #main-landing-container .landing-btn {
-        width: 140px;
-        height: 48px;
-        font-size: 15px;
-        border-width: 3px;
-    }
-
-    html body #main-landing-container footer {
-        padding-top: 12px !important;
-        padding-bottom: 12px !important;
-    }
-}
-
-/* ===== Nest Hub Max (1280x800) - matches the prototype ===== */
-@media (min-width: 1200px) and (max-width: 1300px) and (max-height: 850px) {
-    #main-landing-container > header img {
-        width: 225px !important;
-    }
-
-    #main-landing-container > header a {
-        font-size: 20px !important;
-    }
-
-    #main-landing-container .landing-h1 {
-        font-size: 64px !important;
-        line-height: 1.2 !important;
-        margin-left: 40px !important;
-    }
-
-    #main-landing-container .landing-hero-img {
-        left: 16px !important;
-        top: 0 !important;
-        height: 56vh !important;
-        width: auto !important;
-        max-height: none !important;
-        max-width: none !important;
-    }
-
-    #main-landing-container .landing-actions {
-        left: -15px !important;
-        top: 20px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        flex-wrap: nowrap !important;
-        justify-content: flex-end !important;
-        gap: 23px !important;
-        margin-top: -10px !important;
-        margin-bottom: 0 !important;
-    }
-
-    #main-landing-container .landing-btn {
-        height: 60px;
-        font-size: 17px;
-        border-width: 5px;
-        white-space: nowrap;
-    }
-
-    #main-landing-container .landing-actions .landing-btn:nth-child(1) { width: 185px; }
-    #main-landing-container .landing-actions .landing-btn:nth-child(2) { width: 172px; }
-    #main-landing-container .landing-actions .landing-btn:nth-child(3) { width: 181px; }
-
-}
-
-            @media (min-width: 1024px) and (max-width: 1439px) {
-                #main-landing-container {
-                    min-height: 100vh;
+                #main-landing-container > section {
                     height: auto !important;
-                    overflow-y: auto !important;
+                    padding: 1.5rem 1rem 2rem !important;
                 }
 
-                .tall-portrait-left-box {
-                    text-align: left !important;
-                    padding-left: 10px;
+                #main-landing-container .tall-portrait-left-box,
+                #main-landing-container .tall-portrait-right-box {
+                    grid-column: 1 / -1 !important;
+                    align-items: center !important;
+                    text-align: center !important;
+                    padding: 0 !important;
                 }
 
-                .tall-portrait-left-box h1 {
-                    text-align: left !important;
-                    margin-left: -30px !important;
+                #main-landing-container .landing-h1 {
+                    text-align: center !important;
+                    font-size: clamp(52px, 7vw, 72px) !important;
                 }
 
-                .tall-portrait-right-box img {
-                    height: auto !important;
-                    max-height: 80vh !important;
+                #main-landing-container .landing-hero-img {
+                    margin: 0 auto !important;
                     width: auto !important;
-                    max-width: 110% !important;
-                    position: relative !important;
-                    left: -28px !important;
-                    top: 4px !important;
+                    max-width: min(100%, 560px) !important;
+                    max-height: 38svh !important;
                 }
 
-                .tall-portrait-btn-shift {
-                    top: -15px !important;
-                    position: relative !important;
-                    left: -20px !important;
-                    margin-bottom: -8px !important;
-                }
-            }
-
-            @media (min-width: 1440px) {
-                #main-landing-container {
-                    min-height: 100vh;
-                    height: auto !important;
-                    overflow-y: auto !important;
+                #main-landing-container .landing-actions {
+                    flex-wrap: wrap !important;
+                    justify-content: center !important;
+                    max-width: 720px !important;
+                    margin: 0 auto 1.5rem !important;
                 }
 
-                .tall-portrait-left-box {
-                    text-align: left !important;
-                    padding-left: 10px;
-                }
-
-                .tall-portrait-left-box h1 {
-                    text-align: left !important;
-                    margin-left: -60px !important;
-                }
-
-                .tall-portrait-right-box img {
-                    height: auto !important;
-                    max-height: 80vh !important;
-                    width: auto !important;
-                    max-width: 110% !important;
-                    position: relative !important;
-                    left: -28px !important;
-                    top: 4px !important;
-                }
-
-                .tall-portrait-btn-shift {
-                    top: -15px !important;
-                    position: relative !important;
-                    left: 0px !important;
-                    margin-bottom: -8px !important;
-                }
-
-                /* Footer icons move left (size unchanged) */
-                #main-landing-container footer svg,
-                #main-landing-container footer img {
-                    position: relative !important;
-                    left: -15px !important;
-                    transform: translateX(0) !important;
+                #main-landing-container .landing-btn {
+                    width: 210px !important;
+                    height: 4rem !important;
+                    font-size: 20px !important;
+                    border-width: 4px !important;
                 }
             }
-@media (min-width: 700px) {
-    #main-landing-container footer {
-        padding-top: 25px !important;
-        padding-bottom: 22px !important;
-    }
-}
-    /* TEST - remove after */
-#main-landing-container { outline: 12px solid red !important; }
-
-@media (min-width: 1024px) and (max-width: 1100px) and (max-height: 700px) {
-    #main-landing-container { outline: 12px solid blue !important; }
-}       
-
         </style>
 
         <header class="relative w-full bg-white shadow-sm md:bg-transparent md:shadow-none z-50">
             <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
 
                 <!-- Logo -->
-                <div class="flex items-center ml-4 lg:ml-10">
+                <div class="flex items-center ml-4 lg:ml-10 landing-logo-wrap">
                     <img src="{{ asset('images/logo.png') }}"
                         alt="Safe Space Logo"
                         class="w-[120px] sm:w-[140px] md:w-[200px] lg:w-[300px] xl:w-[300px] h-auto object-contain flex-shrink-0">
@@ -429,7 +348,7 @@
                 <div class="flex items-center gap-4">
 
                     <!-- Desktop Navigation -->
-                    <div class="hidden lg:flex items-center gap-7 font-[Montserrat] text-[18px] lg:text-[20px] xl:text-[22px]" style="position: relative; top: -10px; left: -20px;">
+                    <div class="hidden lg:flex landing-nav items-center gap-7 font-[Montserrat] text-[18px] lg:text-[20px] xl:text-[22px]" style="position: relative; top: -10px; left: -20px;">
                         <a href="{{ route('landing-page') }}" class="text-black transition-colors hover:!text-[#c7da30]">
                             Home
                         </a>
@@ -540,17 +459,27 @@
                 will-change: transform, width, height;
             }
 
-            /* Footer green box taller */
-            #main-landing-container footer {
-                padding-top: 25px !important;
-                padding-bottom: 22px !important;
+            /* Footer: phones and tablets (fixed size) */
+            @media (max-width: 1023px) {
+                #main-landing-container footer {
+                    padding-top: 25px !important;
+                    padding-bottom: 22px !important;
+                }
             }
 
-            /* Footer text move left */
+            /* Footer: desktop (scales with screen width, same as the rest) */
             @media (min-width: 1024px) {
+                #main-landing-container footer {
+                    padding-top: 1.7vw !important;
+                    padding-bottom: 1.7vw !important;
+                }
+
+                /* Footer text left edge aligns with the header logo (88px at
+                   1366w = 6.44vw). Footer px padding (16px) + p margin (24px)
+                   already give 40px, so add the remaining 3.52vw. */
                 #main-landing-container footer p {
-                    position: relative !important;
-                    left: 50px !important;
+                    font-size: 1.4vw !important;
+                    margin-left: 5vw !important;
                 }
             }
 
