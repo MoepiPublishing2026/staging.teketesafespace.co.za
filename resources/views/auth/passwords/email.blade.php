@@ -188,7 +188,7 @@
                         </button>
 
                         <!-- Back button (KEEP as secondary option) -->
-                        <a href="{{ url('/school-admin') }}"
+                        <a href="{{ route('school-admin') }}"
                             class="w-full mx-auto block shadow-md text-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c7da30] btn-outline-safe"
                             style="height: 60px; font-size: 15px; display: flex; align-items: center; justify-content: center;">
                             Back to Login

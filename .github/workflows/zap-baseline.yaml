@@ -1,0 +1,59 @@
+# OWASP ZAP baseline scan.
+# Passive scan only: ZAP spiders the site and inspects responses. It sends no attack payloads,
+# so it is safe to run against staging.
+#
+# Setup (once): GitHub > Settings > Secrets and variables > Actions > Variables
+#   ZAP_TARGET = https://staging.teketesafespace.co.za
+#
+# Runs: every Monday, on demand ("Run workflow"), and after you publish a release.
+# Per-rule severity lives in .zap/rules.tsv. The job fails on FAIL rules only (-I = ignore WARN).
+name: ZAP baseline scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'URL to scan (defaults to the ZAP_TARGET variable)'
+        required: false
+  schedule:
+    - cron: '0 3 * * 1'
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zap-baseline
+  cancel-in-progress: false
+
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve target
+        id: target
+        env:
+          INPUT_TARGET: ${{ github.event.inputs.target }}
+          VAR_TARGET: ${{ vars.ZAP_TARGET }}
+        run: |
+          T="${INPUT_TARGET:-$VAR_TARGET}"
+          if [ -z "$T" ]; then
+            echo "::error::Set the ZAP_TARGET repository variable (e.g. https://staging.teketesafespace.co.za) or pass a target."
+            exit 1
+          fi
+          case "$T" in https://*) ;; *) echo "::error::Target must be an https:// URL"; exit 1 ;; esac
+          echo "url=$T" >> "$GITHUB_OUTPUT"
+
+      - name: ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.15.0
+        with:
+          target: ${{ steps.target.outputs.url }}
+          rules_file_name: .zap/rules.tsv
+          cmd_options: '-I -m 5'
+          fail_action: true
+          allow_issue_writing: false
+          artifact_name: zap-baseline-report

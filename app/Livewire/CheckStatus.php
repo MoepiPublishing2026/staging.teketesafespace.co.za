@@ -8,15 +8,19 @@ use App\Models\User;
 use App\Mail\TrackStatusChange;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Locked;
+use Illuminate\Support\Facades\RateLimiter;
+use App\Support\Turnstile;
 
 class CheckStatus extends Component
 {
     public $caseNumber = '';
-    public $reportData = [];
+    #[Locked] public array $reportData = []; //stops clients tampering with id/status
     public $message = '';
+    public $turnstileToken = '';
 
     protected $rules = [
-        'caseNumber' => 'required|string',
+        'caseNumber' => ['required', 'string', 'max:40', 'regex:/^[A-Za-z0-9-]{3,40}$/D'],
     ];
 
     protected $queryString = ['caseNumber'];
@@ -25,7 +29,9 @@ class CheckStatus extends Component
     {
         if (!empty($this->caseNumber)) {
             $this->caseNumber = strtoupper(trim($this->caseNumber));
-            $this->checkStatus();
+            if (! Turnstile::enabled()) {
+                $this->checkStatus();
+            }
         }
     }
 
@@ -37,6 +43,23 @@ class CheckStatus extends Component
     public function checkStatus()
     {
         $this->validate();
+
+        //rate limiting and bot check
+        $ipKey = 'check-status:ip:' . request()->ip();
+        $globalKey = 'check-status:global';
+        if (RateLimiter::tooManyAttempts($ipKey, 5)) {
+            $this->addError('caseNumber', 'Too many attempts. Please try again in a few minutes.');
+            $this->reportData = [];
+            return;
+        }
+        RateLimiter::hit($ipKey, 900);
+        RateLimiter::hit($globalKey, 900);
+
+        if (! $this->passesBotCheck()) {
+            $this->addError('caseNumber', 'Please complete the verification and try again.');
+            $this->reportData = [];
+            return;
+        }
 
         $report = Report::with(['abuseType', 'subtype'])
             ->where('case_number', trim($this->caseNumber))
@@ -73,6 +96,17 @@ class CheckStatus extends Component
         ];
 
         $this->message = '';
+    }
+
+    //CAPTCHA verification using Cloudflare Turnstile
+    protected function passesBotCheck(): bool
+    {
+        $passed = Turnstile::verify($this->turnstileToken, request()->ip());
+
+        $this->turnstileToken = '';
+        $this->dispatch('turnstile-reset');
+
+        return $passed;
     }
 
     protected function findSchoolAdmin(Report $report)

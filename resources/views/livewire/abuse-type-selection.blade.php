@@ -1,23 +1,35 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full max-w-full overflow-x-hidden box-border"
      style="-webkit-text-size-adjust: 100%; text-size-adjust: 100%;">
+    <style>
+        @media (max-width: 1023px) {
+            .report-header > div { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .report-header img { width: 120px !important; margin-left: 0 !important; }
+        }
+        .page-footer { padding-top: 25px !important; padding-bottom: 22px !important; }
+        @media (min-width: 1024px) {
+            .page-footer p { position: relative !important; left: 50px !important; }
+        }
+        @media (min-width: 1440px) {
+            .page-footer img { position: relative !important; left: -15px !important; }
+        }
+    </style>
     <!-- Header -->
    <header
-    class="fixed top-0 left-0 w-full bg-white z-50 ">
+    class="report-header fixed top-0 left-0 w-full bg-white z-50 ">
 
-    <div class="flex justify-between items-center w-full px-6 lg:px-8 py-2">
+    <div class="flex justify-between items-center w-full px-6 lg:px-12 py-4">
 
          <!-- Logo -->
-        <div class="flex items-center">
+        <div class="flex items-center ml-4 lg:ml-10">
     <img
         src="{{ asset('images/logo.png') }}"
         alt="Safe Space Logo"
         class="
             w-[120px]
             sm:w-[140px]
-            md:w-[170px]
-            lg:w-[190px]
-            xl:w-[200px]
-            2xl:w-[300px]
+            md:w-[200px]
+            lg:w-[300px]
+            xl:w-[300px]
             h-auto
             object-contain
             flex-shrink-0">
@@ -136,10 +148,8 @@
    <div class="flex-1 bg-white flex flex-col font-[Montserrat]
             justify-center items-center
             w-full max-w-full min-w-0 overflow-x-hidden
-            pt-[88px] pb-6
-            sm:pt-[100px]
-            md:pt-[110px]
-            lg:pt-[120px]">
+            pt-[104px] pb-6
+            lg:pt-[188px]">
         <!-- Main Content -->
         <div class="flex flex-col items-center justify-center text-center w-full max-w-full min-w-0 px-3 sm:px-4">
             <!-- Heading -->
@@ -164,7 +174,7 @@
     @foreach ($abuseTypes as $abuseType)
 
         <button
-            wire:click="selectAbuseType({{ $abuseType->id }})"
+            wire:click="selectAbuseType({{ (int) $abuseType->id }})"
             class="
                 w-full
                 min-w-0
@@ -214,7 +224,7 @@
         </div>
     </div>
 
-    <x-site-footer />
+    <x-site-footer class="page-footer" />
 </div>
 
 <script>

@@ -123,7 +123,7 @@
                 @endphp
 
                 @foreach ($order as $status)
-                    <button wire:click="showStatusReports('{{ $status }}')" class="bg-white rounded-lg shadow border-2 border-[#d7e47a] p-6 flex flex-col items-center cursor-pointer w-44 font-bold">
+                    <button wire:click="showStatusReports(@js((string) $status))" class="bg-white rounded-lg shadow border-2 border-[#d7e47a] p-6 flex flex-col items-center cursor-pointer w-44 font-bold">
                         <div class="{{ $colors[$status] ?? 'text-gray-500' }} mt-2 text-sm">{{ ucwords(str_replace('-', ' ', $status)) }}</div>
                         <div class="text-3xl font-extrabold {{ $colors[$status] ?? 'text-gray-500' }} mt-2" style="font-size: 2rem;">
                             {{ $statusCounts[$status] ?? 0 }}
@@ -187,7 +187,7 @@
                     @if (count($schools))
                         <div class="flex flex-wrap gap-2">
                             @foreach($schools as $id => $name)
-                                <button wire:click="$set('selectedSchool', {{ $id }})" class="px-3 py-1 rounded-lg font-semibold shadow-sm border font-century {{ $selectedSchool == $id ? 'bg-[#b8d42f] text-white' : 'bg-gray-100 text-gray-800 hover:bg-[#e6eeae]' }}">
+                                <button wire:click="$set('selectedSchool', {{ (int) $id }})" class="px-3 py-1 rounded-lg font-semibold shadow-sm border font-century {{ $selectedSchool == $id ? 'bg-[#b8d42f] text-white' : 'bg-gray-100 text-gray-800 hover:bg-[#e6eeae]' }}">
                                     {{ $name }}
                                 </button>
                             @endforeach
@@ -204,7 +204,7 @@
                     <h4 class="font-semibold text-gray-700 mb-2 font-poppins" style="font-family: 'Poppins', sans-serif;">Abuse Type</h4>
                     <div class="flex flex-wrap gap-2">
                         @foreach ($abuseTypes as $id => $name)
-                            <button wire:click="$set('selectedAbuseType', {{ $id }})" class="px-4 py-1 rounded-lg font-semibold shadow border border-gray-200 font-century {{ $selectedAbuseType == $id ? 'bg-[#b8d42f] text-white' : 'bg-gray-100 text-gray-800 hover:bg-[#e6eeae]' }}">
+                            <button wire:click="$set('selectedAbuseType', {{ (int) $id }})" class="px-4 py-1 rounded-lg font-semibold shadow border border-gray-200 font-century {{ $selectedAbuseType == $id ? 'bg-[#b8d42f] text-white' : 'bg-gray-100 text-gray-800 hover:bg-[#e6eeae]' }}">
                                 {{ $name }}
                             </button>
                         @endforeach
@@ -222,7 +222,7 @@
                             All Ages
                         </button>
                         @foreach($ageRanges as $range)
-                            <button wire:click="$set('selectedAgeRange', '{{ $range }}')"
+                            <button wire:click="$set('selectedAgeRange', @js((string) $range))"
                                 class="px-3 py-1 rounded-lg font-semibold shadow-sm border font-century {{ $selectedAgeRange === $range ? 'bg-[#b8d42f] text-white' : 'bg-gray-100 text-gray-800 hover:bg-[#e6eeae]' }}">
                                 {{ $range }}
                             </button>
@@ -238,7 +238,7 @@
                             All Grades
                         </button>
                         @forelse($gradeOptions as $grade)
-                            <button wire:click="$set('selectedGrade', '{{ $grade }}')"
+                            <button wire:click="$set('selectedGrade', @js((string) $grade))"
                                 class="px-3 py-1 rounded-lg font-semibold shadow-sm border font-century {{ $selectedGrade === (string) $grade ? 'bg-[#b8d42f] text-white' : 'bg-gray-100 text-gray-800 hover:bg-[#e6eeae]' }}">
                                 {{ $grade }}
                             </button>
@@ -635,7 +635,7 @@
                             </thead>
                             <tbody>
                                 @foreach($statusReports as $report)
-                                    <tr class="cursor-pointer hover:bg-gray-100" wire:click="showReportDetails({{ $report->id }})">
+                                    <tr class="cursor-pointer hover:bg-gray-100" wire:click="showReportDetails({{ (int) $report->id }})">
                                         <td class="border p-2">{{ $report->case_number }}</td>
                                         <td class="border p-2">{{ $report->abuseType->type_name ?? 'N/A' }}</td>
                                         <td class="border p-2">{{ ucwords(str_replace('-', ' ', $report->status)) }}</td>
@@ -690,7 +690,7 @@
     ];
 @endphp
 
-<script id="district-initial-data" type="application/json">{!! json_encode($initialPayload) !!}</script>
+<script id="district-initial-data" type="application/json">@json($initialPayload)</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>

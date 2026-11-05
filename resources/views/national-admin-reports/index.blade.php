@@ -850,7 +850,7 @@ body.na-app .page-link[aria-current="page"] {
 
 <script>
 function openReportModal(reportId) {
-    fetch(`/reports/${reportId}`, { headers: { 'Accept': 'application/json' } })
+    fetch(`{{ url('/national-admin/reports') }}/${reportId}`, { headers: { 'Accept': 'application/json' } })
     .then(r => { if (!r.ok) throw new Error('Network error'); return r.json(); })
     .then(report => {
         document.getElementById('modalCaseNumber').textContent = report.case_number || 'N/A';
@@ -867,9 +867,10 @@ function openReportModal(reportId) {
         attachmentContainer.innerHTML = '';
 
         if (report.attachments && report.attachments.length > 0) {
-            report.attachments.forEach(function(filePath) {
+            report.attachments.forEach(function(filePath, i) {
                 const ext       = filePath.split('.').pop().toLowerCase();
-                const publicUrl = '/storage/' + filePath.replace(/^\/+/, '');
+                const publicUrl = (report.attachment_urls || [])[i];   // authenticated handler URL
+                if (!publicUrl) return;
                 let elem;
 
                 if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
@@ -909,9 +910,10 @@ function openReportModal(reportId) {
         const attachmentSpan = document.getElementById('modalAttachments');
         attachmentSpan.innerHTML = '';
         if (report.attachments && report.attachments.length > 0) {
-            report.attachments.forEach(filePath => {
+            report.attachments.forEach((filePath, i) => {
                 const ext = filePath.split('.').pop().toLowerCase();
-                const publicUrl = `/storage/${filePath.replace(/^\/+/, '')}`;
+                const publicUrl = (report.attachment_urls || [])[i];   // authenticated handler URL
+                if (!publicUrl) return;
                 let elem;
                if (['jpg','jpeg','png','gif','bmp','webp','svg'].includes(ext)) {
                     elem = document.createElement('img');
@@ -994,9 +996,9 @@ const PLACEHOLDER_ANON    = 'Search by email, case number, description…';
 
 const subtypesByType = {
     @foreach($typeOptions as $type)
-        {{ $type->id }}: [
+        {{ (int) $type->id }}: [
             @foreach($subtypeOptions->where('abuse_type_id', $type->id) as $sub)
-                { id: {{ $sub->id }}, name: "{{ addslashes($sub->sub_type_name) }}" },
+                { id: {{ (int) $sub->id }}, name: @js($sub->sub_type_name) },
             @endforeach
         ],
     @endforeach

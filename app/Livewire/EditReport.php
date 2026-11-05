@@ -13,13 +13,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Mail\ReportUpdatedMail;
+use App\Support\AttachmentStore;
+use App\Support\InputRules;
+use Livewire\Attributes\Locked;
 
 class EditReport extends Component
 {
     use WithFileUploads;
     
-    public $caseNumber;
-    public $report;
+    #[Locked] public $caseNumber;
+    #[Locked] public $report;
     public $isAppeal = false;
 
     public $showSuccessModal = false;
@@ -36,7 +39,7 @@ class EditReport extends Component
     public $fullName;
     public $age;
     public $isAnonymous;
-    public $schoolPhase;
+    #[Locked] public $schoolPhase;   // derived from the school record on the server
     public $schoolProvince;
     public $schoolId;
 
@@ -268,7 +271,22 @@ class EditReport extends Component
     public function updatedNewUploads($files)
     {
         $files = is_array($files) ? $files : [$files];
+        $store = app(AttachmentStore::class);
+        $max   = (int) config('attachments.max_per_report', 5);
+        $total = (int) config('attachments.max_total', 10);
+
         foreach ($files as $file) {
+            if (count($this->image) >= $max || count($this->existingAttachments) + count($this->image) >= $total) {
+                $this->addError('newUploads.0', "You can add at most {$max} files at a time (and {$total} in total).");
+                $file->delete();
+                continue;
+            }
+            if ($error = $store->validate($file)) {
+                $this->addError('newUploads.0', $error);
+                $file->delete();
+                continue;
+            }
+
             $alreadyExists = collect($this->image)->contains(fn($f) => $f->getFilename() === $file->getFilename());
             if (!$alreadyExists) $this->image[] = $file;
         }
@@ -381,8 +399,8 @@ class EditReport extends Component
                     }
                 },
             ],
-            'grade' => 'required|string|max:255',
-            'email' => 'nullable|email:rfc,dns|max:255',
+            'grade' => InputRules::grade(),   // allow-list (Creche, Grade R, Grade 1-12)
+            'email' => InputRules::safeEmail(),
             'phoneNumber' => [
                 'required',
                 'digits:10',
@@ -411,7 +429,9 @@ class EditReport extends Component
                 },
             ],
             'fullName' => $this->isAnonymous ? 'nullable|string' : 'required|string|max:50|regex:/^[a-zA-Z\s]+$/u',
-            'age' => 'nullable|numeric|min:0|max:115',
+            'age' => InputRules::age(false),
+            'image'   => ['array', 'max:' . (int) config('attachments.max_per_report', 5)],
+            'image.*' => AttachmentStore::fileRules(),
         ]);
 
         // Re-resolve province from the database rather than trusting stale component state.
@@ -447,20 +467,22 @@ class EditReport extends Component
             $this->report->district_id = $school->district_id;
         }
 
-        $newPaths = [];
-        foreach ($this->image as $file) {
-           // New Code
-        $originalName = $file->getClientOriginalName(); // Get original filename
-        $path = $file->storeAs('reports', $originalName, 'public'); // Store using that name
-            $newPaths[] = $path;
-            @copy(storage_path('app/public/' . $path), public_path('storage/' . $path));
+         // existingAttachments is a public property (client-writable): only keep paths this report already owns.
+        $ownedPaths = json_decode($this->report->image_path ?? '[]', true) ?: [];
+        $this->existingAttachments = array_values(array_intersect($this->existingAttachments, $ownedPaths));
+
+        if (count($this->existingAttachments) + count($this->image) > 10) {
+            $this->addError('image', 'A report can have at most 10 attachments.');
+            return;
         }
+
+        // Content-sniffed type, antivirus scan, images re-encoded (strips EXIF/GPS), generated names, private disk.
+        // All-or-nothing: a rejected file removes the ones already written.
+        $newPaths = app(AttachmentStore::class)->storeMany($this->image);
 
         $this->report->image_path = json_encode(array_merge($this->existingAttachments, $newPaths));
         
-        
             $this->report->description = $this->description;
-        
 
         if ($wasAppeal) {
             $this->report->status = 'pending';

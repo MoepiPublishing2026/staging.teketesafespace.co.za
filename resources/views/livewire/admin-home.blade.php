@@ -945,11 +945,11 @@ Livewire.on('chartDataUpdated', (payload) => {
 </div>
 <script>
 const statusCtx = document.getElementById('statusChart').getContext('2d');
-const statusLabels = {!! $statusData->pluck('status')->toJson() !!}.map(label => {
+const statusLabels =  @json($statusData->pluck('status')).map(label => {
     // Capitalize first letter of each word
     return label.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 });
-const statusCounts = {!! $statusData->pluck('total')->toJson() !!};
+const statusCounts = @json($statusData->pluck('total'));
 
 // Map status colors
 const statusColors = statusLabels.map(label => {

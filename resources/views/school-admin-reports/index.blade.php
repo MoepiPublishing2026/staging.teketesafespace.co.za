@@ -356,7 +356,7 @@ $gradeOptions = collect($gradeOptions)
                             <td onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">{{ $report->is_anonymous ? 'Yes' : 'No' }}</td>
                             <td onclick="openReportModal({{ $report->id }})" style="cursor:pointer;">{{ $report->created_at->format('Y M d') }}</td>
                             <td>
-                                <select class="status-select" onchange="promptStatusUpdate({{ $report->id }}, this.value, '{{ $report->case_number }}', '{{ $report->status }}'); this.value='';" onclick="event.stopPropagation();">
+                                <select class="status-select" onchange="promptStatusUpdate({{ (int) $report->id }}, this.value, @js($report->case_number), @js($report->status)); this.value='';" onclick="event.stopPropagation();">
                                     <option value="">Update</option>
                                     <option value="awaiting-resolution">Awaiting Resolution</option>
                                     <option value="under-review">Under Review</option>
@@ -521,10 +521,11 @@ attachmentSpan.innerHTML = '';
 
 if (report.attachments && report.attachments.length > 0) {
 
-    report.attachments.forEach(filePath => {
+    report.attachments.forEach((filePath, i) => {
 
-        // Create Laravel storage URL
-        const publicUrl = "{{ asset('storage') }}/" + filePath.replace(/^\/+/, '');
+        // Attachments are private: use the authenticated download URL built by the server
+        const publicUrl = (report.attachment_urls || [])[i];   // authenticated handler URL
+        if (!publicUrl) return;
 
         const ext = filePath.split('.').pop().toLowerCase();
 

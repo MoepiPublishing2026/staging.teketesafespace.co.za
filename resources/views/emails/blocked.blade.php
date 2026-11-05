@@ -1,7 +1,7 @@
 @component('mail::message')
 # Account Status Update
 
-Hello {{ $report->full_name ?? 'Reporter' }},
+Hello {{ \App\Support\MailText::line($report->full_name ?? 'Reporter', 100) }},
 
 This is a formal notification that your access to our reporting platform has been restricted by the administration.
 

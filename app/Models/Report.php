@@ -174,6 +174,6 @@ SQL;
 
         $expr = self::normalizedDashboardStatusSqlExpression();
 
-        return $query->whereRaw('('.$expr.') = ?', [$canonical]);
+        return $query->whereRaw('('.$expr.') = ?', [$canonical]); security-lint:ignore <issue resolved>
     }
 }

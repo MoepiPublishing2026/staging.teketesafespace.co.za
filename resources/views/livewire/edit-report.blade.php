@@ -214,7 +214,7 @@
                                 @foreach ($existingAttachments as $index => $filePath)
                                     @php
                                         $ext = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
-                                        $url = asset('storage/' . ltrim($filePath, '/'));
+                                        $url = \App\Support\AttachmentAccess::reporterUrl($caseNumber, $filePath);
                                         $isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg']);
                                         $isVideo = in_array($ext, ['mp4', 'mov', 'avi', 'wmv']);
                                     @endphp
@@ -222,7 +222,7 @@
                                         @if ($isImage)
                                             <img src="{{ $url }}" alt="Attachment"
                                                 class="w-32 h-32 object-cover border rounded shadow cursor-pointer hover:opacity-80 transition"
-                                                onclick="window.open('{{ $url }}', '_blank')">
+                                                onclick="window.open(@js($url), '_blank', 'noopener')">
                                         @elseif ($isVideo)
                                             <video controls
                                                 class="w-32 h-32 border rounded shadow cursor-pointer hover:opacity-80 transition">
@@ -244,6 +244,7 @@
 
                         <div class="mt-4">
                             <input type="file" wire:model="newUploads" multiple
+                                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
                                 class="form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black bg-white">
                             @error('newUploads.*')
                                 <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
@@ -276,7 +277,7 @@
                                         @if ($isImage)
                                             <img src="{{ $file->temporaryUrl() }}" alt="Preview"
                                                 class="w-32 h-32 object-cover border rounded mt-2 cursor-pointer hover:opacity-80 transition"
-                                                onclick="window.open('{{ $file->temporaryUrl() }}', '_blank')">
+                                                onclick="window.open(@js($file->temporaryUrl()), '_blank', 'noopener')">
                                         @elseif ($isVideo)
                                             <video controls class="w-32 h-32 border rounded mt-2">
                                                 <source src="{{ $file->temporaryUrl() }}"

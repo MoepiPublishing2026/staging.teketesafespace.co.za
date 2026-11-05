@@ -18,6 +18,7 @@ class SchoolAdminReportsController extends AdminController
 {
     public function index(Request $request)
     {
+        \App\Support\InputRules::sanitizeReportFilters($request);
 
         $user = Auth::user();
 
@@ -196,7 +197,8 @@ class SchoolAdminReportsController extends AdminController
                 'blocked_by_name'      => $report->blocked_by_name,
                 'false_reports_count'  => $this->falseReportsCountFor($report),
                 'description'          => $report->description,
-                'attachments'          => $report->image_path ? json_decode($report->image_path, true) : [],
+                'attachments'          => \App\Support\AttachmentAccess::paths($report),
+                'attachment_urls'      => \App\Support\AttachmentAccess::adminUrls($report),
             ]);
         }
 

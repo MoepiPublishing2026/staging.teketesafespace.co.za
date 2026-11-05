@@ -145,7 +145,7 @@
     // *visual* DOM exactly as it looked before navigating away, but
     // Livewire reconnects to a brand-new server-side component with
     // empty/default properties. So the fields LOOK filled in, but
-    // Livewire's actual `role` / `username` / `password` state is
+    // Livewire's actual `username` / `password` state is
     // empty -> clicking Login immediately fails validation.
     //
     // Fix: persist the values to sessionStorage as the user types,
@@ -154,16 +154,10 @@
     // component so its real state matches what's on screen.
     // ---------------------------------------------------------------
 
-    // Save values as the user types/selects
+    // Save credentials as the user types.
     document.addEventListener('input', function (e) {
         if (e.target.id === 'username' || e.target.id === 'password') {
             sessionStorage.setItem('login_' + e.target.id, e.target.value);
-        }
-    });
-
-    document.addEventListener('change', function (e) {
-        if (e.target.name === 'role') {
-            sessionStorage.setItem('login_role', e.target.value);
         }
     });
 
@@ -171,26 +165,13 @@
     window.addEventListener('pageshow', function () {
         const username = sessionStorage.getItem('login_username');
         const password = sessionStorage.getItem('login_password');
-        const role = sessionStorage.getItem('login_role');
-
-        if (!username && !password && !role) {
+        if (!username && !password) {
             return;
         }
 
         const restore = function (attemptsLeft) {
             if (window.Livewire && Livewire.first && Livewire.first()) {
                 const component = Livewire.first();
-
-                if (role) {
-                    component.set('role', role, false);
-
-                    const roleRadio = document.querySelector(
-                        'input[name="role"][value="' + role + '"]'
-                    );
-                    if (roleRadio) {
-                        roleRadio.checked = true;
-                    }
-                }
 
                 if (username) component.set('username', username, false);
                 if (password) component.set('password', password, false);
@@ -207,7 +188,6 @@
     document.addEventListener('livewire:navigated', function () {
         sessionStorage.removeItem('login_username');
         sessionStorage.removeItem('login_password');
-        sessionStorage.removeItem('login_role');
     });
 </script>
 
@@ -216,9 +196,11 @@
             justify-center items-center
             w-full
             pt-[90px]
-            sm:pt-[100px]
-            md:pt-[90px]
-            lg:pt-[100px]">
+            sm:pt-[150px]
+            md:pt-[130px]
+            lg:pt-[150px]
+            pb-[40px]
+            sm:pb-[80px]">
 
         <!-- Main Content -->
         <div class="w-full max-w-2xl px-4 mx-auto">
@@ -231,36 +213,11 @@
                 </div>
             @endif
 
-            <!-- Role Selection -->
-           <div class="w-full px-2 md:px-0 md:justify-center justify-start items-start gap-4 md:gap-8 mt-2 mb-8 text-black text-[15px] flex flex-col sm:flex-row"
-                 style="font-family: 'Montserrat', sans-serif;">
-                <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
-                    <input type="radio" name="role" wire:model.live="role" value="school" wire:change="resetForm" class="accent-[#c7da30]">
-                    <span>School Administrator</span>
-                </label>
-                <!--<label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">-->
-                <!--    <input type="radio" wire:model="role" value="district" wire:change="resetForm" class="accent-[#c7da30]">-->
-                <!--    <span>District Administrator</span>-->
-                <!--</label>-->
-                <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
-                    <input type="radio" name="role" wire:model.live="role" value="provincial" wire:change="resetForm" class="accent-[#c7da30]">
-                    <span>Provincial Administrator</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
-                    <input type="radio" name="role" wire:model.live="role" value="national" wire:change="resetForm" class="accent-[#c7da30]">
-                    <span>National Administrator</span>
-                </label>
-            </div>
-
-            @error('role')
-                <p class="text-red-500 text-sm mt-1 text-left">{{ $message }}</p>
-            @enderror
-
             <!-- Outer Container -->
             <div class="border-4 border-[#c7da30] rounded-2xl p-8 bg-white">
                 <div class="w-full">
                     <form wire:submit.prevent="login" class="flex flex-col gap-5">
-                            <input type="text" id="username" wire:model.live="username" placeholder="USERNAME"
+                            <input type="text" id="username" wire:model="username" placeholder="USERNAME"
                                    class="w-full py-4 px-4 text-gray-700 rounded-lg focus:outline-none"
                                    style="border: 3px solid #c7da30; font-family: 'Montserrat', sans-serif; font-size: 14px; background-color: white;">
                             @error('username') 
@@ -284,10 +241,49 @@
         </button>
     </div>
 
-    @error('password') 
-        <span class="text-red-500 text-sm block mt-1" style="font-family: 'Montserrat', sans-serif;">{{ $message }}</span> 
-    @enderror
-    <div class="text-right mt-2">
+                            @error('password')
+                                <span class="text-red-500 text-sm block mt-1" style="font-family: 'Montserrat', sans-serif;">{{ $message }}</span>
+                            @enderror
+                            @if ($this instanceof \App\Livewire\AdminLoginForm && !$this->captchaPassed && !$showCaptcha)
+                                <div wire:loading.flex wire:target="login" class="fixed inset-0 z-[300] items-center justify-center bg-black/60 p-4" role="status">
+                                    <div class="rounded-xl bg-white px-6 py-5 font-semibold text-gray-800 shadow-xl">Preparing security check…</div>
+                                </div>
+                            @endif
+                            @if ($this instanceof \App\Livewire\AdminLoginForm && $showCaptcha)
+                                <div class="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4" role="dialog" aria-modal="true" aria-labelledby="captcha-title">
+                                    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+                                        <h2 id="captcha-title" class="text-xl font-bold text-gray-900">Security check</h2>
+                                        @if ($this->captchaPassed)
+                                            <div class="mt-5 rounded-xl border border-green-200 bg-green-50 p-5 text-center" role="status" aria-live="polite">
+                                                <span class="text-4xl text-green-700" aria-hidden="true">✓</span>
+                                                <p class="mt-2 font-semibold text-green-800">Security check passed.</p>
+                                                <p class="mt-1 text-sm text-green-700">Signing you in…</p>
+                                            </div>
+                                        @else
+                                            <p class="mt-2 text-sm text-gray-600">Complete the security check to continue.</p>
+                                            @if ($captchaError)
+                                                <p class="mt-3 text-sm text-red-600" role="alert">{{ $captchaError }}</p>
+                                            @endif
+                                            <div wire:ignore class="mt-5 flex justify-center">
+                                                <div id="admin-login-turnstile"
+                                                     data-sitekey="{{ config('turnstile.site_key') }}"
+                                                     data-component-id="{{ $this->getId() }}"></div>
+                                            </div>
+                                            @if (!config('turnstile.site_key'))
+                                                <p class="mt-3 text-sm text-red-600" role="alert">Security verification is not configured. Please contact the site administrator.</p>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                            @if ($this instanceof \App\Livewire\AdminLoginForm)
+                                <div class="absolute -left-[10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+                                    <label for="website">Leave this field empty</label>
+                                    <input type="text" id="website" wire:model="website" name="website"
+                                           tabindex="-1" autocomplete="off">
+                                </div>
+                            @endif
+                            <div class="text-right mt-2">
         <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:underline" style="font-family: 'Montserrat', sans-serif;">Forgot password?</a>
     </div>
 </div>
@@ -295,6 +291,11 @@
                             @error('login') 
                                 <span class="text-red-500 text-sm block" style="font-family: 'Montserrat', sans-serif;">{{ $message }}</span> 
                             @enderror
+                            @if ($this instanceof \App\Livewire\AdminLoginForm && $this->isLocked)
+                                <p class="text-center text-sm font-semibold text-red-700" role="timer" aria-live="off">
+                                    You can try again in <span data-lockout-until="{{ $this->lockoutUntil }}" class="font-mono text-base">00:00</span>.
+                                </p>
+                            @endif
 
                             <button type="submit"
     class="w-full py-4 px-4
@@ -313,7 +314,7 @@
 
             <x-site-footer />
             <script>
-                function togglePasswordVisibility() {
+    function togglePasswordVisibility() {
         const passwordInput = document.getElementById('password');
         const eyeShow = document.getElementById('eye-show');
         const eyeHide = document.getElementById('eye-hide');
@@ -328,6 +329,60 @@
             eyeHide.classList.add('hidden');
         }
     }
+
+    function updateAdminLoginCountdowns() {
+        document.querySelectorAll('[data-lockout-until]').forEach(function (timer) {
+            const remaining = Math.max(0, Math.ceil((Number(timer.dataset.lockoutUntil) - Date.now()) / 1000));
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+            timer.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        });
+    }
+
+    updateAdminLoginCountdowns();
+    setInterval(updateAdminLoginCountdowns, 1000);
+    window.addEventListener('pageshow', updateAdminLoginCountdowns);
+    (function () {
+        let widgetId = null;
+        let renderedContainer = null;
+
+        function renderAdminTurnstile() {
+            const container = document.getElementById('admin-login-turnstile');
+            if (!container || !window.turnstile || !container.dataset.sitekey) return;
+            if (renderedContainer === container && widgetId !== null) return;
+
+            renderedContainer = container;
+            widgetId = window.turnstile.render(container, {
+                sitekey: container.dataset.sitekey,
+                action: 'admin_login',
+                callback: function (turnstileToken) {
+                    const component = window.Livewire && Livewire.find(container.dataset.componentId);
+                    if (component) component.call('verifyTurnstile', turnstileToken);
+                },
+                'error-callback': function () {
+                    const component = window.Livewire && Livewire.find(container.dataset.componentId);
+                    if (component) component.set('captchaError', 'The security check could not load. Please try again.');
+                },
+                'expired-callback': function () {
+                    if (widgetId !== null && window.turnstile) window.turnstile.reset(widgetId);
+                }
+            });
+        }
+
+        function resetAdminTurnstile() {
+            if (widgetId !== null && window.turnstile) window.turnstile.reset(widgetId);
+        }
+
+        window.addEventListener('admin-turnstile-open', function () {
+            window.setTimeout(renderAdminTurnstile, 0);
+            window.setTimeout(renderAdminTurnstile, 150);
+        });
+        window.addEventListener('admin-turnstile-reset', resetAdminTurnstile);
+        window.onTurnstileLoaded = renderAdminTurnstile;
+        document.addEventListener('livewire:navigated', renderAdminTurnstile);
+        window.addEventListener('load', renderAdminTurnstile);
+    })();
             </script>
+            <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoaded" async defer></script>
 
 </div>
