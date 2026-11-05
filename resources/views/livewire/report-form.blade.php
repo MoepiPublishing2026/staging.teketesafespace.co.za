@@ -801,4 +801,8 @@ clearTimeout(timer);
         window.addEventListener('restart-timer', () => { setTimeout(startCountdown, 100); });
     </script>
 
+     <div style="position:absolute; left:-9999px;" aria-hidden="true">
+    <label for="website">Leave this field empty</label>
+    <input type="text" id="website" wire:model="website" tabindex="-1" autocomplete="off">
+</div>
 </div>

@@ -127,6 +127,19 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+         'security' => [
+        'driver' => 'daily',
+        'path' => storage_path('logs/security.log'),
+        'level' => 'info',
+        'days' => 90, // keep 90 days of security logs for compliance
+    ],
+    // config/logging.php
+'checkpoint' => [
+    'driver' => 'single',          // single file, append-only by default
+    'path' => storage_path('logs/audit-checkpoints.log'),
+    'level' => 'info',
+],
+
     ],
 
 ];
