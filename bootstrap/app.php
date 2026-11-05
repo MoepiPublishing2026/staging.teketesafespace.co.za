@@ -43,6 +43,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'otp.verified' => \App\Http\Middleware\EnsureOtpVerified::class,
         ]);
     })
+
+->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
+    $middleware->append(\App\Http\Middleware\MonitorHttpErrors::class);
+})
+
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Throwable $e, Request $request) {
             if ($e instanceof \Illuminate\Auth\AuthenticationException) {
@@ -81,4 +86,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->withInput($request->except('password', '_token', 'otp'))
                 ->with('error_message', $message);
         });
+
     })->create();
+

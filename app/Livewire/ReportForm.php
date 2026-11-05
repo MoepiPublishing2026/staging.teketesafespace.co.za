@@ -720,4 +720,22 @@ public function removeImage($index)
             'isOtherSubtypeSelected' => $this->isOtherSubtypeSelected,
         ]);
     }
+    
+
+    public string $website = ''; // Honeypot field for bot mitigation
+
+public function submit()
+{
+    if (!empty($this->website)) {
+        app(\App\Services\AuditTrailService::class)->record(
+            action: 'BOT_SUBMISSION_BLOCKED',
+            reason: 'Honeypot field was filled by automated bot',
+            metadata: ['user_agent' => request()->userAgent()]
+        );
+        session()->flash('message', 'Thank you for your report.');
+        return;
+    }
+
+    // Continue normal report creation...
+}
 }
