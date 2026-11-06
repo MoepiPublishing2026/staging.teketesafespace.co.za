@@ -1,5 +1,22 @@
----
+
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za/
-    - /bin/cp -R * $DEPLOYPATH
+    - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za
+    
+    # 1. Enter maintenance mode immediately
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan down --retry=60
+    
+    # 2. Pull down updates and sync files
+    - cd $DEPLOYPATH && git fetch origin && git reset --hard origin/main
+
+    
+    # 3. Run optimizations and migrations
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize:clear
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan queue:restart
+    
+    # 4. Bring the application back online
+    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan up
+
+  
+    
