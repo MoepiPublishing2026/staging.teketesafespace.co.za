@@ -406,10 +406,8 @@
             </div>
         </div>
     </div>
-</div>
 
 <x-site-footer />
-</div>
 
 <style>
     /* 1366×768 Chrome is shorter than this page. Fit the header, form,
@@ -521,7 +519,6 @@
         }
     }
 </style>
-</div>
 
 <script>
     function toggleMobileMenu() {
@@ -562,3 +559,5 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+
+</div>

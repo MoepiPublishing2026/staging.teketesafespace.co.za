@@ -31,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Security headers + CSP on every response (also 404s and error pages), not just web routes.
         $middleware->append(SecurityHeaders::class);
 
+        // Log HTTP error responses. Must live in this single withMiddleware() call: a second call
+        // resets the guest redirect, global middleware, groups and aliases set here.
+        $middleware->append(\App\Http\Middleware\MonitorHttpErrors::class);
+
         // Exclude PayFast ITN callback from CSRF verification
         $middleware->validateCsrfTokens(except: [
             'payment/notify',
@@ -43,10 +47,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'otp.verified' => \App\Http\Middleware\EnsureOtpVerified::class,
         ]);
     })
-
-->withMiddleware(function (\Illuminate\Foundation\Configuration\Middleware $middleware) {
-    $middleware->append(\App\Http\Middleware\MonitorHttpErrors::class);
-})
 
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Throwable $e, Request $request) {

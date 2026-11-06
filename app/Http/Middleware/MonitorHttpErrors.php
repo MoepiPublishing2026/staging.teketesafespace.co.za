@@ -14,14 +14,19 @@ class MonitorHttpErrors
         $response = $next($request);
 
         if ($response->getStatusCode() >= 500) {
-            app(AuditTrailService::class)->record(
-                action: 'HTTP_SERVER_ERROR',
-                reason: 'Server error ' . $response->getStatusCode() . ' on path: ' . $request->path(),
-                metadata: [
-                    'status_code' => $response->getStatusCode(),
-                    'method'      => $request->method(),
-                ]
-            );
+            // Auditing must never turn a 5xx into a different failure (or hide the original one).
+            try {
+                app(AuditTrailService::class)->record(
+                    action: 'HTTP_SERVER_ERROR',
+                    reason: 'Server error ' . $response->getStatusCode() . ' on path: ' . $request->path(),
+                    metadata: [
+                        'status_code' => $response->getStatusCode(),
+                        'method'      => $request->method(),
+                    ]
+                );
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         return $response;

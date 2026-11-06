@@ -332,7 +332,7 @@ protected array $phaseGrades = [
                 // This prevents numbers and most special characters.
                 'regex:/^[a-zA-Z\s\-\']{2,50}$/', 
             ],
-            'age' => 'required|numeric|min:0|max:115',
+            'age' => 'required|integer|min:0|max:115',
             'location' => [
             'required',
             'string',
@@ -571,9 +571,6 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
             });
             
             
-            
-            
-
             // Notify reporter. The report is already committed, so an email problem (SMTP down, bad
             // address...) must not be reported as a failed submission - they would just submit it again.
             $emailed = true;
@@ -724,18 +721,16 @@ public function removeImage($index)
 
     public string $website = ''; // Honeypot field for bot mitigation
 
-public function submit()
-{
-    if (!empty($this->website)) {
-        app(\App\Services\AuditTrailService::class)->record(
-            action: 'BOT_SUBMISSION_BLOCKED',
-            reason: 'Honeypot field was filled by automated bot',
-            metadata: ['user_agent' => request()->userAgent()]
-        );
-        session()->flash('message', 'Thank you for your report.');
-        return;
+    public function submit()
+    {
+        if (!empty($this->website)) {
+            app(\App\Services\AuditTrailService::class)->record(
+                action: 'BOT_SUBMISSION_BLOCKED',
+                reason: 'Honeypot field was filled by automated bot',
+                metadata: ['user_agent' => request()->userAgent()]
+            );
+            session()->flash('message', 'Thank you for your report.');
+            return;
+        }
     }
-
-    // Continue normal report creation...
-}
 }

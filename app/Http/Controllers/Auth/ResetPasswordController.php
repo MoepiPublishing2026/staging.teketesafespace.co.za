@@ -15,7 +15,8 @@ class ResetPasswordController extends Controller
 {
     use ResetsPasswords;
 
-    protected $redirectTo = '/school-admin';
+    protected $redirectTo = '/secure-portal-auth-9x7/login';
+
 
    public function showResetForm(Request $request, $token = null)
     {
