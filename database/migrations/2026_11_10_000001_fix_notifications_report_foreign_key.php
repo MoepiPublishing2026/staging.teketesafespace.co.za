@@ -16,18 +16,28 @@ return new class extends Migration
             return;
         }
 
-        DB::statement('ALTER TABLE notifications DROP FOREIGN KEY notifications_report_id_foreign');
+        $legacyConstraintNames = $this->foreignKeyNamesFor('notifications', 'incidents');
 
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->dropForeign(['report_id']);
-        });
+        foreach ($legacyConstraintNames as $constraintName) {
+            DB::statement(sprintf('ALTER TABLE notifications DROP FOREIGN KEY `%s`', $constraintName));
+        }
 
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->foreign('report_id')
-                ->references('id')
-                ->on('reports')
-                ->onDelete('cascade');
-        });
+        if ($this->hasOrphanedRows('notifications', 'report_id', 'reports')) {
+            throw new RuntimeException('Cannot switch notifications.report_id to reports without orphaned notification rows. This migration intentionally does not delete or relink data.');
+        }
+
+        if ($this->hasAmbiguousLegacyMapping()) {
+            throw new RuntimeException('Cannot switch notifications.report_id to reports because legacy incident IDs and report IDs overlap for different cases. Mapping is not provable, so this migration refuses to reinterpret the data.');
+        }
+
+        if (empty($this->foreignKeyNamesFor('notifications', 'reports'))) {
+            Schema::table('notifications', function (Blueprint $table) {
+                $table->foreign('report_id')
+                    ->references('id')
+                    ->on('reports')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -39,15 +49,79 @@ return new class extends Migration
             return;
         }
 
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->dropForeign(['report_id']);
-        });
+        $reportConstraintNames = $this->foreignKeyNamesFor('notifications', 'reports');
 
-        Schema::table('notifications', function (Blueprint $table) {
-            $table->foreign('report_id')
-                ->references('id')
-                ->on('incidents')
-                ->onDelete('cascade');
-        });
+        foreach ($reportConstraintNames as $constraintName) {
+            DB::statement(sprintf('ALTER TABLE notifications DROP FOREIGN KEY `%s`', $constraintName));
+        }
+
+        if ($this->hasOrphanedRows('notifications', 'report_id', 'incidents')) {
+            throw new RuntimeException('Cannot restore notifications.report_id to incidents because some notification rows point to non-existent incident rows. This migration intentionally does not delete or relink data.');
+        }
+
+        if ($this->hasAmbiguousLegacyMapping()) {
+            throw new RuntimeException('Cannot restore notifications.report_id to incidents because legacy incident IDs and report IDs overlap for different cases. Mapping is not provable, so this migration refuses to reinterpret the data.');
+        }
+
+        if (empty($this->foreignKeyNamesFor('notifications', 'incidents'))) {
+            Schema::table('notifications', function (Blueprint $table) {
+                $table->foreign('report_id')
+                    ->references('id')
+                    ->on('incidents')
+                    ->onDelete('cascade');
+            });
+        }
+    }
+
+    /**
+     * Look up the actual foreign-key constraints for the table and target table.
+     *
+     * @return array<int, string>
+     */
+    protected function foreignKeyNamesFor(string $table, string $referencedTable): array
+    {
+        $rows = DB::select(
+            'SELECT CONSTRAINT_NAME FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = ? AND REFERENCED_TABLE_NAME = ?',
+            [$table, $referencedTable]
+        );
+
+        return array_map(fn ($row) => $row->CONSTRAINT_NAME, $rows);
+    }
+
+    /**
+     * Check whether any rows are orphaned relative to the parent table.
+     */
+    protected function hasOrphanedRows(string $table, string $column, string $parentTable): bool
+    {
+        $count = DB::table($table)
+            ->whereNotNull($column)
+            ->whereRaw(sprintf('%s NOT IN (SELECT id FROM %s)', $column, $parentTable))
+            ->count();
+
+        return $count > 0;
+    }
+
+    /**
+     * A legacy notification cannot be reassigned safely unless the same numeric ID
+     * represents the same case in both tables. If rows overlap with different case
+     * identities, mapping is ambiguous and the migration refuses to reinterpret data.
+     */
+    protected function hasAmbiguousLegacyMapping(): bool
+    {
+        if (! Schema::hasTable('incidents') || ! Schema::hasTable('reports')) {
+            return false;
+        }
+
+        if (! Schema::hasColumn('incidents', 'case_number') || ! Schema::hasColumn('reports', 'case_number')) {
+            return true;
+        }
+
+        $count = DB::table('notifications')
+            ->join('incidents', 'incidents.id', '=', 'notifications.report_id')
+            ->join('reports', 'reports.id', '=', 'notifications.report_id')
+            ->whereRaw('TRIM(COALESCE(incidents.case_number, "")) <> TRIM(COALESCE(reports.case_number, ""))')
+            ->count();
+
+        return $count > 0;
     }
 };
