@@ -16,18 +16,19 @@ return new class extends Migration
             return;
         }
 
-        $legacyConstraintNames = $this->foreignKeyNamesFor('notifications', 'incidents');
-
-        foreach ($legacyConstraintNames as $constraintName) {
-            DB::statement(sprintf('ALTER TABLE notifications DROP FOREIGN KEY `%s`', $constraintName));
-        }
-
         if ($this->hasOrphanedRows('notifications', 'report_id', 'reports')) {
             throw new RuntimeException('Cannot switch notifications.report_id to reports without orphaned notification rows. This migration intentionally does not delete or relink data.');
         }
 
         if ($this->hasAmbiguousLegacyMapping()) {
             throw new RuntimeException('Cannot switch notifications.report_id to reports because legacy incident IDs and report IDs overlap for different cases. Mapping is not provable, so this migration refuses to reinterpret the data.');
+        }
+
+        // MySQL DDL commits implicitly: complete every data check before changing constraints.
+        $legacyConstraintNames = $this->foreignKeyNamesFor('notifications', 'incidents');
+
+        foreach ($legacyConstraintNames as $constraintName) {
+            DB::statement(sprintf('ALTER TABLE notifications DROP FOREIGN KEY `%s`', $constraintName));
         }
 
         if (empty($this->foreignKeyNamesFor('notifications', 'reports'))) {
@@ -49,18 +50,19 @@ return new class extends Migration
             return;
         }
 
-        $reportConstraintNames = $this->foreignKeyNamesFor('notifications', 'reports');
-
-        foreach ($reportConstraintNames as $constraintName) {
-            DB::statement(sprintf('ALTER TABLE notifications DROP FOREIGN KEY `%s`', $constraintName));
-        }
-
         if ($this->hasOrphanedRows('notifications', 'report_id', 'incidents')) {
             throw new RuntimeException('Cannot restore notifications.report_id to incidents because some notification rows point to non-existent incident rows. This migration intentionally does not delete or relink data.');
         }
 
         if ($this->hasAmbiguousLegacyMapping()) {
             throw new RuntimeException('Cannot restore notifications.report_id to incidents because legacy incident IDs and report IDs overlap for different cases. Mapping is not provable, so this migration refuses to reinterpret the data.');
+        }
+
+        // MySQL DDL commits implicitly: complete every data check before changing constraints.
+        $reportConstraintNames = $this->foreignKeyNamesFor('notifications', 'reports');
+
+        foreach ($reportConstraintNames as $constraintName) {
+            DB::statement(sprintf('ALTER TABLE notifications DROP FOREIGN KEY `%s`', $constraintName));
         }
 
         if (empty($this->foreignKeyNamesFor('notifications', 'incidents'))) {
@@ -119,7 +121,11 @@ return new class extends Migration
         $count = DB::table('notifications')
             ->join('incidents', 'incidents.id', '=', 'notifications.report_id')
             ->join('reports', 'reports.id', '=', 'notifications.report_id')
-            ->whereRaw('TRIM(COALESCE(incidents.case_number, "")) <> TRIM(COALESCE(reports.case_number, ""))')
+            ->where(function ($query) {
+                $query->whereRaw('TRIM(COALESCE(incidents.case_number, "")) = ""')
+                    ->orWhereRaw('TRIM(COALESCE(reports.case_number, "")) = ""')
+                    ->orWhereRaw('TRIM(incidents.case_number) <> TRIM(reports.case_number)');
+            })
             ->count();
 
         return $count > 0;
