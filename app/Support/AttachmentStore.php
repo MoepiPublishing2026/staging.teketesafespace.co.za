@@ -97,6 +97,7 @@ class AttachmentStore
         return match (true) {
             str_starts_with($mime, 'image/') => 'image',
             $mime === 'application/pdf'      => 'pdf',
+            $mime === 'text/plain'           => 'text', 
             str_starts_with($mime, 'video/') => 'video',
             default                          => 'audio',
         };
