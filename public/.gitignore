@@ -14,7 +14,7 @@ Thumbs.db
 
 # Node and build
 /node_modules
-/build/
+# Production build assets are versioned for deployment.
 /hot/
 /public/storage
 
