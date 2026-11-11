@@ -1,6 +1,6 @@
 <div class="check-page min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
 
-    <script src="//unpkg.com/alpinejs" defer></script>
+    {{-- Livewire supplies and starts Alpine. --}}
 
     <!-- ================= HEADER ================= -->
     <header

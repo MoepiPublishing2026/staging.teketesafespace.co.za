@@ -19,3 +19,6 @@ scripts/data/education_districts/*.shp
 scripts/data/education_districts/*.shx
 scripts/data/education_districts/*.dbf
 scripts/data/education_districts/*.prj
+
+/node_modules/
+/tests/Tailwind/.runtime/
