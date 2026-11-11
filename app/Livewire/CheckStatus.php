@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Locked;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Services\TurnstileVerifier;
+use Illuminate\Validation\ValidationException;
 use App\Support\Turnstile;
 
 class CheckStatus extends Component
@@ -29,9 +31,6 @@ class CheckStatus extends Component
     {
         if (!empty($this->caseNumber)) {
             $this->caseNumber = strtoupper(trim($this->caseNumber));
-            if (! Turnstile::enabled()) {
-                $this->checkStatus();
-            }
         }
     }
 
@@ -43,6 +42,12 @@ class CheckStatus extends Component
     public function checkStatus()
     {
         $this->validate();
+
+        if (blank($this->turnstileToken)) {
+            $this->addError('turnstileToken', 'Please complete the verification and try again.');
+            $this->reportData = [];
+            return;
+        }
 
         //rate limiting and bot check
         $ipKey = 'check-status:ip:' . request()->ip();
@@ -56,7 +61,6 @@ class CheckStatus extends Component
         RateLimiter::hit($globalKey, 900);
 
         if (! $this->passesBotCheck()) {
-            $this->addError('caseNumber', 'Please complete the verification and try again.');
             $this->reportData = [];
             return;
         }
@@ -101,12 +105,22 @@ class CheckStatus extends Component
     //CAPTCHA verification using Cloudflare Turnstile
     protected function passesBotCheck(): bool
     {
-        $passed = Turnstile::verify($this->turnstileToken, request()->ip());
+        try {
+            app(TurnstileVerifier::class)->verify($this->turnstileToken, 'check_status');
 
-        $this->turnstileToken = '';
-        $this->dispatch('turnstile-reset');
+            return true;
+        } catch (ValidationException $e) {
+            $this->addError(
+                'turnstileToken',
+                $e->errors()['turnstileToken'][0] ?? 'Please complete a fresh verification and try again.'
+            );
 
-        return $passed;
+            return false;
+        } finally {
+            // Tokens are single-use: clear it and have the widget issue a new one.
+            $this->turnstileToken = '';
+            $this->dispatch('report-verification-reset');
+        }
     }
 
     protected function findSchoolAdmin(Report $report)
