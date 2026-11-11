@@ -1,0 +1,19 @@
+{
+  "name": "staging-teketesafespace-coza",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config public/vite.config.js",
+    "build": "vite build --config public/vite.config.js",
+    "preview": "vite preview --config public/vite.config.js"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "alpinejs": "^3.14.1",
+    "axios": "^1.11.0",
+    "concurrently": "^9.0.1",
+    "laravel-vite-plugin": "^2.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^7.0.4"
+  }
+}
