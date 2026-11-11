@@ -21,6 +21,7 @@ assert.match(origin,/^http:\/\/127\.0\.0\.1:\d+$/);
    for(const view of ['faq','auth.passwords.email','admin.subscribe']) {
     path='/__pr234/view/'+view;
     const response=await page.goto(origin+path,{waitUntil:'domcontentloaded'});
+    assert.equal(response.status(), view === 'auth.passwords.email' ? 200 : 500);
     report.probes.push({device,path,status:response.status()});
    }
    await context.close();

@@ -38,11 +38,11 @@ fs.mkdirSync(evidence, { recursive: true });
     width:innerWidth,scrollWidth:document.documentElement.scrollWidth,
     error:document.body.innerText.slice(0,450),
    }));
-   const unrelated = ['/__pr234/view/auth.passwords.email','/__pr234/view/faq','/__pr234/view/admin.subscribe'].includes(path);
+   const unrelated = ['/__pr234/view/faq','/__pr234/view/admin.subscribe'].includes(path);
    report.checks.push({name:`${device} GET ${path}`,ok:response.status()===(unrelated?500:200),expectedUnrelatedFailure:unrelated,status:response.status(),state});
    return response;
   }
-  for (const path of ['/', '/about-us','/secure-portal-auth-9x7/login','/check-status','/contact-us']) {
+  for (const path of ['/', '/about-us','/secure-portal-auth-9x7/login','/check-status','/contact-us','/password/reset']) {
    await check(`${device} visit ${path}`,async()=>{ await visit(path); });
   }
   if (baseline) { await context.close(); continue; }

@@ -18,7 +18,7 @@ delivery and username/password authentication success are not claimed.
 
 ## Running
 
-From a separate checkout of `l2-tailwind`, build with `npm ci && npm run build`.
+From a separate checkout of `l2-tailwind` integrated with `developers`, build with `npm ci && npm run build`.
 Install Playwright/Chromium in a separate tools directory or disposable container;
 do not add them to the application's dependencies. Supply its module path via
 `PLAYWRIGHT_MODULE_PATH`.
@@ -46,8 +46,8 @@ checks, CDN loads, duplicate Alpine warnings, page errors or build asset failure
 Known base defects below are reported explicitly rather than treated as new
 regressions. The script does not claim that the console is error-free.
 
-For base comparison, use a separate read-only checkout of `main` at
-`d9e292fb1ea08af63a1b317ccc8459997d2214db`, mount/copy this harness into it, and
+For base comparison, use a separate read-only checkout of `developers` at
+`4dd058ef9368fd9f7ac1fd265b1108cb60d723b6`, mount/copy this harness into it, and
 seed a different runtime. Serve that checkout on loopback port 8795 with
 `PR234_ORIGIN=http://127.0.0.1:8795`, then run `compare-base.cjs` against that URL.
 That script writes `base-comparison.json` under `/evidence` (the container artifact
@@ -70,18 +70,21 @@ mount). Never point these harnesses at the running app.
 
 | Observation | Base comparison |
 | --- | --- |
-| FAQ render: missing `admin.subscribe` route | Same template reference and missing route on `main`; HTTP 500 in both view probes. |
-| Password reset render: missing `password.email` route | Same failure on `main`; HTTP 500 in both view probes. |
-| Subscription render: missing `faq` route | Same failure on `main`; HTTP 500 in both view probes. |
-| Dashboard: `isMobile is not defined` | Chromium reproduces the same error on `main`, desktop and mobile; dashboard template unchanged. |
-| Missing `/images/linkedin.png` | Same missing file and footer reference on `main`; 404, or 500 through the authenticated admin error wrapper. |
+| FAQ render: missing `admin.subscribe` route | Same template reference and missing route on `developers`; HTTP 500 in both view probes. |
+| Subscription render: missing `faq` route | Same failure on `developers`; HTTP 500 in both view probes. |
+| Dashboard: `isMobile is not defined` | Chromium reproduces the same error on `developers`, desktop and mobile; dashboard template unchanged. |
+| Missing `/images/linkedin.png` | Same missing file and footer reference on `developers`; 404, or 500 through the authenticated admin error wrapper. |
 | Font Awesome kit request | Actual `https://kit.fontawesome.com/2c36e9b7b9.js` response is HTTP 403 on both branches. |
 
-FAQ, subscription, checkout and legacy password/settings templates have no
+On the developers integration, `/password/reset` and the password-email template
+return HTTP 200 on both viewports. The browser suite checks the real route and
+the template probe; neither belongs to the expected HTTP-500 list.
+
+FAQ, subscription, checkout and legacy settings templates have no
 corresponding production routes in this snapshot. Harness-only view probes are
 identified separately from real production-route tests. Checkout and legacy
 settings render successfully with supplied fictional fixture values. No named
-routes are invented to hide the three missing-route errors. Navigation-aborted
+routes are invented to hide the two missing-route errors. Navigation-aborted
 requests are retained in the raw capture as `net::ERR_ABORTED`.
 
 These defects are outside the Tailwind migration and are intentionally not fixed
