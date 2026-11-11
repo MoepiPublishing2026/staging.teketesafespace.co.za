@@ -6,7 +6,7 @@ The reporter for **Case #{{ $report->case_number }}** has submitted an official 
 @if($report->reporter_clarification)
 @component('mail::panel')
 **Reporter's Statement:**
-{{ $report->reporter_clarification }}
+{{ \App\Support\MailText::block($report->reporter_clarification) }}
 @endcomponent
 @endif
 
