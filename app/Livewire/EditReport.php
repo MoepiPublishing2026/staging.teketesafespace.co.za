@@ -270,6 +270,9 @@ class EditReport extends Component
 
     public function updatedNewUploads($files)
     {
+        // A new selection starts clean: drop the previous attempt's message before validating again.
+        $this->resetErrorBag(['newUploads', 'newUploads.*']);
+        
         $files = is_array($files) ? $files : [$files];
         $store = app(AttachmentStore::class);
         $max   = (int) config('attachments.max_per_report', 5);
@@ -295,6 +298,8 @@ class EditReport extends Component
 
     public function removeImage($index)
     {
+        $this->resetErrorBag(['newUploads', 'newUploads.*']);
+
         if (isset($this->image[$index])) {
             unset($this->image[$index]);
             $this->image = array_values($this->image);

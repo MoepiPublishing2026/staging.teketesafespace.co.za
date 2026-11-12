@@ -34,6 +34,7 @@ function loadProvider() {
 window.reportTurnstile = function (wire, root) {
     // Capture the root once: Alpine's $el is the Retry button in click handlers.
     const sitekey = root.dataset.sitekey;
+    const action = root.dataset.action || 'report_submit';
     const challenge = root.querySelector('[data-turnstile-host]');
     return {
         widget: null, failed: false, size: null, disposed: false, loading: false,
@@ -51,7 +52,7 @@ window.reportTurnstile = function (wire, root) {
                 if (this.widget !== null) { this.reset(); return; }
                 this.size = root.clientWidth < 300 ? 'compact' : 'flexible';
                 this.widget = provider.render(challenge, {
-                    sitekey, action: 'report_submit', size: this.size,
+                    sitekey, action, size: this.size,
                     callback: token => { if (this.disposed) return; this.failed = false; wire.set('turnstileToken', token, false); },
                     'expired-callback': () => this.reset(),
                     'timeout-callback': () => this.reset(),

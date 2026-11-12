@@ -1,5 +1,6 @@
+@props(['action' => 'report_submit'])
 <div class="mt-7 text-center" wire:key="report-turnstile" x-data="reportTurnstile($wire, $el)"
-     data-sitekey="{{ config('turnstile.site_key') }}"
+     data-sitekey="{{ config('turnstile.site_key') }}" data-action="{{ $action }}"
      @report-verification-reset.window="reset()" @resize.window.debounce.200ms="resize()">
     <p class="text-sm mb-2">Human verification</p>
     @if (config('turnstile.site_key'))

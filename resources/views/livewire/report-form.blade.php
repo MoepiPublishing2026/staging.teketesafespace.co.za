@@ -1,7 +1,19 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] w-full overflow-x-hidden">
     {{-- Livewire supplies Alpine; loading another copy breaks widget lifecycle. --}}
     <script src="{{ asset('js/report-turnstile.js') }}?v={{ substr(hash_file('sha256', base_path('public/js/report-turnstile.js')), 0, 12) }}" defer></script>
+    
     <style>
+        .native-file-input::file-selector-button {
+            background-color: #efefef;
+            color: #000;
+            border: 1px solid #767676;
+            border-radius: 3px;
+            padding: 1px 6px;
+            margin-right: 4px;
+            font: 13.3333px Arial, sans-serif;
+            cursor: pointer;
+        }
+        .native-file-input::file-selector-button:hover { background-color: #e5e5e5; border-color: #4f4f4f; }
         @media (max-width: 1023px) {
             .report-header > div { padding-left: 1rem !important; padding-right: 1rem !important; }
             .report-header img { width: 120px !important; margin-left: 0 !important; }
@@ -384,13 +396,18 @@
                     <div class="form-group mt-6">
                         <label for="fileUpload" class="block text-[12px] text-black mb-1">Attachment <span class="text-gray-500">(Optional)</span></label>
                         <input type="file" wire:model="newUploads" multiple
-                            accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
-                            class="form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black"
-                            id="fileUpload">
+                            accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.txt,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
+                            class="native-file-input form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black"
+                            id="fileUpload"
+                            x-on:livewire-upload-finish="$el.value = ''"
+                            x-on:livewire-upload-error="$el.value = ''">
 
-                        @error('newUploads.*')
-                            <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                        @enderror
+                       {{-- Hidden while a new upload is in flight so the previous attempt's message never lingers. --}}
+                        <div wire:loading.remove wire:target="newUploads">
+                            @error('newUploads.*')
+                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
                         <div class="mt-3">
                             @if ($image)
@@ -420,7 +437,7 @@
                                                         <div class="font-medium text-sm truncate">{{ $file->getClientOriginalName() }}</div>
                                                         <div class="text-xs text-gray-500">
                                                             {{ number_format($file->getSize() / 1024, 1) }} KB
-                                                            <span class="ml-1">{{ strtoupper(str_replace(['audio/', 'video/', 'image/'], '', $file->getMimeType())) }}</span>
+                                                            <span class="ml-1">{{ strtoupper(str_replace(['text/plain', 'audio/', 'video/', 'image/'], ['txt', 'audio', 'video', 'image'], $file->getMimeType())) }}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -828,10 +845,11 @@ clearTimeout(timer);
 
 
      <!-- Honeypot field (hidden from legitimate users) -->
-<div style="position:absolute; left:-9999px;" aria-hidden="true">
-    <label for="website">Leave this field empty</label>
-    <input type="text" id="website" wire:model="website" tabindex="-1" autocomplete="off">
-</div>
+    <div style="position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;" aria-hidden="true">
+        <label for="website">Leave this field empty</label>
+        <input type="text" id="website" wire:model="website" tabindex="-1" autocomplete="off"
+               data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+    </div>
 </div>
 </div>
 

@@ -403,6 +403,29 @@ public function submitReport()
  ini_set('max_execution_time', 500);
         try {
         app(ReportSubmissionLimiter::class)->admit(session()->getId(), request()->ip() ?? '');
+        
+        // Honeypot. A person never sees this field, so a value means an automated submission.
+        // This runs after admit() (bots stay rate-limited, so they cannot flood the audit log)
+        // and before validate()/Turnstile/any database write.
+        if (trim($this->website) !== '') {
+            try {
+                app(\App\Services\AuditTrailService::class)->record(
+                    action: 'BOT_SUBMISSION_BLOCKED',
+                    reason: 'Honeypot field was filled by automated bot',
+                    metadata: ['user_agent' => mb_substr((string) request()->userAgent(), 0, 255)]
+                );
+            } catch (\Throwable $e) {
+                // Logging a blocked bot must never break the form.
+                Log::warning('Honeypot hit could not be audited: ' . $e->getMessage());
+            }
+
+            $this->website = '';
+            // Deliberately NOT a fake success: if a real person is ever caught by an autofill
+            // false-positive, they must know the report was not saved so they can try again.
+            session()->flash('error_message', 'Something went wrong. Please try again.');
+            return;
+        }
+
         $this->validate();
 
     if ($this->schoolProvince) {
@@ -634,13 +657,15 @@ $cleanEmail = trim(strtolower($this->reporterEmail));
   
 public function updatedNewUploads($files)
 {
+    $this->resetErrorBag(['newUploads', 'newUploads.*']);
+
     // Ensure it's an array
     $files = is_array($files) ? $files : [$files];
 
     $store = app(AttachmentStore::class);
     $max   = (int) config('attachments.max_per_report', 5);
 
-     foreach ($files as $file) {
+    foreach ($files as $file) {
         if (count($this->image) >= $max) {
             $this->addError('newUploads.0', "You can attach at most {$max} files.");
             $file->delete();
@@ -667,6 +692,8 @@ public function updatedNewUploads($files)
 
 public function removeImage($index)
 {
+    $this->resetErrorBag(['newUploads', 'newUploads.*']);
+
     if (isset($this->image[$index])) {
         unset($this->image[$index]);
         $this->image = array_values($this->image); // Reindex array
@@ -709,6 +736,12 @@ public function removeImage($index)
         return $school;
     }
 
+    /**
+     * Honeypot: hidden from people, but bots that fill every field will populate it.
+     * Checked at the top of submitReport().
+     */
+    public string $website = '';
+
     public function render()
     {
         return view('livewire.report-form', [
@@ -716,21 +749,5 @@ public function removeImage($index)
             'otherSubtype' => $this->otherSubtype,
             'isOtherSubtypeSelected' => $this->isOtherSubtypeSelected,
         ]);
-    }
-    
-
-    public string $website = ''; // Honeypot field for bot mitigation
-
-    public function submit()
-    {
-        if (!empty($this->website)) {
-            app(\App\Services\AuditTrailService::class)->record(
-                action: 'BOT_SUBMISSION_BLOCKED',
-                reason: 'Honeypot field was filled by automated bot',
-                metadata: ['user_agent' => request()->userAgent()]
-            );
-            session()->flash('message', 'Thank you for your report.');
-            return;
-        }
     }
 }

@@ -15,6 +15,7 @@ abstract class TurnstileTestCase extends \Illuminate\Foundation\Testing\TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->withoutVite();
         if (config('database.default') !== 'sqlite' || config('database.connections.sqlite.database') !== ':memory:') {
             throw new \RuntimeException('Report tests require isolated in-memory SQLite.');
         }
