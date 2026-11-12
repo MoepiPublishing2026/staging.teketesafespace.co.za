@@ -74,16 +74,17 @@ class AttachmentController extends Controller
 
         $mime    = (new \finfo(FILEINFO_MIME_TYPE))->file($absolute) ?: 'application/octet-stream';
         $allowed = isset(config('attachments.types', [])[$mime]);
+        $inline = $allowed && $mime !== 'text/plain';
 
         $response = response()->file($absolute, [
-            'Content-Type'           => $allowed ? $mime : 'application/octet-stream',
+            'Content-Type'           => $allowed ? ($mime === 'text/plain' ? 'text/plain; charset=UTF-8' : $mime) : 'application/octet-stream',
             'X-Content-Type-Options' => 'nosniff',
             'Cache-Control'          => 'private, no-store, max-age=0',
             'Referrer-Policy'        => 'no-referrer',
         ]);
 
         $fallback = preg_replace('/[^A-Za-z0-9._-]/', '_', $file);
-        $response->setContentDisposition($allowed ? 'inline' : 'attachment', $file, $fallback);
+        $response->setContentDisposition($inline ? 'inline' : 'attachment', $file, $fallback);
 
         return $response;
     }

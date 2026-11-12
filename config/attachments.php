@@ -22,6 +22,7 @@ return [
         "image/gif"       => "gif",
         "image/webp"      => "webp",
         "application/pdf" => "pdf",
+        "text/plain"      => "txt",
         "video/mp4"       => "mp4",
         "video/quicktime" => "mov",
         "video/webm"      => "webm",
@@ -51,6 +52,7 @@ return [
     "max_bytes" => [
         "image" => 10 * 1024 * 1024,
         "pdf"   => 20 * 1024 * 1024,
+        "text"  => 1 * 1024 * 1024,
         "audio" => 50 * 1024 * 1024,
         "video" => 100 * 1024 * 1024,
     ],

@@ -7,7 +7,7 @@ use Illuminate\Validation\ValidationException;
 
 class TurnstileVerifier
 {
-    public function verify(mixed $token): void
+    public function verify(mixed $token, string $action = 'report_submit'): void
     {
         if (! is_string($token) || $token === '' || strlen($token) > 2048) {
             $this->reject();
@@ -27,7 +27,7 @@ class TurnstileVerifier
         }
         if (! $response->successful() || ! is_array($result) || ($result['success'] ?? null) !== true
             || ! in_array($result['hostname'] ?? null, $config['hostnames'], true)
-            || ($result['action'] ?? null) !== 'report_submit') {
+            || ($result['action'] ?? null) !== $action) {
             $this->reject();
         }
     }

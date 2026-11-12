@@ -41,7 +41,7 @@ class SubmissionTest extends TurnstileTestCase
         Mail::fake();
         Storage::fake('attachments');
         $before = $this->permanentPublicFiles();
-        $form = $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')]);
+        $form = $this->form()->set('image', [UploadedFile::fake()->createWithContent('fictional.pdf', "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n")]);
         $form->call('submitReport')->assertHasErrors('turnstileToken')->assertDispatched('report-verification-reset')
             ->assertSet('reporterEmail', 'fictional@example.com');
         $this->assertTrue($form->get('image')[0]->exists());
@@ -50,6 +50,41 @@ class SubmissionTest extends TurnstileTestCase
         $this->assertSame($before, $this->permanentPublicFiles());
         Http::assertNothingSent();
         Mail::assertNothingOutgoing();
+    }
+
+    public function test_honeypot_field_is_rendered_hidden_and_bound_to_the_component(): void
+    {
+        $html = $this->get('/report-form/1/anonymous')->assertOk()->getContent();
+        $this->assertMatchesRegularExpression('/aria-hidden="true"[^>]*>\s*<label for="website">.*?<input[^>]*wire:model="website"[^>]*tabindex="-1"[^>]*autocomplete="off"/s', $html);
+        $this->assertStringContainsString('left:-9999px', $html);
+    }
+
+    public function test_filled_honeypot_is_blocked_before_verification_or_any_write(): void
+    {
+        Mail::fake();
+        Storage::fake('attachments');
+        $before = $this->permanentPublicFiles();
+
+        $form = $this->form()->set('website', 'https://spam.example')->call('submitReport');
+
+        $form->assertHasNoErrors()->assertDispatched('report-verification-reset')->assertSet('website', '')
+            ->assertSee('Something went wrong. Please try again.')
+            ->assertDontSee('submitted successfully');
+        $this->assertDatabaseCount('reports', 0);
+        $this->assertSame([], Storage::disk('attachments')->allFiles());
+        $this->assertSame($before, $this->permanentPublicFiles());
+        Http::assertNothingSent();
+        Mail::assertNothingOutgoing();
+    }
+
+    public function test_person_caught_by_honeypot_false_positive_can_retry_immediately(): void
+    {
+        Http::fake();
+        $form = $this->form()->set('website', 'autofilled')->call('submitReport');
+        $form->assertSet('website', '');
+
+        // Second attempt with the honeypot now empty must reach normal processing (no token -> verification error).
+        $form->call('submitReport')->assertHasErrors('turnstileToken');
     }
 
     private function permanentPublicFiles(): array
@@ -76,7 +111,7 @@ class SubmissionTest extends TurnstileTestCase
         Storage::fake('attachments');
         Http::fake(['challenges.cloudflare.com/*' => Http::response(['success' => false, 'error-codes' => [$errorCode]])]);
         $before = $this->permanentPublicFiles();
-        $form = $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')])
+        $form = $this->form()->set('image', [UploadedFile::fake()->createWithContent('fictional.pdf', "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n")])
             ->set('turnstileToken', 'fixture-only')->call('submitReport')
             ->assertHasErrors('turnstileToken')->assertSet('turnstileToken', '')
             ->assertSet('reporterEmail', 'fictional@example.com')->assertSet('schoolId', 1)
@@ -100,7 +135,7 @@ class SubmissionTest extends TurnstileTestCase
         Mail::assertSentCount(1);
 
         $before = $this->permanentPublicFiles();
-        $form = $this->form()->set('image', [UploadedFile::fake()->create('retry.pdf', 1, 'application/pdf')])
+        $form = $this->form()->set('image', [UploadedFile::fake()->createWithContent('retry.pdf', "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n")])
             ->set('turnstileToken', 'same-fixture-token')->call('submitReport')
             ->assertHasErrors('turnstileToken')->assertSet('reporterEmail', 'fictional@example.com')
             ->assertDispatched('report-verification-reset');
@@ -131,7 +166,7 @@ class SubmissionTest extends TurnstileTestCase
         Mail::fake();
         Storage::fake('attachments');
         Http::fake(['challenges.cloudflare.com/*' => Http::response($result)]);
-        $form = $this->form()->set('image', [UploadedFile::fake()->create('fictional.pdf', 1, 'application/pdf')]);
+        $form = $this->form()->set('image', [UploadedFile::fake()->createWithContent('fictional.pdf', "%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n")]);
         $form->set('turnstileToken', 'not-logged')->call('submitReport')->assertHasErrors('turnstileToken')
             ->assertSet('reporterEmail', 'fictional@example.com')->assertSet('schoolId', 1)
             ->assertSet('turnstileToken', '')->assertDispatched('report-verification-reset');

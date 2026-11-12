@@ -244,11 +244,16 @@
 
                         <div class="mt-4">
                             <input type="file" wire:model="newUploads" multiple
-                                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
-                                class="form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black bg-white">
-                            @error('newUploads.*')
-                                <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
-                            @enderror
+                                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,text/plain,video/mp4,video/quicktime,video/webm,video/3gpp,audio/*,.txt,.mp3,.wav,.m4a,.ogg,.webm,.amr,.aac"
+                                class="form-control border-[3px] border-[#c7da30] rounded-[6px] p-2 sm:p-3 w-full text-[14px] text-black bg-white"
+                                x-on:livewire-upload-finish="$el.value = ''"
+                                x-on:livewire-upload-error="$el.value = ''">
+                            {{-- Hidden while a new upload is in flight so the previous attempt's message never lingers. --}}
+                            <div wire:loading.remove wire:target="newUploads">
+                                @error('newUploads.*')
+                                    <p class="text-red-600 text-[12px] mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
                         @if ($image)
