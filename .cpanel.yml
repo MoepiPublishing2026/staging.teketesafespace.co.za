@@ -2,7 +2,18 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za/
-    - /bin/cp -r * $DEPLOYPATH
-
-  
-    
+    - /bin/cp -R app $DEPLOYPATH
+    - /bin/cp -R bootstrap $DEPLOYPATH
+    - /bin/cp -R config $DEPLOYPATH
+    - /bin/cp -R database $DEPLOYPATH
+    - /bin/cp -R public $DEPLOYPATH
+    - /bin/cp -R public_html $DEPLOYPATH
+    - /bin/cp -R resources $DEPLOYPATH
+    - /bin/cp -R routes $DEPLOYPATH
+    - /bin/cp -R scripts $DEPLOYPATH
+    - /bin/cp -R storage $DEPLOYPATH
+    - /bin/cp -R vendor $DEPLOYPATH
+    - /bin/cp artisan $DEPLOYPATH
+    - /bin/cp composer.json $DEPLOYPATH
+    - /bin/cp composer.lock $DEPLOYPATH
+    - /bin/cp .htaccess $DEPLOYPATH
