@@ -1,19 +1,19 @@
+---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za
-   
-    # 1. Enter maintenance mode immediately
-    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan down --retry=60
-   
-    # 2. Pull down updates and sync files
-    - cd $DEPLOYPATH && git fetch origin && git reset --hard origin/main
- 
-   
-    # 3. Run optimizations and migrations
-    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize:clear
-    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan optimize
-    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan queue:restart
-   
-    # 4. Bring the application back online
-    - cd $DEPLOYPATH && /opt/cpanel/ea-php82/root/usr/bin/php artisan up
- 
+    - export DEPLOYPATH=/home/teketeq9v8o0/testing.teketesafespace.co.za/
+    - /bin/cp -R app $DEPLOYPATH
+    - /bin/cp -R bootstrap $DEPLOYPATH
+    - /bin/cp -R config $DEPLOYPATH
+    - /bin/cp -R database $DEPLOYPATH
+    - /bin/cp -R public $DEPLOYPATH
+    - /bin/cp -R public_html $DEPLOYPATH
+    - /bin/cp -R resources $DEPLOYPATH
+    - /bin/cp -R routes $DEPLOYPATH
+    - /bin/cp -R scripts $DEPLOYPATH
+    - /bin/cp -R storage $DEPLOYPATH
+    - /bin/cp -R vendor $DEPLOYPATH
+    - /bin/cp artisan $DEPLOYPATH
+    - /bin/cp composer.json $DEPLOYPATH
+    - /bin/cp composer.lock $DEPLOYPATH
+    - /bin/cp .htaccess $DEPLOYPATH
