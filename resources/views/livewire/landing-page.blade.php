@@ -417,7 +417,7 @@
                 <!-- Left Side: Heading -->
                 <div class="lg:col-span-6 text-center lg:text-left lg:pt-12 tall-portrait-left-box">
                     <h1 class="landing-h1 font-normal text-[#c7da30] leading-tight">
-                        Report Abuse<br>Safely and<br>Anonymously
+                        Report Abuse<br>Safely and<br>Anonymously to koketso mopai
                     </h1>
                 </div>
 
