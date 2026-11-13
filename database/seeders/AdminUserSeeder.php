@@ -2,44 +2,33 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
 {
+    // Set each account's *_PASSWORD value in the deployment environment before seeding.
+    // The corresponding *_NAME and *_EMAIL values are required as well.
     /**
-     * Run the database seeds.
+     * Create configured admin accounts without changing existing credentials.
      */
     public function run(): void
     {
-        // Create or update the admin user
-        User::updateOrCreate(
-            ['username' => 'admin'],
-            [
-                'name' => 'admin',
-                'email' => 'janet.lehike@tekete.co.za',
-                'password' => Hash::make('#admin25'), // Use a secure password
-            ]
-        );
-        // Create or update the second admin user
-        User::updateOrCreate(
-            ['username' => 'secondadmin'],
-            [
-                'name' => 'secondadmin',
-                'email' => 'nomkhuleko.tabete@tekete.co.za',
-                'password' => Hash::make('#admin26'), // Use a secure password
-            ]
-        );
-        // Create or update the second admin user
-        User::updateOrCreate(
-            ['username' => 'safespace'],
-            [
-                'name' => 'safespace',
-                'email' => 'elvis.kgomo@tekete.co.za',
-                'password' => Hash::make('safespace@2'), // Use a secure password
-            ]
-        );
+        foreach (config('seed_admins.accounts', []) as $account) {
+            if (empty($account['name']) || empty($account['email']) || empty($account['password'])) {
+                continue;
+            }
+
+            User::firstOrCreate(
+                ['username' => $account['username']],
+                [
+                    'name' => $account['name'],
+                    'email' => $account['email'],
+                    'password' => Hash::make($account['password']),
+                    'role' => 'admin',
+                ]
+            );
+        }
     }
 }
