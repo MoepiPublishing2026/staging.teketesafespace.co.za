@@ -22,3 +22,25 @@ scripts/data/education_districts/*.prj
 
 /node_modules/
 /tests/Tailwind/.runtime/
+
+#Machine-generated files that can contain secrets: never commit
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+error_log
+**/error_log
+
+#Uploaded content (report evidence): never commit
+/storage/app/private/attachments/
+/storage/app/private/livewire-tmp/
+/storage/app/public/*
+!/storage/app/public/.gitignore
+/storage/reports/
+/storage/profile_pictures/
+/storage/images/
+/public/storage/reports/
+/public/storage/profile_pictures/
+/public/pictures/profile_pictures/
+/public/public_old/
+
+#Framework cache data
+/storage/framework/cache/data/
