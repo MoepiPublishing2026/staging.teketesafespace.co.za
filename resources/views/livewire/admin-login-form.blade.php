@@ -284,9 +284,7 @@
                                 </div>
                             @endif
                             <div class="text-right mt-2">
-        @if(Route::has('password.request'))
-            <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:underline" style="font-family: 'Montserrat', sans-serif;">Forgot password?</a>
-        @endif
+                                <a href="{{ route('password.request') }}" class="text-sm text-blue-600 hover:underline" style="font-family: 'Montserrat', sans-serif;">Forgot password?</a>
     </div>
 </div>
 

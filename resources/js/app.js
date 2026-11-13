@@ -1,6 +1,3 @@
 import './bootstrap';
-import Alpine from 'alpinejs'
 
-window.Alpine = Alpine  // required — exposes Alpine to Livewire
-
-Alpine.start()
+// Livewire supplies and starts Alpine, including window.Alpine.

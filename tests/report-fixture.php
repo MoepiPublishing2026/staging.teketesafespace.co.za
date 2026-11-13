@@ -33,6 +33,7 @@ return function (): void {
         $table->integer('province_id')->nullable();
         $table->integer('district_id')->nullable();
     });
+    (require database_path('migrations/2026_10_29_012715_create_audit_logs_table.php'))->up();
     DB::table('abuse_types')->insert(['id' => 1, 'type_name' => 'Bullying']);
     DB::table('subtypes')->insert(['id' => 1, 'abuse_type_id' => 1, 'sub_type_name' => 'Physical']);
     DB::table('schools')->insert(['school_id' => 1, 'school_name' => 'Test School', 'phase_ped' => 'PRIMARY SCHOOL']);

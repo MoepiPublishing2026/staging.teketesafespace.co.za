@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
 
-    <script src="//unpkg.com/alpinejs" defer></script>
+    {{-- Livewire supplies and starts Alpine. --}}
 
         <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">

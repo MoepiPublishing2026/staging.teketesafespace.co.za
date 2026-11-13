@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Tekete SafeSpace</title>
     <x-favicon />
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400&display=swap" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/century-gothic-paneuropean" rel="stylesheet">
     <style>

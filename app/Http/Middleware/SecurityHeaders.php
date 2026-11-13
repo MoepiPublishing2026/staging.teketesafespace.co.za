@@ -84,7 +84,7 @@ class SecurityHeaders
     /** What the pages actually load today (audited from resources/views and public/js). */
     private function resources(): string
     {
-        $scripts = "'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://kit.fontawesome.com https://unpkg.com https://challenges.cloudflare.com";
+        $scripts = "'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://kit.fontawesome.com https://unpkg.com https://challenges.cloudflare.com";
         $styles  = "'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://kit.fontawesome.com https://ka-f.fontawesome.com https://fonts.cdnfonts.com";
         $fonts   = "'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://ka-f.fontawesome.com https://fonts.cdnfonts.com";
 

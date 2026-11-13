@@ -72,7 +72,7 @@ class InputHardeningTest extends TurnstileTestCase
 
     public function test_status_lookup_rejects_malformed_case_numbers_before_touching_the_database(): void
     {
-        foreach (["x' OR '1'='1", '<script>', 'AB', str_repeat('A', 41), "CASE-1\n"] as $bad) {
+        foreach (["x' OR '1'='1", '<script>', 'AB', str_repeat('A', 41), "CASE-1\n", "CASE-1\r\n", "CASE\n-1"] as $bad) {
             Livewire::test(CheckStatus::class)->set('caseNumber', $bad)->call('checkStatus')->assertHasErrors('caseNumber');
         }
     }

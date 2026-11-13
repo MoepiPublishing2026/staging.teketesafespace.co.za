@@ -12,6 +12,8 @@ use App\Livewire\AdminHome;
 use App\Livewire\CheckStatus;
 use App\Livewire\EditReport;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\NationalAdminDashboardController;
 use App\Http\Controllers\ReportController;
@@ -69,6 +71,12 @@ Route::post('/csp-report', \App\Http\Controllers\CspReportController::class)
 Route::get('/secure-portal-auth-9x7/login', AdminLoginForm::class)->name('school-admin');
 Route::get('/school-district', DistrictLoginForm::class)->name('school-admin-district');
 Route::get('/email-verification', PasswordlessLogin::class)->name('email.verification')->middleware('auth');
+
+// Password reset flow
+Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
 // ==========================================

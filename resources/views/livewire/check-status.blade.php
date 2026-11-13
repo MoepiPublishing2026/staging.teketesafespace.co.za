@@ -1,6 +1,7 @@
 <div class="check-page min-h-screen bg-white flex flex-col font-[Montserrat] relative w-full overflow-x-hidden">
 
-    <script src="//unpkg.com/alpinejs" defer></script>
+    {{-- Livewire supplies and starts Alpine. --}}
+    <script src="{{ asset('js/report-turnstile.js') }}?v={{ substr(hash_file('sha256', base_path('public/js/report-turnstile.js')), 0, 12) }}"></script>
 
     <!-- ================= HEADER ================= -->
     <header
@@ -180,11 +181,12 @@
                         @enderror
                     </div>
 
-                    <x-turnstile />
+                    <x-report-turnstile action="check_status" />
 
-                    <button type="submit"
+                    <button type="submit" wire:loading.attr="disabled" wire:target="checkStatus"
     class="w-full py-4 px-4 border-2 sm:border-4 border-[#c7da30] rounded-full text-[#38b6ff] hover:opacity-90 transition font-[Montserrat] text-lg">
-    Search
+    <span wire:loading.remove wire:target="checkStatus">Search</span>
+    <span wire:loading wire:target="checkStatus">Searching...</span>
 </button>
 
                 </form>

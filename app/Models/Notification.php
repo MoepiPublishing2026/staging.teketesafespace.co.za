@@ -29,10 +29,14 @@ class Notification extends Model
     ];
 
     /**
-     * Get the incident that the notification belongs to.
+     * Get the report that the notification belongs to.
+     *
+     * The method name is kept as `incident()` for compatibility with the legacy
+     * schema naming, but the active application uses the `reports` table and the
+     * `Report` model.
      */
     public function incident()
     {
-        return $this->belongsTo(Incident::class, 'report_id');
+        return $this->belongsTo(Report::class, 'report_id');
     }
 }

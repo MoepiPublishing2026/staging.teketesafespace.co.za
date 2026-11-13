@@ -1,7 +1,7 @@
 @php($workshopBookingUrl = rtrim(config('tekete.workshop_booking_url'), '/'))
 
 <div class="min-h-screen bg-white flex flex-col w-full overflow-x-hidden" style="font-family: 'Montserrat', sans-serif;">
-    <script src="//unpkg.com/alpinejs" defer></script>
+    {{-- Livewire supplies and starts Alpine. --}}
 
     <header
     class="fixed top-0 left-0 w-full bg-white z-50 ">
